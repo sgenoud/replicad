@@ -2,15 +2,37 @@ cadeau_single.js:
   bindings:
     - symbol: Message_ProgressRange
     - symbol: TColgp_Array1OfDir
+    - symbol: TColgp_Array1OfPnt
+    - symbol: Poly_Array1OfTriangle
+    - symbol: Standard_Transient
 
+    - symbol: gp_XYZ
     - symbol: gp_Vec
     - symbol: gp_Pnt
     - symbol: gp_Dir
     - symbol: gp_Ax2
     - symbol: gp_Ax3
+    - symbol: gp_Trsf
     - symbol: gp_GTrsf
 
+    - symbol: GeomAbs_CurveType
+    - symbol: Geom_Geometry
+    - symbol: Geom_Curve
+    - symbol: Geom_BoundedCurve
+    - symbol: Geom_TrimmedCurve
+    - symbol: Handle_Geom_TrimmedCurve
+    - symbol: Handle_Geom_Curve
+
     - symbol: TopoDS
+    - symbol: TopoDS_Edge
+    - symbol: TopoDS_Face
+    - symbol: TopoDS_Wire
+    - symbol: TopoDS_Shell
+    - symbol: TopoDS_Vertex
+    - symbol: TopoDS_Solid
+    - symbol: TopoDS_Compound
+    - symbol: TopoDS_CompSolid
+    - symbol: TopoDS_Shape
     - symbol: TopAbs_ShapeEnum
     - symbol: TopTools_ListOfShape
     - symbol: TopAbs_Orientation
@@ -19,32 +41,55 @@ cadeau_single.js:
 
     - symbol: Poly_Connect
     - symbol: StdPrs_ToolTriangulatedShape
+    - symbol: Poly_Triangle
+    - symbol: Poly_Triangulation
+    - symbol: Handle_Poly_Triangulation
 
     - symbol: BRep_Tool
     - symbol: BRepTools
     - symbol: BRepGProp
     - symbol: BRepGProp_Face
     - symbol: GProp_GProps
+    - symbol: GC_MakeArcOfCircle
+    - symbol: GC_Root
     - symbol: BRepMesh_IncrementalMesh
+    - symbol: BRepMesh_DiscretRoot
 
     - symbol: BRepAdaptor_Curve
+    - symbol: Adaptor3d_Curve
     - symbol: BRepAdaptor_CompCurve
-    - symbol: GeomAbs_CurveType
 
     - symbol: StlAPI_Writer
 
+    - symbol: BRepAlgoAPI_Algo
+    - symbol: BRepAlgoAPI_BuilderAlgo
+    - symbol: BRepAlgoAPI_BooleanOperation
     - symbol: BRepAlgoAPI_Cut
     - symbol: BRepAlgoAPI_Fuse
+    - symbol: BRepAlgoAPI_Section
+    - symbol: BRepAlgoAPI_Common
 
+    - symbol: BRepBuilderAPI_ModifyShape
+    - symbol: BRepBuilderAPI_MakeShape
+    - symbol: BRepBuilderAPI_Command
     - symbol: BRepBuilderAPI_Transform
+    - symbol: BRepBuilderAPI_MakeEdge
+    - symbol: BRepBuilderAPI_MakeWire
+    - symbol: BRepBuilderAPI_MakeFace
+    - symbol: BRepPrimAPI_MakeOneAxis
+    - symbol: BRepPrimAPI_MakeCylinder
     - symbol: BRepCheck_Analyzer
+    - symbol: BRepPrimAPI_MakeSweep
     - symbol: BRepPrimAPI_MakePrism
     - symbol: BRepOffsetAPI_MakeThickSolid
     - symbol: BRepOffsetAPI_MakeOffset
     - symbol: BRepOffset_Mode
+    - symbol: BRepFilletAPI_LocalOperation
+    - symbol: BRepFilletAPI_MakeFillet
     - symbol: BRepFilletAPI_MakeChamfer
     - symbol: ChFi3d_FilletShape
     - symbol: GeomAbs_JoinType
+
     - symbol: cadeau
   additionalCppCode: |
     #include <emscripten/val.h>
@@ -85,5 +130,6 @@ cadeau_single.js:
   emccFlags:
     - -sEXPORT_ES6=1
     - -sUSE_ES6_IMPORT_META=0
+    - -sALLOW_MEMORY_GROWTH=1
     - -sEXPORTED_RUNTIME_METHODS=["FS"]
     - -O3
