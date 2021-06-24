@@ -137,6 +137,36 @@ export class Shape extends WrappingObj {
     };
   }
 
+  blobSTEP() {
+    const filename = "blob.step";
+    let writer = new this.oc.STEPControl_Writer_1();
+    const progress = new this.oc.Message_ProgressRange_1();
+
+    writer.Transfer(
+      this.wrapped,
+      this.oc.STEPControl_StepModelType.STEPControl_AsIs,
+      true,
+      progress
+    );
+
+    // Convert to a .STEP File
+    const done = writer.Write(filename);
+    progress.delete();
+    writer.delete();
+
+    if (done === this.oc.IFSelect_ReturnStatus.IFSelect_RetDone) {
+      // Read the STEP File from the filesystem and clean up
+      let file = this.oc.FS.readFile("/" + filename);
+      this.oc.FS.unlink("/" + filename);
+
+      // Return the contents of the STEP File
+      const blob = new Blob([file], { type: "application/STEP" });
+      return blob;
+    } else {
+      throw new Error("WRITE STEP FILE FAILED.");
+    }
+  }
+
   blobSTL({ tolerance = 1e-3, angularTolerance = 0.1 } = {}) {
     this._mesh({ tolerance, angularTolerance });
     const filename = "blob.stl";
@@ -425,6 +455,7 @@ export class Face extends Shape {
 export class _3DShape extends Shape {
   fuse(other) {
     const newBody = new this.oc.BRepAlgoAPI_Fuse_3(this.wrapped, other.wrapped);
+    newBody.SimplifyResult(true, true, 1e-3);
     const newShape = downcast(this.oc, newBody.Shape());
     newBody.delete();
     return cast(this.oc, newShape);
