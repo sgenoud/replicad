@@ -5,6 +5,7 @@ cadeau_single.js:
     - symbol: TColgp_Array1OfPnt
     - symbol: Poly_Array1OfTriangle
     - symbol: Standard_Transient
+    - symbol: Precision
 
     - symbol: gp_XYZ
     - symbol: gp_Vec
@@ -60,6 +61,9 @@ cadeau_single.js:
     - symbol: BRepAdaptor_CompCurve
 
     - symbol: StlAPI_Writer
+    - symbol: STEPControl_Writer
+    - symbol: STEPControl_StepModelType
+    - symbol: IFSelect_ReturnStatus
 
     - symbol: BRepAlgoAPI_Algo
     - symbol: BRepAlgoAPI_BuilderAlgo
