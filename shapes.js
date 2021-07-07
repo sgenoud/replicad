@@ -119,11 +119,9 @@ export class Shape extends WrappingObj {
     let normals = [];
 
     for (let face of this.faces) {
-      const {
-        trianglesIndexes,
-        vertices: faceVertices,
-        verticesNormals,
-      } = face.triangulation(vertices.length / 3);
+      const tri = face.triangulation(vertices.length / 3);
+      if (!tri) continue;
+      const { trianglesIndexes, vertices: faceVertices, verticesNormals } = tri;
 
       triangles = triangles.concat(trianglesIndexes);
       vertices = vertices.concat(faceVertices);
@@ -220,10 +218,15 @@ export class _1DShape extends Shape {
   tangentAt(position) {
     const curve = this._geomAdaptor();
 
+    let pos = position;
+    if (!position) {
+      pos = (curve.LastParameter() - curve.FirstParameter()) / 2;
+    }
+
     const tmp = new this.oc.gp_Pnt_1();
     const res = new this.oc.gp_Vec_1();
 
-    curve.D1(position, tmp, res);
+    curve.D1(pos, tmp, res);
     const tangent = new Vector(this.oc, res);
 
     curve.delete();
@@ -311,6 +314,22 @@ export class Face extends Shape {
     this.delete();
 
     return solid;
+  }
+
+  pointOnSurface(u, v) {
+    const { uMin, uMax, vMin, vMax } = this.oc.cadeau.UVBounds(this.wrapped);
+    const surface = this._geomAdaptor;
+    const p = new this.oc.gp_Pnt_1();
+
+    const absoluteU = u * (uMax - uMin) + uMin;
+    const absoluteV = v * (vMax - vMin) + vMin;
+
+    surface.get().D0(absoluteU, absoluteV, p);
+    const point = new Vector(this.oc, p);
+    surface.delete();
+    p.delete();
+
+    return point;
   }
 
   normalAt(locationVector) {

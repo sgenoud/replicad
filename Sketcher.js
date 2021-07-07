@@ -15,7 +15,12 @@ export default class Sketcher {
     if (plane instanceof Plane) {
       this.plane = plane;
     }
-    this.plane = createNamedPlane(this.oc, plane, origin);
+
+    if (plane instanceof Plane) {
+      this.plane = plane;
+    } else {
+      this.plane = createNamedPlane(this.oc, plane, origin);
+    }
     this.pointer = this.plane.origin;
 
     this.firstPoint = this.plane.origin;
