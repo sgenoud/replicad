@@ -19,10 +19,12 @@ cadeau_single.js:
     - symbol: GeomAbs_CurveType
     - symbol: Geom_Geometry
     - symbol: Geom_Curve
+    - symbol: Geom_Surface
     - symbol: Geom_BoundedCurve
     - symbol: Geom_TrimmedCurve
     - symbol: Handle_Geom_TrimmedCurve
     - symbol: Handle_Geom_Curve
+    - symbol: Handle_Geom_Surface
 
     - symbol: TopoDS
     - symbol: TopoDS_Edge
@@ -73,6 +75,8 @@ cadeau_single.js:
     - symbol: BRepAlgoAPI_Section
     - symbol: BRepAlgoAPI_Common
 
+    - symbol: BRepExtrema_DistShapeShape
+
     - symbol: BRepBuilderAPI_ModifyShape
     - symbol: BRepBuilderAPI_MakeShape
     - symbol: BRepBuilderAPI_Command
@@ -80,6 +84,7 @@ cadeau_single.js:
     - symbol: BRepBuilderAPI_MakeEdge
     - symbol: BRepBuilderAPI_MakeWire
     - symbol: BRepBuilderAPI_MakeFace
+    - symbol: BRepBuilderAPI_MakeVertex
     - symbol: BRepPrimAPI_MakeOneAxis
     - symbol: BRepPrimAPI_MakeCylinder
     - symbol: BRepCheck_Analyzer
