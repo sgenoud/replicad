@@ -89,10 +89,11 @@ export class Vector extends WrappingObj {
     const base = plane.origin;
     const normal = plane.zDir;
 
-    const v1 = this.sub(normal);
-    const v2 = this.sub(base);
+    const v1 = this.sub(base);
 
-    const projection = v1.multiply(v2.dot(normal) - normal.Length ** 2);
+    const v2 = normal.multiply(v1.dot(normal) / normal.Length ** 2);
+    const projection = this.sub(v2);
+
     v1.delete();
     v2.delete();
 

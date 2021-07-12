@@ -1,4 +1,4 @@
-import { Vector, asPnt } from "./geom.js";
+import { Vector, asPnt, createNamedPlane } from "./geom.js";
 import { DEG2RAD } from "./constants.js";
 
 export const edgeIsParallelTo = (oc, edge, parallelTo = [0, 0, 1]) => {
@@ -104,7 +104,7 @@ class Finder {
     distanceBuilder.LoadS1(vertex);
 
     const checkPoint = ({ element }) => {
-      distanceBuilder.LoadS2(element);
+      distanceBuilder.LoadS2(element.wrapped);
       distanceBuilder.Perform();
 
       //console.log("distance", distanceBuilder.Value());
@@ -149,7 +149,7 @@ export class FaceFinder extends Finder {
     return shape.faces.filter((face) => {
       const normal = face.normalAt();
       const shouldKeep = this.filters.every((filter) =>
-        filter({ normal, element: face.wrapped })
+        filter({ normal, element: face })
       );
       normal.delete();
       if (!shouldKeep) face.delete();
@@ -161,7 +161,7 @@ export class FaceFinder extends Finder {
     return (face) => {
       const normal = face.normalAt();
       const shouldKeep = this.filters.every((filter) =>
-        filter({ normal, element: face.wrapped })
+        filter({ normal, element: face })
       );
       normal.delete();
       return shouldKeep ? size : 0;
@@ -181,11 +181,35 @@ export class EdgeFinder extends Finder {
     }
   }
 
+  inPlane(inputPlane) {
+    let plane = inputPlane;
+    if (typeof inputPlane === "string") {
+      plane = createNamedPlane(this.oc, plane);
+      this.references.push(plane);
+    }
+
+    this.parallelTo(plane);
+
+    const firstPointInPlane = ({ element }) => {
+      const point = element.startPoint;
+      const projectedPoint = point.projectToPlane(plane);
+
+      const isSamePoint = point.equals(projectedPoint);
+      point.delete();
+      projectedPoint.delete();
+
+      return isSamePoint;
+    };
+
+    this.filters.push(firstPointInPlane);
+    return this;
+  }
+
   applyFilter(shape) {
     return shape.edges.filter((edge) => {
       const normal = edge.tangentAt();
       const shouldKeep = this.filters.every((filter) =>
-        filter({ normal, element: edge.wrapped })
+        filter({ normal, element: edge })
       );
       normal.delete();
       if (!shouldKeep) edge.delete();
@@ -197,7 +221,7 @@ export class EdgeFinder extends Finder {
     return (edge) => {
       const normal = edge.tangentAt();
       const shouldKeep = this.filters.every((filter) =>
-        filter({ normal, element: edge.wrapped })
+        filter({ normal, element: edge })
       );
       normal.delete();
       return shouldKeep ? size : 0;
