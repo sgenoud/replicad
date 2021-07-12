@@ -1,4 +1,5 @@
-cadeau_single.js:
+mainBuild:
+  name: cadeau_single.js
   bindings:
     - symbol: Message_ProgressRange
     - symbol: TColgp_Array1OfDir
@@ -100,7 +101,15 @@ cadeau_single.js:
     - symbol: GeomAbs_JoinType
 
     - symbol: cadeau
-  additionalCppCode: |
+  emccFlags:
+    - -sEXPORT_ES6=1
+    - -sUSE_ES6_IMPORT_META=0
+    - -sALLOW_MEMORY_GROWTH=1
+    - -sEXPORTED_RUNTIME_METHODS=["FS"]
+    - -O3
+
+
+additionalCppCode: |
     #include <emscripten/val.h>
     class cadeau: public BRepTools {
     public:
@@ -136,9 +145,3 @@ cadeau_single.js:
         return ret;
       }
     };
-  emccFlags:
-    - -sEXPORT_ES6=1
-    - -sUSE_ES6_IMPORT_META=0
-    - -sALLOW_MEMORY_GROWTH=1
-    - -sEXPORTED_RUNTIME_METHODS=["FS"]
-    - -O3
