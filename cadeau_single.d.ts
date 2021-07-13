@@ -542,6 +542,12 @@ export declare class BRepExtrema_DistShapeShape {
     constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: Quantity_AbsorbedDose, F: Extrema_ExtFlag, A: Extrema_ExtAlgo);
   }
 
+export declare type ChFiDS_ChamfMode = {
+  ChFiDS_ClassicChamfer: {};
+  ChFiDS_ConstThroatChamfer: {};
+  ChFiDS_ConstThroatWithPenetrationChamfer: {};
+}
+
 export declare class BRep_Tool {
   constructor();
   static IsClosed_1(S: TopoDS_Shape): Standard_Boolean;
@@ -2648,6 +2654,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepExtrema_DistShapeShape_1: typeof BRepExtrema_DistShapeShape_1;
   BRepExtrema_DistShapeShape_2: typeof BRepExtrema_DistShapeShape_2;
   BRepExtrema_DistShapeShape_3: typeof BRepExtrema_DistShapeShape_3;
+  ChFiDS_ChamfMode: ChFiDS_ChamfMode;
   BRep_Tool: typeof BRep_Tool;
   StdPrs_ToolTriangulatedShape: typeof StdPrs_ToolTriangulatedShape;
   StlAPI_Writer: typeof StlAPI_Writer;
