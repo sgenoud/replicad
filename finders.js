@@ -1,4 +1,5 @@
 import { Vector, asPnt, createNamedPlane } from "./geom.js";
+import { registerObj, unregisterObj } from "./register.js"
 import { DEG2RAD } from "./constants.js";
 
 export const edgeIsParallelTo = (oc, edge, parallelTo = [0, 0, 1]) => {
@@ -63,12 +64,14 @@ class Finder {
     this.oc = oc;
     this.filters = [];
     this.references = [];
+    registerObj(this)
   }
 
   delete() {
     this.references.forEach((r) => r.delete());
     this.references = [];
     this.filters = [];
+    unregisterObj(this)
   }
 
   atAngleWith(direction = "Z", angle = 0) {
@@ -131,6 +134,28 @@ class Finder {
     if (clean) this.delete();
     return elements;
   }
+
+  either(findersList) {
+    const builtFinders = findersList.map((finderFunction) => {
+      const finder = new this.constructor(this.oc);
+      this.references.push(finder);
+      finderFunction(finder);
+      return finder;
+    });
+
+    const eitherFilter = ({ element }) =>
+      builtFinders.some((finder) => finder.shouldKeep(element));
+    this.filters.push(eitherFilter);
+
+    return this;
+  }
+
+  asSizeFcn(size) {
+    return (element) => {
+      const shouldKeep = this.shouldKeep(element);
+      return shouldKeep ? size : 0;
+    };
+  }
 }
 
 export class FaceFinder extends Finder {
@@ -145,27 +170,21 @@ export class FaceFinder extends Finder {
     }
   }
 
+  shouldKeep(element) {
+    const normal = element.normalAt();
+    const shouldKeep = this.filters.every((filter) =>
+      filter({ normal, element })
+    );
+    normal.delete();
+    return shouldKeep;
+  }
+
   applyFilter(shape) {
     return shape.faces.filter((face) => {
-      const normal = face.normalAt();
-      const shouldKeep = this.filters.every((filter) =>
-        filter({ normal, element: face })
-      );
-      normal.delete();
+      const shouldKeep = this.shouldKeep(face);
       if (!shouldKeep) face.delete();
       return shouldKeep;
     });
-  }
-
-  asSizeFcn(size) {
-    return (face) => {
-      const normal = face.normalAt();
-      const shouldKeep = this.filters.every((filter) =>
-        filter({ normal, element: face })
-      );
-      normal.delete();
-      return shouldKeep ? size : 0;
-    };
   }
 }
 
@@ -205,26 +224,20 @@ export class EdgeFinder extends Finder {
     return this;
   }
 
+  shouldKeep(element) {
+    const normal = element.tangentAt();
+    const shouldKeep = this.filters.every((filter) =>
+      filter({ normal, element })
+    );
+    normal.delete();
+    return shouldKeep;
+  }
+
   applyFilter(shape) {
     return shape.edges.filter((edge) => {
-      const normal = edge.tangentAt();
-      const shouldKeep = this.filters.every((filter) =>
-        filter({ normal, element: edge })
-      );
-      normal.delete();
+      const shouldKeep = this.shouldKeep(edge);
       if (!shouldKeep) edge.delete();
       return shouldKeep;
     });
-  }
-
-  asSizeFcn(size) {
-    return (edge) => {
-      const normal = edge.tangentAt();
-      const shouldKeep = this.filters.every((filter) =>
-        filter({ normal, element: edge })
-      );
-      normal.delete();
-      return shouldKeep ? size : 0;
-    };
   }
 }

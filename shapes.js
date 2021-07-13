@@ -69,15 +69,40 @@ export class Shape extends WrappingObj {
     return this.wrapped.IsEqual(other.wrapped);
   }
 
+  translate(vector) {
+    const localVect = new Vector(this.oc, vector);
+    const T = new this.oc.gp_Trsf_1();
+    T.SetTranslation_1(localVect.wrapped);
+    const transformer = new this.oc.BRepBuilderAPI_Transform_2(
+      this.wrapped,
+      T,
+      true
+    );
+
+    const newShape = cast(
+      this.oc,
+      downcast(this.oc, transformer.ModifiedShape(this.wrapped))
+    );
+    transformer.delete();
+    T.delete();
+    localVect.delete();
+    this.delete();
+
+    return newShape;
+  }
+
   transformShape(matrix) {
     const transformer = new this.oc.BRepBuilderAPI_Transform_2(
       this.wrapped,
       matrix.wrapped.Trsf(),
       true
     );
-    const newShape = transformer.Shape();
+    const newShape = cast(
+      this.oc,
+      downcast(this.oc, transformer.ModifiedShape(this.wrapped))
+    );
     transformer.delete();
-    return cast(this.oc, newShape);
+    return newShape;
   }
 
   _iterTopo(topo) {
@@ -514,18 +539,32 @@ export class _3DShape extends Shape {
     return newShape;
   }
 
-  _builderIter(radiusConfig, builderAdd) {
+  _builderIter(radiusConfigInput, builderAdd) {
+    let radiusConfig = radiusConfigInput;
+
+    if (radiusConfigInput.filter) {
+      radiusConfig = radiusConfigInput.filter.asSizeFcn(
+        radiusConfigInput.radius || 1
+      );
+    }
+
     for (let rawEdge of this._iterTopo("edge")) {
       const edge = downcast(this.oc, rawEdge);
+
       if (typeof radiusConfig === "number") {
         builderAdd(radiusConfig, edge);
+        edge.delete();
       } else {
         const wrappedEdge = new Edge(this.oc, edge);
 
         const radius = radiusConfig(wrappedEdge);
         if (radius) builderAdd(radius, edge);
+        wrappedEdge.delete();
       }
-      edge.delete();
+    }
+
+    if (radiusConfigInput.filter && !radiusConfigInput.keep) {
+      radiusConfigInput.filter.delete();
     }
   }
 

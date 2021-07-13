@@ -169,7 +169,7 @@ export class Plane {
 
   delete() {
     this.lcs.delete();
-    unregisterObj();
+    unregisterObj(this);
   }
 
   get origin() {
@@ -277,13 +277,14 @@ const PLANES_CONFIG = {
   },
 };
 
-export const createNamedPlane = (oc, plane, origin = [0, 0, 0]) => {
-  return new Plane(
-    oc,
-    origin,
-    PLANES_CONFIG[plane].xDir,
-    PLANES_CONFIG[plane].normal
-  );
+export const createNamedPlane = (oc, plane, sourceOrigin = [0, 0, 0]) => {
+  const config = PLANES_CONFIG[plane];
+  if (!config) throw new Error(`Could not find plane ${plane}`);
+  let origin = sourceOrigin;
+  if (Number.isFinite(sourceOrigin)) {
+    origin = config.normal.map((v) => v * sourceOrigin);
+  }
+  return new Plane(oc, origin, config.xDir, config.normal);
 };
 
 export class Location extends WrappingObj {
