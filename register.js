@@ -1,3 +1,4 @@
+import { getOC } from "./oclib";
 const REGISTER = new Set();
 
 export const registerObj = (obj) => {
@@ -12,8 +13,8 @@ export const clearRegister = (keepList = []) => {
 };
 
 export class WrappingObj {
-  constructor(oc, wrapped) {
-    this.oc = oc;
+  constructor(wrapped) {
+    this.oc = getOC();
     this.wrapped = wrapped;
     registerObj(this);
   }

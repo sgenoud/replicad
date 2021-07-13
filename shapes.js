@@ -1,8 +1,10 @@
 import { WrappingObj } from "./register.js";
 import { Vector } from "./geom.js";
 import { HASH_CODE_MAX } from "./constants.js";
+import { getOC } from "./oclib.js";
 
-const asTopo = (oc, entity) => {
+const asTopo = (entity) => {
+  const oc = getOC();
   return {
     vertex: oc.TopAbs_ShapeEnum.TopAbs_VERTEX,
     edge: oc.TopAbs_ShapeEnum.TopAbs_EDGE,
@@ -16,11 +18,12 @@ const asTopo = (oc, entity) => {
   }[entity];
 };
 
-export const iterTopo = function* iterTopo(oc, shape, topo) {
+export const iterTopo = function* iterTopo(shape, topo) {
+  const oc = getOC();
   const explorer = new oc.TopExp_Explorer_2(
     shape,
-    asTopo(oc, topo),
-    asTopo(oc, "shape")
+    asTopo(topo),
+    asTopo("shape")
   );
   const hashes = new Map();
   while (explorer.More()) {
@@ -41,12 +44,12 @@ export const shapeType = (shape) => {
 };
 
 export class Shape extends WrappingObj {
-  constructor(oc, ocShape) {
-    super(oc, ocShape);
+  constructor(ocShape) {
+    super(ocShape);
   }
 
   clone() {
-    return new this.constructor(this.oc, downcast(this.oc, this.wrapped));
+    return new this.constructor(downcast(this.wrapped));
   }
 
   get hashCode() {
@@ -70,7 +73,7 @@ export class Shape extends WrappingObj {
   }
 
   translate(vector) {
-    const localVect = new Vector(this.oc, vector);
+    const localVect = new Vector(vector);
     const T = new this.oc.gp_Trsf_1();
     T.SetTranslation_1(localVect.wrapped);
     const transformer = new this.oc.BRepBuilderAPI_Transform_2(
@@ -79,10 +82,7 @@ export class Shape extends WrappingObj {
       true
     );
 
-    const newShape = cast(
-      this.oc,
-      downcast(this.oc, transformer.ModifiedShape(this.wrapped))
-    );
+    const newShape = cast(downcast(transformer.ModifiedShape(this.wrapped)));
     transformer.delete();
     T.delete();
     localVect.delete();
@@ -97,34 +97,31 @@ export class Shape extends WrappingObj {
       matrix.wrapped.Trsf(),
       true
     );
-    const newShape = cast(
-      this.oc,
-      downcast(this.oc, transformer.ModifiedShape(this.wrapped))
-    );
+    const newShape = cast(downcast(transformer.ModifiedShape(this.wrapped)));
     transformer.delete();
     return newShape;
   }
 
   _iterTopo(topo) {
-    return iterTopo(this.oc, this.wrapped, topo);
+    return iterTopo(this.wrapped, topo);
   }
 
   _listTopo(topo) {
     return Array.from(this._iterTopo(topo)).map((e) => {
-      return downcast(this.oc, e);
+      return downcast(e);
     });
   }
 
   get edges() {
-    return this._listTopo("edge").map((e) => new Edge(this.oc, e));
+    return this._listTopo("edge").map((e) => new Edge(e));
   }
 
   get faces() {
-    return this._listTopo("face").map((e) => new Face(this.oc, e));
+    return this._listTopo("face").map((e) => new Face(e));
   }
 
   get wires() {
-    return this._listTopo("wire").map((e) => new Wire(this.oc, e));
+    return this._listTopo("wire").map((e) => new Wire(e));
   }
 
   _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}) {
@@ -229,7 +226,7 @@ export class _1DShape extends Shape {
     const umin = curve.Value(curve.FirstParameter());
     curve.delete();
 
-    return new Vector(this.oc, umin);
+    return new Vector(umin);
   }
 
   get endPoint() {
@@ -237,7 +234,7 @@ export class _1DShape extends Shape {
     const umax = curve.Value(curve.LastParameter());
     curve.delete();
 
-    return new Vector(this.oc, umax);
+    return new Vector(umax);
   }
 
   tangentAt(position) {
@@ -252,7 +249,7 @@ export class _1DShape extends Shape {
     const res = new this.oc.gp_Vec_1();
 
     curve.D1(pos, tmp, res);
-    const tangent = new Vector(this.oc, res);
+    const tangent = new Vector(res);
 
     curve.delete();
     tmp.delete();
@@ -308,7 +305,7 @@ export class Wire extends _1DShape {
     );
     offsetter.Perform(offset, 0);
 
-    const newShape = cast(this.oc, downcast(this.oc, offsetter.Shape()));
+    const newShape = cast(downcast(offsetter.Shape()));
     offsetter.delete();
     this.delete();
     return newShape;
@@ -331,7 +328,7 @@ export class Face extends Shape {
       true
     );
 
-    const solid = cast(this.oc, downcast(this.oc, solidBuilder.Shape()));
+    const solid = cast(downcast(solidBuilder.Shape()));
 
     baseDirection.delete();
     extrusionVec.delete();
@@ -350,7 +347,7 @@ export class Face extends Shape {
     const absoluteV = v * (vMax - vMin) + vMin;
 
     surface.get().D0(absoluteU, absoluteV, p);
-    const point = new Vector(this.oc, p);
+    const point = new Vector(p);
     surface.delete();
     p.delete();
 
@@ -380,7 +377,7 @@ export class Face extends Shape {
     const props = new this.oc.BRepGProp_Face_2(this.wrapped, false);
     props.Normal(u, v, p, vn);
 
-    const normal = new Vector(this.oc, vn);
+    const normal = new Vector(vn);
     p.delete();
     props.delete();
     vn.delete();
@@ -391,13 +388,13 @@ export class Face extends Shape {
     const properties = new this.oc.GProp_GProps_1();
     this.oc.BRepGProp.SurfaceProperties_2(this.wrapped, properties, 1e-7, true);
 
-    const center = new Vector(this.oc, properties.CentreOfMass());
+    const center = new Vector(properties.CentreOfMass());
     properties.delete();
     return center;
   }
 
   outerWire() {
-    const newVal = new Wire(this.oc, this.oc.BRepTools.OuterWire(this.wrapped));
+    const newVal = new Wire(this.oc.BRepTools.OuterWire(this.wrapped));
     this.delete();
     return newVal;
   }
@@ -500,16 +497,16 @@ export class _3DShape extends Shape {
   fuse(other) {
     const newBody = new this.oc.BRepAlgoAPI_Fuse_3(this.wrapped, other.wrapped);
     newBody.SimplifyResult(true, true, 1e-3);
-    const newShape = downcast(this.oc, newBody.Shape());
+    const newShape = downcast(newBody.Shape());
     newBody.delete();
-    return cast(this.oc, newShape);
+    return cast(newShape);
   }
 
   cut(tool) {
     const cutter = new this.oc.BRepAlgoAPI_Cut_3(this.wrapped, tool.wrapped);
     cutter.Build();
 
-    const newShape = cast(this.oc, downcast(this.oc, cutter.Shape()));
+    const newShape = cast(downcast(cutter.Shape()));
     cutter.delete();
     this.delete();
     tool.delete();
@@ -532,7 +529,7 @@ export class _3DShape extends Shape {
       false
     );
 
-    const newShape = cast(this.oc, downcast(this.oc, shellBuilder.Shape()));
+    const newShape = cast(downcast(shellBuilder.Shape()));
     facesToRemove.delete();
     shellBuilder.delete();
 
@@ -549,13 +546,13 @@ export class _3DShape extends Shape {
     }
 
     for (let rawEdge of this._iterTopo("edge")) {
-      const edge = downcast(this.oc, rawEdge);
+      const edge = downcast(rawEdge);
 
       if (typeof radiusConfig === "number") {
         builderAdd(radiusConfig, edge);
         edge.delete();
       } else {
-        const wrappedEdge = new Edge(this.oc, edge);
+        const wrappedEdge = new Edge(edge);
 
         const radius = radiusConfig(wrappedEdge);
         if (radius) builderAdd(radius, edge);
@@ -576,7 +573,7 @@ export class _3DShape extends Shape {
 
     this._builderIter(radiusConfig, (r, e) => filletBuilder.Add_2(r, e));
 
-    const newShape = cast(this.oc, downcast(this.oc, filletBuilder.Shape()));
+    const newShape = cast(downcast(filletBuilder.Shape()));
     filletBuilder.delete();
     this.delete();
     return newShape;
@@ -587,7 +584,7 @@ export class _3DShape extends Shape {
 
     this._builderIter(radiusConfig, (r, e) => chamferBuilder.Add_2(r, e));
 
-    const newShape = cast(this.oc, downcast(this.oc, chamferBuilder.Shape()));
+    const newShape = cast(downcast(chamferBuilder.Shape()));
     chamferBuilder.delete();
     this.delete();
     return newShape;
@@ -599,7 +596,8 @@ export class Solid extends _3DShape {}
 export class CompSolid extends _3DShape {}
 export class Compound extends _3DShape {}
 
-export function downcast(oc, shape) {
+export function downcast(shape) {
+  const oc = getOC();
   const ta = oc.TopAbs_ShapeEnum;
 
   const CAST_MAP = new Map([
@@ -618,7 +616,8 @@ export function downcast(oc, shape) {
   return caster(shape);
 }
 
-export function cast(oc, shape) {
+export function cast(shape) {
+  const oc = getOC();
   const ta = oc.TopAbs_ShapeEnum;
 
   const CAST_MAP = new Map([
@@ -635,5 +634,5 @@ export function cast(oc, shape) {
   if (!CAST_MAP.has(shapeType(shape)))
     throw new Error("Could not find a wrapper for this shape type");
   const Klass = CAST_MAP.get(shapeType(shape));
-  return new Klass(oc, downcast(oc, shape));
+  return new Klass(downcast(shape));
 }

@@ -8,10 +8,11 @@ import {
   makeTangentArc,
   assembleWire,
 } from "./shapeHelpers.js";
+import { getOC } from "./oclib.js";
 
 export default class Sketcher {
-  constructor(oc, plane = "XY", origin = [0, 0, 0]) {
-    this.oc = oc;
+  constructor(plane = "XY", origin = [0, 0, 0]) {
+    this.oc = getOC();
     if (plane instanceof Plane) {
       this.plane = plane;
     }
@@ -19,7 +20,7 @@ export default class Sketcher {
     if (plane instanceof Plane) {
       this.plane = plane;
     } else {
-      this.plane = createNamedPlane(this.oc, plane, origin);
+      this.plane = createNamedPlane(plane, origin);
     }
     this.pointer = this.plane.origin;
 
@@ -36,7 +37,7 @@ export default class Sketcher {
 
   lineTo(x, y) {
     const endPoint = this.plane.toWorldCoords([x, y]);
-    this.pendingEdges.push(makeLine(this.oc, this.pointer, endPoint));
+    this.pendingEdges.push(makeLine(this.pointer, endPoint));
     this.pointer = endPoint;
     return this;
   }
@@ -80,9 +81,7 @@ export default class Sketcher {
     const gpoint1 = this.plane.toWorldCoords(center);
     const gpoint2 = this.plane.toWorldCoords(end);
 
-    this.pendingEdges.push(
-      makeThreePointArc(this.oc, this.pointer, gpoint1, gpoint2)
-    );
+    this.pendingEdges.push(makeThreePointArc(this.pointer, gpoint1, gpoint2));
     this.pointer = gpoint2;
     return this;
   }
@@ -92,12 +91,7 @@ export default class Sketcher {
     const previousEdge = this.pendingEdges[this.pendingEdges.length - 1];
 
     this.pendingEdges.push(
-      makeTangentArc(
-        this.oc,
-        previousEdge.endPoint,
-        previousEdge.tangentAt(1),
-        endPoint
-      )
+      makeTangentArc(previousEdge.endPoint, previousEdge.tangentAt(1), endPoint)
     );
 
     this.pointer = endPoint;
@@ -107,7 +101,7 @@ export default class Sketcher {
   buildWire() {
     if (!this.pendingEdges.length)
       throw new Error("No lines to convert into a wire");
-    const wire = assembleWire(this.oc, this.pendingEdges);
+    const wire = assembleWire(this.pendingEdges);
     this.pendingEdges.forEach((e) => e.delete());
     return wire;
   }
@@ -115,7 +109,7 @@ export default class Sketcher {
   _postProcessWire(wire, { returnType, extrusionDistance }) {
     if (returnType !== "face" && returnType !== "solid") return wire;
 
-    const face = makeFace(this.oc, wire);
+    const face = makeFace(wire);
     wire.delete();
 
     if (returnType === "face") return face;
@@ -127,7 +121,7 @@ export default class Sketcher {
       false,
       true
     );
-    const solid = new Solid(this.oc, downcast(this.oc, solidBuilder.Shape()));
+    const solid = new Solid(downcast(solidBuilder.Shape()));
 
     face.delete();
     extrusionVec.delete();
@@ -150,7 +144,7 @@ export default class Sketcher {
     const startToEndVector = this.pointer.sub(this.firstPoint).normalize();
     const mirrorVector = startToEndVector.cross(this.plane.zDir);
 
-    const mirror = makeMirrorMatrix(this.oc, {
+    const mirror = makeMirrorMatrix({
       position: this.pointer,
       normal: mirrorVector,
     });
@@ -162,7 +156,7 @@ export default class Sketcher {
     mirrorVector.delete();
     mirror.delete();
 
-    const newWire = assembleWire(this.oc, [wire, mirroredWire]);
+    const newWire = assembleWire([wire, mirroredWire]);
     return this._postProcessWire(newWire, { returnType, extrusionDistance });
   }
 }

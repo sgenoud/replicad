@@ -1,10 +1,11 @@
 import { Vector, asPnt, createNamedPlane } from "./geom.js";
-import { registerObj, unregisterObj } from "./register.js"
+import { registerObj, unregisterObj } from "./register.js";
 import { DEG2RAD } from "./constants.js";
+import { getOC } from "./oclib.js";
 
-export const edgeIsParallelTo = (oc, edge, parallelTo = [0, 0, 1]) => {
+export const edgeIsParallelTo = (edge, parallelTo = [0, 0, 1]) => {
   const { startPoint, endPoint } = edge;
-  const v = new Vector(oc, parallelTo);
+  const v = new Vector(parallelTo);
   const direction = endPoint.sub(startPoint).normalize();
   const dotProduct = direction.dot(v);
 
@@ -60,26 +61,26 @@ const PLANE_TO_DIR = {
 };
 
 class Finder {
-  constructor(oc) {
-    this.oc = oc;
+  constructor() {
+    this.oc = getOC();
     this.filters = [];
     this.references = [];
-    registerObj(this)
+    registerObj(this);
   }
 
   delete() {
     this.references.forEach((r) => r.delete());
     this.references = [];
     this.filters = [];
-    unregisterObj(this)
+    unregisterObj(this);
   }
 
   atAngleWith(direction = "Z", angle = 0) {
     let myDirection;
     if (DIRECTIONS[direction]) {
-      myDirection = new Vector(this.oc, DIRECTIONS[direction]);
+      myDirection = new Vector(DIRECTIONS[direction]);
     } else {
-      myDirection = new Vector(this.oc, direction);
+      myDirection = new Vector(direction);
     }
 
     const checkAngle = ({ normal }) => {
@@ -97,7 +98,7 @@ class Finder {
   }
 
   containsPoint(point) {
-    const pnt = asPnt(this.oc, point);
+    const pnt = asPnt(point);
 
     const vertexMaker = new this.oc.BRepBuilderAPI_MakeVertex(pnt);
     const vertex = vertexMaker.Vertex();
@@ -137,7 +138,7 @@ class Finder {
 
   either(findersList) {
     const builtFinders = findersList.map((finderFunction) => {
-      const finder = new this.constructor(this.oc);
+      const finder = new this.constructor();
       this.references.push(finder);
       finderFunction(finder);
       return finder;
@@ -203,7 +204,7 @@ export class EdgeFinder extends Finder {
   inPlane(inputPlane) {
     let plane = inputPlane;
     if (typeof inputPlane === "string") {
-      plane = createNamedPlane(this.oc, plane);
+      plane = createNamedPlane(plane);
       this.references.push(plane);
     }
 
