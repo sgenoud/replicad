@@ -98,6 +98,7 @@ mainBuild:
     - symbol: BRepFilletAPI_MakeFillet
     - symbol: BRepFilletAPI_MakeChamfer
     - symbol: ChFi3d_FilletShape
+    - symbol: ChFiDS_ChamfMode
     - symbol: GeomAbs_JoinType
 
     - symbol: cadeau
