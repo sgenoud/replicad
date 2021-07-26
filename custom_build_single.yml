@@ -4,6 +4,7 @@ mainBuild:
     - symbol: Message_ProgressRange
     - symbol: TColgp_Array1OfDir
     - symbol: TColgp_Array1OfPnt
+    - symbol: TColStd_Array1OfInteger
     - symbol: Poly_Array1OfTriangle
     - symbol: Standard_Transient
     - symbol: Precision
@@ -12,6 +13,7 @@ mainBuild:
     - symbol: gp_Vec
     - symbol: gp_Pnt
     - symbol: gp_Dir
+    - symbol: gp_Ax1
     - symbol: gp_Ax2
     - symbol: gp_Ax3
     - symbol: gp_Trsf
@@ -23,9 +25,11 @@ mainBuild:
     - symbol: Geom_Surface
     - symbol: Geom_BoundedCurve
     - symbol: Geom_TrimmedCurve
+    - symbol: Geom_BezierCurve
     - symbol: Handle_Geom_TrimmedCurve
     - symbol: Handle_Geom_Curve
     - symbol: Handle_Geom_Surface
+    - symbol: Handle_Geom_BezierCurve
 
     - symbol: TopoDS
     - symbol: TopoDS_Edge
@@ -42,12 +46,16 @@ mainBuild:
     - symbol: TopAbs_Orientation
     - symbol: TopLoc_Location
     - symbol: TopExp_Explorer
+    - symbol: TopTools_ListOfShape
+    - symbol: NCollection_BaseList
 
     - symbol: Poly_Connect
     - symbol: StdPrs_ToolTriangulatedShape
     - symbol: Poly_Triangle
     - symbol: Poly_Triangulation
     - symbol: Handle_Poly_Triangulation
+    - symbol: Poly_PolygonOnTriangulation
+    - symbol: Handle_Poly_PolygonOnTriangulation
 
     - symbol: BRep_Tool
     - symbol: BRepTools
@@ -88,11 +96,13 @@ mainBuild:
     - symbol: BRepBuilderAPI_MakeVertex
     - symbol: BRepPrimAPI_MakeOneAxis
     - symbol: BRepPrimAPI_MakeCylinder
+    - symbol: BRepPrimAPI_MakeBox
     - symbol: BRepCheck_Analyzer
     - symbol: BRepPrimAPI_MakeSweep
     - symbol: BRepPrimAPI_MakePrism
     - symbol: BRepOffsetAPI_MakeThickSolid
     - symbol: BRepOffsetAPI_MakeOffset
+    - symbol: BRepOffsetAPI_MakeOffsetShape
     - symbol: BRepOffset_Mode
     - symbol: BRepFilletAPI_LocalOperation
     - symbol: BRepFilletAPI_MakeFillet
