@@ -5,6 +5,7 @@ import {
   makeLine,
   makeFace,
   makeThreePointArc,
+  makeBezierCurve,
   makeTangentArc,
   assembleWire,
 } from "./shapeHelpers.js";
@@ -77,6 +78,21 @@ export default class Sketcher {
     return this.lineTo(x, y);
   }
 
+  bezierCurve(controlPoints, end) {
+    let cp = controlPoints;
+    if (cp.length === 2 && !Array.isArray(cp[0])) {
+      cp = [cp];
+    }
+    const inWorldPoints = cp.map((p) => this.plane.toWorldCoords(p));
+    const endPoint = this.plane.toWorldCoords(end);
+
+    this.pendingEdges.push(
+      makeBezierCurve([this.pointer, ...inWorldPoints, endPoint])
+    );
+    this.pointer = endPoint;
+    return this;
+  }
+
   threePointsArc(center, end) {
     const gpoint1 = this.plane.toWorldCoords(center);
     const gpoint2 = this.plane.toWorldCoords(end);
@@ -96,6 +112,43 @@ export default class Sketcher {
 
     this.pointer = endPoint;
     return this;
+  }
+
+  sagittaArcTo(end, sagitta) {
+    const startPoint = this.pointer;
+    const endPoint = this.plane.toWorldCoords(end);
+
+    let p = endPoint.add(startPoint);
+    const midPoint = p.multiply(0.5);
+    p.delete();
+
+    p = endPoint.sub(startPoint);
+    const sagDirection = p.cross(this.plane.zDir).normalized();
+
+    p.delete();
+    const sagVector = sagDirection.multiply(sagitta);
+
+    const sagPoint = midPoint.add(sagVector);
+    sagVector.delete();
+
+    this.pendingEdges.push(makeThreePointArc(this.pointer, sagPoint, endPoint));
+    this.pointer = endPoint;
+
+    sagPoint.delete();
+    return this;
+  }
+
+  sagittaArc(xDist, yDist, sagitta) {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.sagittaArcTo([xDist + pointer.x, yDist + pointer.y], sagitta);
+  }
+
+  vSagittaArc(distance, sagitta) {
+    return this.sagittaArc(0, distance, sagitta);
+  }
+
+  hSagittaArc(distance, sagitta) {
+    return this.sagittaArc(distance, 0, sagitta);
   }
 
   buildWire() {

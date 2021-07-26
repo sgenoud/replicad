@@ -26,3 +26,16 @@ export class WrappingObj {
     unregisterObj(this);
   }
 }
+
+export class Cleaner {
+  constructor() {
+    this.toClean = [];
+  }
+  add(element) {
+    this.toClean.push(element);
+  }
+  clean() {
+    this.toClean.forEach((d) => d.delete());
+    this.toClean = [];
+  }
+}

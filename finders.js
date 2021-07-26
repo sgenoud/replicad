@@ -86,7 +86,6 @@ class Finder {
     const checkAngle = ({ normal }) => {
       // We do not care about the orientation
       const angleOfNormal = Math.acos(Math.abs(normal.dot(myDirection)));
-      //console.log("angle", angleOfNormal / DEG2RAD);
 
       return Math.abs(angleOfNormal - DEG2RAD * angle) < 1e-6;
     };
@@ -111,7 +110,31 @@ class Finder {
       distanceBuilder.LoadS2(element.wrapped);
       distanceBuilder.Perform();
 
-      //console.log("distance", distanceBuilder.Value());
+      return distanceBuilder.Value() < 1e-6;
+    };
+
+    this.filters.push(checkPoint);
+    this.references.push(distanceBuilder);
+
+    return this;
+  }
+
+  inBox(corner1, corner2) {
+    const boxMaker = new this.oc.BRepPrimAPI_MakeBox_4(
+      asPnt(corner1),
+      asPnt(corner2)
+    );
+    const box = boxMaker.Solid();
+    boxMaker.delete();
+    this.references.push(box);
+
+    const distanceBuilder = new this.oc.BRepExtrema_DistShapeShape_1();
+    distanceBuilder.LoadS1(box);
+
+    const checkPoint = ({ element }) => {
+      distanceBuilder.LoadS2(element.wrapped);
+      distanceBuilder.Perform();
+
       return distanceBuilder.Value() < 1e-6;
     };
 
@@ -147,6 +170,17 @@ class Finder {
     const eitherFilter = ({ element }) =>
       builtFinders.some((finder) => finder.shouldKeep(element));
     this.filters.push(eitherFilter);
+
+    return this;
+  }
+
+  not(finderFun) {
+    const finder = new this.constructor();
+    this.references.push(finder);
+    finderFun(finder);
+
+    const notFilter = ({ element }) => !finder.shouldKeep(element);
+    this.filters.push(notFilter);
 
     return this;
   }
@@ -201,10 +235,10 @@ export class EdgeFinder extends Finder {
     }
   }
 
-  inPlane(inputPlane) {
+  inPlane(inputPlane, origin) {
     let plane = inputPlane;
     if (typeof inputPlane === "string") {
-      plane = createNamedPlane(plane);
+      plane = createNamedPlane(plane, origin);
       this.references.push(plane);
     }
 
@@ -226,7 +260,7 @@ export class EdgeFinder extends Finder {
   }
 
   shouldKeep(element) {
-    const normal = element.tangentAt();
+    const normal = element.tangentAt().normalized();
     const shouldKeep = this.filters.every((filter) =>
       filter({ normal, element })
     );

@@ -1,7 +1,9 @@
 import { WrappingObj } from "./register.js";
-import { Vector } from "./geom.js";
-import { HASH_CODE_MAX } from "./constants.js";
+import { Vector, createNamedPlane, asDir, asPnt } from "./geom.js";
+import { makeMirrorMatrix } from "./geomHelpers.js";
+import { HASH_CODE_MAX, DEG2RAD } from "./constants.js";
 import { getOC } from "./oclib.js";
+import { Cleaner } from "./register.js";
 
 const asTopo = (entity) => {
   const oc = getOC();
@@ -53,7 +55,7 @@ export class Shape extends WrappingObj {
   }
 
   get hashCode() {
-    return this.wrapped.hashCode(HASH_CODE_MAX);
+    return this.wrapped.HashCode(HASH_CODE_MAX);
   }
 
   get isNull() {
@@ -86,6 +88,52 @@ export class Shape extends WrappingObj {
     transformer.delete();
     T.delete();
     localVect.delete();
+    this.delete();
+
+    return newShape;
+  }
+
+  rotate(angle, position = [0, 0, 0], direction = [0, 0, 1]) {
+    const dir = asDir(direction);
+    const origin = asPnt(position);
+    const axis = new this.oc.gp_Ax1_2(origin, dir);
+
+    const T = new this.oc.gp_Trsf_1();
+    T.SetRotation_1(axis, angle * DEG2RAD);
+    const transformer = new this.oc.BRepBuilderAPI_Transform_2(
+      this.wrapped,
+      T,
+      true
+    );
+
+    const newShape = cast(downcast(transformer.ModifiedShape(this.wrapped)));
+    transformer.delete();
+    T.delete();
+    axis.delete();
+    dir.delete();
+    origin.delete();
+    this.delete();
+
+    return newShape;
+  }
+
+  mirror(inputPlane, origin) {
+    const shouldClean = [];
+    let plane = inputPlane;
+    if (typeof plane === "string") {
+      plane = createNamedPlane(inputPlane, origin);
+      shouldClean.push(plane);
+    }
+
+    const mirror = makeMirrorMatrix({
+      position: plane.origin,
+      normal: plane.zDir,
+    });
+    shouldClean.push(mirror);
+
+    const newShape = this.transformShape(mirror);
+
+    shouldClean.forEach((s) => s.delete());
     this.delete();
 
     return newShape;
@@ -124,6 +172,91 @@ export class Shape extends WrappingObj {
     return this._listTopo("wire").map((e) => new Wire(e));
   }
 
+  triangulation(index0 = 0) {
+    const aLocation = new this.oc.TopLoc_Location_1();
+    const triangulation = this.oc.BRep_Tool.Triangulation(
+      this.wrapped,
+      aLocation
+    );
+
+    if (triangulation.IsNull()) {
+      aLocation.delete();
+      triangulation.delete();
+
+      return null;
+    }
+
+    const triangulatedFace = {
+      vertices: [],
+      trianglesIndexes: [],
+      verticesNormals: [],
+      number_of_triangles: 0,
+    };
+
+    const nodes = triangulation.get().Nodes();
+
+    // write vertex buffer
+    triangulatedFace.vertices = new Array(nodes.Length() * 3);
+    for (let i = nodes.Lower(); i <= nodes.Upper(); i++) {
+      const p = nodes.Value(i).Transformed(aLocation.Transformation());
+      triangulatedFace.vertices[(i - 1) * 3 + 0] = p.X();
+      triangulatedFace.vertices[(i - 1) * 3 + 1] = p.Y();
+      triangulatedFace.vertices[(i - 1) * 3 + 2] = p.Z();
+    }
+
+    const normalsArray = new this.oc.TColgp_Array1OfDir_2(
+      nodes.Lower(),
+      nodes.Upper()
+    );
+    const pc = new this.oc.Poly_Connect_2(triangulation);
+    this.oc.StdPrs_ToolTriangulatedShape.Normal(this.wrapped, pc, normalsArray);
+    triangulatedFace.verticesNormals = new Array(normalsArray.Length() * 3);
+    for (let i = normalsArray.Lower(); i <= normalsArray.Upper(); i++) {
+      const d = normalsArray.Value(i).Transformed(aLocation.Transformation());
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X();
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y();
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z();
+    }
+    nodes.delete();
+    pc.delete();
+
+    // set uvcoords buffers to NULL
+    // necessary for JoinPrimitive to be performed
+    // triangulatedFace.tex_coord = null;
+
+    // write triangle buffer
+    const orient = this.wrapped.Orientation_1();
+    const triangles = triangulation.get().Triangles();
+    triangulatedFace.trianglesIndexes = new Array(triangles.Length() * 3);
+    let validFaceTriCount = 0;
+    for (let nt = 1; nt <= triangulation.get().NbTriangles(); nt++) {
+      const t = triangles.Value(nt);
+      let n1 = t.Value(1);
+      let n2 = t.Value(2);
+      let n3 = t.Value(3);
+      if (orient !== this.oc.TopAbs_Orientation.TopAbs_FORWARD) {
+        let tmp = n1;
+        n1 = n2;
+        n2 = tmp;
+      }
+      // if(TriangleIsValid(nodes.Value(1), nodes.Value(n2), nodes.Value(n3))) {
+      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 0] =
+        n1 - 1 + index0;
+      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 1] =
+        n2 - 1 + index0;
+      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 2] =
+        n3 - 1 + index0;
+      validFaceTriCount++;
+      // }
+    }
+    triangulatedFace.number_of_triangles = validFaceTriCount;
+
+    aLocation.delete();
+    triangulation.delete();
+
+    return triangulatedFace;
+  }
+
   _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}) {
     new this.oc.BRepMesh_IncrementalMesh_2(
       this.wrapped,
@@ -155,6 +288,72 @@ export class Shape extends WrappingObj {
       vertices,
       normals,
     };
+  }
+
+  meshEdges() {
+    let recordedEdges = new Set();
+    let lines = [];
+    const aLocation = new this.oc.TopLoc_Location_1();
+
+    for (let face of this.faces) {
+      const faceCleaner = new Cleaner();
+      const triangulation = this.oc.BRep_Tool.Triangulation(
+        face.wrapped,
+        aLocation
+      );
+      faceCleaner.add(triangulation);
+
+      if (triangulation.IsNull()) {
+        faceCleaner.clean();
+        continue;
+      }
+      const faceNodes = triangulation.get().Nodes();
+      faceCleaner.add(faceNodes);
+
+      for (let edge of face.edges) {
+        faceCleaner.add(edge);
+        if (recordedEdges.has(edge.hashCode)) continue;
+        const edgeCleaner = new Cleaner();
+
+        const edgeLoc = new this.oc.TopLoc_Location_1();
+        edgeCleaner.add(edgeLoc);
+
+        const polygon = this.oc.BRep_Tool.PolygonOnTriangulation_1(
+          edge.wrapped,
+          triangulation,
+          edgeLoc
+        );
+        edgeCleaner.add(polygon);
+        const edgeNodes = polygon?.get()?.Nodes();
+        if (!edgeNodes) {
+          edgeCleaner.clean();
+          continue;
+        }
+        edgeCleaner.add(edgeNodes);
+
+        let previousPoint = null;
+        for (let i = edgeNodes.Lower(); i <= edgeNodes.Upper(); i++) {
+          const p = faceNodes
+            .Value(edgeNodes.Value(i))
+            .Transformed(edgeLoc.Transformation());
+          if (previousPoint) {
+            lines.push(...previousPoint);
+            previousPoint = [p.X(), p.Y(), p.Z()];
+            lines.push(...previousPoint);
+          } else {
+            // The first element should start after the previous point has been
+            // initialized
+            previousPoint = [p.X(), p.Y(), p.Z()];
+          }
+          p.delete();
+        }
+
+        recordedEdges.add(edge.hashCode);
+        edgeCleaner.clean();
+      }
+    }
+
+    return lines;
   }
 
   blobSTEP() {
@@ -406,91 +605,6 @@ export class Face extends Shape {
     this.delete();
     return innerWires;
   }
-
-  triangulation(index0 = 0) {
-    const aLocation = new this.oc.TopLoc_Location_1();
-    const triangulation = this.oc.BRep_Tool.Triangulation(
-      this.wrapped,
-      aLocation
-    );
-
-    if (triangulation.IsNull()) {
-      aLocation.delete();
-      triangulation.delete();
-
-      return null;
-    }
-
-    const triangulatedFace = {
-      vertices: [],
-      trianglesIndexes: [],
-      verticesNormals: [],
-      number_of_triangles: 0,
-    };
-
-    const nodes = triangulation.get().Nodes();
-
-    // write vertex buffer
-    triangulatedFace.vertices = new Array(nodes.Length() * 3);
-    for (let i = nodes.Lower(); i <= nodes.Upper(); i++) {
-      const p = nodes.Value(i).Transformed(aLocation.Transformation());
-      triangulatedFace.vertices[(i - 1) * 3 + 0] = p.X();
-      triangulatedFace.vertices[(i - 1) * 3 + 1] = p.Y();
-      triangulatedFace.vertices[(i - 1) * 3 + 2] = p.Z();
-    }
-
-    const normalsArray = new this.oc.TColgp_Array1OfDir_2(
-      nodes.Lower(),
-      nodes.Upper()
-    );
-    const pc = new this.oc.Poly_Connect_2(triangulation);
-    this.oc.StdPrs_ToolTriangulatedShape.Normal(this.wrapped, pc, normalsArray);
-    triangulatedFace.verticesNormals = new Array(normalsArray.Length() * 3);
-    for (let i = normalsArray.Lower(); i <= normalsArray.Upper(); i++) {
-      const d = normalsArray.Value(i).Transformed(aLocation.Transformation());
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X();
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y();
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z();
-    }
-    nodes.delete();
-    pc.delete();
-
-    // set uvcoords buffers to NULL
-    // necessary for JoinPrimitive to be performed
-    // triangulatedFace.tex_coord = null;
-
-    // write triangle buffer
-    const orient = this.wrapped.Orientation_1();
-    const triangles = triangulation.get().Triangles();
-    triangulatedFace.trianglesIndexes = new Array(triangles.Length() * 3);
-    let validFaceTriCount = 0;
-    for (let nt = 1; nt <= triangulation.get().NbTriangles(); nt++) {
-      const t = triangles.Value(nt);
-      let n1 = t.Value(1);
-      let n2 = t.Value(2);
-      let n3 = t.Value(3);
-      if (orient !== this.oc.TopAbs_Orientation.TopAbs_FORWARD) {
-        let tmp = n1;
-        n1 = n2;
-        n2 = tmp;
-      }
-      // if(TriangleIsValid(nodes.Value(1), nodes.Value(n2), nodes.Value(n3))) {
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 0] =
-        n1 - 1 + index0;
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 1] =
-        n2 - 1 + index0;
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 2] =
-        n3 - 1 + index0;
-      validFaceTriCount++;
-      // }
-    }
-    triangulatedFace.number_of_triangles = validFaceTriCount;
-
-    aLocation.delete();
-    triangulation.delete();
-
-    return triangulatedFace;
-  }
 }
 
 export class _3DShape extends Shape {
@@ -499,12 +613,13 @@ export class _3DShape extends Shape {
     newBody.SimplifyResult(true, true, 1e-3);
     const newShape = downcast(newBody.Shape());
     newBody.delete();
-    return cast(newShape);
+    return cast(downcast(newShape));
   }
 
   cut(tool) {
     const cutter = new this.oc.BRepAlgoAPI_Cut_3(this.wrapped, tool.wrapped);
     cutter.Build();
+    cutter.SimplifyResult(true, true, 1e-3);
 
     const newShape = cast(downcast(cutter.Shape()));
     cutter.delete();

@@ -21,6 +21,18 @@ export const makeThreePointArc = (v1, v2, v3) => {
   return new Edge(new oc.BRepBuilderAPI_MakeEdge_24(curve).Edge());
 };
 
+export const makeBezierCurve = (points) => {
+  const oc = getOC();
+  const arrayOfPoints = new oc.TColgp_Array1OfPnt_2(1, points.length);
+  points.forEach((p, i) => {
+    arrayOfPoints.SetValue(i + 1, p.toPnt());
+  });
+  const bezCurve = new oc.Geom_BezierCurve_1(arrayOfPoints);
+
+  const curve = new oc.Handle_Geom_Curve_2(bezCurve);
+  return new Edge(new oc.BRepBuilderAPI_MakeEdge_24(curve).Edge());
+};
+
 export const makeTangentArc = (startPoint, startTgt, endPoint) => {
   const oc = getOC();
   const circleGeom = new oc.GC_MakeArcOfCircle_5(
