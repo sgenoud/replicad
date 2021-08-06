@@ -272,12 +272,19 @@ export class Shape extends WrappingObj {
     let triangles = [];
     let vertices = [];
     let normals = [];
+    let faceGroups = [];
 
     for (let face of this.faces) {
       const tri = face.triangulation(vertices.length / 3);
+
       if (!tri) continue;
       const { trianglesIndexes, vertices: faceVertices, verticesNormals } = tri;
 
+      faceGroups.push({
+        start: triangles.length,
+        count: trianglesIndexes.length,
+        faceId: face.hashCode,
+      });
       triangles = triangles.concat(trianglesIndexes);
       vertices = vertices.concat(faceVertices);
       normals = normals.concat(verticesNormals);
@@ -287,12 +294,14 @@ export class Shape extends WrappingObj {
       triangles,
       vertices,
       normals,
+      faceGroups,
     };
   }
 
   meshEdges() {
     let recordedEdges = new Set();
     let lines = [];
+    let edgeGroups = [];
     const aLocation = new this.oc.TopLoc_Location_1();
 
     for (let face of this.faces) {
@@ -331,6 +340,8 @@ export class Shape extends WrappingObj {
         }
         edgeCleaner.add(edgeNodes);
 
+        const start = lines.length;
+
         let previousPoint = null;
         for (let i = edgeNodes.Lower(); i <= edgeNodes.Upper(); i++) {
           const p = faceNodes
@@ -348,12 +359,18 @@ export class Shape extends WrappingObj {
           p.delete();
         }
 
+        edgeGroups.push({
+          start: start / 3,
+          count: (lines.length - start) / 3,
+          edgeId: edge.hashCode,
+        });
+
         recordedEdges.add(edge.hashCode);
         edgeCleaner.clean();
       }
     }
 
-    return lines;
+    return { lines, edgeGroups };
   }
 
   blobSTEP() {
