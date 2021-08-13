@@ -102,7 +102,7 @@ export default class Sketcher {
     return this;
   }
 
-  tangentArc(end) {
+  tangentArcTo(end) {
     let endPoint = this.plane.toWorldCoords(end);
     const previousEdge = this.pendingEdges[this.pendingEdges.length - 1];
 
@@ -112,6 +112,11 @@ export default class Sketcher {
 
     this.pointer = endPoint;
     return this;
+  }
+
+  tangentArc(xDist, yDist) {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.tangentArcTo([xDist + pointer.x, yDist + pointer.y]);
   }
 
   sagittaArcTo(end, sagitta) {
