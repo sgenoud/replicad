@@ -4,6 +4,9 @@ mainBuild:
     - symbol: Message_ProgressRange
     - symbol: TColgp_Array1OfDir
     - symbol: TColgp_Array1OfPnt
+    - symbol: TColgp_Array2OfPnt
+    - symbol: TColStd_Array1OfBoolean
+    - symbol: TColgp_Array1OfVec
     - symbol: TColStd_Array1OfInteger
     - symbol: Poly_Array1OfTriangle
     - symbol: Standard_Transient
@@ -16,16 +19,40 @@ mainBuild:
     - symbol: gp_Ax1
     - symbol: gp_Ax2
     - symbol: gp_Ax3
+    - symbol: gp_Circ
+    - symbol: gp_Elips
     - symbol: gp_Trsf
     - symbol: gp_GTrsf
 
+    - symbol: Geom2d_Line
+    - symbol: Geom2d_Curve
+    - symbol: Geom2d_BoundedCurve
+    - symbol: Geom2d_TrimmedCurve
+    - symbol: Geom2d_Geometry
+    - symbol: Handle_Geom2d_Line
+    - symbol: Handle_Geom2d_Curve
+    - symbol: Handle_Geom2d_BoundedCurve
+    - symbol: Handle_Geom2d_TrimmedCurve
+    - symbol: gp_Pnt2d
+    - symbol: gp_Dir2d
+    - symbol: GCE2d_Root
+    - symbol: GCE2d_MakeSegment
+
+
     - symbol: GeomAbs_CurveType
+    - symbol: GeomAbs_Shape
     - symbol: Geom_Geometry
     - symbol: Geom_Curve
     - symbol: Geom_Surface
+    - symbol: Geom_ElementarySurface
+    - symbol: Geom_ConicalSurface
+    - symbol: Geom_CylindricalSurface
     - symbol: Geom_BoundedCurve
     - symbol: Geom_TrimmedCurve
     - symbol: Geom_BezierCurve
+    - symbol: GeomAPI_Interpolate
+    - symbol: GeomAPI_PointsToBSpline
+    - symbol: GeomAPI_PointsToBSplineSurface
     - symbol: Handle_Geom_TrimmedCurve
     - symbol: Handle_Geom_Curve
     - symbol: Handle_Geom_Surface
@@ -58,11 +85,13 @@ mainBuild:
     - symbol: Handle_Poly_PolygonOnTriangulation
 
     - symbol: BRep_Tool
+    - symbol: BRepLib
     - symbol: BRepTools
     - symbol: BRepGProp
     - symbol: BRepGProp_Face
     - symbol: GProp_GProps
     - symbol: GC_MakeArcOfCircle
+    - symbol: GC_MakeArcOfEllipse
     - symbol: GC_Root
     - symbol: BRepMesh_IncrementalMesh
     - symbol: BRepMesh_DiscretRoot
@@ -76,6 +105,15 @@ mainBuild:
     - symbol: STEPControl_StepModelType
     - symbol: IFSelect_ReturnStatus
 
+    - symbol: Handle_Law_Function
+    - symbol: Law_Function
+    - symbol: Law_Linear
+    - symbol: Law_Composite
+    - symbol: Law_Interpol
+    - symbol: Law_BSpFunc
+    - symbol: Law_S
+
+    - symbol: BRepAlgoAPI_BuilderAlgo
     - symbol: BRepAlgoAPI_Algo
     - symbol: BRepAlgoAPI_BuilderAlgo
     - symbol: BRepAlgoAPI_BooleanOperation
@@ -100,9 +138,16 @@ mainBuild:
     - symbol: BRepCheck_Analyzer
     - symbol: BRepPrimAPI_MakeSweep
     - symbol: BRepPrimAPI_MakePrism
+    - symbol: BRepPrimAPI_MakeRevol
+    - symbol: BRepPrimAPI_MakeSphere
+    - symbol: BRepPrimAPI_MakeTorus
+    - symbol: BRepPrimAPI_MakeRevolution
+    - symbol: BRepOffsetAPI_ThruSections
     - symbol: BRepOffsetAPI_MakeThickSolid
     - symbol: BRepOffsetAPI_MakeOffset
     - symbol: BRepOffsetAPI_MakeOffsetShape
+    - symbol: BRepOffsetAPI_MakePipe
+    - symbol: BRepOffsetAPI_MakePipeShell
     - symbol: BRepOffset_Mode
     - symbol: BRepFilletAPI_LocalOperation
     - symbol: BRepFilletAPI_MakeFillet
@@ -110,6 +155,7 @@ mainBuild:
     - symbol: ChFi3d_FilletShape
     - symbol: ChFiDS_ChamfMode
     - symbol: GeomAbs_JoinType
+    - symbol: BRepFill_TypeOfContact
 
     - symbol: cadeau
   emccFlags:
