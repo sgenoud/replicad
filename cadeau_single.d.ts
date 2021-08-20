@@ -450,6 +450,238 @@ export declare class BRepAlgoAPI_Common extends BRepAlgoAPI_BooleanOperation {
     constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, PF: BOPAlgo_PaveFiller);
   }
 
+export declare class Handle_Geom2d_BoundedCurve {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom2d_BoundedCurve): void;
+  get(): Geom2d_BoundedCurve;
+  delete(): void;
+}
+
+  export declare class Handle_Geom2d_BoundedCurve_1 extends Handle_Geom2d_BoundedCurve {
+    constructor();
+  }
+
+  export declare class Handle_Geom2d_BoundedCurve_2 extends Handle_Geom2d_BoundedCurve {
+    constructor(thePtr: Geom2d_BoundedCurve);
+  }
+
+  export declare class Handle_Geom2d_BoundedCurve_3 extends Handle_Geom2d_BoundedCurve {
+    constructor(theHandle: Handle_Geom2d_BoundedCurve);
+  }
+
+  export declare class Handle_Geom2d_BoundedCurve_4 extends Handle_Geom2d_BoundedCurve {
+    constructor(theHandle: Handle_Geom2d_BoundedCurve);
+  }
+
+export declare class Geom2d_BoundedCurve extends Geom2d_Curve {
+  EndPoint(): gp_Pnt2d;
+  StartPoint(): gp_Pnt2d;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Geom2d_Geometry extends Standard_Transient {
+  Mirror_1(P: gp_Pnt2d): void;
+  Mirror_2(A: gp_Ax2d): void;
+  Rotate(P: gp_Pnt2d, Ang: Quantity_AbsorbedDose): void;
+  Scale(P: gp_Pnt2d, S: Quantity_AbsorbedDose): void;
+  Translate_1(V: gp_Vec2d): void;
+  Translate_2(P1: gp_Pnt2d, P2: gp_Pnt2d): void;
+  Transform(T: gp_Trsf2d): void;
+  Mirrored_1(P: gp_Pnt2d): Handle_Geom2d_Geometry;
+  Mirrored_2(A: gp_Ax2d): Handle_Geom2d_Geometry;
+  Rotated(P: gp_Pnt2d, Ang: Quantity_AbsorbedDose): Handle_Geom2d_Geometry;
+  Scaled(P: gp_Pnt2d, S: Quantity_AbsorbedDose): Handle_Geom2d_Geometry;
+  Transformed(T: gp_Trsf2d): Handle_Geom2d_Geometry;
+  Translated_1(V: gp_Vec2d): Handle_Geom2d_Geometry;
+  Translated_2(P1: gp_Pnt2d, P2: gp_Pnt2d): Handle_Geom2d_Geometry;
+  Copy(): Handle_Geom2d_Geometry;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Handle_Geom2d_TrimmedCurve {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom2d_TrimmedCurve): void;
+  get(): Geom2d_TrimmedCurve;
+  delete(): void;
+}
+
+  export declare class Handle_Geom2d_TrimmedCurve_1 extends Handle_Geom2d_TrimmedCurve {
+    constructor();
+  }
+
+  export declare class Handle_Geom2d_TrimmedCurve_2 extends Handle_Geom2d_TrimmedCurve {
+    constructor(thePtr: Geom2d_TrimmedCurve);
+  }
+
+  export declare class Handle_Geom2d_TrimmedCurve_3 extends Handle_Geom2d_TrimmedCurve {
+    constructor(theHandle: Handle_Geom2d_TrimmedCurve);
+  }
+
+  export declare class Handle_Geom2d_TrimmedCurve_4 extends Handle_Geom2d_TrimmedCurve {
+    constructor(theHandle: Handle_Geom2d_TrimmedCurve);
+  }
+
+export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
+  constructor(C: Handle_Geom2d_Curve, U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose, Sense: Standard_Boolean, theAdjustPeriodic: Standard_Boolean)
+  Reverse(): void;
+  ReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  SetTrim(U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose, Sense: Standard_Boolean, theAdjustPeriodic: Standard_Boolean): void;
+  BasisCurve(): Handle_Geom2d_Curve;
+  Continuity(): GeomAbs_Shape;
+  IsCN(N: Graphic3d_ZLayerId): Standard_Boolean;
+  EndPoint(): gp_Pnt2d;
+  FirstParameter(): Quantity_AbsorbedDose;
+  IsClosed(): Standard_Boolean;
+  IsPeriodic(): Standard_Boolean;
+  Period(): Quantity_AbsorbedDose;
+  LastParameter(): Quantity_AbsorbedDose;
+  StartPoint(): gp_Pnt2d;
+  D0(U: Quantity_AbsorbedDose, P: gp_Pnt2d): void;
+  D1(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d): void;
+  D2(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d, V2: gp_Vec2d): void;
+  D3(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d, V2: gp_Vec2d, V3: gp_Vec2d): void;
+  DN(U: Quantity_AbsorbedDose, N: Graphic3d_ZLayerId): gp_Vec2d;
+  Transform(T: gp_Trsf2d): void;
+  TransformedParameter(U: Quantity_AbsorbedDose, T: gp_Trsf2d): Quantity_AbsorbedDose;
+  ParametricTransformation(T: gp_Trsf2d): Quantity_AbsorbedDose;
+  Copy(): Handle_Geom2d_Geometry;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Handle_Geom2d_Curve {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom2d_Curve): void;
+  get(): Geom2d_Curve;
+  delete(): void;
+}
+
+  export declare class Handle_Geom2d_Curve_1 extends Handle_Geom2d_Curve {
+    constructor();
+  }
+
+  export declare class Handle_Geom2d_Curve_2 extends Handle_Geom2d_Curve {
+    constructor(thePtr: Geom2d_Curve);
+  }
+
+  export declare class Handle_Geom2d_Curve_3 extends Handle_Geom2d_Curve {
+    constructor(theHandle: Handle_Geom2d_Curve);
+  }
+
+  export declare class Handle_Geom2d_Curve_4 extends Handle_Geom2d_Curve {
+    constructor(theHandle: Handle_Geom2d_Curve);
+  }
+
+export declare class Geom2d_Curve extends Geom2d_Geometry {
+  Reverse(): void;
+  ReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  TransformedParameter(U: Quantity_AbsorbedDose, T: gp_Trsf2d): Quantity_AbsorbedDose;
+  ParametricTransformation(T: gp_Trsf2d): Quantity_AbsorbedDose;
+  Reversed(): Handle_Geom2d_Curve;
+  FirstParameter(): Quantity_AbsorbedDose;
+  LastParameter(): Quantity_AbsorbedDose;
+  IsClosed(): Standard_Boolean;
+  IsPeriodic(): Standard_Boolean;
+  Period(): Quantity_AbsorbedDose;
+  Continuity(): GeomAbs_Shape;
+  IsCN(N: Graphic3d_ZLayerId): Standard_Boolean;
+  D0(U: Quantity_AbsorbedDose, P: gp_Pnt2d): void;
+  D1(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d): void;
+  D2(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d, V2: gp_Vec2d): void;
+  D3(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d, V2: gp_Vec2d, V3: gp_Vec2d): void;
+  DN(U: Quantity_AbsorbedDose, N: Graphic3d_ZLayerId): gp_Vec2d;
+  Value(U: Quantity_AbsorbedDose): gp_Pnt2d;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Geom2d_Line extends Geom2d_Curve {
+  SetLin2d(L: gp_Lin2d): void;
+  SetDirection(V: gp_Dir2d): void;
+  Direction(): gp_Dir2d;
+  SetLocation(P: gp_Pnt2d): void;
+  Location(): gp_Pnt2d;
+  SetPosition(A: gp_Ax2d): void;
+  Position(): gp_Ax2d;
+  Lin2d(): gp_Lin2d;
+  Reverse(): void;
+  ReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  FirstParameter(): Quantity_AbsorbedDose;
+  LastParameter(): Quantity_AbsorbedDose;
+  IsClosed(): Standard_Boolean;
+  IsPeriodic(): Standard_Boolean;
+  Continuity(): GeomAbs_Shape;
+  Distance(P: gp_Pnt2d): Quantity_AbsorbedDose;
+  IsCN(N: Graphic3d_ZLayerId): Standard_Boolean;
+  D0(U: Quantity_AbsorbedDose, P: gp_Pnt2d): void;
+  D1(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d): void;
+  D2(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d, V2: gp_Vec2d): void;
+  D3(U: Quantity_AbsorbedDose, P: gp_Pnt2d, V1: gp_Vec2d, V2: gp_Vec2d, V3: gp_Vec2d): void;
+  DN(U: Quantity_AbsorbedDose, N: Graphic3d_ZLayerId): gp_Vec2d;
+  Transform(T: gp_Trsf2d): void;
+  TransformedParameter(U: Quantity_AbsorbedDose, T: gp_Trsf2d): Quantity_AbsorbedDose;
+  ParametricTransformation(T: gp_Trsf2d): Quantity_AbsorbedDose;
+  Copy(): Handle_Geom2d_Geometry;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Geom2d_Line_1 extends Geom2d_Line {
+    constructor(A: gp_Ax2d);
+  }
+
+  export declare class Geom2d_Line_2 extends Geom2d_Line {
+    constructor(L: gp_Lin2d);
+  }
+
+  export declare class Geom2d_Line_3 extends Geom2d_Line {
+    constructor(P: gp_Pnt2d, V: gp_Dir2d);
+  }
+
+export declare class Handle_Geom2d_Line {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom2d_Line): void;
+  get(): Geom2d_Line;
+  delete(): void;
+}
+
+  export declare class Handle_Geom2d_Line_1 extends Handle_Geom2d_Line {
+    constructor();
+  }
+
+  export declare class Handle_Geom2d_Line_2 extends Handle_Geom2d_Line {
+    constructor(thePtr: Geom2d_Line);
+  }
+
+  export declare class Handle_Geom2d_Line_3 extends Handle_Geom2d_Line {
+    constructor(theHandle: Handle_Geom2d_Line);
+  }
+
+  export declare class Handle_Geom2d_Line_4 extends Handle_Geom2d_Line {
+    constructor(theHandle: Handle_Geom2d_Line);
+  }
+
 export declare type TopAbs_Orientation = {
   TopAbs_FORWARD: {};
   TopAbs_REVERSED: {};
@@ -494,6 +726,23 @@ export declare class GC_MakeArcOfCircle extends GC_Root {
     constructor(P1: gp_Pnt, V: gp_Vec, P2: gp_Pnt);
   }
 
+export declare class GC_MakeArcOfEllipse extends GC_Root {
+  Value(): Handle_Geom_TrimmedCurve;
+  delete(): void;
+}
+
+  export declare class GC_MakeArcOfEllipse_1 extends GC_MakeArcOfEllipse {
+    constructor(Elips: gp_Elips, Alpha1: Quantity_AbsorbedDose, Alpha2: Quantity_AbsorbedDose, Sense: Standard_Boolean);
+  }
+
+  export declare class GC_MakeArcOfEllipse_2 extends GC_MakeArcOfEllipse {
+    constructor(Elips: gp_Elips, P: gp_Pnt, Alpha: Quantity_AbsorbedDose, Sense: Standard_Boolean);
+  }
+
+  export declare class GC_MakeArcOfEllipse_3 extends GC_MakeArcOfEllipse {
+    constructor(Elips: gp_Elips, P1: gp_Pnt, P2: gp_Pnt, Sense: Standard_Boolean);
+  }
+
 export declare class GC_Root {
   constructor();
   IsDone(): Standard_Boolean;
@@ -520,6 +769,63 @@ export declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeSh
   export declare class BRepOffsetAPI_MakeOffsetShape_2 extends BRepOffsetAPI_MakeOffsetShape {
     constructor(S: TopoDS_Shape, Offset: Quantity_AbsorbedDose, Tol: Quantity_AbsorbedDose, Mode: BRepOffset_Mode, Intersection: Standard_Boolean, SelfInter: Standard_Boolean, Join: GeomAbs_JoinType, RemoveIntEdges: Standard_Boolean);
   }
+
+export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
+  constructor(Spine: TopoDS_Wire)
+  SetMode_1(IsFrenet: Standard_Boolean): void;
+  SetDiscreteMode(): void;
+  SetMode_2(Axe: gp_Ax2): void;
+  SetMode_3(BiNormal: gp_Dir): void;
+  SetMode_4(SpineSupport: TopoDS_Shape): Standard_Boolean;
+  SetMode_5(AuxiliarySpine: TopoDS_Wire, CurvilinearEquivalence: Standard_Boolean, KeepContact: BRepFill_TypeOfContact): void;
+  Add_1(Profile: TopoDS_Shape, WithContact: Standard_Boolean, WithCorrection: Standard_Boolean): void;
+  Add_2(Profile: TopoDS_Shape, Location: TopoDS_Vertex, WithContact: Standard_Boolean, WithCorrection: Standard_Boolean): void;
+  SetLaw_1(Profile: TopoDS_Shape, L: Handle_Law_Function, WithContact: Standard_Boolean, WithCorrection: Standard_Boolean): void;
+  SetLaw_2(Profile: TopoDS_Shape, L: Handle_Law_Function, Location: TopoDS_Vertex, WithContact: Standard_Boolean, WithCorrection: Standard_Boolean): void;
+  Delete(Profile: TopoDS_Shape): void;
+  IsReady(): Standard_Boolean;
+  GetStatus(): BRepBuilderAPI_PipeError;
+  SetTolerance(Tol3d: Quantity_AbsorbedDose, BoundTol: Quantity_AbsorbedDose, TolAngular: Quantity_AbsorbedDose): void;
+  SetMaxDegree(NewMaxDegree: Graphic3d_ZLayerId): void;
+  SetMaxSegments(NewMaxSegments: Graphic3d_ZLayerId): void;
+  SetForceApproxC1(ForceApproxC1: Standard_Boolean): void;
+  SetTransitionMode(Mode: BRepBuilderAPI_TransitionMode): void;
+  Simulate(NumberOfSection: Graphic3d_ZLayerId, Result: TopTools_ListOfShape): void;
+  Build(): void;
+  MakeSolid(): Standard_Boolean;
+  FirstShape(): TopoDS_Shape;
+  LastShape(): TopoDS_Shape;
+  Generated(S: TopoDS_Shape): TopTools_ListOfShape;
+  ErrorOnSurface(): Quantity_AbsorbedDose;
+  Profiles(theProfiles: TopTools_ListOfShape): void;
+  Spine(): TopoDS_Wire;
+  delete(): void;
+}
+
+export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape {
+  constructor(isSolid: Standard_Boolean, ruled: Standard_Boolean, pres3d: Quantity_AbsorbedDose)
+  Init(isSolid: Standard_Boolean, ruled: Standard_Boolean, pres3d: Quantity_AbsorbedDose): void;
+  AddWire(wire: TopoDS_Wire): void;
+  AddVertex(aVertex: TopoDS_Vertex): void;
+  CheckCompatibility(check: Standard_Boolean): void;
+  SetSmoothing(UseSmoothing: Standard_Boolean): void;
+  SetParType(ParType: Approx_ParametrizationType): void;
+  SetContinuity(C: GeomAbs_Shape): void;
+  SetCriteriumWeight(W1: Quantity_AbsorbedDose, W2: Quantity_AbsorbedDose, W3: Quantity_AbsorbedDose): void;
+  SetMaxDegree(MaxDeg: Graphic3d_ZLayerId): void;
+  ParType(): Approx_ParametrizationType;
+  Continuity(): GeomAbs_Shape;
+  MaxDegree(): Graphic3d_ZLayerId;
+  UseSmoothing(): Standard_Boolean;
+  CriteriumWeight(W1: Quantity_AbsorbedDose, W2: Quantity_AbsorbedDose, W3: Quantity_AbsorbedDose): void;
+  Build(): void;
+  FirstShape(): TopoDS_Shape;
+  LastShape(): TopoDS_Shape;
+  GeneratedFace(Edge: TopoDS_Shape): TopoDS_Shape;
+  Generated(S: TopoDS_Shape): TopTools_ListOfShape;
+  Wires(): TopTools_ListOfShape;
+  delete(): void;
+}
 
 export declare class BRepOffsetAPI_MakeThickSolid extends BRepOffsetAPI_MakeOffsetShape {
   MakeThickSolidBySimple(theS: TopoDS_Shape, theOffsetValue: Quantity_AbsorbedDose): void;
@@ -559,6 +865,105 @@ export declare class BRepOffsetAPI_MakeOffset extends BRepBuilderAPI_MakeShape {
     constructor(Spine: TopoDS_Wire, Join: GeomAbs_JoinType, IsOpenResult: Standard_Boolean);
   }
 
+export declare class BRepOffsetAPI_MakePipe extends BRepPrimAPI_MakeSweep {
+  Pipe(): BRepFill_Pipe;
+  Build(): void;
+  FirstShape(): TopoDS_Shape;
+  LastShape(): TopoDS_Shape;
+  Generated_1(S: TopoDS_Shape): TopTools_ListOfShape;
+  Generated_2(SSpine: TopoDS_Shape, SProfile: TopoDS_Shape): TopoDS_Shape;
+  ErrorOnSurface(): Quantity_AbsorbedDose;
+  delete(): void;
+}
+
+  export declare class BRepOffsetAPI_MakePipe_1 extends BRepOffsetAPI_MakePipe {
+    constructor(Spine: TopoDS_Wire, Profile: TopoDS_Shape);
+  }
+
+  export declare class BRepOffsetAPI_MakePipe_2 extends BRepOffsetAPI_MakePipe {
+    constructor(Spine: TopoDS_Wire, Profile: TopoDS_Shape, aMode: GeomFill_Trihedron, ForceApproxC1: Standard_Boolean);
+  }
+
+export declare class GeomAPI_Interpolate {
+  Load_1(InitialTangent: gp_Vec, FinalTangent: gp_Vec, Scale: Standard_Boolean): void;
+  Load_2(Tangents: TColgp_Array1OfVec, TangentFlags: Handle_TColStd_HArray1OfBoolean, Scale: Standard_Boolean): void;
+  Perform(): void;
+  Curve(): Handle_Geom_BSplineCurve;
+  IsDone(): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class GeomAPI_Interpolate_1 extends GeomAPI_Interpolate {
+    constructor(Points: Handle_TColgp_HArray1OfPnt, PeriodicFlag: Standard_Boolean, Tolerance: Quantity_AbsorbedDose);
+  }
+
+  export declare class GeomAPI_Interpolate_2 extends GeomAPI_Interpolate {
+    constructor(Points: Handle_TColgp_HArray1OfPnt, Parameters: Handle_TColStd_HArray1OfReal, PeriodicFlag: Standard_Boolean, Tolerance: Quantity_AbsorbedDose);
+  }
+
+export declare class GeomAPI_PointsToBSplineSurface {
+  Init_1(Points: TColgp_Array2OfPnt, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose): void;
+  Interpolate_1(Points: TColgp_Array2OfPnt, thePeriodic: Standard_Boolean): void;
+  Interpolate_2(Points: TColgp_Array2OfPnt, ParType: Approx_ParametrizationType, thePeriodic: Standard_Boolean): void;
+  Init_2(ZPoints: TColStd_Array2OfReal, X0: Quantity_AbsorbedDose, dX: Quantity_AbsorbedDose, Y0: Quantity_AbsorbedDose, dY: Quantity_AbsorbedDose, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose): void;
+  Interpolate_3(ZPoints: TColStd_Array2OfReal, X0: Quantity_AbsorbedDose, dX: Quantity_AbsorbedDose, Y0: Quantity_AbsorbedDose, dY: Quantity_AbsorbedDose): void;
+  Init_3(Points: TColgp_Array2OfPnt, ParType: Approx_ParametrizationType, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose, thePeriodic: Standard_Boolean): void;
+  Init_4(Points: TColgp_Array2OfPnt, Weight1: Quantity_AbsorbedDose, Weight2: Quantity_AbsorbedDose, Weight3: Quantity_AbsorbedDose, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose): void;
+  Surface(): Handle_Geom_BSplineSurface;
+  IsDone(): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class GeomAPI_PointsToBSplineSurface_1 extends GeomAPI_PointsToBSplineSurface {
+    constructor();
+  }
+
+  export declare class GeomAPI_PointsToBSplineSurface_2 extends GeomAPI_PointsToBSplineSurface {
+    constructor(Points: TColgp_Array2OfPnt, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
+  export declare class GeomAPI_PointsToBSplineSurface_3 extends GeomAPI_PointsToBSplineSurface {
+    constructor(Points: TColgp_Array2OfPnt, ParType: Approx_ParametrizationType, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
+  export declare class GeomAPI_PointsToBSplineSurface_4 extends GeomAPI_PointsToBSplineSurface {
+    constructor(Points: TColgp_Array2OfPnt, Weight1: Quantity_AbsorbedDose, Weight2: Quantity_AbsorbedDose, Weight3: Quantity_AbsorbedDose, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
+  export declare class GeomAPI_PointsToBSplineSurface_5 extends GeomAPI_PointsToBSplineSurface {
+    constructor(ZPoints: TColStd_Array2OfReal, X0: Quantity_AbsorbedDose, dX: Quantity_AbsorbedDose, Y0: Quantity_AbsorbedDose, dY: Quantity_AbsorbedDose, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
+export declare class GeomAPI_PointsToBSpline {
+  Init_1(Points: TColgp_Array1OfPnt, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose): void;
+  Init_2(Points: TColgp_Array1OfPnt, ParType: Approx_ParametrizationType, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose): void;
+  Init_3(Points: TColgp_Array1OfPnt, Parameters: TColStd_Array1OfReal, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose): void;
+  Init_4(Points: TColgp_Array1OfPnt, Weight1: Quantity_AbsorbedDose, Weight2: Quantity_AbsorbedDose, Weight3: Quantity_AbsorbedDose, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose): void;
+  Curve(): Handle_Geom_BSplineCurve;
+  IsDone(): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class GeomAPI_PointsToBSpline_1 extends GeomAPI_PointsToBSpline {
+    constructor();
+  }
+
+  export declare class GeomAPI_PointsToBSpline_2 extends GeomAPI_PointsToBSpline {
+    constructor(Points: TColgp_Array1OfPnt, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
+  export declare class GeomAPI_PointsToBSpline_3 extends GeomAPI_PointsToBSpline {
+    constructor(Points: TColgp_Array1OfPnt, ParType: Approx_ParametrizationType, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
+  export declare class GeomAPI_PointsToBSpline_4 extends GeomAPI_PointsToBSpline {
+    constructor(Points: TColgp_Array1OfPnt, Parameters: TColStd_Array1OfReal, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
+  export declare class GeomAPI_PointsToBSpline_5 extends GeomAPI_PointsToBSpline {
+    constructor(Points: TColgp_Array1OfPnt, Weight1: Quantity_AbsorbedDose, Weight2: Quantity_AbsorbedDose, Weight3: Quantity_AbsorbedDose, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
 export declare class BRepCheck_Analyzer {
   constructor(S: TopoDS_Shape, GeomControls: Standard_Boolean)
   Init(S: TopoDS_Shape, GeomControls: Standard_Boolean): void;
@@ -566,6 +971,16 @@ export declare class BRepCheck_Analyzer {
   IsValid_2(): Standard_Boolean;
   Result(SubS: TopoDS_Shape): Handle_BRepCheck_Result;
   delete(): void;
+}
+
+export declare type GeomAbs_Shape = {
+  GeomAbs_C0: {};
+  GeomAbs_G1: {};
+  GeomAbs_C1: {};
+  GeomAbs_G2: {};
+  GeomAbs_C2: {};
+  GeomAbs_C3: {};
+  GeomAbs_CN: {};
 }
 
 export declare type GeomAbs_CurveType = {
@@ -584,6 +999,38 @@ export declare type GeomAbs_JoinType = {
   GeomAbs_Arc: {};
   GeomAbs_Tangent: {};
   GeomAbs_Intersection: {};
+}
+
+export declare class GCE2d_MakeSegment extends GCE2d_Root {
+  Value(): Handle_Geom2d_TrimmedCurve;
+  delete(): void;
+}
+
+  export declare class GCE2d_MakeSegment_1 extends GCE2d_MakeSegment {
+    constructor(P1: gp_Pnt2d, P2: gp_Pnt2d);
+  }
+
+  export declare class GCE2d_MakeSegment_2 extends GCE2d_MakeSegment {
+    constructor(P1: gp_Pnt2d, V: gp_Dir2d, P2: gp_Pnt2d);
+  }
+
+  export declare class GCE2d_MakeSegment_3 extends GCE2d_MakeSegment {
+    constructor(Line: gp_Lin2d, U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose);
+  }
+
+  export declare class GCE2d_MakeSegment_4 extends GCE2d_MakeSegment {
+    constructor(Line: gp_Lin2d, Point: gp_Pnt2d, Ulast: Quantity_AbsorbedDose);
+  }
+
+  export declare class GCE2d_MakeSegment_5 extends GCE2d_MakeSegment {
+    constructor(Line: gp_Lin2d, P1: gp_Pnt2d, P2: gp_Pnt2d);
+  }
+
+export declare class GCE2d_Root {
+  constructor();
+  IsDone(): Standard_Boolean;
+  Status(): gce_ErrorType;
+  delete(): void;
 }
 
 export declare class BRepExtrema_DistShapeShape {
@@ -628,6 +1075,136 @@ export declare type ChFiDS_ChamfMode = {
   ChFiDS_ConstThroatChamfer: {};
   ChFiDS_ConstThroatWithPenetrationChamfer: {};
 }
+
+export declare class Law_S extends Law_BSpFunc {
+  constructor()
+  Set_1(Pdeb: Quantity_AbsorbedDose, Valdeb: Quantity_AbsorbedDose, Pfin: Quantity_AbsorbedDose, Valfin: Quantity_AbsorbedDose): void;
+  Set_2(Pdeb: Quantity_AbsorbedDose, Valdeb: Quantity_AbsorbedDose, Ddeb: Quantity_AbsorbedDose, Pfin: Quantity_AbsorbedDose, Valfin: Quantity_AbsorbedDose, Dfin: Quantity_AbsorbedDose): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Law_Interpol extends Law_BSpFunc {
+  constructor()
+  Set_1(ParAndRad: TColgp_Array1OfPnt2d, Periodic: Standard_Boolean): void;
+  SetInRelative_1(ParAndRad: TColgp_Array1OfPnt2d, Ud: Quantity_AbsorbedDose, Uf: Quantity_AbsorbedDose, Periodic: Standard_Boolean): void;
+  Set_2(ParAndRad: TColgp_Array1OfPnt2d, Dd: Quantity_AbsorbedDose, Df: Quantity_AbsorbedDose, Periodic: Standard_Boolean): void;
+  SetInRelative_2(ParAndRad: TColgp_Array1OfPnt2d, Ud: Quantity_AbsorbedDose, Uf: Quantity_AbsorbedDose, Dd: Quantity_AbsorbedDose, Df: Quantity_AbsorbedDose, Periodic: Standard_Boolean): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Law_Composite extends Law_Function {
+  Continuity(): GeomAbs_Shape;
+  NbIntervals(S: GeomAbs_Shape): Graphic3d_ZLayerId;
+  Intervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
+  Value(X: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  D1(X: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose): void;
+  D2(X: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose, D2: Quantity_AbsorbedDose): void;
+  Trim(PFirst: Quantity_AbsorbedDose, PLast: Quantity_AbsorbedDose, Tol: Quantity_AbsorbedDose): Handle_Law_Function;
+  Bounds(PFirst: Quantity_AbsorbedDose, PLast: Quantity_AbsorbedDose): void;
+  ChangeElementaryLaw(W: Quantity_AbsorbedDose): Handle_Law_Function;
+  ChangeLaws(): Law_Laws;
+  IsPeriodic(): Standard_Boolean;
+  SetPeriodic(): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Law_Composite_1 extends Law_Composite {
+    constructor();
+  }
+
+  export declare class Law_Composite_2 extends Law_Composite {
+    constructor(First: Quantity_AbsorbedDose, Last: Quantity_AbsorbedDose, Tol: Quantity_AbsorbedDose);
+  }
+
+export declare class Law_Function extends Standard_Transient {
+  Continuity(): GeomAbs_Shape;
+  NbIntervals(S: GeomAbs_Shape): Graphic3d_ZLayerId;
+  Intervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
+  Value(X: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  D1(X: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose): void;
+  D2(X: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose, D2: Quantity_AbsorbedDose): void;
+  Trim(PFirst: Quantity_AbsorbedDose, PLast: Quantity_AbsorbedDose, Tol: Quantity_AbsorbedDose): Handle_Law_Function;
+  Bounds(PFirst: Quantity_AbsorbedDose, PLast: Quantity_AbsorbedDose): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Handle_Law_Function {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Law_Function): void;
+  get(): Law_Function;
+  delete(): void;
+}
+
+  export declare class Handle_Law_Function_1 extends Handle_Law_Function {
+    constructor();
+  }
+
+  export declare class Handle_Law_Function_2 extends Handle_Law_Function {
+    constructor(thePtr: Law_Function);
+  }
+
+  export declare class Handle_Law_Function_3 extends Handle_Law_Function {
+    constructor(theHandle: Handle_Law_Function);
+  }
+
+  export declare class Handle_Law_Function_4 extends Handle_Law_Function {
+    constructor(theHandle: Handle_Law_Function);
+  }
+
+export declare class Law_Linear extends Law_Function {
+  constructor()
+  Set(Pdeb: Quantity_AbsorbedDose, Valdeb: Quantity_AbsorbedDose, Pfin: Quantity_AbsorbedDose, Valfin: Quantity_AbsorbedDose): void;
+  Continuity(): GeomAbs_Shape;
+  NbIntervals(S: GeomAbs_Shape): Graphic3d_ZLayerId;
+  Intervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
+  Value(X: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  D1(X: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose): void;
+  D2(X: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose, D2: Quantity_AbsorbedDose): void;
+  Trim(PFirst: Quantity_AbsorbedDose, PLast: Quantity_AbsorbedDose, Tol: Quantity_AbsorbedDose): Handle_Law_Function;
+  Bounds(PFirst: Quantity_AbsorbedDose, PLast: Quantity_AbsorbedDose): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Law_BSpFunc extends Law_Function {
+  Continuity(): GeomAbs_Shape;
+  NbIntervals(S: GeomAbs_Shape): Graphic3d_ZLayerId;
+  Intervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
+  Value(X: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  D1(X: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose): void;
+  D2(X: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose, D2: Quantity_AbsorbedDose): void;
+  Trim(PFirst: Quantity_AbsorbedDose, PLast: Quantity_AbsorbedDose, Tol: Quantity_AbsorbedDose): Handle_Law_Function;
+  Bounds(PFirst: Quantity_AbsorbedDose, PLast: Quantity_AbsorbedDose): void;
+  Curve(): Handle_Law_BSpline;
+  SetCurve(C: Handle_Law_BSpline): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Law_BSpFunc_1 extends Law_BSpFunc {
+    constructor();
+  }
+
+  export declare class Law_BSpFunc_2 extends Law_BSpFunc {
+    constructor(C: Handle_Law_BSpline, First: Quantity_AbsorbedDose, Last: Quantity_AbsorbedDose);
+  }
 
 export declare class BRep_Tool {
   constructor();
@@ -872,6 +1449,48 @@ export declare class TopoDS_Face extends TopoDS_Shape {
   delete(): void;
 }
 
+export declare class TColgp_Array2OfPnt {
+  Init(theValue: gp_Pnt): void;
+  Size(): Standard_Integer;
+  Length(): Standard_Integer;
+  NbRows(): Standard_Integer;
+  NbColumns(): Standard_Integer;
+  RowLength(): Standard_Integer;
+  ColLength(): Standard_Integer;
+  LowerRow(): Standard_Integer;
+  UpperRow(): Standard_Integer;
+  LowerCol(): Standard_Integer;
+  UpperCol(): Standard_Integer;
+  IsDeletable(): Standard_Boolean;
+  Assign(theOther: TColgp_Array2OfPnt): TColgp_Array2OfPnt;
+  Move(theOther: TColgp_Array2OfPnt): TColgp_Array2OfPnt;
+  Value(theRow: Standard_Integer, theCol: Standard_Integer): gp_Pnt;
+  ChangeValue(theRow: Standard_Integer, theCol: Standard_Integer): gp_Pnt;
+  SetValue(theRow: Standard_Integer, theCol: Standard_Integer, theItem: gp_Pnt): void;
+  Resize(theRowLower: Standard_Integer, theRowUpper: Standard_Integer, theColLower: Standard_Integer, theColUpper: Standard_Integer, theToCopyData: Standard_Boolean): void;
+  delete(): void;
+}
+
+  export declare class TColgp_Array2OfPnt_1 extends TColgp_Array2OfPnt {
+    constructor();
+  }
+
+  export declare class TColgp_Array2OfPnt_2 extends TColgp_Array2OfPnt {
+    constructor(theRowLower: Standard_Integer, theRowUpper: Standard_Integer, theColLower: Standard_Integer, theColUpper: Standard_Integer);
+  }
+
+  export declare class TColgp_Array2OfPnt_3 extends TColgp_Array2OfPnt {
+    constructor(theOther: TColgp_Array2OfPnt);
+  }
+
+  export declare class TColgp_Array2OfPnt_4 extends TColgp_Array2OfPnt {
+    constructor(theOther: TColgp_Array2OfPnt);
+  }
+
+  export declare class TColgp_Array2OfPnt_5 extends TColgp_Array2OfPnt {
+    constructor(theBegin: gp_Pnt, theRowLower: Standard_Integer, theRowUpper: Standard_Integer, theColLower: Standard_Integer, theColUpper: Standard_Integer);
+  }
+
 export declare class TColgp_Array1OfPnt {
   begin(): any;
   end(): any;
@@ -916,6 +1535,52 @@ export declare class TColgp_Array1OfPnt {
 
   export declare class TColgp_Array1OfPnt_5 extends TColgp_Array1OfPnt {
     constructor(theBegin: gp_Pnt, theLower: Standard_Integer, theUpper: Standard_Integer);
+  }
+
+export declare class TColgp_Array1OfVec {
+  begin(): any;
+  end(): any;
+  cbegin(): any;
+  cend(): any;
+  Init(theValue: gp_Vec): void;
+  Size(): Standard_Integer;
+  Length(): Standard_Integer;
+  IsEmpty(): Standard_Boolean;
+  Lower(): Standard_Integer;
+  Upper(): Standard_Integer;
+  IsDeletable(): Standard_Boolean;
+  IsAllocated(): Standard_Boolean;
+  Assign(theOther: TColgp_Array1OfVec): TColgp_Array1OfVec;
+  Move(theOther: TColgp_Array1OfVec): TColgp_Array1OfVec;
+  First(): gp_Vec;
+  ChangeFirst(): gp_Vec;
+  Last(): gp_Vec;
+  ChangeLast(): gp_Vec;
+  Value(theIndex: Standard_Integer): gp_Vec;
+  ChangeValue(theIndex: Standard_Integer): gp_Vec;
+  SetValue(theIndex: Standard_Integer, theItem: gp_Vec): void;
+  Resize(theLower: Standard_Integer, theUpper: Standard_Integer, theToCopyData: Standard_Boolean): void;
+  delete(): void;
+}
+
+  export declare class TColgp_Array1OfVec_1 extends TColgp_Array1OfVec {
+    constructor();
+  }
+
+  export declare class TColgp_Array1OfVec_2 extends TColgp_Array1OfVec {
+    constructor(theLower: Standard_Integer, theUpper: Standard_Integer);
+  }
+
+  export declare class TColgp_Array1OfVec_3 extends TColgp_Array1OfVec {
+    constructor(theOther: TColgp_Array1OfVec);
+  }
+
+  export declare class TColgp_Array1OfVec_4 extends TColgp_Array1OfVec {
+    constructor(theOther: TColgp_Array1OfVec);
+  }
+
+  export declare class TColgp_Array1OfVec_5 extends TColgp_Array1OfVec {
+    constructor(theBegin: gp_Vec, theLower: Standard_Integer, theUpper: Standard_Integer);
   }
 
 export declare class TColgp_Array1OfDir {
@@ -1478,6 +2143,45 @@ export declare class Handle_Geom_TrimmedCurve {
     constructor(theHandle: Handle_Geom_TrimmedCurve);
   }
 
+export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
+  SetCylinder(C: gp_Cylinder): void;
+  SetRadius(R: Quantity_AbsorbedDose): void;
+  Cylinder(): gp_Cylinder;
+  UReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  VReversedParameter(V: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  TransformParameters(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, T: gp_Trsf): void;
+  ParametricTransformation(T: gp_Trsf): gp_GTrsf2d;
+  Bounds(U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose, V1: Quantity_AbsorbedDose, V2: Quantity_AbsorbedDose): void;
+  Coefficients(A1: Quantity_AbsorbedDose, A2: Quantity_AbsorbedDose, A3: Quantity_AbsorbedDose, B1: Quantity_AbsorbedDose, B2: Quantity_AbsorbedDose, B3: Quantity_AbsorbedDose, C1: Quantity_AbsorbedDose, C2: Quantity_AbsorbedDose, C3: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose): void;
+  Radius(): Quantity_AbsorbedDose;
+  IsUClosed(): Standard_Boolean;
+  IsVClosed(): Standard_Boolean;
+  IsUPeriodic(): Standard_Boolean;
+  IsVPeriodic(): Standard_Boolean;
+  UIso(U: Quantity_AbsorbedDose): Handle_Geom_Curve;
+  VIso(V: Quantity_AbsorbedDose): Handle_Geom_Curve;
+  D0(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt): void;
+  D1(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec): void;
+  D2(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec): void;
+  D3(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec, D3U: gp_Vec, D3V: gp_Vec, D3UUV: gp_Vec, D3UVV: gp_Vec): void;
+  DN(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, Nu: Graphic3d_ZLayerId, Nv: Graphic3d_ZLayerId): gp_Vec;
+  Transform(T: gp_Trsf): void;
+  Copy(): Handle_Geom_Geometry;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Geom_CylindricalSurface_1 extends Geom_CylindricalSurface {
+    constructor(A3: gp_Ax3, Radius: Quantity_AbsorbedDose);
+  }
+
+  export declare class Geom_CylindricalSurface_2 extends Geom_CylindricalSurface {
+    constructor(C: gp_Cylinder);
+  }
+
 export declare class Geom_Surface extends Geom_Geometry {
   UReverse(): void;
   UReversed(): Handle_Geom_Surface;
@@ -1620,6 +2324,70 @@ export declare class Geom_Geometry extends Standard_Transient {
   DynamicType(): Handle_Standard_Type;
   delete(): void;
 }
+
+export declare class Geom_ElementarySurface extends Geom_Surface {
+  SetAxis(theA1: gp_Ax1): void;
+  SetLocation(theLoc: gp_Pnt): void;
+  SetPosition(theAx3: gp_Ax3): void;
+  Axis(): gp_Ax1;
+  Location(): gp_Pnt;
+  Position(): gp_Ax3;
+  UReverse(): void;
+  UReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  VReverse(): void;
+  VReversedParameter(V: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  Continuity(): GeomAbs_Shape;
+  IsCNu(N: Graphic3d_ZLayerId): Standard_Boolean;
+  IsCNv(N: Graphic3d_ZLayerId): Standard_Boolean;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Geom_ConicalSurface extends Geom_ElementarySurface {
+  SetCone(C: gp_Cone): void;
+  SetRadius(R: Quantity_AbsorbedDose): void;
+  SetSemiAngle(Ang: Quantity_AbsorbedDose): void;
+  Cone(): gp_Cone;
+  UReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  VReversedParameter(V: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  VReverse(): void;
+  TransformParameters(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, T: gp_Trsf): void;
+  ParametricTransformation(T: gp_Trsf): gp_GTrsf2d;
+  Apex(): gp_Pnt;
+  Bounds(U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose, V1: Quantity_AbsorbedDose, V2: Quantity_AbsorbedDose): void;
+  Coefficients(A1: Quantity_AbsorbedDose, A2: Quantity_AbsorbedDose, A3: Quantity_AbsorbedDose, B1: Quantity_AbsorbedDose, B2: Quantity_AbsorbedDose, B3: Quantity_AbsorbedDose, C1: Quantity_AbsorbedDose, C2: Quantity_AbsorbedDose, C3: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose): void;
+  RefRadius(): Quantity_AbsorbedDose;
+  SemiAngle(): Quantity_AbsorbedDose;
+  IsUClosed(): Standard_Boolean;
+  IsVClosed(): Standard_Boolean;
+  IsUPeriodic(): Standard_Boolean;
+  IsVPeriodic(): Standard_Boolean;
+  UIso(U: Quantity_AbsorbedDose): Handle_Geom_Curve;
+  VIso(V: Quantity_AbsorbedDose): Handle_Geom_Curve;
+  D0(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt): void;
+  D1(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec): void;
+  D2(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec): void;
+  D3(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec, D3U: gp_Vec, D3V: gp_Vec, D3UUV: gp_Vec, D3UVV: gp_Vec): void;
+  DN(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, Nu: Graphic3d_ZLayerId, Nv: Graphic3d_ZLayerId): gp_Vec;
+  Transform(T: gp_Trsf): void;
+  Copy(): Handle_Geom_Geometry;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Geom_ConicalSurface_1 extends Geom_ConicalSurface {
+    constructor(A3: gp_Ax3, Ang: Quantity_AbsorbedDose, Radius: Quantity_AbsorbedDose);
+  }
+
+  export declare class Geom_ConicalSurface_2 extends Geom_ConicalSurface {
+    constructor(C: gp_Cone);
+  }
 
 export declare class TopLoc_Location {
   IsIdentity(): Standard_Boolean;
@@ -1808,6 +2576,54 @@ export declare class gp_Ax1 {
     constructor(P: gp_Pnt, V: gp_Dir);
   }
 
+export declare class gp_Elips {
+  SetAxis(A1: gp_Ax1): void;
+  SetLocation(P: gp_Pnt): void;
+  SetMajorRadius(MajorRadius: Quantity_AbsorbedDose): void;
+  SetMinorRadius(MinorRadius: Quantity_AbsorbedDose): void;
+  SetPosition(A2: gp_Ax2): void;
+  Area(): Quantity_AbsorbedDose;
+  Axis(): gp_Ax1;
+  Directrix1(): gp_Ax1;
+  Directrix2(): gp_Ax1;
+  Eccentricity(): Quantity_AbsorbedDose;
+  Focal(): Quantity_AbsorbedDose;
+  Focus1(): gp_Pnt;
+  Focus2(): gp_Pnt;
+  Location(): gp_Pnt;
+  MajorRadius(): Quantity_AbsorbedDose;
+  MinorRadius(): Quantity_AbsorbedDose;
+  Parameter(): Quantity_AbsorbedDose;
+  Position(): gp_Ax2;
+  XAxis(): gp_Ax1;
+  YAxis(): gp_Ax1;
+  Mirror_1(P: gp_Pnt): void;
+  Mirrored_1(P: gp_Pnt): gp_Elips;
+  Mirror_2(A1: gp_Ax1): void;
+  Mirrored_2(A1: gp_Ax1): gp_Elips;
+  Mirror_3(A2: gp_Ax2): void;
+  Mirrored_3(A2: gp_Ax2): gp_Elips;
+  Rotate(A1: gp_Ax1, Ang: Quantity_AbsorbedDose): void;
+  Rotated(A1: gp_Ax1, Ang: Quantity_AbsorbedDose): gp_Elips;
+  Scale(P: gp_Pnt, S: Quantity_AbsorbedDose): void;
+  Scaled(P: gp_Pnt, S: Quantity_AbsorbedDose): gp_Elips;
+  Transform(T: gp_Trsf): void;
+  Transformed(T: gp_Trsf): gp_Elips;
+  Translate_1(V: gp_Vec): void;
+  Translated_1(V: gp_Vec): gp_Elips;
+  Translate_2(P1: gp_Pnt, P2: gp_Pnt): void;
+  Translated_2(P1: gp_Pnt, P2: gp_Pnt): gp_Elips;
+  delete(): void;
+}
+
+  export declare class gp_Elips_1 extends gp_Elips {
+    constructor();
+  }
+
+  export declare class gp_Elips_2 extends gp_Elips {
+    constructor(A2: gp_Ax2, MajorRadius: Quantity_AbsorbedDose, MinorRadius: Quantity_AbsorbedDose);
+  }
+
 export declare class gp_Ax2 {
   SetAxis(A1: gp_Ax1): void;
   SetDirection(V: gp_Dir): void;
@@ -1938,6 +2754,54 @@ export declare class gp_Vec {
     constructor(P1: gp_Pnt, P2: gp_Pnt);
   }
 
+export declare class gp_Dir2d {
+  SetCoord_1(Index: Graphic3d_ZLayerId, Xi: Quantity_AbsorbedDose): void;
+  SetCoord_2(Xv: Quantity_AbsorbedDose, Yv: Quantity_AbsorbedDose): void;
+  SetX(X: Quantity_AbsorbedDose): void;
+  SetY(Y: Quantity_AbsorbedDose): void;
+  SetXY(Coord: gp_XY): void;
+  Coord_1(Index: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  Coord_2(Xv: Quantity_AbsorbedDose, Yv: Quantity_AbsorbedDose): void;
+  X(): Quantity_AbsorbedDose;
+  Y(): Quantity_AbsorbedDose;
+  XY(): gp_XY;
+  IsEqual(Other: gp_Dir2d, AngularTolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  IsNormal(Other: gp_Dir2d, AngularTolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  IsOpposite(Other: gp_Dir2d, AngularTolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  IsParallel(Other: gp_Dir2d, AngularTolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  Angle(Other: gp_Dir2d): Quantity_AbsorbedDose;
+  Crossed(Right: gp_Dir2d): Quantity_AbsorbedDose;
+  Dot(Other: gp_Dir2d): Quantity_AbsorbedDose;
+  Reverse(): void;
+  Reversed(): gp_Dir2d;
+  Mirror_1(V: gp_Dir2d): void;
+  Mirrored_1(V: gp_Dir2d): gp_Dir2d;
+  Mirror_2(A: gp_Ax2d): void;
+  Mirrored_2(A: gp_Ax2d): gp_Dir2d;
+  Rotate(Ang: Quantity_AbsorbedDose): void;
+  Rotated(Ang: Quantity_AbsorbedDose): gp_Dir2d;
+  Transform(T: gp_Trsf2d): void;
+  Transformed(T: gp_Trsf2d): gp_Dir2d;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  delete(): void;
+}
+
+  export declare class gp_Dir2d_1 extends gp_Dir2d {
+    constructor();
+  }
+
+  export declare class gp_Dir2d_2 extends gp_Dir2d {
+    constructor(V: gp_Vec2d);
+  }
+
+  export declare class gp_Dir2d_3 extends gp_Dir2d {
+    constructor(Coord: gp_XY);
+  }
+
+  export declare class gp_Dir2d_4 extends gp_Dir2d {
+    constructor(Xv: Quantity_AbsorbedDose, Yv: Quantity_AbsorbedDose);
+  }
+
 export declare class gp_Trsf {
   SetMirror_1(P: gp_Pnt): void;
   SetMirror_2(A1: gp_Ax1): void;
@@ -1985,6 +2849,49 @@ export declare class gp_Trsf {
 
   export declare class gp_Trsf_2 extends gp_Trsf {
     constructor(T: gp_Trsf2d);
+  }
+
+export declare class gp_Circ {
+  SetAxis(A1: gp_Ax1): void;
+  SetLocation(P: gp_Pnt): void;
+  SetPosition(A2: gp_Ax2): void;
+  SetRadius(Radius: Quantity_AbsorbedDose): void;
+  Area(): Quantity_AbsorbedDose;
+  Axis(): gp_Ax1;
+  Length(): Quantity_AbsorbedDose;
+  Location(): gp_Pnt;
+  Position(): gp_Ax2;
+  Radius(): Quantity_AbsorbedDose;
+  XAxis(): gp_Ax1;
+  YAxis(): gp_Ax1;
+  Distance(P: gp_Pnt): Quantity_AbsorbedDose;
+  SquareDistance(P: gp_Pnt): Quantity_AbsorbedDose;
+  Contains(P: gp_Pnt, LinearTolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  Mirror_1(P: gp_Pnt): void;
+  Mirrored_1(P: gp_Pnt): gp_Circ;
+  Mirror_2(A1: gp_Ax1): void;
+  Mirrored_2(A1: gp_Ax1): gp_Circ;
+  Mirror_3(A2: gp_Ax2): void;
+  Mirrored_3(A2: gp_Ax2): gp_Circ;
+  Rotate(A1: gp_Ax1, Ang: Quantity_AbsorbedDose): void;
+  Rotated(A1: gp_Ax1, Ang: Quantity_AbsorbedDose): gp_Circ;
+  Scale(P: gp_Pnt, S: Quantity_AbsorbedDose): void;
+  Scaled(P: gp_Pnt, S: Quantity_AbsorbedDose): gp_Circ;
+  Transform(T: gp_Trsf): void;
+  Transformed(T: gp_Trsf): gp_Circ;
+  Translate_1(V: gp_Vec): void;
+  Translated_1(V: gp_Vec): gp_Circ;
+  Translate_2(P1: gp_Pnt, P2: gp_Pnt): void;
+  Translated_2(P1: gp_Pnt, P2: gp_Pnt): gp_Circ;
+  delete(): void;
+}
+
+  export declare class gp_Circ_1 extends gp_Circ {
+    constructor();
+  }
+
+  export declare class gp_Circ_2 extends gp_Circ {
+    constructor(A2: gp_Ax2, Radius: Quantity_AbsorbedDose);
   }
 
 export declare class gp_GTrsf {
@@ -2077,6 +2984,52 @@ export declare class gp_Pnt {
 
   export declare class gp_Pnt_3 extends gp_Pnt {
     constructor(Xp: Quantity_AbsorbedDose, Yp: Quantity_AbsorbedDose, Zp: Quantity_AbsorbedDose);
+  }
+
+export declare class gp_Pnt2d {
+  SetCoord_1(Index: Graphic3d_ZLayerId, Xi: Quantity_AbsorbedDose): void;
+  SetCoord_2(Xp: Quantity_AbsorbedDose, Yp: Quantity_AbsorbedDose): void;
+  SetX(X: Quantity_AbsorbedDose): void;
+  SetY(Y: Quantity_AbsorbedDose): void;
+  SetXY(Coord: gp_XY): void;
+  Coord_1(Index: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  Coord_2(Xp: Quantity_AbsorbedDose, Yp: Quantity_AbsorbedDose): void;
+  X(): Quantity_AbsorbedDose;
+  Y(): Quantity_AbsorbedDose;
+  XY(): gp_XY;
+  Coord_3(): gp_XY;
+  ChangeCoord(): gp_XY;
+  IsEqual(Other: gp_Pnt2d, LinearTolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  Distance(Other: gp_Pnt2d): Quantity_AbsorbedDose;
+  SquareDistance(Other: gp_Pnt2d): Quantity_AbsorbedDose;
+  Mirror_1(P: gp_Pnt2d): void;
+  Mirrored_1(P: gp_Pnt2d): gp_Pnt2d;
+  Mirror_2(A: gp_Ax2d): void;
+  Mirrored_2(A: gp_Ax2d): gp_Pnt2d;
+  Rotate(P: gp_Pnt2d, Ang: Quantity_AbsorbedDose): void;
+  Rotated(P: gp_Pnt2d, Ang: Quantity_AbsorbedDose): gp_Pnt2d;
+  Scale(P: gp_Pnt2d, S: Quantity_AbsorbedDose): void;
+  Scaled(P: gp_Pnt2d, S: Quantity_AbsorbedDose): gp_Pnt2d;
+  Transform(T: gp_Trsf2d): void;
+  Transformed(T: gp_Trsf2d): gp_Pnt2d;
+  Translate_1(V: gp_Vec2d): void;
+  Translated_1(V: gp_Vec2d): gp_Pnt2d;
+  Translate_2(P1: gp_Pnt2d, P2: gp_Pnt2d): void;
+  Translated_2(P1: gp_Pnt2d, P2: gp_Pnt2d): gp_Pnt2d;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  delete(): void;
+}
+
+  export declare class gp_Pnt2d_1 extends gp_Pnt2d {
+    constructor();
+  }
+
+  export declare class gp_Pnt2d_2 extends gp_Pnt2d {
+    constructor(Coord: gp_XY);
+  }
+
+  export declare class gp_Pnt2d_3 extends gp_Pnt2d {
+    constructor(Xp: Quantity_AbsorbedDose, Yp: Quantity_AbsorbedDose);
   }
 
 export declare class gp_XYZ {
@@ -2185,6 +3138,52 @@ export declare class TColStd_Array1OfInteger {
     constructor(theBegin: Standard_Integer, theLower: Standard_Integer, theUpper: Standard_Integer);
   }
 
+export declare class TColStd_Array1OfBoolean {
+  begin(): any;
+  end(): any;
+  cbegin(): any;
+  cend(): any;
+  Init(theValue: Standard_Boolean): void;
+  Size(): Standard_Integer;
+  Length(): Standard_Integer;
+  IsEmpty(): Standard_Boolean;
+  Lower(): Standard_Integer;
+  Upper(): Standard_Integer;
+  IsDeletable(): Standard_Boolean;
+  IsAllocated(): Standard_Boolean;
+  Assign(theOther: TColStd_Array1OfBoolean): TColStd_Array1OfBoolean;
+  Move(theOther: TColStd_Array1OfBoolean): TColStd_Array1OfBoolean;
+  First(): Standard_Boolean;
+  ChangeFirst(): Standard_Boolean;
+  Last(): Standard_Boolean;
+  ChangeLast(): Standard_Boolean;
+  Value(theIndex: Standard_Integer): Standard_Boolean;
+  ChangeValue(theIndex: Standard_Integer): Standard_Boolean;
+  SetValue(theIndex: Standard_Integer, theItem: Standard_Boolean): void;
+  Resize(theLower: Standard_Integer, theUpper: Standard_Integer, theToCopyData: Standard_Boolean): void;
+  delete(): void;
+}
+
+  export declare class TColStd_Array1OfBoolean_1 extends TColStd_Array1OfBoolean {
+    constructor();
+  }
+
+  export declare class TColStd_Array1OfBoolean_2 extends TColStd_Array1OfBoolean {
+    constructor(theLower: Standard_Integer, theUpper: Standard_Integer);
+  }
+
+  export declare class TColStd_Array1OfBoolean_3 extends TColStd_Array1OfBoolean {
+    constructor(theOther: TColStd_Array1OfBoolean);
+  }
+
+  export declare class TColStd_Array1OfBoolean_4 extends TColStd_Array1OfBoolean {
+    constructor(theOther: TColStd_Array1OfBoolean);
+  }
+
+  export declare class TColStd_Array1OfBoolean_5 extends TColStd_Array1OfBoolean {
+    constructor(theBegin: Standard_Boolean, theLower: Standard_Integer, theUpper: Standard_Integer);
+  }
+
 export declare class STEPControl_Writer {
   SetTolerance(Tol: Quantity_AbsorbedDose): void;
   UnsetTolerance(): void;
@@ -2216,6 +3215,102 @@ export declare type STEPControl_StepModelType = {
   STEPControl_Hybrid: {};
 }
 
+export declare class BRepLib {
+  constructor();
+  static Precision_1(P: Quantity_AbsorbedDose): void;
+  static Precision_2(): Quantity_AbsorbedDose;
+  static Plane_1(P: Handle_Geom_Plane): void;
+  static Plane_2(): Handle_Geom_Plane;
+  static CheckSameRange(E: TopoDS_Edge, Confusion: Quantity_AbsorbedDose): Standard_Boolean;
+  static SameRange(E: TopoDS_Edge, Tolerance: Quantity_AbsorbedDose): void;
+  static BuildCurve3d(E: TopoDS_Edge, Tolerance: Quantity_AbsorbedDose, Continuity: GeomAbs_Shape, MaxDegree: Graphic3d_ZLayerId, MaxSegment: Graphic3d_ZLayerId): Standard_Boolean;
+  static BuildCurves3d_1(S: TopoDS_Shape, Tolerance: Quantity_AbsorbedDose, Continuity: GeomAbs_Shape, MaxDegree: Graphic3d_ZLayerId, MaxSegment: Graphic3d_ZLayerId): Standard_Boolean;
+  static BuildCurves3d_2(S: TopoDS_Shape): Standard_Boolean;
+  static BuildPCurveForEdgeOnPlane_1(theE: TopoDS_Edge, theF: TopoDS_Face): void;
+  static BuildPCurveForEdgeOnPlane_2(theE: TopoDS_Edge, theF: TopoDS_Face, aC2D: Handle_Geom2d_Curve, bToUpdate: Standard_Boolean): void;
+  static UpdateEdgeTol(E: TopoDS_Edge, MinToleranceRequest: Quantity_AbsorbedDose, MaxToleranceToCheck: Quantity_AbsorbedDose): Standard_Boolean;
+  static UpdateEdgeTolerance(S: TopoDS_Shape, MinToleranceRequest: Quantity_AbsorbedDose, MaxToleranceToCheck: Quantity_AbsorbedDose): Standard_Boolean;
+  static SameParameter_1(theEdge: TopoDS_Edge, Tolerance: Quantity_AbsorbedDose): void;
+  static SameParameter_2(theEdge: TopoDS_Edge, theTolerance: Quantity_AbsorbedDose, theNewTol: Quantity_AbsorbedDose, IsUseOldEdge: Standard_Boolean): TopoDS_Edge;
+  static SameParameter_3(S: TopoDS_Shape, Tolerance: Quantity_AbsorbedDose, forced: Standard_Boolean): void;
+  static SameParameter_4(S: TopoDS_Shape, theReshaper: BRepTools_ReShape, Tolerance: Quantity_AbsorbedDose, forced: Standard_Boolean): void;
+  static UpdateTolerances_1(S: TopoDS_Shape, verifyFaceTolerance: Standard_Boolean): void;
+  static UpdateTolerances_2(S: TopoDS_Shape, theReshaper: BRepTools_ReShape, verifyFaceTolerance: Standard_Boolean): void;
+  static UpdateInnerTolerances(S: TopoDS_Shape): void;
+  static OrientClosedSolid(solid: TopoDS_Solid): Standard_Boolean;
+  static EncodeRegularity_1(S: TopoDS_Shape, TolAng: Quantity_AbsorbedDose): void;
+  static EncodeRegularity_2(S: TopoDS_Shape, LE: TopTools_ListOfShape, TolAng: Quantity_AbsorbedDose): void;
+  static EncodeRegularity_3(E: TopoDS_Edge, F1: TopoDS_Face, F2: TopoDS_Face, TolAng: Quantity_AbsorbedDose): void;
+  static SortFaces(S: TopoDS_Shape, LF: TopTools_ListOfShape): void;
+  static ReverseSortFaces(S: TopoDS_Shape, LF: TopTools_ListOfShape): void;
+  static EnsureNormalConsistency(S: TopoDS_Shape, theAngTol: Quantity_AbsorbedDose, ForceComputeNormals: Standard_Boolean): Standard_Boolean;
+  static BoundingVertex(theLV: TopoDS_ListOfShape, theNewCenter: gp_Pnt, theNewTol: Quantity_AbsorbedDose): void;
+  static FindValidRange_1(theCurve: Adaptor3d_Curve, theTolE: Quantity_AbsorbedDose, theParV1: Quantity_AbsorbedDose, thePntV1: gp_Pnt, theTolV1: Quantity_AbsorbedDose, theParV2: Quantity_AbsorbedDose, thePntV2: gp_Pnt, theTolV2: Quantity_AbsorbedDose, theFirst: Quantity_AbsorbedDose, theLast: Quantity_AbsorbedDose): Standard_Boolean;
+  static FindValidRange_2(theEdge: TopoDS_Edge, theFirst: Quantity_AbsorbedDose, theLast: Quantity_AbsorbedDose): Standard_Boolean;
+  static ExtendFace(theF: TopoDS_Face, theExtVal: Quantity_AbsorbedDose, theExtUMin: Standard_Boolean, theExtUMax: Standard_Boolean, theExtVMin: Standard_Boolean, theExtVMax: Standard_Boolean, theFExtended: TopoDS_Face): void;
+  delete(): void;
+}
+
+export declare class BRepPrimAPI_MakeTorus extends BRepPrimAPI_MakeOneAxis {
+  OneAxis(): Standard_Address;
+  Torus(): BRepPrim_Torus;
+  delete(): void;
+}
+
+  export declare class BRepPrimAPI_MakeTorus_1 extends BRepPrimAPI_MakeTorus {
+    constructor(R1: Quantity_AbsorbedDose, R2: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeTorus_2 extends BRepPrimAPI_MakeTorus {
+    constructor(R1: Quantity_AbsorbedDose, R2: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeTorus_3 extends BRepPrimAPI_MakeTorus {
+    constructor(R1: Quantity_AbsorbedDose, R2: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeTorus_4 extends BRepPrimAPI_MakeTorus {
+    constructor(R1: Quantity_AbsorbedDose, R2: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeTorus_5 extends BRepPrimAPI_MakeTorus {
+    constructor(Axes: gp_Ax2, R1: Quantity_AbsorbedDose, R2: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeTorus_6 extends BRepPrimAPI_MakeTorus {
+    constructor(Axes: gp_Ax2, R1: Quantity_AbsorbedDose, R2: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeTorus_7 extends BRepPrimAPI_MakeTorus {
+    constructor(Axes: gp_Ax2, R1: Quantity_AbsorbedDose, R2: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeTorus_8 extends BRepPrimAPI_MakeTorus {
+    constructor(Axes: gp_Ax2, R1: Quantity_AbsorbedDose, R2: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
+  }
+
+export declare class BRepPrimAPI_MakeRevol extends BRepPrimAPI_MakeSweep {
+  Revol(): BRepSweep_Revol;
+  Build(): void;
+  FirstShape_1(): TopoDS_Shape;
+  LastShape_1(): TopoDS_Shape;
+  Generated(S: TopoDS_Shape): TopTools_ListOfShape;
+  IsDeleted(S: TopoDS_Shape): Standard_Boolean;
+  FirstShape_2(theShape: TopoDS_Shape): TopoDS_Shape;
+  LastShape_2(theShape: TopoDS_Shape): TopoDS_Shape;
+  HasDegenerated(): Standard_Boolean;
+  Degenerated(): TopTools_ListOfShape;
+  delete(): void;
+}
+
+  export declare class BRepPrimAPI_MakeRevol_1 extends BRepPrimAPI_MakeRevol {
+    constructor(S: TopoDS_Shape, A: gp_Ax1, D: Quantity_AbsorbedDose, Copy: Standard_Boolean);
+  }
+
+  export declare class BRepPrimAPI_MakeRevol_2 extends BRepPrimAPI_MakeRevol {
+    constructor(S: TopoDS_Shape, A: gp_Ax1, Copy: Standard_Boolean);
+  }
+
 export declare class BRepPrimAPI_MakeOneAxis extends BRepBuilderAPI_MakeShape {
   OneAxis(): Standard_Address;
   Build(): void;
@@ -2224,6 +3319,60 @@ export declare class BRepPrimAPI_MakeOneAxis extends BRepBuilderAPI_MakeShape {
   Solid(): TopoDS_Solid;
   delete(): void;
 }
+
+export declare class BRepPrimAPI_MakeSphere extends BRepPrimAPI_MakeOneAxis {
+  OneAxis(): Standard_Address;
+  Sphere(): BRepPrim_Sphere;
+  delete(): void;
+}
+
+  export declare class BRepPrimAPI_MakeSphere_1 extends BRepPrimAPI_MakeSphere {
+    constructor(R: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_2 extends BRepPrimAPI_MakeSphere {
+    constructor(R: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_3 extends BRepPrimAPI_MakeSphere {
+    constructor(R: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_4 extends BRepPrimAPI_MakeSphere {
+    constructor(R: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose, angle3: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_5 extends BRepPrimAPI_MakeSphere {
+    constructor(Center: gp_Pnt, R: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_6 extends BRepPrimAPI_MakeSphere {
+    constructor(Center: gp_Pnt, R: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_7 extends BRepPrimAPI_MakeSphere {
+    constructor(Center: gp_Pnt, R: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_8 extends BRepPrimAPI_MakeSphere {
+    constructor(Center: gp_Pnt, R: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose, angle3: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_9 extends BRepPrimAPI_MakeSphere {
+    constructor(Axis: gp_Ax2, R: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_10 extends BRepPrimAPI_MakeSphere {
+    constructor(Axis: gp_Ax2, R: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_11 extends BRepPrimAPI_MakeSphere {
+    constructor(Axis: gp_Ax2, R: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeSphere_12 extends BRepPrimAPI_MakeSphere {
+    constructor(Axis: gp_Ax2, R: Quantity_AbsorbedDose, angle1: Quantity_AbsorbedDose, angle2: Quantity_AbsorbedDose, angle3: Quantity_AbsorbedDose);
+  }
 
 export declare class BRepPrimAPI_MakeCylinder extends BRepPrimAPI_MakeOneAxis {
   OneAxis(): Standard_Address;
@@ -2309,6 +3458,44 @@ export declare class BRepPrimAPI_MakeBox extends BRepBuilderAPI_MakeShape {
 
   export declare class BRepPrimAPI_MakeBox_5 extends BRepPrimAPI_MakeBox {
     constructor(Axes: gp_Ax2, dx: Quantity_AbsorbedDose, dy: Quantity_AbsorbedDose, dz: Quantity_AbsorbedDose);
+  }
+
+export declare class BRepPrimAPI_MakeRevolution extends BRepPrimAPI_MakeOneAxis {
+  OneAxis(): Standard_Address;
+  Revolution(): BRepPrim_Revolution;
+  delete(): void;
+}
+
+  export declare class BRepPrimAPI_MakeRevolution_1 extends BRepPrimAPI_MakeRevolution {
+    constructor(Meridian: Handle_Geom_Curve);
+  }
+
+  export declare class BRepPrimAPI_MakeRevolution_2 extends BRepPrimAPI_MakeRevolution {
+    constructor(Meridian: Handle_Geom_Curve, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeRevolution_3 extends BRepPrimAPI_MakeRevolution {
+    constructor(Meridian: Handle_Geom_Curve, VMin: Quantity_AbsorbedDose, VMax: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeRevolution_4 extends BRepPrimAPI_MakeRevolution {
+    constructor(Meridian: Handle_Geom_Curve, VMin: Quantity_AbsorbedDose, VMax: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeRevolution_5 extends BRepPrimAPI_MakeRevolution {
+    constructor(Axes: gp_Ax2, Meridian: Handle_Geom_Curve);
+  }
+
+  export declare class BRepPrimAPI_MakeRevolution_6 extends BRepPrimAPI_MakeRevolution {
+    constructor(Axes: gp_Ax2, Meridian: Handle_Geom_Curve, angle: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeRevolution_7 extends BRepPrimAPI_MakeRevolution {
+    constructor(Axes: gp_Ax2, Meridian: Handle_Geom_Curve, VMin: Quantity_AbsorbedDose, VMax: Quantity_AbsorbedDose);
+  }
+
+  export declare class BRepPrimAPI_MakeRevolution_8 extends BRepPrimAPI_MakeRevolution {
+    constructor(Axes: gp_Ax2, Meridian: Handle_Geom_Curve, VMin: Quantity_AbsorbedDose, VMax: Quantity_AbsorbedDose, angle: Quantity_AbsorbedDose);
   }
 
 export declare class TopExp_Explorer {
@@ -2655,6 +3842,12 @@ export declare type ChFi3d_FilletShape = {
   ChFi3d_Polynomial: {};
 }
 
+export declare type BRepFill_TypeOfContact = {
+  BRepFill_NoContact: {};
+  BRepFill_Contact: {};
+  BRepFill_ContactOnBorder: {};
+}
+
 export declare class Message_ProgressRange {
   UserBreak(): Standard_Boolean;
   More(): Standard_Boolean;
@@ -2925,6 +4118,34 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepAlgoAPI_Common_2: typeof BRepAlgoAPI_Common_2;
   BRepAlgoAPI_Common_3: typeof BRepAlgoAPI_Common_3;
   BRepAlgoAPI_Common_4: typeof BRepAlgoAPI_Common_4;
+  Handle_Geom2d_BoundedCurve: typeof Handle_Geom2d_BoundedCurve;
+  Handle_Geom2d_BoundedCurve_1: typeof Handle_Geom2d_BoundedCurve_1;
+  Handle_Geom2d_BoundedCurve_2: typeof Handle_Geom2d_BoundedCurve_2;
+  Handle_Geom2d_BoundedCurve_3: typeof Handle_Geom2d_BoundedCurve_3;
+  Handle_Geom2d_BoundedCurve_4: typeof Handle_Geom2d_BoundedCurve_4;
+  Geom2d_BoundedCurve: typeof Geom2d_BoundedCurve;
+  Geom2d_Geometry: typeof Geom2d_Geometry;
+  Handle_Geom2d_TrimmedCurve: typeof Handle_Geom2d_TrimmedCurve;
+  Handle_Geom2d_TrimmedCurve_1: typeof Handle_Geom2d_TrimmedCurve_1;
+  Handle_Geom2d_TrimmedCurve_2: typeof Handle_Geom2d_TrimmedCurve_2;
+  Handle_Geom2d_TrimmedCurve_3: typeof Handle_Geom2d_TrimmedCurve_3;
+  Handle_Geom2d_TrimmedCurve_4: typeof Handle_Geom2d_TrimmedCurve_4;
+  Geom2d_TrimmedCurve: typeof Geom2d_TrimmedCurve;
+  Handle_Geom2d_Curve: typeof Handle_Geom2d_Curve;
+  Handle_Geom2d_Curve_1: typeof Handle_Geom2d_Curve_1;
+  Handle_Geom2d_Curve_2: typeof Handle_Geom2d_Curve_2;
+  Handle_Geom2d_Curve_3: typeof Handle_Geom2d_Curve_3;
+  Handle_Geom2d_Curve_4: typeof Handle_Geom2d_Curve_4;
+  Geom2d_Curve: typeof Geom2d_Curve;
+  Geom2d_Line: typeof Geom2d_Line;
+  Geom2d_Line_1: typeof Geom2d_Line_1;
+  Geom2d_Line_2: typeof Geom2d_Line_2;
+  Geom2d_Line_3: typeof Geom2d_Line_3;
+  Handle_Geom2d_Line: typeof Handle_Geom2d_Line;
+  Handle_Geom2d_Line_1: typeof Handle_Geom2d_Line_1;
+  Handle_Geom2d_Line_2: typeof Handle_Geom2d_Line_2;
+  Handle_Geom2d_Line_3: typeof Handle_Geom2d_Line_3;
+  Handle_Geom2d_Line_4: typeof Handle_Geom2d_Line_4;
   TopAbs_Orientation: TopAbs_Orientation;
   TopAbs_ShapeEnum: TopAbs_ShapeEnum;
   GC_MakeArcOfCircle: typeof GC_MakeArcOfCircle;
@@ -2933,10 +4154,16 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GC_MakeArcOfCircle_3: typeof GC_MakeArcOfCircle_3;
   GC_MakeArcOfCircle_4: typeof GC_MakeArcOfCircle_4;
   GC_MakeArcOfCircle_5: typeof GC_MakeArcOfCircle_5;
+  GC_MakeArcOfEllipse: typeof GC_MakeArcOfEllipse;
+  GC_MakeArcOfEllipse_1: typeof GC_MakeArcOfEllipse_1;
+  GC_MakeArcOfEllipse_2: typeof GC_MakeArcOfEllipse_2;
+  GC_MakeArcOfEllipse_3: typeof GC_MakeArcOfEllipse_3;
   GC_Root: typeof GC_Root;
   BRepOffsetAPI_MakeOffsetShape: typeof BRepOffsetAPI_MakeOffsetShape;
   BRepOffsetAPI_MakeOffsetShape_1: typeof BRepOffsetAPI_MakeOffsetShape_1;
   BRepOffsetAPI_MakeOffsetShape_2: typeof BRepOffsetAPI_MakeOffsetShape_2;
+  BRepOffsetAPI_MakePipeShell: typeof BRepOffsetAPI_MakePipeShell;
+  BRepOffsetAPI_ThruSections: typeof BRepOffsetAPI_ThruSections;
   BRepOffsetAPI_MakeThickSolid: typeof BRepOffsetAPI_MakeThickSolid;
   BRepOffsetAPI_MakeThickSolid_1: typeof BRepOffsetAPI_MakeThickSolid_1;
   BRepOffsetAPI_MakeThickSolid_2: typeof BRepOffsetAPI_MakeThickSolid_2;
@@ -2944,14 +4171,55 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepOffsetAPI_MakeOffset_1: typeof BRepOffsetAPI_MakeOffset_1;
   BRepOffsetAPI_MakeOffset_2: typeof BRepOffsetAPI_MakeOffset_2;
   BRepOffsetAPI_MakeOffset_3: typeof BRepOffsetAPI_MakeOffset_3;
+  BRepOffsetAPI_MakePipe: typeof BRepOffsetAPI_MakePipe;
+  BRepOffsetAPI_MakePipe_1: typeof BRepOffsetAPI_MakePipe_1;
+  BRepOffsetAPI_MakePipe_2: typeof BRepOffsetAPI_MakePipe_2;
+  GeomAPI_Interpolate: typeof GeomAPI_Interpolate;
+  GeomAPI_Interpolate_1: typeof GeomAPI_Interpolate_1;
+  GeomAPI_Interpolate_2: typeof GeomAPI_Interpolate_2;
+  GeomAPI_PointsToBSplineSurface: typeof GeomAPI_PointsToBSplineSurface;
+  GeomAPI_PointsToBSplineSurface_1: typeof GeomAPI_PointsToBSplineSurface_1;
+  GeomAPI_PointsToBSplineSurface_2: typeof GeomAPI_PointsToBSplineSurface_2;
+  GeomAPI_PointsToBSplineSurface_3: typeof GeomAPI_PointsToBSplineSurface_3;
+  GeomAPI_PointsToBSplineSurface_4: typeof GeomAPI_PointsToBSplineSurface_4;
+  GeomAPI_PointsToBSplineSurface_5: typeof GeomAPI_PointsToBSplineSurface_5;
+  GeomAPI_PointsToBSpline: typeof GeomAPI_PointsToBSpline;
+  GeomAPI_PointsToBSpline_1: typeof GeomAPI_PointsToBSpline_1;
+  GeomAPI_PointsToBSpline_2: typeof GeomAPI_PointsToBSpline_2;
+  GeomAPI_PointsToBSpline_3: typeof GeomAPI_PointsToBSpline_3;
+  GeomAPI_PointsToBSpline_4: typeof GeomAPI_PointsToBSpline_4;
+  GeomAPI_PointsToBSpline_5: typeof GeomAPI_PointsToBSpline_5;
   BRepCheck_Analyzer: typeof BRepCheck_Analyzer;
+  GeomAbs_Shape: GeomAbs_Shape;
   GeomAbs_CurveType: GeomAbs_CurveType;
   GeomAbs_JoinType: GeomAbs_JoinType;
+  GCE2d_MakeSegment: typeof GCE2d_MakeSegment;
+  GCE2d_MakeSegment_1: typeof GCE2d_MakeSegment_1;
+  GCE2d_MakeSegment_2: typeof GCE2d_MakeSegment_2;
+  GCE2d_MakeSegment_3: typeof GCE2d_MakeSegment_3;
+  GCE2d_MakeSegment_4: typeof GCE2d_MakeSegment_4;
+  GCE2d_MakeSegment_5: typeof GCE2d_MakeSegment_5;
+  GCE2d_Root: typeof GCE2d_Root;
   BRepExtrema_DistShapeShape: typeof BRepExtrema_DistShapeShape;
   BRepExtrema_DistShapeShape_1: typeof BRepExtrema_DistShapeShape_1;
   BRepExtrema_DistShapeShape_2: typeof BRepExtrema_DistShapeShape_2;
   BRepExtrema_DistShapeShape_3: typeof BRepExtrema_DistShapeShape_3;
   ChFiDS_ChamfMode: ChFiDS_ChamfMode;
+  Law_S: typeof Law_S;
+  Law_Interpol: typeof Law_Interpol;
+  Law_Composite: typeof Law_Composite;
+  Law_Composite_1: typeof Law_Composite_1;
+  Law_Composite_2: typeof Law_Composite_2;
+  Law_Function: typeof Law_Function;
+  Handle_Law_Function: typeof Handle_Law_Function;
+  Handle_Law_Function_1: typeof Handle_Law_Function_1;
+  Handle_Law_Function_2: typeof Handle_Law_Function_2;
+  Handle_Law_Function_3: typeof Handle_Law_Function_3;
+  Handle_Law_Function_4: typeof Handle_Law_Function_4;
+  Law_Linear: typeof Law_Linear;
+  Law_BSpFunc: typeof Law_BSpFunc;
+  Law_BSpFunc_1: typeof Law_BSpFunc_1;
+  Law_BSpFunc_2: typeof Law_BSpFunc_2;
   BRep_Tool: typeof BRep_Tool;
   StdPrs_ToolTriangulatedShape: typeof StdPrs_ToolTriangulatedShape;
   StlAPI_Writer: typeof StlAPI_Writer;
@@ -2970,12 +4238,24 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   TopoDS_Shape: typeof TopoDS_Shape;
   TopoDS_CompSolid: typeof TopoDS_CompSolid;
   TopoDS_Face: typeof TopoDS_Face;
+  TColgp_Array2OfPnt: typeof TColgp_Array2OfPnt;
+  TColgp_Array2OfPnt_1: typeof TColgp_Array2OfPnt_1;
+  TColgp_Array2OfPnt_2: typeof TColgp_Array2OfPnt_2;
+  TColgp_Array2OfPnt_3: typeof TColgp_Array2OfPnt_3;
+  TColgp_Array2OfPnt_4: typeof TColgp_Array2OfPnt_4;
+  TColgp_Array2OfPnt_5: typeof TColgp_Array2OfPnt_5;
   TColgp_Array1OfPnt: typeof TColgp_Array1OfPnt;
   TColgp_Array1OfPnt_1: typeof TColgp_Array1OfPnt_1;
   TColgp_Array1OfPnt_2: typeof TColgp_Array1OfPnt_2;
   TColgp_Array1OfPnt_3: typeof TColgp_Array1OfPnt_3;
   TColgp_Array1OfPnt_4: typeof TColgp_Array1OfPnt_4;
   TColgp_Array1OfPnt_5: typeof TColgp_Array1OfPnt_5;
+  TColgp_Array1OfVec: typeof TColgp_Array1OfVec;
+  TColgp_Array1OfVec_1: typeof TColgp_Array1OfVec_1;
+  TColgp_Array1OfVec_2: typeof TColgp_Array1OfVec_2;
+  TColgp_Array1OfVec_3: typeof TColgp_Array1OfVec_3;
+  TColgp_Array1OfVec_4: typeof TColgp_Array1OfVec_4;
+  TColgp_Array1OfVec_5: typeof TColgp_Array1OfVec_5;
   TColgp_Array1OfDir: typeof TColgp_Array1OfDir;
   TColgp_Array1OfDir_1: typeof TColgp_Array1OfDir_1;
   TColgp_Array1OfDir_2: typeof TColgp_Array1OfDir_2;
@@ -3071,6 +4351,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Handle_Geom_TrimmedCurve_2: typeof Handle_Geom_TrimmedCurve_2;
   Handle_Geom_TrimmedCurve_3: typeof Handle_Geom_TrimmedCurve_3;
   Handle_Geom_TrimmedCurve_4: typeof Handle_Geom_TrimmedCurve_4;
+  Geom_CylindricalSurface: typeof Geom_CylindricalSurface;
+  Geom_CylindricalSurface_1: typeof Geom_CylindricalSurface_1;
+  Geom_CylindricalSurface_2: typeof Geom_CylindricalSurface_2;
   Geom_Surface: typeof Geom_Surface;
   Handle_Geom_Surface: typeof Handle_Geom_Surface;
   Handle_Geom_Surface_1: typeof Handle_Geom_Surface_1;
@@ -3085,6 +4368,10 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Geom_Curve: typeof Geom_Curve;
   Geom_BoundedCurve: typeof Geom_BoundedCurve;
   Geom_Geometry: typeof Geom_Geometry;
+  Geom_ElementarySurface: typeof Geom_ElementarySurface;
+  Geom_ConicalSurface: typeof Geom_ConicalSurface;
+  Geom_ConicalSurface_1: typeof Geom_ConicalSurface_1;
+  Geom_ConicalSurface_2: typeof Geom_ConicalSurface_2;
   TopLoc_Location: typeof TopLoc_Location;
   TopLoc_Location_1: typeof TopLoc_Location_1;
   TopLoc_Location_2: typeof TopLoc_Location_2;
@@ -3102,6 +4389,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   gp_Ax1: typeof gp_Ax1;
   gp_Ax1_1: typeof gp_Ax1_1;
   gp_Ax1_2: typeof gp_Ax1_2;
+  gp_Elips: typeof gp_Elips;
+  gp_Elips_1: typeof gp_Elips_1;
+  gp_Elips_2: typeof gp_Elips_2;
   gp_Ax2: typeof gp_Ax2;
   gp_Ax2_1: typeof gp_Ax2_1;
   gp_Ax2_2: typeof gp_Ax2_2;
@@ -3112,9 +4402,17 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   gp_Vec_3: typeof gp_Vec_3;
   gp_Vec_4: typeof gp_Vec_4;
   gp_Vec_5: typeof gp_Vec_5;
+  gp_Dir2d: typeof gp_Dir2d;
+  gp_Dir2d_1: typeof gp_Dir2d_1;
+  gp_Dir2d_2: typeof gp_Dir2d_2;
+  gp_Dir2d_3: typeof gp_Dir2d_3;
+  gp_Dir2d_4: typeof gp_Dir2d_4;
   gp_Trsf: typeof gp_Trsf;
   gp_Trsf_1: typeof gp_Trsf_1;
   gp_Trsf_2: typeof gp_Trsf_2;
+  gp_Circ: typeof gp_Circ;
+  gp_Circ_1: typeof gp_Circ_1;
+  gp_Circ_2: typeof gp_Circ_2;
   gp_GTrsf: typeof gp_GTrsf;
   gp_GTrsf_1: typeof gp_GTrsf_1;
   gp_GTrsf_2: typeof gp_GTrsf_2;
@@ -3123,6 +4421,10 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   gp_Pnt_1: typeof gp_Pnt_1;
   gp_Pnt_2: typeof gp_Pnt_2;
   gp_Pnt_3: typeof gp_Pnt_3;
+  gp_Pnt2d: typeof gp_Pnt2d;
+  gp_Pnt2d_1: typeof gp_Pnt2d_1;
+  gp_Pnt2d_2: typeof gp_Pnt2d_2;
+  gp_Pnt2d_3: typeof gp_Pnt2d_3;
   gp_XYZ: typeof gp_XYZ;
   gp_XYZ_1: typeof gp_XYZ_1;
   gp_XYZ_2: typeof gp_XYZ_2;
@@ -3132,11 +4434,43 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   TColStd_Array1OfInteger_3: typeof TColStd_Array1OfInteger_3;
   TColStd_Array1OfInteger_4: typeof TColStd_Array1OfInteger_4;
   TColStd_Array1OfInteger_5: typeof TColStd_Array1OfInteger_5;
+  TColStd_Array1OfBoolean: typeof TColStd_Array1OfBoolean;
+  TColStd_Array1OfBoolean_1: typeof TColStd_Array1OfBoolean_1;
+  TColStd_Array1OfBoolean_2: typeof TColStd_Array1OfBoolean_2;
+  TColStd_Array1OfBoolean_3: typeof TColStd_Array1OfBoolean_3;
+  TColStd_Array1OfBoolean_4: typeof TColStd_Array1OfBoolean_4;
+  TColStd_Array1OfBoolean_5: typeof TColStd_Array1OfBoolean_5;
   STEPControl_Writer: typeof STEPControl_Writer;
   STEPControl_Writer_1: typeof STEPControl_Writer_1;
   STEPControl_Writer_2: typeof STEPControl_Writer_2;
   STEPControl_StepModelType: STEPControl_StepModelType;
+  BRepLib: typeof BRepLib;
+  BRepPrimAPI_MakeTorus: typeof BRepPrimAPI_MakeTorus;
+  BRepPrimAPI_MakeTorus_1: typeof BRepPrimAPI_MakeTorus_1;
+  BRepPrimAPI_MakeTorus_2: typeof BRepPrimAPI_MakeTorus_2;
+  BRepPrimAPI_MakeTorus_3: typeof BRepPrimAPI_MakeTorus_3;
+  BRepPrimAPI_MakeTorus_4: typeof BRepPrimAPI_MakeTorus_4;
+  BRepPrimAPI_MakeTorus_5: typeof BRepPrimAPI_MakeTorus_5;
+  BRepPrimAPI_MakeTorus_6: typeof BRepPrimAPI_MakeTorus_6;
+  BRepPrimAPI_MakeTorus_7: typeof BRepPrimAPI_MakeTorus_7;
+  BRepPrimAPI_MakeTorus_8: typeof BRepPrimAPI_MakeTorus_8;
+  BRepPrimAPI_MakeRevol: typeof BRepPrimAPI_MakeRevol;
+  BRepPrimAPI_MakeRevol_1: typeof BRepPrimAPI_MakeRevol_1;
+  BRepPrimAPI_MakeRevol_2: typeof BRepPrimAPI_MakeRevol_2;
   BRepPrimAPI_MakeOneAxis: typeof BRepPrimAPI_MakeOneAxis;
+  BRepPrimAPI_MakeSphere: typeof BRepPrimAPI_MakeSphere;
+  BRepPrimAPI_MakeSphere_1: typeof BRepPrimAPI_MakeSphere_1;
+  BRepPrimAPI_MakeSphere_2: typeof BRepPrimAPI_MakeSphere_2;
+  BRepPrimAPI_MakeSphere_3: typeof BRepPrimAPI_MakeSphere_3;
+  BRepPrimAPI_MakeSphere_4: typeof BRepPrimAPI_MakeSphere_4;
+  BRepPrimAPI_MakeSphere_5: typeof BRepPrimAPI_MakeSphere_5;
+  BRepPrimAPI_MakeSphere_6: typeof BRepPrimAPI_MakeSphere_6;
+  BRepPrimAPI_MakeSphere_7: typeof BRepPrimAPI_MakeSphere_7;
+  BRepPrimAPI_MakeSphere_8: typeof BRepPrimAPI_MakeSphere_8;
+  BRepPrimAPI_MakeSphere_9: typeof BRepPrimAPI_MakeSphere_9;
+  BRepPrimAPI_MakeSphere_10: typeof BRepPrimAPI_MakeSphere_10;
+  BRepPrimAPI_MakeSphere_11: typeof BRepPrimAPI_MakeSphere_11;
+  BRepPrimAPI_MakeSphere_12: typeof BRepPrimAPI_MakeSphere_12;
   BRepPrimAPI_MakeCylinder: typeof BRepPrimAPI_MakeCylinder;
   BRepPrimAPI_MakeCylinder_1: typeof BRepPrimAPI_MakeCylinder_1;
   BRepPrimAPI_MakeCylinder_2: typeof BRepPrimAPI_MakeCylinder_2;
@@ -3152,6 +4486,15 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepPrimAPI_MakeBox_3: typeof BRepPrimAPI_MakeBox_3;
   BRepPrimAPI_MakeBox_4: typeof BRepPrimAPI_MakeBox_4;
   BRepPrimAPI_MakeBox_5: typeof BRepPrimAPI_MakeBox_5;
+  BRepPrimAPI_MakeRevolution: typeof BRepPrimAPI_MakeRevolution;
+  BRepPrimAPI_MakeRevolution_1: typeof BRepPrimAPI_MakeRevolution_1;
+  BRepPrimAPI_MakeRevolution_2: typeof BRepPrimAPI_MakeRevolution_2;
+  BRepPrimAPI_MakeRevolution_3: typeof BRepPrimAPI_MakeRevolution_3;
+  BRepPrimAPI_MakeRevolution_4: typeof BRepPrimAPI_MakeRevolution_4;
+  BRepPrimAPI_MakeRevolution_5: typeof BRepPrimAPI_MakeRevolution_5;
+  BRepPrimAPI_MakeRevolution_6: typeof BRepPrimAPI_MakeRevolution_6;
+  BRepPrimAPI_MakeRevolution_7: typeof BRepPrimAPI_MakeRevolution_7;
+  BRepPrimAPI_MakeRevolution_8: typeof BRepPrimAPI_MakeRevolution_8;
   TopExp_Explorer: typeof TopExp_Explorer;
   TopExp_Explorer_1: typeof TopExp_Explorer_1;
   TopExp_Explorer_2: typeof TopExp_Explorer_2;
@@ -3175,6 +4518,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Standard_Transient_1: typeof Standard_Transient_1;
   Standard_Transient_2: typeof Standard_Transient_2;
   ChFi3d_FilletShape: ChFi3d_FilletShape;
+  BRepFill_TypeOfContact: BRepFill_TypeOfContact;
   Message_ProgressRange: typeof Message_ProgressRange;
   Message_ProgressRange_1: typeof Message_ProgressRange_1;
   Message_ProgressRange_2: typeof Message_ProgressRange_2;
