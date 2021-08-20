@@ -11,6 +11,18 @@ import {
 } from "./shapeHelpers.js";
 import { getOC } from "./oclib.js";
 
+const extrudeFace = (face, extrusionVec ) => {
+    const solidBuilder = new this.oc.BRepPrimAPI_MakePrism_1(
+      face.wrapped,
+      extrusionVec.wrapped,
+      false,
+      true
+    );
+    const solid = new Solid(downcast(solidBuilder.Shape()));
+    solidBuilder.delete()
+    return solid
+}
+
 export default class Sketcher {
   constructor(plane = "XY", origin = [0, 0, 0]) {
     this.oc = getOC();

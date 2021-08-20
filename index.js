@@ -10,3 +10,4 @@ export * from "./geomHelpers.js";
 export * from "./shapes.js";
 export * from "./shapeHelpers.js";
 export * from "./finders.js";
+export * from "./shortcuts.js";

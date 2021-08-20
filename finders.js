@@ -174,6 +174,11 @@ class Finder {
     return this;
   }
 
+  and(findersList) {
+    findersList.forEach((f) => f(this));
+    return this;
+  }
+
   not(finderFun) {
     const finder = new this.constructor();
     this.references.push(finder);
@@ -224,6 +229,10 @@ export class FaceFinder extends Finder {
 }
 
 export class EdgeFinder extends Finder {
+  inDirection(direction) {
+    return this.atAngleWith(direction, 0);
+  }
+
   parallelTo(plane) {
     if (PLANE_TO_DIR[plane]) return this.atAngleWith(PLANE_TO_DIR[plane], 90);
     if (plane.zDir) return this.atAngleWith(plane.zDir, 90);
@@ -276,3 +285,14 @@ export class EdgeFinder extends Finder {
     });
   }
 }
+
+export const combineFinderFilters = (filters) => {
+  const filter = (element) => {
+    for (let { filter, radius } of filters) {
+      if (filter.shouldKeep(element)) return radius;
+    }
+    return 0;
+  };
+
+  return [filter, () => filters.forEach((f) => f.filter.delete())];
+};

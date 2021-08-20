@@ -3,6 +3,26 @@ import { getOC } from "./oclib.js";
 
 const round3 = (v) => Math.round(v * 1000) / 1000;
 
+export const makeAx3 = (center, dir) => {
+  const oc = getOC();
+  const origin = asPnt(center);
+  const direction = asDir(dir);
+  const axis = new oc.gp_Ax3_4(origin, direction);
+  origin.delete();
+  direction.delete();
+  return axis;
+};
+
+export const makeAx2 = (center, dir) => {
+  const oc = getOC();
+  const origin = asPnt(center);
+  const direction = asDir(dir);
+  const axis = new oc.gp_Ax2_3(origin, direction);
+  origin.delete();
+  direction.delete();
+  return axis;
+};
+
 export class Vector extends WrappingObj {
   constructor(...args) {
     const oc = getOC();
@@ -137,16 +157,16 @@ export function asDir(coords) {
 export class Matrix extends WrappingObj {}
 
 export class Transformation extends WrappingObj {
-constructor(transform) {
-  super(transform || new this.oc.gp_Trsf_1())
-}
+  constructor(transform) {
+    super(transform || new this.oc.gp_Trsf_1());
+  }
 
   translate(vector) {
     const localVect = new Vector(vector);
     this.wrapped.SetTranslation_1(localVect.wrapped);
     localVect.delete();
 
-    return this
+    return this;
   }
 
   rotate(angle, position = [0, 0, 0], direction = [0, 0, 1]) {
@@ -170,15 +190,16 @@ constructor(transform) {
       shouldClean.push(plane);
     }
 
-    const mirrorAxis = new oc.gp_Ax2_3(plane.origin.toPnt(), plane.zDir.toDir());
+    const mirrorAxis = new this.oc.gp_Ax2_3(
+      plane.origin.toPnt(),
+      plane.zDir.toDir()
+    );
     shouldClean.push(mirrorAxis);
 
     this.wrapped.SetMirror_3(mirrorAxis);
 
-    return this
+    return this;
   }
-
-
 }
 
 export class Plane {

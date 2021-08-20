@@ -39,3 +39,19 @@ export class Cleaner {
     this.toClean = [];
   }
 }
+
+export const localGC = () => {
+  const cleaner = [];
+
+  return [
+    (v) => {
+      cleaner.push(v);
+      return v;
+    },
+
+    () => {
+      cleaner.forEach((d) => d.delete());
+      cleaner.length = 0;
+    },
+  ];
+};
