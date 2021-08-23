@@ -47,9 +47,12 @@ mainBuild:
     - symbol: Geom_ElementarySurface
     - symbol: Geom_ConicalSurface
     - symbol: Geom_CylindricalSurface
+    - symbol: Geom_BoundedSurface
+    - symbol: Geom_BSplineSurface
     - symbol: Geom_BoundedCurve
     - symbol: Geom_TrimmedCurve
     - symbol: Geom_BezierCurve
+    - symbol: Geom_BSplineCurve
     - symbol: GeomAPI_Interpolate
     - symbol: GeomAPI_PointsToBSpline
     - symbol: GeomAPI_PointsToBSplineSurface
@@ -57,6 +60,8 @@ mainBuild:
     - symbol: Handle_Geom_Curve
     - symbol: Handle_Geom_Surface
     - symbol: Handle_Geom_BezierCurve
+    - symbol: Handle_Geom_BSplineCurve
+    - symbol: Handle_Geom_BSplineSurface
 
     - symbol: TopoDS
     - symbol: TopoDS_Edge
