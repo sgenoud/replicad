@@ -73,7 +73,7 @@ export const makeHelix = (
 
   gc();
 
-  return new Wire(w);
+  return new Edge(w);
 };
 
 export const makeThreePointArc = (v1, v2, v3) => {

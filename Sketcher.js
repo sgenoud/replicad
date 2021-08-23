@@ -1,6 +1,6 @@
 import { Plane, createNamedPlane } from "./geom.js";
 import { makeMirrorMatrix } from "./geomHelpers.js";
-import { Solid, downcast } from "./shapes.js";
+import { localGC } from "./register.js";
 import {
   makeLine,
   makeFace,
@@ -9,21 +9,15 @@ import {
   makeTangentArc,
   assembleWire,
 } from "./shapeHelpers.js";
+
+import {
+  basicFaceExtrusion,
+  complexExtrude,
+  twistExtrude,
+} from "./addThickness.js";
 import { getOC } from "./oclib.js";
 
-const extrudeFace = (face, extrusionVec ) => {
-    const solidBuilder = new this.oc.BRepPrimAPI_MakePrism_1(
-      face.wrapped,
-      extrusionVec.wrapped,
-      false,
-      true
-    );
-    const solid = new Solid(downcast(solidBuilder.Shape()));
-    solidBuilder.delete()
-    return solid
-}
-
-export default class Sketcher {
+export class BaseSketcher {
   constructor(plane = "XY", origin = [0, 0, 0]) {
     this.oc = getOC();
     if (plane instanceof Plane) {
@@ -35,6 +29,74 @@ export default class Sketcher {
     } else {
       this.plane = createNamedPlane(plane, origin);
     }
+  }
+
+  _postProcessWire(
+    wire,
+    { returnType, extrusionDistance, twistAngle, extrusionProfile }
+  ) {
+    const [r, gc] = localGC();
+    if (returnType !== "face" && returnType !== "solid") return wire;
+
+    r(wire);
+
+    if (returnType === "face") {
+      const face = makeFace(wire);
+      gc();
+      return face;
+    }
+
+    const extrusionVec = r(this.plane.zDir.multiply(extrusionDistance));
+
+    if (extrusionProfile && !twistAngle) {
+      const solid = complexExtrude(
+        wire,
+        this.plane.origin,
+        extrusionVec,
+        extrusionProfile
+      );
+      gc();
+      return solid;
+    }
+
+    if (twistAngle) {
+      const solid = twistExtrude(
+        wire,
+        twistAngle,
+        this.plane.origin,
+        extrusionVec,
+        extrusionProfile
+      );
+      gc();
+      return solid;
+    }
+
+    const face = r(makeFace(wire));
+    const solid = basicFaceExtrusion(face, extrusionVec);
+
+    gc();
+    return solid;
+  }
+
+  close({
+    returnType,
+    extrusionDistance = 1,
+    twistAngle,
+    extrusionProfile,
+  } = {}) {
+    const wire = this.buildWire();
+    return this._postProcessWire(wire, {
+      returnType,
+      extrusionDistance,
+      twistAngle,
+      extrusionProfile,
+    });
+  }
+}
+
+export default class Sketcher extends BaseSketcher {
+  constructor(plane, origin) {
+    super(plane, origin);
     this.pointer = this.plane.origin;
 
     this.firstPoint = this.plane.origin;
@@ -176,38 +238,18 @@ export default class Sketcher {
     return wire;
   }
 
-  _postProcessWire(wire, { returnType, extrusionDistance }) {
-    if (returnType !== "face" && returnType !== "solid") return wire;
-
-    const face = makeFace(wire);
-    wire.delete();
-
-    if (returnType === "face") return face;
-
-    const extrusionVec = this.plane.zDir.multiply(extrusionDistance);
-    const solidBuilder = new this.oc.BRepPrimAPI_MakePrism_1(
-      face.wrapped,
-      extrusionVec.wrapped,
-      false,
-      true
-    );
-    const solid = new Solid(downcast(solidBuilder.Shape()));
-
-    face.delete();
-    extrusionVec.delete();
-    solidBuilder.delete();
-
-    return solid;
-  }
-
-  close({ returnType, extrusionDistance = 1 } = {}) {
+  close({ returnType, extrusionDistance = 1, twistAngle, extrusionProfile }) {
     if (!this.pointer.equals(this.firstPoint)) {
       const endpoint = this.plane.toLocalCoords(this.firstPoint);
       this.lineTo(endpoint.x, endpoint.y);
     }
 
-    const wire = this.buildWire();
-    return this._postProcessWire(wire, { returnType, extrusionDistance });
+    return super.close({
+      returnType,
+      extrusionDistance,
+      twistAngle,
+      extrusionProfile,
+    });
   }
 
   closeWithMirror({ returnType, extrusionDistance = 1 } = {}) {
