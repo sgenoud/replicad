@@ -1491,6 +1491,30 @@ export declare class TColgp_Array2OfPnt {
     constructor(theBegin: gp_Pnt, theRowLower: Standard_Integer, theRowUpper: Standard_Integer, theColLower: Standard_Integer, theColUpper: Standard_Integer);
   }
 
+export declare class Handle_TColgp_HArray1OfPnt {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: TColgp_HArray1OfPnt): void;
+  get(): TColgp_HArray1OfPnt;
+  delete(): void;
+}
+
+  export declare class Handle_TColgp_HArray1OfPnt_1 extends Handle_TColgp_HArray1OfPnt {
+    constructor();
+  }
+
+  export declare class Handle_TColgp_HArray1OfPnt_2 extends Handle_TColgp_HArray1OfPnt {
+    constructor(thePtr: TColgp_HArray1OfPnt);
+  }
+
+  export declare class Handle_TColgp_HArray1OfPnt_3 extends Handle_TColgp_HArray1OfPnt {
+    constructor(theHandle: Handle_TColgp_HArray1OfPnt);
+  }
+
+  export declare class Handle_TColgp_HArray1OfPnt_4 extends Handle_TColgp_HArray1OfPnt {
+    constructor(theHandle: Handle_TColgp_HArray1OfPnt);
+  }
+
 export declare class TColgp_Array1OfPnt {
   begin(): any;
   end(): any;
@@ -2182,6 +2206,116 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
     constructor(C: gp_Cylinder);
   }
 
+export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
+  IncreaseDegree(Degree: Graphic3d_ZLayerId): void;
+  IncreaseMultiplicity_1(Index: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId): void;
+  IncreaseMultiplicity_2(I1: Graphic3d_ZLayerId, I2: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId): void;
+  IncrementMultiplicity(I1: Graphic3d_ZLayerId, I2: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId): void;
+  InsertKnot(U: Quantity_AbsorbedDose, M: Graphic3d_ZLayerId, ParametricTolerance: Quantity_AbsorbedDose, Add: Standard_Boolean): void;
+  InsertKnots(Knots: TColStd_Array1OfReal, Mults: TColStd_Array1OfInteger, ParametricTolerance: Quantity_AbsorbedDose, Add: Standard_Boolean): void;
+  RemoveKnot(Index: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId, Tolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  Reverse(): void;
+  ReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  Segment(U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose, theTolerance: Quantity_AbsorbedDose): void;
+  SetKnot_1(Index: Graphic3d_ZLayerId, K: Quantity_AbsorbedDose): void;
+  SetKnots(K: TColStd_Array1OfReal): void;
+  SetKnot_2(Index: Graphic3d_ZLayerId, K: Quantity_AbsorbedDose, M: Graphic3d_ZLayerId): void;
+  PeriodicNormalization(U: Quantity_AbsorbedDose): void;
+  SetPeriodic(): void;
+  SetOrigin_1(Index: Graphic3d_ZLayerId): void;
+  SetOrigin_2(U: Quantity_AbsorbedDose, Tol: Quantity_AbsorbedDose): void;
+  SetNotPeriodic(): void;
+  SetPole_1(Index: Graphic3d_ZLayerId, P: gp_Pnt): void;
+  SetPole_2(Index: Graphic3d_ZLayerId, P: gp_Pnt, Weight: Quantity_AbsorbedDose): void;
+  SetWeight(Index: Graphic3d_ZLayerId, Weight: Quantity_AbsorbedDose): void;
+  MovePoint(U: Quantity_AbsorbedDose, P: gp_Pnt, Index1: Graphic3d_ZLayerId, Index2: Graphic3d_ZLayerId, FirstModifiedPole: Graphic3d_ZLayerId, LastModifiedPole: Graphic3d_ZLayerId): void;
+  MovePointAndTangent(U: Quantity_AbsorbedDose, P: gp_Pnt, Tangent: gp_Vec, Tolerance: Quantity_AbsorbedDose, StartingCondition: Graphic3d_ZLayerId, EndingCondition: Graphic3d_ZLayerId, ErrorStatus: Graphic3d_ZLayerId): void;
+  IsCN(N: Graphic3d_ZLayerId): Standard_Boolean;
+  IsG1(theTf: Quantity_AbsorbedDose, theTl: Quantity_AbsorbedDose, theAngTol: Quantity_AbsorbedDose): Standard_Boolean;
+  IsClosed(): Standard_Boolean;
+  IsPeriodic(): Standard_Boolean;
+  IsRational(): Standard_Boolean;
+  Continuity(): GeomAbs_Shape;
+  Degree(): Graphic3d_ZLayerId;
+  D0(U: Quantity_AbsorbedDose, P: gp_Pnt): void;
+  D1(U: Quantity_AbsorbedDose, P: gp_Pnt, V1: gp_Vec): void;
+  D2(U: Quantity_AbsorbedDose, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec): void;
+  D3(U: Quantity_AbsorbedDose, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec, V3: gp_Vec): void;
+  DN(U: Quantity_AbsorbedDose, N: Graphic3d_ZLayerId): gp_Vec;
+  LocalValue(U: Quantity_AbsorbedDose, FromK1: Graphic3d_ZLayerId, ToK2: Graphic3d_ZLayerId): gp_Pnt;
+  LocalD0(U: Quantity_AbsorbedDose, FromK1: Graphic3d_ZLayerId, ToK2: Graphic3d_ZLayerId, P: gp_Pnt): void;
+  LocalD1(U: Quantity_AbsorbedDose, FromK1: Graphic3d_ZLayerId, ToK2: Graphic3d_ZLayerId, P: gp_Pnt, V1: gp_Vec): void;
+  LocalD2(U: Quantity_AbsorbedDose, FromK1: Graphic3d_ZLayerId, ToK2: Graphic3d_ZLayerId, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec): void;
+  LocalD3(U: Quantity_AbsorbedDose, FromK1: Graphic3d_ZLayerId, ToK2: Graphic3d_ZLayerId, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec, V3: gp_Vec): void;
+  LocalDN(U: Quantity_AbsorbedDose, FromK1: Graphic3d_ZLayerId, ToK2: Graphic3d_ZLayerId, N: Graphic3d_ZLayerId): gp_Vec;
+  EndPoint(): gp_Pnt;
+  FirstUKnotIndex(): Graphic3d_ZLayerId;
+  FirstParameter(): Quantity_AbsorbedDose;
+  Knot(Index: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  Knots_1(K: TColStd_Array1OfReal): void;
+  Knots_2(): TColStd_Array1OfReal;
+  KnotSequence_1(K: TColStd_Array1OfReal): void;
+  KnotSequence_2(): TColStd_Array1OfReal;
+  KnotDistribution(): GeomAbs_BSplKnotDistribution;
+  LastUKnotIndex(): Graphic3d_ZLayerId;
+  LastParameter(): Quantity_AbsorbedDose;
+  LocateU(U: Quantity_AbsorbedDose, ParametricTolerance: Quantity_AbsorbedDose, I1: Graphic3d_ZLayerId, I2: Graphic3d_ZLayerId, WithKnotRepetition: Standard_Boolean): void;
+  Multiplicity(Index: Graphic3d_ZLayerId): Graphic3d_ZLayerId;
+  Multiplicities_1(M: TColStd_Array1OfInteger): void;
+  Multiplicities_2(): TColStd_Array1OfInteger;
+  NbKnots(): Graphic3d_ZLayerId;
+  NbPoles(): Graphic3d_ZLayerId;
+  Pole(Index: Graphic3d_ZLayerId): gp_Pnt;
+  Poles_1(P: TColgp_Array1OfPnt): void;
+  Poles_2(): TColgp_Array1OfPnt;
+  StartPoint(): gp_Pnt;
+  Weight(Index: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  Weights_1(W: TColStd_Array1OfReal): void;
+  Weights_2(): TColStd_Array1OfReal;
+  Transform(T: gp_Trsf): void;
+  static MaxDegree(): Graphic3d_ZLayerId;
+  Resolution(Tolerance3D: Quantity_AbsorbedDose, UTolerance: Quantity_AbsorbedDose): void;
+  Copy(): Handle_Geom_Geometry;
+  IsEqual(theOther: Handle_Geom_BSplineCurve, thePreci: Quantity_AbsorbedDose): Standard_Boolean;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Geom_BSplineCurve_1 extends Geom_BSplineCurve {
+    constructor(Poles: TColgp_Array1OfPnt, Knots: TColStd_Array1OfReal, Multiplicities: TColStd_Array1OfInteger, Degree: Graphic3d_ZLayerId, Periodic: Standard_Boolean);
+  }
+
+  export declare class Geom_BSplineCurve_2 extends Geom_BSplineCurve {
+    constructor(Poles: TColgp_Array1OfPnt, Weights: TColStd_Array1OfReal, Knots: TColStd_Array1OfReal, Multiplicities: TColStd_Array1OfInteger, Degree: Graphic3d_ZLayerId, Periodic: Standard_Boolean, CheckRational: Standard_Boolean);
+  }
+
+export declare class Handle_Geom_BSplineCurve {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom_BSplineCurve): void;
+  get(): Geom_BSplineCurve;
+  delete(): void;
+}
+
+  export declare class Handle_Geom_BSplineCurve_1 extends Handle_Geom_BSplineCurve {
+    constructor();
+  }
+
+  export declare class Handle_Geom_BSplineCurve_2 extends Handle_Geom_BSplineCurve {
+    constructor(thePtr: Geom_BSplineCurve);
+  }
+
+  export declare class Handle_Geom_BSplineCurve_3 extends Handle_Geom_BSplineCurve {
+    constructor(theHandle: Handle_Geom_BSplineCurve);
+  }
+
+  export declare class Handle_Geom_BSplineCurve_4 extends Handle_Geom_BSplineCurve {
+    constructor(theHandle: Handle_Geom_BSplineCurve);
+  }
+
 export declare class Geom_Surface extends Geom_Geometry {
   UReverse(): void;
   UReversed(): Handle_Geom_Surface;
@@ -2325,6 +2459,13 @@ export declare class Geom_Geometry extends Standard_Transient {
   delete(): void;
 }
 
+export declare class Geom_BoundedSurface extends Geom_Surface {
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
 export declare class Geom_ElementarySurface extends Geom_Surface {
   SetAxis(theA1: gp_Ax1): void;
   SetLocation(theLoc: gp_Pnt): void;
@@ -2345,6 +2486,154 @@ export declare class Geom_ElementarySurface extends Geom_Surface {
   DynamicType(): Handle_Standard_Type;
   delete(): void;
 }
+
+export declare class Handle_Geom_BSplineSurface {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom_BSplineSurface): void;
+  get(): Geom_BSplineSurface;
+  delete(): void;
+}
+
+  export declare class Handle_Geom_BSplineSurface_1 extends Handle_Geom_BSplineSurface {
+    constructor();
+  }
+
+  export declare class Handle_Geom_BSplineSurface_2 extends Handle_Geom_BSplineSurface {
+    constructor(thePtr: Geom_BSplineSurface);
+  }
+
+  export declare class Handle_Geom_BSplineSurface_3 extends Handle_Geom_BSplineSurface {
+    constructor(theHandle: Handle_Geom_BSplineSurface);
+  }
+
+  export declare class Handle_Geom_BSplineSurface_4 extends Handle_Geom_BSplineSurface {
+    constructor(theHandle: Handle_Geom_BSplineSurface);
+  }
+
+export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
+  ExchangeUV(): void;
+  SetUPeriodic(): void;
+  SetVPeriodic(): void;
+  PeriodicNormalization(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose): void;
+  SetUOrigin(Index: Graphic3d_ZLayerId): void;
+  SetVOrigin(Index: Graphic3d_ZLayerId): void;
+  SetUNotPeriodic(): void;
+  SetVNotPeriodic(): void;
+  UReverse(): void;
+  VReverse(): void;
+  UReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  VReversedParameter(V: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  IncreaseDegree(UDegree: Graphic3d_ZLayerId, VDegree: Graphic3d_ZLayerId): void;
+  InsertUKnots(Knots: TColStd_Array1OfReal, Mults: TColStd_Array1OfInteger, ParametricTolerance: Quantity_AbsorbedDose, Add: Standard_Boolean): void;
+  InsertVKnots(Knots: TColStd_Array1OfReal, Mults: TColStd_Array1OfInteger, ParametricTolerance: Quantity_AbsorbedDose, Add: Standard_Boolean): void;
+  RemoveUKnot(Index: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId, Tolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  RemoveVKnot(Index: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId, Tolerance: Quantity_AbsorbedDose): Standard_Boolean;
+  IncreaseUMultiplicity_1(UIndex: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId): void;
+  IncreaseUMultiplicity_2(FromI1: Graphic3d_ZLayerId, ToI2: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId): void;
+  IncrementUMultiplicity(FromI1: Graphic3d_ZLayerId, ToI2: Graphic3d_ZLayerId, Step: Graphic3d_ZLayerId): void;
+  IncreaseVMultiplicity_1(VIndex: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId): void;
+  IncreaseVMultiplicity_2(FromI1: Graphic3d_ZLayerId, ToI2: Graphic3d_ZLayerId, M: Graphic3d_ZLayerId): void;
+  IncrementVMultiplicity(FromI1: Graphic3d_ZLayerId, ToI2: Graphic3d_ZLayerId, Step: Graphic3d_ZLayerId): void;
+  InsertUKnot(U: Quantity_AbsorbedDose, M: Graphic3d_ZLayerId, ParametricTolerance: Quantity_AbsorbedDose, Add: Standard_Boolean): void;
+  InsertVKnot(V: Quantity_AbsorbedDose, M: Graphic3d_ZLayerId, ParametricTolerance: Quantity_AbsorbedDose, Add: Standard_Boolean): void;
+  Segment(U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose, V1: Quantity_AbsorbedDose, V2: Quantity_AbsorbedDose, theUTolerance: Quantity_AbsorbedDose, theVTolerance: Quantity_AbsorbedDose): void;
+  CheckAndSegment(U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose, V1: Quantity_AbsorbedDose, V2: Quantity_AbsorbedDose, theUTolerance: Quantity_AbsorbedDose, theVTolerance: Quantity_AbsorbedDose): void;
+  SetUKnot_1(UIndex: Graphic3d_ZLayerId, K: Quantity_AbsorbedDose): void;
+  SetUKnots(UK: TColStd_Array1OfReal): void;
+  SetUKnot_2(UIndex: Graphic3d_ZLayerId, K: Quantity_AbsorbedDose, M: Graphic3d_ZLayerId): void;
+  SetVKnot_1(VIndex: Graphic3d_ZLayerId, K: Quantity_AbsorbedDose): void;
+  SetVKnots(VK: TColStd_Array1OfReal): void;
+  SetVKnot_2(VIndex: Graphic3d_ZLayerId, K: Quantity_AbsorbedDose, M: Graphic3d_ZLayerId): void;
+  LocateU(U: Quantity_AbsorbedDose, ParametricTolerance: Quantity_AbsorbedDose, I1: Graphic3d_ZLayerId, I2: Graphic3d_ZLayerId, WithKnotRepetition: Standard_Boolean): void;
+  LocateV(V: Quantity_AbsorbedDose, ParametricTolerance: Quantity_AbsorbedDose, I1: Graphic3d_ZLayerId, I2: Graphic3d_ZLayerId, WithKnotRepetition: Standard_Boolean): void;
+  SetPole_1(UIndex: Graphic3d_ZLayerId, VIndex: Graphic3d_ZLayerId, P: gp_Pnt): void;
+  SetPole_2(UIndex: Graphic3d_ZLayerId, VIndex: Graphic3d_ZLayerId, P: gp_Pnt, Weight: Quantity_AbsorbedDose): void;
+  SetPoleCol_1(VIndex: Graphic3d_ZLayerId, CPoles: TColgp_Array1OfPnt): void;
+  SetPoleCol_2(VIndex: Graphic3d_ZLayerId, CPoles: TColgp_Array1OfPnt, CPoleWeights: TColStd_Array1OfReal): void;
+  SetPoleRow_1(UIndex: Graphic3d_ZLayerId, CPoles: TColgp_Array1OfPnt, CPoleWeights: TColStd_Array1OfReal): void;
+  SetPoleRow_2(UIndex: Graphic3d_ZLayerId, CPoles: TColgp_Array1OfPnt): void;
+  SetWeight(UIndex: Graphic3d_ZLayerId, VIndex: Graphic3d_ZLayerId, Weight: Quantity_AbsorbedDose): void;
+  SetWeightCol(VIndex: Graphic3d_ZLayerId, CPoleWeights: TColStd_Array1OfReal): void;
+  SetWeightRow(UIndex: Graphic3d_ZLayerId, CPoleWeights: TColStd_Array1OfReal): void;
+  MovePoint(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, UIndex1: Graphic3d_ZLayerId, UIndex2: Graphic3d_ZLayerId, VIndex1: Graphic3d_ZLayerId, VIndex2: Graphic3d_ZLayerId, UFirstIndex: Graphic3d_ZLayerId, ULastIndex: Graphic3d_ZLayerId, VFirstIndex: Graphic3d_ZLayerId, VLastIndex: Graphic3d_ZLayerId): void;
+  IsUClosed(): Standard_Boolean;
+  IsVClosed(): Standard_Boolean;
+  IsCNu(N: Graphic3d_ZLayerId): Standard_Boolean;
+  IsCNv(N: Graphic3d_ZLayerId): Standard_Boolean;
+  IsUPeriodic(): Standard_Boolean;
+  IsURational(): Standard_Boolean;
+  IsVPeriodic(): Standard_Boolean;
+  IsVRational(): Standard_Boolean;
+  Bounds(U1: Quantity_AbsorbedDose, U2: Quantity_AbsorbedDose, V1: Quantity_AbsorbedDose, V2: Quantity_AbsorbedDose): void;
+  Continuity(): GeomAbs_Shape;
+  FirstUKnotIndex(): Graphic3d_ZLayerId;
+  FirstVKnotIndex(): Graphic3d_ZLayerId;
+  LastUKnotIndex(): Graphic3d_ZLayerId;
+  LastVKnotIndex(): Graphic3d_ZLayerId;
+  NbUKnots(): Graphic3d_ZLayerId;
+  NbUPoles(): Graphic3d_ZLayerId;
+  NbVKnots(): Graphic3d_ZLayerId;
+  NbVPoles(): Graphic3d_ZLayerId;
+  Pole(UIndex: Graphic3d_ZLayerId, VIndex: Graphic3d_ZLayerId): gp_Pnt;
+  Poles_1(P: TColgp_Array2OfPnt): void;
+  Poles_2(): TColgp_Array2OfPnt;
+  UDegree(): Graphic3d_ZLayerId;
+  UKnot(UIndex: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  UKnotDistribution(): GeomAbs_BSplKnotDistribution;
+  UKnots_1(Ku: TColStd_Array1OfReal): void;
+  UKnots_2(): TColStd_Array1OfReal;
+  UKnotSequence_1(Ku: TColStd_Array1OfReal): void;
+  UKnotSequence_2(): TColStd_Array1OfReal;
+  UMultiplicity(UIndex: Graphic3d_ZLayerId): Graphic3d_ZLayerId;
+  UMultiplicities_1(Mu: TColStd_Array1OfInteger): void;
+  UMultiplicities_2(): TColStd_Array1OfInteger;
+  VDegree(): Graphic3d_ZLayerId;
+  VKnot(VIndex: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  VKnotDistribution(): GeomAbs_BSplKnotDistribution;
+  VKnots_1(Kv: TColStd_Array1OfReal): void;
+  VKnots_2(): TColStd_Array1OfReal;
+  VKnotSequence_1(Kv: TColStd_Array1OfReal): void;
+  VKnotSequence_2(): TColStd_Array1OfReal;
+  VMultiplicity(VIndex: Graphic3d_ZLayerId): Graphic3d_ZLayerId;
+  VMultiplicities_1(Mv: TColStd_Array1OfInteger): void;
+  VMultiplicities_2(): TColStd_Array1OfInteger;
+  Weight(UIndex: Graphic3d_ZLayerId, VIndex: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  Weights_1(W: TColStd_Array2OfReal): void;
+  Weights_2(): TColStd_Array2OfReal;
+  D0(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt): void;
+  D1(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec): void;
+  D2(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec): void;
+  D3(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec, D3U: gp_Vec, D3V: gp_Vec, D3UUV: gp_Vec, D3UVV: gp_Vec): void;
+  DN(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, Nu: Graphic3d_ZLayerId, Nv: Graphic3d_ZLayerId): gp_Vec;
+  LocalD0(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, FromUK1: Graphic3d_ZLayerId, ToUK2: Graphic3d_ZLayerId, FromVK1: Graphic3d_ZLayerId, ToVK2: Graphic3d_ZLayerId, P: gp_Pnt): void;
+  LocalD1(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, FromUK1: Graphic3d_ZLayerId, ToUK2: Graphic3d_ZLayerId, FromVK1: Graphic3d_ZLayerId, ToVK2: Graphic3d_ZLayerId, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec): void;
+  LocalD2(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, FromUK1: Graphic3d_ZLayerId, ToUK2: Graphic3d_ZLayerId, FromVK1: Graphic3d_ZLayerId, ToVK2: Graphic3d_ZLayerId, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec): void;
+  LocalD3(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, FromUK1: Graphic3d_ZLayerId, ToUK2: Graphic3d_ZLayerId, FromVK1: Graphic3d_ZLayerId, ToVK2: Graphic3d_ZLayerId, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec, D3U: gp_Vec, D3V: gp_Vec, D3UUV: gp_Vec, D3UVV: gp_Vec): void;
+  LocalDN(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, FromUK1: Graphic3d_ZLayerId, ToUK2: Graphic3d_ZLayerId, FromVK1: Graphic3d_ZLayerId, ToVK2: Graphic3d_ZLayerId, Nu: Graphic3d_ZLayerId, Nv: Graphic3d_ZLayerId): gp_Vec;
+  LocalValue(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose, FromUK1: Graphic3d_ZLayerId, ToUK2: Graphic3d_ZLayerId, FromVK1: Graphic3d_ZLayerId, ToVK2: Graphic3d_ZLayerId): gp_Pnt;
+  UIso_1(U: Quantity_AbsorbedDose): Handle_Geom_Curve;
+  VIso_1(V: Quantity_AbsorbedDose): Handle_Geom_Curve;
+  UIso_2(U: Quantity_AbsorbedDose, CheckRational: Standard_Boolean): Handle_Geom_Curve;
+  VIso_2(V: Quantity_AbsorbedDose, CheckRational: Standard_Boolean): Handle_Geom_Curve;
+  Transform(T: gp_Trsf): void;
+  static MaxDegree(): Graphic3d_ZLayerId;
+  Resolution(Tolerance3D: Quantity_AbsorbedDose, UTolerance: Quantity_AbsorbedDose, VTolerance: Quantity_AbsorbedDose): void;
+  Copy(): Handle_Geom_Geometry;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Geom_BSplineSurface_1 extends Geom_BSplineSurface {
+    constructor(Poles: TColgp_Array2OfPnt, UKnots: TColStd_Array1OfReal, VKnots: TColStd_Array1OfReal, UMults: TColStd_Array1OfInteger, VMults: TColStd_Array1OfInteger, UDegree: Graphic3d_ZLayerId, VDegree: Graphic3d_ZLayerId, UPeriodic: Standard_Boolean, VPeriodic: Standard_Boolean);
+  }
+
+  export declare class Geom_BSplineSurface_2 extends Geom_BSplineSurface {
+    constructor(Poles: TColgp_Array2OfPnt, Weights: TColStd_Array2OfReal, UKnots: TColStd_Array1OfReal, VKnots: TColStd_Array1OfReal, UMults: TColStd_Array1OfInteger, VMults: TColStd_Array1OfInteger, UDegree: Graphic3d_ZLayerId, VDegree: Graphic3d_ZLayerId, UPeriodic: Standard_Boolean, VPeriodic: Standard_Boolean);
+  }
 
 export declare class Geom_ConicalSurface extends Geom_ElementarySurface {
   SetCone(C: gp_Cone): void;
@@ -4244,6 +4533,11 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   TColgp_Array2OfPnt_3: typeof TColgp_Array2OfPnt_3;
   TColgp_Array2OfPnt_4: typeof TColgp_Array2OfPnt_4;
   TColgp_Array2OfPnt_5: typeof TColgp_Array2OfPnt_5;
+  Handle_TColgp_HArray1OfPnt: typeof Handle_TColgp_HArray1OfPnt;
+  Handle_TColgp_HArray1OfPnt_1: typeof Handle_TColgp_HArray1OfPnt_1;
+  Handle_TColgp_HArray1OfPnt_2: typeof Handle_TColgp_HArray1OfPnt_2;
+  Handle_TColgp_HArray1OfPnt_3: typeof Handle_TColgp_HArray1OfPnt_3;
+  Handle_TColgp_HArray1OfPnt_4: typeof Handle_TColgp_HArray1OfPnt_4;
   TColgp_Array1OfPnt: typeof TColgp_Array1OfPnt;
   TColgp_Array1OfPnt_1: typeof TColgp_Array1OfPnt_1;
   TColgp_Array1OfPnt_2: typeof TColgp_Array1OfPnt_2;
@@ -4354,6 +4648,14 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Geom_CylindricalSurface: typeof Geom_CylindricalSurface;
   Geom_CylindricalSurface_1: typeof Geom_CylindricalSurface_1;
   Geom_CylindricalSurface_2: typeof Geom_CylindricalSurface_2;
+  Geom_BSplineCurve: typeof Geom_BSplineCurve;
+  Geom_BSplineCurve_1: typeof Geom_BSplineCurve_1;
+  Geom_BSplineCurve_2: typeof Geom_BSplineCurve_2;
+  Handle_Geom_BSplineCurve: typeof Handle_Geom_BSplineCurve;
+  Handle_Geom_BSplineCurve_1: typeof Handle_Geom_BSplineCurve_1;
+  Handle_Geom_BSplineCurve_2: typeof Handle_Geom_BSplineCurve_2;
+  Handle_Geom_BSplineCurve_3: typeof Handle_Geom_BSplineCurve_3;
+  Handle_Geom_BSplineCurve_4: typeof Handle_Geom_BSplineCurve_4;
   Geom_Surface: typeof Geom_Surface;
   Handle_Geom_Surface: typeof Handle_Geom_Surface;
   Handle_Geom_Surface_1: typeof Handle_Geom_Surface_1;
@@ -4368,7 +4670,16 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Geom_Curve: typeof Geom_Curve;
   Geom_BoundedCurve: typeof Geom_BoundedCurve;
   Geom_Geometry: typeof Geom_Geometry;
+  Geom_BoundedSurface: typeof Geom_BoundedSurface;
   Geom_ElementarySurface: typeof Geom_ElementarySurface;
+  Handle_Geom_BSplineSurface: typeof Handle_Geom_BSplineSurface;
+  Handle_Geom_BSplineSurface_1: typeof Handle_Geom_BSplineSurface_1;
+  Handle_Geom_BSplineSurface_2: typeof Handle_Geom_BSplineSurface_2;
+  Handle_Geom_BSplineSurface_3: typeof Handle_Geom_BSplineSurface_3;
+  Handle_Geom_BSplineSurface_4: typeof Handle_Geom_BSplineSurface_4;
+  Geom_BSplineSurface: typeof Geom_BSplineSurface;
+  Geom_BSplineSurface_1: typeof Geom_BSplineSurface_1;
+  Geom_BSplineSurface_2: typeof Geom_BSplineSurface_2;
   Geom_ConicalSurface: typeof Geom_ConicalSurface;
   Geom_ConicalSurface_1: typeof Geom_ConicalSurface_1;
   Geom_ConicalSurface_2: typeof Geom_ConicalSurface_2;
