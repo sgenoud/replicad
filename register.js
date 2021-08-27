@@ -40,18 +40,20 @@ export class Cleaner {
   }
 }
 
-export const localGC = () => {
-  const cleaner = [];
+export const localGC = (debug) => {
+  const cleaner = new Set();
 
-  return [
+  const out = [
     (v) => {
-      cleaner.push(v);
+      cleaner.add(v);
       return v;
     },
 
     () => {
-      cleaner.forEach((d) => d.delete());
-      cleaner.length = 0;
+      [...cleaner.values()].forEach((d) => d.delete());
+      cleaner.clear();
     },
   ];
+  if (debug) out.push(cleaner);
+  return out;
 };

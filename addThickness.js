@@ -2,7 +2,7 @@ import { getOC } from "./oclib";
 import { Solid, cast, downcast } from "./shapes";
 import { makeLine, makeHelix, assembleWire } from "./shapeHelpers";
 import { localGC } from "./register";
-import { Vector } from "./geom";
+import { Vector, makeAx1 } from "./geom";
 
 export const basicFaceExtrusion = (face, extrusionVec) => {
   const oc = getOC();
@@ -15,6 +15,18 @@ export const basicFaceExtrusion = (face, extrusionVec) => {
   const solid = new Solid(downcast(solidBuilder.Shape()));
   solidBuilder.delete();
   return solid;
+};
+
+export const revolution = (face, center = [0, 0, 0], direction = [0, 0, 1]) => {
+  const oc = getOC();
+  const ax = makeAx1(center, direction);
+
+  const revolBuilder = new oc.BRepPrimAPI_MakeRevol_2(face.wrapped, ax, false);
+
+  const shape = cast(revolBuilder.Shape());
+  ax.delete();
+  revolBuilder.delete();
+  return shape;
 };
 
 export const shapedExtrude = (wire, spine, { auxiliarySpine, law = null }) => {

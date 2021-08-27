@@ -1,4 +1,5 @@
 import { WrappingObj, registerObj, unregisterObj } from "./register.js";
+import { DEG2RAD } from "./constants.js";
 import { getOC } from "./oclib.js";
 
 const round3 = (v) => Math.round(v * 1000) / 1000;
@@ -18,6 +19,16 @@ export const makeAx2 = (center, dir) => {
   const origin = asPnt(center);
   const direction = asDir(dir);
   const axis = new oc.gp_Ax2_3(origin, direction);
+  origin.delete();
+  direction.delete();
+  return axis;
+};
+
+export const makeAx1 = (center, dir) => {
+  const oc = getOC();
+  const origin = asPnt(center);
+  const direction = asDir(dir);
+  const axis = new oc.gp_Ax1_2(origin, direction);
   origin.delete();
   direction.delete();
   return axis;

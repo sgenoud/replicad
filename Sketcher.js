@@ -1,6 +1,7 @@
-import { Plane, createNamedPlane } from "./geom.js";
+import { Plane, Vector, createNamedPlane } from "./geom.js";
 import { makeMirrorMatrix } from "./geomHelpers.js";
 import { localGC } from "./register.js";
+import { DEG2RAD } from "./constants.js";
 import {
   makeLine,
   makeFace,
@@ -14,6 +15,7 @@ import {
   basicFaceExtrusion,
   complexExtrude,
   twistExtrude,
+  revolution,
 } from "./addThickness.js";
 import { getOC } from "./oclib.js";
 
@@ -33,17 +35,29 @@ export class BaseSketcher {
 
   _postProcessWire(
     wire,
-    { returnType, extrusionDistance, twistAngle, extrusionProfile }
+    {
+      returnType,
+      extrusionDistance,
+      twistAngle,
+      extrusionProfile,
+      revolutionAxis = [0, 0, 1],
+    } = {}
   ) {
     const [r, gc] = localGC();
-    if (returnType !== "face" && returnType !== "solid") return wire;
-
+    if (returnType === "wire") return wire;
     r(wire);
 
     if (returnType === "face") {
       const face = makeFace(wire);
       gc();
       return face;
+    }
+
+    if (returnType === "revolutionSolid") {
+      const face = r(makeFace(wire));
+      const solid = revolution(face, this.plane.origin, revolutionAxis);
+      gc();
+      return solid;
     }
 
     const extrusionVec = r(this.plane.zDir.multiply(extrusionDistance));
@@ -78,19 +92,9 @@ export class BaseSketcher {
     return solid;
   }
 
-  close({
-    returnType,
-    extrusionDistance = 1,
-    twistAngle,
-    extrusionProfile,
-  } = {}) {
+  close(shaperConfig) {
     const wire = this.buildWire();
-    return this._postProcessWire(wire, {
-      returnType,
-      extrusionDistance,
-      twistAngle,
-      extrusionProfile,
-    });
+    return this._postProcessWire(wire, shaperConfig);
   }
 }
 
@@ -167,6 +171,78 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
+  smoothSplineTo(end, config) {
+    const [r, gc] = localGC();
+
+    let conf = config;
+    if (!config || (!config.deviation && config.deviation !== 0)) {
+      conf = { deviation: config };
+    }
+    const { deviation = 0, startFactor = 1, endFactor = 1 } = conf;
+
+    const endPoint = this.plane.toWorldCoords(end);
+    const previousEdge = this.pendingEdges.length
+      ? this.pendingEdges[this.pendingEdges.length - 1]
+      : null;
+
+    const defaultDistance = r(endPoint.sub(this.pointer)).Length * 0.25;
+
+    let startPoleDirection;
+    if (!previousEdge) {
+      startPoleDirection = r(endPoint.sub(this.pointer));
+    } else if (previousEdge.geomType === "BEZIER") {
+      const rawCurve = r(previousEdge.curve).wrapped.Bezier().get();
+      const previousPole = r(new Vector(rawCurve.Pole(rawCurve.NbPoles() - 1)));
+
+      startPoleDirection = r(this.pointer.sub(previousPole));
+    } else {
+      startPoleDirection = r(previousEdge.tangentAt(1));
+    }
+
+    const poleDistance = r(
+      startPoleDirection.normalized().multiply(startFactor * defaultDistance)
+    );
+    const startControl = r(this.pointer.add(poleDistance));
+
+    let endPoleDirection;
+    if (Array.isArray(deviation)) {
+      endPoleDirection = r(this.plane.toWorldCoords(deviation));
+    } else if (deviation === "symmetric") {
+      endPoleDirection = r(startPoleDirection.multiply(-1));
+    } else {
+      const direction = r(endPoint.sub(this.pointer));
+      const d = r(this.plane.toLocalCoords(direction));
+
+      const angle = deviation * DEG2RAD;
+      endPoleDirection = r(
+        this.plane.toWorldCoords([
+          d.x * Math.cos(angle) - d.y * Math.sin(angle),
+          d.y * Math.cos(angle) + d.x * Math.sin(angle),
+        ])
+      );
+    }
+
+    const endPoleDistance = r(
+      endPoleDirection.normalized().multiply(endFactor * defaultDistance)
+    );
+    const endControl = r(endPoint.sub(endPoleDistance));
+
+    this.pendingEdges.push(
+      makeBezierCurve([this.pointer, startControl, endControl, endPoint])
+    );
+    this.pointer = endPoint;
+    gc();
+    return this;
+  }
+
+  smoothSpline(xDist, yDist, splineConfig) {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.smoothSplineTo(
+      [xDist + pointer.x, yDist + pointer.y],
+      splineConfig
+    );
+  }
+
   threePointsArc(center, end) {
     const gpoint1 = this.plane.toWorldCoords(center);
     const gpoint2 = this.plane.toWorldCoords(end);
@@ -238,21 +314,16 @@ export default class Sketcher extends BaseSketcher {
     return wire;
   }
 
-  close({ returnType, extrusionDistance = 1, twistAngle, extrusionProfile }) {
+  close(shapeConfig) {
     if (!this.pointer.equals(this.firstPoint)) {
       const endpoint = this.plane.toLocalCoords(this.firstPoint);
       this.lineTo(endpoint.x, endpoint.y);
     }
 
-    return super.close({
-      returnType,
-      extrusionDistance,
-      twistAngle,
-      extrusionProfile,
-    });
+    return super.close(shapeConfig);
   }
 
-  closeWithMirror({ returnType, extrusionDistance = 1 } = {}) {
+  closeWithMirror(shaperConfig) {
     const startToEndVector = this.pointer.sub(this.firstPoint).normalize();
     const mirrorVector = startToEndVector.cross(this.plane.zDir);
 
@@ -269,6 +340,6 @@ export default class Sketcher extends BaseSketcher {
     mirror.delete();
 
     const newWire = assembleWire([wire, mirroredWire]);
-    return this._postProcessWire(newWire, { returnType, extrusionDistance });
+    return this._postProcessWire(newWire, shaperConfig);
   }
 }

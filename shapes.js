@@ -475,9 +475,15 @@ export class _1DShape extends Shape {
   }
 }
 
+export class Curve extends WrappingObj {}
+
 export class Edge extends _1DShape {
   _geomAdaptor() {
     return new this.oc.BRepAdaptor_Curve_2(this.wrapped);
+  }
+
+  get curve() {
+    return new Curve(this._geomAdaptor());
   }
 
   get geomType() {
@@ -645,14 +651,20 @@ export class _3DShape extends Shape {
     return newShape;
   }
 
-  shell(faceList, thickness, tolerance = 1e-3) {
+  shell({ filter, thickness, keepFilter }, tolerance = 1e-3) {
+    const filteredFaces = filter.find(this, { clean: !keepFilter });
     const facesToRemove = new this.oc.TopTools_ListOfShape_1();
-    faceList.forEach((f) => facesToRemove.Append_1(f.wrapped));
+
+    filteredFaces.forEach((face) => {
+      facesToRemove.Append_1(face.wrapped);
+      face.delete();
+    });
+
     const shellBuilder = new this.oc.BRepOffsetAPI_MakeThickSolid_1();
     shellBuilder.MakeThickSolidByJoin(
       this.wrapped,
       facesToRemove,
-      thickness,
+      -Math.abs(thickness),
       tolerance,
       this.oc.BRepOffset_Mode.BRepOffset_Skin,
       false,
