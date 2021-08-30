@@ -151,6 +151,17 @@ export const makeCylinder = (radius, height, location, direction) => {
   return solid;
 };
 
+export const makeVertex = (point) => {
+  const oc = getOC();
+  const pnt = asPnt(point);
+
+  const vertexMaker = new oc.BRepBuilderAPI_MakeVertex(pnt);
+  const vertex = vertexMaker.Vertex();
+  vertexMaker.delete();
+
+  return new Vertex(vertex);
+};
+
 export const getBounds = (shape) => {
   const oc = getOC();
   const bbox = new oc.Bnd_Box_1();

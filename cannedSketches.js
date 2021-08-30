@@ -18,6 +18,15 @@ export const sketchCircle = (radius, { plane, origin } = {}) => {
   return new CicleSketcher(radius, plane, origin);
 };
 
+export const sketchRectangle = (xLength, yLength, { plane, origin } = {}) => {
+  return new Sketcher(plane, origin)
+    .movePointer(-xLength / 2, yLength / 2)
+    .hLine(xLength)
+    .vLine(-yLength)
+    .hLine(-xLength)
+    .vLine(yLength);
+};
+
 export const sketchPolysides = (
   radius,
   sidesCount,

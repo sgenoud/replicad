@@ -16,15 +16,14 @@ import {
   complexExtrude,
   twistExtrude,
   revolution,
+  loft,
+  genericSweep,
 } from "./addThickness.js";
 import { getOC } from "./oclib.js";
 
 export class BaseSketcher {
   constructor(plane = "XY", origin = [0, 0, 0]) {
     this.oc = getOC();
-    if (plane instanceof Plane) {
-      this.plane = plane;
-    }
 
     if (plane instanceof Plane) {
       this.plane = plane;
@@ -343,3 +342,22 @@ export default class Sketcher extends BaseSketcher {
     return this._postProcessWire(newWire, shaperConfig);
   }
 }
+
+export const loftSketches = (sketches, loftConfig) => {
+  const [r, gc] = localGC();
+  const wires = sketches.map((s) => r(s.close({ returnType: "wire" })));
+
+  const shape = loft(wires, loftConfig);
+  gc();
+  return shape;
+};
+
+export const sweepSketch = (profileSketch, spineSketch, sweepConfig) => {
+  const [r, gc] = localGC();
+
+  const profile = r(profileSketch.close({ returnType: "wire" }));
+  const spine = r(spineSketch.buildWire());
+  const shape = genericSweep(profile, spine, sweepConfig);
+  gc();
+  return shape;
+};

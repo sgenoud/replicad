@@ -1,8 +1,9 @@
 import { getOC } from "./oclib";
 import { Solid, cast, downcast } from "./shapes";
-import { makeLine, makeHelix, assembleWire } from "./shapeHelpers";
+import { makeLine, makeHelix, assembleWire, makeVertex } from "./shapeHelpers";
 import { localGC } from "./register";
 import { Vector, makeAx1 } from "./geom";
+import { DEG2RAD } from "./constants";
 
 export const basicFaceExtrusion = (face, extrusionVec) => {
   const oc = getOC();
@@ -17,11 +18,21 @@ export const basicFaceExtrusion = (face, extrusionVec) => {
   return solid;
 };
 
-export const revolution = (face, center = [0, 0, 0], direction = [0, 0, 1]) => {
+export const revolution = (
+  face,
+  center = [0, 0, 0],
+  direction = [0, 0, 1],
+  angle = 360
+) => {
   const oc = getOC();
   const ax = makeAx1(center, direction);
 
-  const revolBuilder = new oc.BRepPrimAPI_MakeRevol_2(face.wrapped, ax, false);
+  const revolBuilder = new oc.BRepPrimAPI_MakeRevol_1(
+    face.wrapped,
+    ax,
+    angle * DEG2RAD,
+    false
+  );
 
   const shape = cast(revolBuilder.Shape());
   ax.delete();
@@ -29,22 +40,30 @@ export const revolution = (face, center = [0, 0, 0], direction = [0, 0, 1]) => {
   return shape;
 };
 
-export const shapedExtrude = (wire, spine, { auxiliarySpine, law = null }) => {
+export const genericSweep = (
+  wire,
+  spine,
+  { frenet = false, auxiliarySpine, law = null } = {}
+) => {
   const oc = getOC();
-  const extrudeBuilder = new oc.BRepOffsetAPI_MakePipeShell(spine.wrapped);
-  if (!law) extrudeBuilder.Add_1(wire.wrapped, false, false);
-  else extrudeBuilder.SetLaw_1(wire.wrapped, law, false, false);
+  const sweepBuilder = new oc.BRepOffsetAPI_MakePipeShell(spine.wrapped);
+  if (!law) sweepBuilder.Add_1(wire.wrapped, false, false);
+  else sweepBuilder.SetLaw_1(wire.wrapped, law, false, false);
+
+  if (frenet) {
+    sweepBuilder.SetMode_1(frenet);
+  }
   if (auxiliarySpine) {
-    extrudeBuilder.SetMode_5(
+    sweepBuilder.SetMode_5(
       auxiliarySpine.wrapped,
       false,
       oc.BRepFill_TypeOfContact.BRepFill_NoContact
     );
   }
-  extrudeBuilder.Build();
-  extrudeBuilder.MakeSolid();
-  const shape = cast(extrudeBuilder.Shape());
-  extrudeBuilder.delete();
+  sweepBuilder.Build();
+  sweepBuilder.MakeSolid();
+  const shape = cast(sweepBuilder.Shape());
+  sweepBuilder.delete();
   return shape;
 };
 
@@ -79,7 +98,7 @@ export const complexExtrude = (wire, center, normal, profileShape) => {
     ? buildLawFromProfile(normalVec.Length, profileShape)
     : null;
 
-  const shape = shapedExtrude(wire, spine, { law });
+  const shape = genericSweep(wire, spine, { law });
   gc();
 
   return shape;
@@ -111,8 +130,29 @@ export const twistExtrude = (
     ? buildLawFromProfile(normalVec.Length, profileShape)
     : null;
 
-  const shape = shapedExtrude(wire, spine, { auxiliarySpine, law });
+  const shape = genericSweep(wire, spine, { auxiliarySpine, law });
   gc();
 
+  return shape;
+};
+
+export const loft = (wires, { ruled = true, startPoint, endPoint } = {}) => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const loftBuilder = r(new oc.BRepOffsetAPI_ThruSections(true, ruled, 1e-6));
+
+  if (startPoint) {
+    loftBuilder.AddVertex(r(makeVertex(startPoint)).wrapped);
+  }
+  wires.forEach((w) => loftBuilder.AddWire(w.wrapped));
+  if (endPoint) {
+    loftBuilder.AddVertex(r(makeVertex(endPoint)).wrapped);
+  }
+
+  loftBuilder.Build();
+
+  const shape = cast(loftBuilder.Shape());
+  gc();
   return shape;
 };
