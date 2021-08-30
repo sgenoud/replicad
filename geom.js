@@ -14,11 +14,19 @@ export const makeAx3 = (center, dir) => {
   return axis;
 };
 
-export const makeAx2 = (center, dir) => {
+export const makeAx2 = (center, dir, xDir) => {
   const oc = getOC();
   const origin = asPnt(center);
   const direction = asDir(dir);
-  const axis = new oc.gp_Ax2_3(origin, direction);
+
+  let axis;
+  if (xDir) {
+    const xDirection = asDir(xDir);
+    axis = new oc.gp_Ax2_2(origin, direction, xDirection);
+    xDirection.delete();
+  } else {
+    axis = new oc.gp_Ax2_3(origin, direction);
+  }
   origin.delete();
   direction.delete();
   return axis;
@@ -142,6 +150,12 @@ export class Vector extends WrappingObj {
 
   toDir() {
     return new this.oc.gp_Dir_3(this.wrapped.XYZ());
+  }
+
+  rotate(angle, center = [0, 0, 0], direction = [0, 0, 1]) {
+    const ax = makeAx1(center, direction);
+    this.wrapped.Rotate(ax, angle * DEG2RAD);
+    ax.delete();
   }
 
   transform(T) {

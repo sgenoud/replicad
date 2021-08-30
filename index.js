@@ -1,6 +1,7 @@
 import Sketcher from "./Sketcher.js";
 
 export { Sketcher };
+export * from "./sketchHelpers.js";
 
 export * from "./constants.js";
 export * from "./oclib.js";

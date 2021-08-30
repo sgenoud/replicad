@@ -21,6 +21,58 @@ import {
 } from "./addThickness.js";
 import { getOC } from "./oclib.js";
 
+const shapeClosedPlanarWireAsSolid = (
+  wire,
+  plane,
+  {
+    returnType,
+    extrusionDistance,
+    twistAngle,
+    extrusionProfile,
+    revolutionAxis = [0, 0, 1],
+  }
+) => {
+  const [r, gc] = localGC();
+
+  if (returnType === "revolutionSolid") {
+    const face = r(makeFace(wire));
+    const solid = revolution(face, plane.origin, revolutionAxis);
+    gc();
+    return solid;
+  }
+
+  const extrusionVec = r(plane.zDir.multiply(extrusionDistance));
+
+  if (extrusionProfile && !twistAngle) {
+    const solid = complexExtrude(
+      wire,
+      plane.origin,
+      extrusionVec,
+      extrusionProfile
+    );
+    gc();
+    return solid;
+  }
+
+  if (twistAngle) {
+    const solid = twistExtrude(
+      wire,
+      twistAngle,
+      plane.origin,
+      extrusionVec,
+      extrusionProfile
+    );
+    gc();
+    return solid;
+  }
+
+  const face = r(makeFace(wire));
+  const solid = basicFaceExtrusion(face, extrusionVec);
+
+  gc();
+  return solid;
+};
+
 export class BaseSketcher {
   constructor(plane = "XY", origin = [0, 0, 0]) {
     this.oc = getOC();
@@ -32,97 +84,63 @@ export class BaseSketcher {
     }
   }
 
-  _postProcessWire(
-    wire,
-    {
-      returnType,
-      extrusionDistance,
-      twistAngle,
-      extrusionProfile,
-      revolutionAxis = [0, 0, 1],
-    } = {}
-  ) {
-    const [r, gc] = localGC();
-    if (returnType === "wire") return wire;
-    r(wire);
-
-    if (returnType === "face") {
+  _shapeWire(wire, config) {
+    if (config.returnType === "wire") return wire;
+    if (config.returnType === "face") {
       const face = makeFace(wire);
-      gc();
+      wire.delete();
       return face;
     }
 
-    if (returnType === "revolutionSolid") {
-      const face = r(makeFace(wire));
-      const solid = revolution(face, this.plane.origin, revolutionAxis);
-      gc();
-      return solid;
-    }
+    return shapeClosedPlanarWireAsSolid(wire, this.plane, config);
+  }
 
-    const extrusionVec = r(this.plane.zDir.multiply(extrusionDistance));
-
-    if (extrusionProfile && !twistAngle) {
-      const solid = complexExtrude(
-        wire,
-        this.plane.origin,
-        extrusionVec,
-        extrusionProfile
-      );
-      gc();
-      return solid;
-    }
-
-    if (twistAngle) {
-      const solid = twistExtrude(
-        wire,
-        twistAngle,
-        this.plane.origin,
-        extrusionVec,
-        extrusionProfile
-      );
-      gc();
-      return solid;
-    }
-
-    const face = r(makeFace(wire));
-    const solid = basicFaceExtrusion(face, extrusionVec);
-
-    gc();
-    return solid;
+  buildWire() {
+    throw new Error("build wire needs to be implemented by children classes");
   }
 
   close(shaperConfig) {
     const wire = this.buildWire();
-    return this._postProcessWire(wire, shaperConfig);
+    return this._shapeWire(wire, shaperConfig);
   }
 }
 
 export default class Sketcher extends BaseSketcher {
   constructor(plane, origin) {
     super(plane, origin);
-    this.pointer = this.plane.origin;
 
-    this.firstPoint = this.plane.origin;
+    this.pointer = new Vector(this.plane.origin);
+    this.firstPoint = new Vector(this.plane.origin);
 
     this.pendingEdges = [];
   }
 
-  movePointer(x, y) {
-    this.pointer = this.plane.toWorldCoords([x, y]);
-    this.firstPoint = this.pointer;
+  _updatePointer(newPointer) {
+    this.pointer.delete();
+    this.pointer = newPointer;
+  }
+
+  movePointerTo([x, y]) {
+    if (this.pendingEdges.length)
+      throw new Error(
+        "You can only move the pointer if there is no edge defined"
+      );
+    this._updatePointer(this.plane.toWorldCoords([x, y]));
+    this.firstPoint.delete();
+    this.firstPoint = new Vector(this.pointer);
     return this;
   }
 
-  lineTo(x, y) {
+  lineTo([x, y]) {
     const endPoint = this.plane.toWorldCoords([x, y]);
     this.pendingEdges.push(makeLine(this.pointer, endPoint));
-    this.pointer = endPoint;
+    this._updatePointer(endPoint);
     return this;
   }
 
   line(xDist, yDist) {
     const pointer = this.plane.toLocalCoords(this.pointer);
-    return this.lineTo(xDist + pointer.x, yDist + pointer.y);
+    return this.lineTo([xDist + pointer.x, yDist + pointer.y]);
   }
 
   vLine(distance) {
@@ -133,26 +151,18 @@ export default class Sketcher extends BaseSketcher {
     return this.line(distance, 0);
   }
 
-  vLineTo(yCoord) {
-    return this.lineTo(this.pointer.x, yCoord);
-  }
-
-  hLineTo(xCoord) {
-    return this.lineTo(xCoord, this.pointer.y);
-  }
-
   polarLine(distance, angle) {
-    const angleInRads = angle * (Math.PI / 180);
+    const angleInRads = angle * DEG2RAD;
     const x = Math.cos(angleInRads) * distance;
     const y = Math.sin(angleInRads) * distance;
     return this.line(x, y);
   }
 
-  polarLineTo(distance, angle) {
-    const angleInRads = angle * (Math.PI / 180);
-    const x = Math.cos(angleInRads) * distance;
-    const y = Math.sin(angleInRads) * distance;
-    return this.lineTo(x, y);
+  polarLineTo([r, theta]) {
+    const angleInRads = theta * DEG2RAD;
+    const x = Math.cos(angleInRads) * r;
+    const y = Math.sin(angleInRads) * r;
+    return this.lineTo([x, y]);
   }
 
   bezierCurve(controlPoints, end) {
@@ -166,7 +176,8 @@ export default class Sketcher extends BaseSketcher {
     this.pendingEdges.push(
       makeBezierCurve([this.pointer, ...inWorldPoints, endPoint])
     );
-    this.pointer = endPoint;
+
+    this._updatePointer(endPoint);
     return this;
   }
 
@@ -229,7 +240,8 @@ export default class Sketcher extends BaseSketcher {
     this.pendingEdges.push(
       makeBezierCurve([this.pointer, startControl, endControl, endPoint])
     );
-    this.pointer = endPoint;
+
+    this._updatePointer(endPoint);
     gc();
     return this;
   }
@@ -242,13 +254,22 @@ export default class Sketcher extends BaseSketcher {
     );
   }
 
-  threePointsArc(center, end) {
-    const gpoint1 = this.plane.toWorldCoords(center);
+  threePointsArcTo(end, centerPoint) {
+    const gpoint1 = this.plane.toWorldCoords(centerPoint);
     const gpoint2 = this.plane.toWorldCoords(end);
 
     this.pendingEdges.push(makeThreePointArc(this.pointer, gpoint1, gpoint2));
-    this.pointer = gpoint2;
+
+    this._updatePointer(gpoint2);
     return this;
+  }
+
+  threePointsArc(xDist, yDist, viaXDist, viaYDist) {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.threePointsArcTo(
+      [pointer.x + xDist, pointer.y + yDist],
+      [pointer.x + viaXDist, pointer.y + viaYDist]
+    );
   }
 
   tangentArcTo(end) {
@@ -259,7 +280,7 @@ export default class Sketcher extends BaseSketcher {
       makeTangentArc(previousEdge.endPoint, previousEdge.tangentAt(1), endPoint)
     );
 
-    this.pointer = endPoint;
+    this._updatePointer(endPoint);
     return this;
   }
 
@@ -286,7 +307,7 @@ export default class Sketcher extends BaseSketcher {
     sagVector.delete();
 
     this.pendingEdges.push(makeThreePointArc(this.pointer, sagPoint, endPoint));
-    this.pointer = endPoint;
+    this._updatePointer(endPoint);
 
     sagPoint.delete();
     return this;
@@ -310,13 +331,16 @@ export default class Sketcher extends BaseSketcher {
       throw new Error("No lines to convert into a wire");
     const wire = assembleWire(this.pendingEdges);
     this.pendingEdges.forEach((e) => e.delete());
+    this.pointer.delete();
+    this.firstPoint.delete();
+
     return wire;
   }
 
   close(shapeConfig) {
     if (!this.pointer.equals(this.firstPoint)) {
       const endpoint = this.plane.toLocalCoords(this.firstPoint);
-      this.lineTo(endpoint.x, endpoint.y);
+      this.lineTo([endpoint.x, endpoint.y]);
     }
 
     return super.close(shapeConfig);
@@ -339,25 +363,6 @@ export default class Sketcher extends BaseSketcher {
     mirror.delete();
 
     const newWire = assembleWire([wire, mirroredWire]);
-    return this._postProcessWire(newWire, shaperConfig);
+    return this._shapeWire(newWire, shaperConfig);
   }
 }
-
-export const loftSketches = (sketches, loftConfig) => {
-  const [r, gc] = localGC();
-  const wires = sketches.map((s) => r(s.close({ returnType: "wire" })));
-
-  const shape = loft(wires, loftConfig);
-  gc();
-  return shape;
-};
-
-export const sweepSketch = (profileSketch, spineSketch, sweepConfig) => {
-  const [r, gc] = localGC();
-
-  const profile = r(profileSketch.close({ returnType: "wire" }));
-  const spine = r(spineSketch.buildWire());
-  const shape = genericSweep(profile, spine, sweepConfig);
-  gc();
-  return shape;
-};

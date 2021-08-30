@@ -24,6 +24,29 @@ export const makeCircle = (radius, center = [0, 0, 0], normal = [0, 0, 1]) => {
   return shape;
 };
 
+export const makeEllipse = (
+  majorRadius,
+  minorRadius,
+  center = [0, 0, 0],
+  normal = [0, 0, 1],
+  xDir
+) => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const ax = r(makeAx2(center, normal, xDir));
+
+  if (minorRadius > majorRadius) {
+    throw new Error("The minor radius must be smaller than the major one");
+  }
+  const ellipseGp = r(new oc.gp_Elips_2(ax, majorRadius, minorRadius));
+  const edgeMaker = r(new oc.BRepBuilderAPI_MakeEdge_12(ellipseGp));
+  const shape = new Edge(edgeMaker.Edge());
+  gc();
+
+  return shape;
+};
+
 export const makeHelix = (
   pitch,
   height,
