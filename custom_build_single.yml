@@ -4,6 +4,7 @@ mainBuild:
     - symbol: Message_ProgressRange
     - symbol: TColgp_Array1OfDir
     - symbol: TColgp_Array1OfPnt
+    - symbol: TColgp_Array1OfPnt2d
     - symbol: TColgp_Array2OfPnt
     - symbol: TColStd_Array1OfBoolean
     - symbol: TColgp_Array1OfVec
@@ -28,18 +29,32 @@ mainBuild:
     - symbol: Geom2d_Curve
     - symbol: Geom2d_BoundedCurve
     - symbol: Geom2d_TrimmedCurve
+    - symbol: Geom2d_BezierCurve
+    - symbol: Geom2d_BSplineCurve
     - symbol: Geom2d_Geometry
+    - symbol: Geom2d_Ellipse
+    - symbol: Geom2d_Circle
+    - symbol: Handle_Geom2d_Geometry
     - symbol: Handle_Geom2d_Line
     - symbol: Handle_Geom2d_Curve
     - symbol: Handle_Geom2d_BoundedCurve
     - symbol: Handle_Geom2d_TrimmedCurve
+    - symbol: Handle_Geom2d_Ellipse
+    - symbol: Handle_Geom2d_Circle
+    - symbol: Handle_Geom2d_BezierCurve
+    - symbol: Handle_Geom2d_BSplineCurve
+    - symbol: gp_Vec2d
     - symbol: gp_Pnt2d
     - symbol: gp_Dir2d
+    - symbol: gp_Ax2d
     - symbol: GCE2d_Root
     - symbol: GCE2d_MakeSegment
+    - symbol: GCE2d_MakeArcOfCircle
+    - symbol: GCE2d_MakeArcOfEllipse
 
 
     - symbol: GeomAbs_CurveType
+    - symbol: GeomAbs_SurfaceType
     - symbol: GeomAbs_Shape
     - symbol: Geom_Geometry
     - symbol: Geom_Curve
@@ -101,8 +116,10 @@ mainBuild:
     - symbol: BRepMesh_IncrementalMesh
     - symbol: BRepMesh_DiscretRoot
 
+    - symbol: BRepAdaptor_Surface
     - symbol: BRepAdaptor_Curve
     - symbol: Adaptor3d_Curve
+    - symbol: Adaptor3d_Surface
     - symbol: BRepAdaptor_CompCurve
 
     - symbol: StlAPI_Writer
@@ -137,6 +154,7 @@ mainBuild:
     - symbol: BRepBuilderAPI_MakeWire
     - symbol: BRepBuilderAPI_MakeFace
     - symbol: BRepBuilderAPI_MakeVertex
+    - symbol: BRepBuilderAPI_TransitionMode
     - symbol: BRepPrimAPI_MakeOneAxis
     - symbol: BRepPrimAPI_MakeCylinder
     - symbol: BRepPrimAPI_MakeBox
@@ -157,6 +175,8 @@ mainBuild:
     - symbol: BRepFilletAPI_LocalOperation
     - symbol: BRepFilletAPI_MakeFillet
     - symbol: BRepFilletAPI_MakeChamfer
+    - symbol: BRepFeat_MakeDPrism
+    - symbol: BRepFeat_Form
     - symbol: ChFi3d_FilletShape
     - symbol: ChFiDS_ChamfMode
     - symbol: GeomAbs_JoinType
