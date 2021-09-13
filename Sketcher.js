@@ -1,109 +1,16 @@
-import { Plane, Vector, createNamedPlane } from "./geom.js";
+import { Vector } from "./geom.js";
 import { makeMirrorMatrix } from "./geomHelpers.js";
 import { localGC } from "./register.js";
 import { DEG2RAD } from "./constants.js";
 import {
   makeLine,
-  makeFace,
   makeThreePointArc,
   makeBezierCurve,
   makeTangentArc,
   assembleWire,
 } from "./shapeHelpers.js";
 
-import {
-  basicFaceExtrusion,
-  complexExtrude,
-  twistExtrude,
-  revolution,
-  loft,
-  genericSweep,
-} from "./addThickness.js";
-import { getOC } from "./oclib.js";
-
-const shapeClosedPlanarWireAsSolid = (
-  wire,
-  plane,
-  {
-    returnType,
-    extrusionDistance,
-    twistAngle,
-    extrusionProfile,
-    revolutionAxis = [0, 0, 1],
-  }
-) => {
-  const [r, gc] = localGC();
-
-  if (returnType === "revolutionSolid") {
-    const face = r(makeFace(wire));
-    const solid = revolution(face, plane.origin, revolutionAxis);
-    gc();
-    return solid;
-  }
-
-  const extrusionVec = r(plane.zDir.multiply(extrusionDistance));
-
-  if (extrusionProfile && !twistAngle) {
-    const solid = complexExtrude(
-      wire,
-      plane.origin,
-      extrusionVec,
-      extrusionProfile
-    );
-    gc();
-    return solid;
-  }
-
-  if (twistAngle) {
-    const solid = twistExtrude(
-      wire,
-      twistAngle,
-      plane.origin,
-      extrusionVec,
-      extrusionProfile
-    );
-    gc();
-    return solid;
-  }
-
-  const face = r(makeFace(wire));
-  const solid = basicFaceExtrusion(face, extrusionVec);
-
-  gc();
-  return solid;
-};
-
-export class BaseSketcher {
-  constructor(plane = "XY", origin = [0, 0, 0]) {
-    this.oc = getOC();
-
-    if (plane instanceof Plane) {
-      this.plane = plane;
-    } else {
-      this.plane = createNamedPlane(plane, origin);
-    }
-  }
-
-  _shapeWire(wire, config) {
-    if (config.returnType === "wire") return wire;
-    if (config.returnType === "face") {
-      const face = makeFace(wire);
-      wire.delete();
-      return face;
-    }
-
-    return shapeClosedPlanarWireAsSolid(wire, this.plane, config);
-  }
-
-  buildWire() {
-    throw new Error("build wire needs to be implemented by children classes");
-  }
-
-  close(shaperConfig) {
-    const wire = this.buildWire();
-    return this._shapeWire(wire, shaperConfig);
-  }
-}
+import { BaseSketcher } from "./sketcherlib.js";
 
 export default class Sketcher extends BaseSketcher {
   constructor(plane, origin) {
@@ -113,6 +20,7 @@ export default class Sketcher extends BaseSketcher {
     this.firstPoint = new Vector(this.plane.origin);
 
     this.pendingEdges = [];
+    this._mirrorWire = false;
   }
 
   _updatePointer(newPointer) {
@@ -151,6 +59,26 @@ export default class Sketcher extends BaseSketcher {
     return this.line(distance, 0);
   }
 
+  tangentLine(distance) {
+    const [r, gc] = localGC();
+    const previousEdge = this.pendingEdges.length
+      ? this.pendingEdges[this.pendingEdges.length - 1]
+      : null;
+
+    if (!previousEdge)
+      throw new Error("you need a previous edge to create a tangent line");
+
+    const tangent = r(previousEdge.tangentAt(1));
+    const endPoint = r(tangent.normalized().multiply(distance)).add(
+      this.pointer
+    );
+
+    this.pendingEdges.push(makeLine(this.pointer, endPoint));
+    this._updatePointer(endPoint);
+    gc();
+    return this;
+  }
+
   polarLine(distance, angle) {
     const angleInRads = angle * DEG2RAD;
     const x = Math.cos(angleInRads) * distance;
@@ -165,7 +93,7 @@ export default class Sketcher extends BaseSketcher {
     return this.lineTo([x, y]);
   }
 
-  bezierCurve(controlPoints, end) {
+  bezierCurveTo(end, controlPoints) {
     let cp = controlPoints;
     if (cp.length === 2 && !Array.isArray(cp[0])) {
       cp = [cp];
@@ -181,14 +109,22 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
+  quadraticBezierCurveTo(end, controlPoint) {
+    return this.bezierCurveTo(end, [controlPoint]);
+  }
+
+  cubicBezierCurveTo(end, startControlPoint, endControlPoint) {
+    return this.bezierCurveTo(end, [startControlPoint, endControlPoint]);
+  }
+
   smoothSplineTo(end, config) {
     const [r, gc] = localGC();
 
     let conf = config;
-    if (!config || (!config.deviation && config.deviation !== 0)) {
-      conf = { deviation: config };
+    if (!config || (!config.endSkew && config.endSkew !== 0)) {
+      conf = { endSkew: config };
     }
-    const { deviation = 0, startFactor = 1, endFactor = 1 } = conf;
+    const { endSkew = 0, startFactor = 1, endFactor = 1 } = conf;
 
     const endPoint = this.plane.toWorldCoords(end);
     const previousEdge = this.pendingEdges.length
@@ -200,7 +136,7 @@ export default class Sketcher extends BaseSketcher {
     let startPoleDirection;
     if (!previousEdge) {
       startPoleDirection = r(endPoint.sub(this.pointer));
-    } else if (previousEdge.geomType === "BEZIER") {
+    } else if (previousEdge.geomType === "BEZIER_CURVE") {
       const rawCurve = r(previousEdge.curve).wrapped.Bezier().get();
       const previousPole = r(new Vector(rawCurve.Pole(rawCurve.NbPoles() - 1)));
 
@@ -215,15 +151,15 @@ export default class Sketcher extends BaseSketcher {
     const startControl = r(this.pointer.add(poleDistance));
 
     let endPoleDirection;
-    if (Array.isArray(deviation)) {
-      endPoleDirection = r(this.plane.toWorldCoords(deviation));
-    } else if (deviation === "symmetric") {
+    if (Array.isArray(endSkew)) {
+      endPoleDirection = r(this.plane.toWorldCoords(endSkew));
+    } else if (endSkew === "symmetric") {
       endPoleDirection = r(startPoleDirection.multiply(-1));
     } else {
       const direction = r(endPoint.sub(this.pointer));
       const d = r(this.plane.toLocalCoords(direction));
 
-      const angle = deviation * DEG2RAD;
+      const angle = endSkew * DEG2RAD;
       endPoleDirection = r(
         this.plane.toWorldCoords([
           d.x * Math.cos(angle) - d.y * Math.sin(angle),
@@ -326,27 +262,7 @@ export default class Sketcher extends BaseSketcher {
     return this.sagittaArc(distance, 0, sagitta);
   }
 
-  buildWire() {
-    if (!this.pendingEdges.length)
-      throw new Error("No lines to convert into a wire");
-    const wire = assembleWire(this.pendingEdges);
-    this.pendingEdges.forEach((e) => e.delete());
-    this.pointer.delete();
-    this.firstPoint.delete();
-
-    return wire;
-  }
-
-  close(shapeConfig) {
-    if (!this.pointer.equals(this.firstPoint)) {
-      const endpoint = this.plane.toLocalCoords(this.firstPoint);
-      this.lineTo([endpoint.x, endpoint.y]);
-    }
-
-    return super.close(shapeConfig);
-  }
-
-  closeWithMirror(shaperConfig) {
+  _mirrorWireOnStartEnd(wire) {
     const startToEndVector = this.pointer.sub(this.firstPoint).normalize();
     const mirrorVector = startToEndVector.cross(this.plane.zDir);
 
@@ -355,14 +271,42 @@ export default class Sketcher extends BaseSketcher {
       normal: mirrorVector,
     });
 
-    const wire = this.buildWire();
-
     const mirroredWire = wire.transformShape(mirror);
     startToEndVector.delete();
     mirrorVector.delete();
     mirror.delete();
 
-    const newWire = assembleWire([wire, mirroredWire]);
-    return this._shapeWire(newWire, shaperConfig);
+    const combinedWire = assembleWire([wire, mirroredWire]);
+    mirroredWire.delete();
+
+    return combinedWire;
+  }
+
+  buildWire() {
+    if (!this.pendingEdges.length)
+      throw new Error("No lines to convert into a wire");
+
+    let wire = assembleWire(this.pendingEdges);
+    this.pendingEdges.forEach((e) => e.delete());
+
+    if (this._mirrorWire) {
+      wire = this._mirrorWireOnStartEnd(wire);
+    }
+
+    this.pointer.delete();
+    this.firstPoint.delete();
+    return wire;
+  }
+
+  _closeSketch() {
+    if (!this.pointer.equals(this.firstPoint) && !this._mirrorWire) {
+      const endpoint = this.plane.toLocalCoords(this.firstPoint);
+      this.lineTo([endpoint.x, endpoint.y]);
+    }
+  }
+
+  closeWithMirror(shaperConfig) {
+    this._mirrorWire = true;
+    return this.close(shaperConfig);
   }
 }

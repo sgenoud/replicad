@@ -1,51 +1,48 @@
 import { assembleWire, makeCircle, makeEllipse } from "./shapeHelpers";
 import { Vector } from "./geom";
-import Sketcher, { BaseSketcher } from "./Sketcher";
+import Sketcher from "./Sketcher";
+import { makePlane } from "./sketcherlib.js";
+import Sketch from "./Sketch.js";
 
-class CicleSketcher extends BaseSketcher {
-  constructor(radius = 1, plane, origin) {
-    super(plane, origin);
-    this.radius = radius;
-  }
-
-  buildWire() {
-    return assembleWire([
-      makeCircle(this.radius, this.plane.origin, this.plane.zDir),
-    ]);
-  }
-}
-export const sketchCircle = (radius, { plane, origin } = {}) => {
-  return new CicleSketcher(radius, plane, origin);
+export const sketchCircle = (radius, { plane: sourcePlane, origin } = {}) => {
+  const plane = makePlane(sourcePlane, origin);
+  const wire = assembleWire([makeCircle(radius, plane.origin, plane.zDir)]);
+  const sketch = new Sketch(wire, {
+    defaultOrigin: origin,
+    defaultDirection: plane.zDir,
+  });
+  plane.delete();
+  return sketch;
 };
 
-class EllipseSketcher extends BaseSketcher {
-  constructor(xRadius = 1, yRadius = 2, plane, origin) {
-    super(plane, origin);
-    this.xRadius = xRadius;
-    this.yRadius = yRadius;
+export const sketchEllipse = (
+  xRadius = 1,
+  yRadius = 2,
+  { plane: sourcePlane, origin } = {}
+) => {
+  const plane = makePlane(sourcePlane, origin);
+  const xDir = new Vector(plane.xDir);
+
+  let majR = xRadius;
+  let minR = yRadius;
+
+  if (yRadius > xRadius) {
+    xDir.rotate(90, plane.origin, plane.zDir);
+    majR = yRadius;
+    minR = xRadius;
   }
 
-  buildWire() {
-    const xDir = new Vector(this.plane.xDir);
+  const wire = assembleWire([
+    makeEllipse(majR, minR, plane.origin, plane.zDir, xDir),
+  ]);
+  xDir.delete();
 
-    let majR = this.xRadius;
-    let minR = this.yRadius;
-
-    if (this.yRadius > this.xRadius) {
-      xDir.rotate(90, this.plane.origin, this.plane.zDir);
-      majR = this.yRadius;
-      minR = this.xRadius;
-    }
-
-    const wire = assembleWire([
-      makeEllipse(majR, minR, this.plane.origin, this.plane.zDir, xDir),
-    ]);
-    xDir.delete();
-    return wire;
-  }
-}
-export const sketchEllipse = (xRadius, yRadius, { plane, origin } = {}) => {
-  return new EllipseSketcher(xRadius, yRadius, plane, origin);
+  const sketch = new Sketch(wire, {
+    defaultOrigin: origin,
+    defaultDirection: plane.zDir,
+  });
+  plane.delete();
+  return sketch;
 };
 
 export const sketchRectangle = (xLength, yLength, { plane, origin } = {}) => {
@@ -54,7 +51,8 @@ export const sketchRectangle = (xLength, yLength, { plane, origin } = {}) => {
     .hLine(xLength)
     .vLine(-yLength)
     .hLine(-xLength)
-    .vLine(yLength);
+    .vLine(yLength)
+    .done();
 };
 
 export const sketchPolysides = (
@@ -80,7 +78,7 @@ export const sketchPolysides = (
     points.forEach(([x, y]) => sketch.lineTo([x, y]));
   }
 
-  return sketch;
+  return sketch.done();
 };
 
 export const polysideInnerRadius = (outerRadius, sidesCount, sagitta = 0) => {
@@ -90,4 +88,16 @@ export const polysideInnerRadius = (outerRadius, sidesCount, sagitta = 0) => {
   // Only a concave sagitta changes the inner radius
   if (sagitta <= 0) return innerRadius;
   return innerRadius - sagitta;
+};
+
+export const sketchFaceOffset = (face, offset) => {
+  const defaultOrigin = face.center;
+  const defaultDirection = face.normalAt();
+  const wire = face.outerWire().offset2D(offset);
+
+  const sketch = new Sketch(wire, { defaultOrigin, defaultDirection });
+  defaultOrigin.delete();
+  defaultDirection.delete();
+
+  return sketch;
 };

@@ -1,14 +1,22 @@
-import { WrappingObj, registerObj, unregisterObj } from "./register.js";
-import { DEG2RAD } from "./constants.js";
+import { WrappingObj, RegisteredObj } from "./register.js";
+import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { getOC } from "./oclib.js";
 
 const round3 = (v) => Math.round(v * 1000) / 1000;
 
-export const makeAx3 = (center, dir) => {
+export const makeAx3 = (center, dir, xDir) => {
   const oc = getOC();
   const origin = asPnt(center);
   const direction = asDir(dir);
-  const axis = new oc.gp_Ax3_4(origin, direction);
+
+  let axis;
+  if (xDir) {
+    const xDirection = asDir(xDir);
+    axis = new oc.gp_Ax3_3(origin, direction, xDirection);
+    xDirection.delete();
+  } else {
+    axis = new oc.gp_Ax3_4(origin, direction);
+  }
   origin.delete();
   direction.delete();
   return axis;
@@ -123,7 +131,7 @@ export class Vector extends WrappingObj {
   }
 
   getAngle(v) {
-    return this.wrapped.Angle(v.wrapped);
+    return this.wrapped.Angle(v.wrapped) * RAD2DEG;
   }
 
   projectToPlane(plane) {
@@ -183,7 +191,8 @@ export class Matrix extends WrappingObj {}
 
 export class Transformation extends WrappingObj {
   constructor(transform) {
-    super(transform || new this.oc.gp_Trsf_1());
+    const oc = getOC();
+    super(transform || new oc.gp_Trsf_1());
   }
 
   translate(vector) {
@@ -227,8 +236,9 @@ export class Transformation extends WrappingObj {
   }
 }
 
-export class Plane {
+export class Plane extends RegisteredObj {
   constructor(origin, xDirection = null, normal = [0, 0, 1]) {
+    super();
     this.oc = getOC();
 
     const zDir = new Vector(normal);
@@ -254,12 +264,20 @@ export class Plane {
     this.yDir = this.zDir.cross(this.xDir).normalize();
 
     this.origin = new Vector(origin);
-    registerObj(this);
   }
 
   delete() {
     this.lcs.delete();
-    unregisterObj(this);
+    this.localToGlobal.delete();
+    this.xDir.delete();
+    this.yDir.delete();
+    this.zDir.delete();
+    this._origin.delete();
+    super.delete();
+  }
+
+  clone() {
+    return new Plane(this.origin, this.xDir, this.zDir);
   }
 
   get origin() {

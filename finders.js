@@ -1,53 +1,7 @@
 import { Vector, asPnt, createNamedPlane } from "./geom.js";
-import { registerObj, unregisterObj } from "./register.js";
+import { RegisteredObj } from "./register.js";
 import { DEG2RAD } from "./constants.js";
 import { getOC } from "./oclib.js";
-
-export const edgeIsParallelTo = (edge, parallelTo = [0, 0, 1]) => {
-  const { startPoint, endPoint } = edge;
-  const v = new Vector(parallelTo);
-  const direction = endPoint.sub(startPoint).normalize();
-  const dotProduct = direction.dot(v);
-
-  startPoint.delete();
-  endPoint.delete();
-  v.delete();
-  direction.delete();
-
-  return Math.abs(dotProduct - 1) < 1e-6;
-};
-
-export const findInList = (edgesList, value) => {
-  return (edge) => {
-    const found = edgesList.find((e) => e.isSame(edge));
-    if (found) return value;
-    return null;
-  };
-};
-
-export const max = (array, maxFcn) => {
-  return array
-    .map((elem) => ({ value: maxFcn(elem), elem }))
-    .reduce((a, b) => {
-      if (!a) return b;
-      if (!b) return a;
-
-      if (a.value >= b.value) return a;
-      return b;
-    }, null).elem;
-};
-
-export const min = (array, minFcn) => {
-  return array
-    .map((elem) => ({ value: minFcn(elem), elem }))
-    .reduce((a, b) => {
-      if (!a) return b;
-      if (!b) return a;
-
-      if (a.value <= b.value) return a;
-      return b;
-    }, null).elem;
-};
 
 const DIRECTIONS = {
   X: [1, 0, 0],
@@ -60,19 +14,30 @@ const PLANE_TO_DIR = {
   XY: [0, 0, 1],
 };
 
-class Finder {
+class Finder extends RegisteredObj {
   constructor() {
+    super();
     this.oc = getOC();
     this.filters = [];
     this.references = [];
-    registerObj(this);
   }
 
   delete() {
     this.references.forEach((r) => r.delete());
     this.references = [];
     this.filters = [];
-    unregisterObj(this);
+    this.oc = null;
+    super.delete();
+  }
+
+  inList(elementList, { keepList = false } = {}) {
+    if (!keepList) this.references.push(...elementList);
+
+    const elementInList = ({ element }) => {
+      return !!elementList.find((e) => e.isSame(element));
+    };
+    this.filters.push(elementInList);
+    return this;
   }
 
   atAngleWith(direction = "Z", angle = 0) {
@@ -96,7 +61,7 @@ class Finder {
     return this;
   }
 
-  containsPoint(point) {
+  atDistance(distance, point = [0, 0, 0]) {
     const pnt = asPnt(point);
 
     const vertexMaker = new this.oc.BRepBuilderAPI_MakeVertex(pnt);
@@ -110,13 +75,17 @@ class Finder {
       distanceBuilder.LoadS2(element.wrapped);
       distanceBuilder.Perform();
 
-      return distanceBuilder.Value() < 1e-6;
+      return Math.abs(distanceBuilder.Value() - distance) < 1e-6;
     };
 
     this.filters.push(checkPoint);
     this.references.push(distanceBuilder);
 
     return this;
+  }
+
+  containsPoint(point) {
+    return this.atDistance(0, point);
   }
 
   inBox(corner1, corner2) {
@@ -210,6 +179,38 @@ export class FaceFinder extends Finder {
     }
   }
 
+  ofSurfaceType(surfaceType) {
+    const check = ({ element }) => {
+      return element.geomType === surfaceType;
+    };
+    this.filters.push(check);
+    return this;
+  }
+
+  inPlane(inputPlane, origin) {
+    let plane = inputPlane;
+    if (typeof inputPlane === "string") {
+      plane = createNamedPlane(plane, origin);
+      this.references.push(plane);
+    }
+
+    this.parallelTo(plane);
+
+    const centerInPlane = ({ element }) => {
+      const point = element.center;
+      const projectedPoint = point.projectToPlane(plane);
+
+      const isSamePoint = point.equals(projectedPoint);
+      point.delete();
+      projectedPoint.delete();
+
+      return isSamePoint;
+    };
+
+    this.filters.push(centerInPlane);
+    return this;
+  }
+
   shouldKeep(element) {
     const normal = element.normalAt();
     const shouldKeep = this.filters.every((filter) =>
@@ -231,6 +232,14 @@ export class FaceFinder extends Finder {
 export class EdgeFinder extends Finder {
   inDirection(direction) {
     return this.atAngleWith(direction, 0);
+  }
+
+  ofCurveType(curveType) {
+    const check = ({ element }) => {
+      return element.geomType === curveType;
+    };
+    this.filters.push(check);
+    return this;
   }
 
   parallelTo(plane) {

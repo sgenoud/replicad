@@ -1,4 +1,4 @@
-import { Edge, Face, Wire, Solid } from "./shapes";
+import { Edge, Face, Wire, Solid, Vertex } from "./shapes";
 import { asPnt, asDir, makeAx3, makeAx2 } from "./geom";
 import { getOC } from "./oclib.js";
 import { localGC } from "./register.js";

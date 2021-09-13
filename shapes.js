@@ -93,6 +93,18 @@ export class Shape extends WrappingObj {
     return newShape;
   }
 
+  translateX(distance) {
+    return this.translate([distance, 0, 0]);
+  }
+
+  translateY(distance) {
+    return this.translate([0, distance, 0]);
+  }
+
+  translateZ(distance) {
+    return this.translate([0, 0, distance]);
+  }
+
   rotate(angle, position = [0, 0, 0], direction = [0, 0, 1]) {
     const dir = asDir(direction);
     const origin = asPnt(position);
@@ -437,56 +449,71 @@ export class _1DShape extends Shape {
     return retVal;
   }
 
-  get startPoint() {
-    const curve = this._geomAdaptor();
-    const umin = curve.Value(curve.FirstParameter());
-    curve.delete();
-
-    return new Vector(umin);
-  }
-
-  get endPoint() {
-    const curve = this._geomAdaptor();
-    const umax = curve.Value(curve.LastParameter());
-    curve.delete();
-
-    return new Vector(umax);
-  }
-
-  tangentAt(position) {
-    const curve = this._geomAdaptor();
-
-    let pos = position;
-    if (!position) {
-      pos = (curve.LastParameter() - curve.FirstParameter()) / 2;
-    }
-
-    const tmp = new this.oc.gp_Pnt_1();
-    const res = new this.oc.gp_Vec_1();
-
-    curve.D1(pos, tmp, res);
-    const tangent = new Vector(res);
-
-    curve.delete();
-    tmp.delete();
-    res.delete();
-
-    return tangent;
-  }
-}
-
-export class Curve extends WrappingObj {}
-
-export class Edge extends _1DShape {
-  _geomAdaptor() {
-    return new this.oc.BRepAdaptor_Curve_2(this.wrapped);
-  }
-
   get curve() {
     return new Curve(this._geomAdaptor());
   }
 
+  get startPoint() {
+    const curve = this.curve;
+    const outval = curve.startPoint;
+    curve.delete();
+    return outval;
+  }
+
+  get endPoint() {
+    const curve = this.curve;
+    const outval = curve.endPoint;
+    curve.delete();
+    return outval;
+  }
+
+  tangentAt(position) {
+    const curve = this.curve;
+    const tangent = curve.tangentAt(position);
+    curve.delete();
+    return tangent;
+  }
+
+  get isClosed() {
+    const curve = this.curve;
+    const isClosed = curve.isClosed;
+    curve.delete();
+
+    return isClosed;
+  }
+
+  get isPeriodic() {
+    const curve = this.curve;
+    const isPeriodic = curve.isPeriodic;
+    curve.delete();
+    return isPeriodic;
+  }
+
+  get period() {
+    const curve = this.curve;
+    const period = curve.period;
+    curve.delete();
+    return period;
+  }
+
   get geomType() {
+    const curve = this.curve;
+    const type = curve.curveType;
+    curve.delete();
+    return type;
+  }
+}
+
+export class Curve extends WrappingObj {
+  get repr() {
+    const { startPoint, endPoint } = this;
+    const retVal = `start: (${this.startPoint.repr}) end:(${this.endPoint.repr}}`;
+    startPoint.delete();
+    endPoint.delete();
+    return retVal;
+  }
+
+  get curveType() {
     const ga = this.oc.GeomAbs_CurveType;
 
     const CAST_MAP = new Map([
@@ -495,16 +522,63 @@ export class Edge extends _1DShape {
       [ga.GeomAbs_Ellipse, "ELLIPSE"],
       [ga.GeomAbs_Hyperbola, "HYPERBOLA"],
       [ga.GeomAbs_Parabola, "PARABOLA"],
-      [ga.GeomAbs_BezierCurve, "BEZIER"],
-      [ga.GeomAbs_BSplineCurve, "BSPLINE"],
-      [ga.GeomAbs_OffsetCurve, "OFFSET"],
-      [ga.GeomAbs_OtherCurve, "OTHER"],
+      [ga.GeomAbs_BezierCurve, "BEZIER_CURVE"],
+      [ga.GeomAbs_BSplineCurve, "BSPLINE_CURVE"],
+      [ga.GeomAbs_OffsetCurve, "OFFSET_CURVE"],
+      [ga.GeomAbs_OtherCurve, "OTHER_CURVE"],
     ]);
 
-    const geom = this._geomAdaptor();
-    const shapeType = CAST_MAP.get(geom.GetType());
-    geom.delete();
+    const shapeType = CAST_MAP.get(this.wrapped.GetType());
     return shapeType;
+  }
+
+  get startPoint() {
+    const umin = this.wrapped.Value(this.wrapped.FirstParameter());
+    return new Vector(umin);
+  }
+
+  get endPoint() {
+    const umax = this.wrapped.Value(this.wrapped.LastParameter());
+    return new Vector(umax);
+  }
+
+  tangentAt(position) {
+    let pos = position;
+    if (!position) {
+      pos = (this.wrapped.LastParameter() - this.wrapped.FirstParameter()) / 2;
+    }
+
+    const tmp = new this.oc.gp_Pnt_1();
+    const res = new this.oc.gp_Vec_1();
+
+    this.wrapped.D1(pos, tmp, res);
+    const tangent = new Vector(res);
+
+    tmp.delete();
+    res.delete();
+
+    return tangent;
+  }
+
+  get isClosed() {
+    const isClosed = this.wrapped.IsClosed();
+    return isClosed;
+  }
+
+  get isPeriodic() {
+    const isPeriodic = this.wrapped.IsPeriodic();
+    return isPeriodic;
+  }
+
+  get period() {
+    const period = this.wrapped.Period();
+    return period;
+  }
+}
+
+export class Edge extends _1DShape {
+  _geomAdaptor() {
+    return new this.oc.BRepAdaptor_Curve_2(this.wrapped);
   }
 }
 
@@ -535,40 +609,46 @@ export class Wire extends _1DShape {
 }
 
 export class Face extends Shape {
-  get _geomAdaptor() {
-    return new this.oc.BRep_Tool.Surface_2(this.wrapped);
+  _geomAdaptor() {
+    return new this.oc.BRepAdaptor_Surface_2(this.wrapped, false);
   }
 
-  extrude(length, direction) {
-    const baseDirection = direction ? direction.normalize() : this.normalAt();
-    const extrusionVec = baseDirection.multiply(length);
+  get geomType() {
+    const ga = this.oc.GeomAbs_SurfaceType;
 
-    const solidBuilder = new this.oc.BRepPrimAPI_MakePrism_1(
-      this.wrapped,
-      extrusionVec.wrapped,
-      false,
-      true
-    );
+    const CAST_MAP = new Map([
+      [ga.GeomAbs_Plane, "PLANE"],
+      [ga.GeomAbs_Cylinder, "CYLINDRE"],
+      [ga.GeomAbs_Cone, "CONE"],
+      [ga.GeomAbs_Sphere, "SPHERE"],
+      [ga.GeomAbs_Torus, "TORUS"],
+      [ga.GeomAbs_BezierSurface, "BEZIER_SURFACE"],
+      [ga.GeomAbs_BSplineSurface, "BSPLINE_SURFACE"],
+      [ga.GeomAbs_SurfaceOfRevolution, "REVOLUTION_SURFACE"],
+      [ga.GeomAbs_SurfaceOfExtrusion, "EXTRUSION_SURFACE"],
+      [ga.GeomAbs_OffsetSurface, "OFFSET_SURFACE"],
+      [ga.GeomAbs_OtherSurface, "OTHER_SURFACE"],
+    ]);
 
-    const solid = cast(downcast(solidBuilder.Shape()));
+    const geom = this._geomAdaptor();
+    const shapeType = CAST_MAP.get(geom.GetType());
+    geom.delete();
+    return shapeType;
+  }
 
-    baseDirection.delete();
-    extrusionVec.delete();
-    solidBuilder.delete();
-    this.delete();
-
-    return solid;
+  get UVBounds() {
+    return this.oc.cadeau.UVBounds(this.wrapped);
   }
 
   pointOnSurface(u, v) {
-    const { uMin, uMax, vMin, vMax } = this.oc.cadeau.UVBounds(this.wrapped);
-    const surface = this._geomAdaptor;
+    const { uMin, uMax, vMin, vMax } = this.UVBounds;
+    const surface = this._geomAdaptor();
     const p = new this.oc.gp_Pnt_1();
 
     const absoluteU = u * (uMax - uMin) + uMin;
     const absoluteV = v * (vMax - vMin) + vMin;
 
-    surface.get().D0(absoluteU, absoluteV, p);
+    surface.D0(absoluteU, absoluteV, p);
     const point = new Vector(p);
     surface.delete();
     p.delete();
@@ -581,11 +661,12 @@ export class Face extends Shape {
     let v = 0;
 
     if (!locationVector) {
-      const { uMin, uMax, vMin, vMax } = this.oc.cadeau.UVBounds(this.wrapped);
+      const { uMin, uMax, vMin, vMax } = this.UVBounds;
       u = 0.5 * (uMin + uMax);
       v = 0.5 * (vMin + vMax);
     } else {
-      const surface = this._geomAdaptor;
+      const surface = new this.oc.BRep_Tool.Surface_2(this.wrapped);
+
       ({ u, v } = this.oc.cadeau.projectPointOnSurface(
         locationVector.toPnt(),
         surface

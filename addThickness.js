@@ -43,14 +43,33 @@ export const revolution = (
 export const genericSweep = (
   wire,
   spine,
-  { frenet = false, auxiliarySpine, law = null } = {}
+  {
+    frenet = false,
+    auxiliarySpine,
+    law = null,
+    transitionMode = "right",
+    withContact,
+    support,
+    forceProfileSpineOthogonality,
+  } = {}
 ) => {
   const oc = getOC();
+  const withCorrection =
+    transitionMode === "round" ? true : !!forceProfileSpineOthogonality;
   const sweepBuilder = new oc.BRepOffsetAPI_MakePipeShell(spine.wrapped);
-  if (!law) sweepBuilder.Add_1(wire.wrapped, false, false);
-  else sweepBuilder.SetLaw_1(wire.wrapped, law, false, false);
 
-  if (frenet) {
+  if (transitionMode) {
+    const mode = {
+      transformed: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_Transformed,
+      round: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RoundCorner,
+      right: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RightCorner,
+    }[transitionMode];
+    if (mode) sweepBuilder.SetTransitionMode(mode);
+  }
+
+  if (support) {
+    sweepBuilder.SetMode_4(support);
+  } else if (frenet) {
     sweepBuilder.SetMode_1(frenet);
   }
   if (auxiliarySpine) {
@@ -60,6 +79,10 @@ export const genericSweep = (
       oc.BRepFill_TypeOfContact.BRepFill_NoContact
     );
   }
+
+  if (!law) sweepBuilder.Add_1(wire.wrapped, !!withContact, withCorrection);
+  else sweepBuilder.SetLaw_1(wire.wrapped, law, !!withContact, withCorrection);
+
   sweepBuilder.Build();
   sweepBuilder.MakeSolid();
   const shape = cast(sweepBuilder.Shape());
@@ -83,6 +106,21 @@ const buildLawFromProfile = (extrusionLength, { profile, endFactor }) => {
   // This is an API compatibility issue
   // We might want to fix this in a way or another
   return law.Trim(0, extrusionLength, 1e-6);
+};
+
+export const supportExtrude = (wire, center, normal, support) => {
+  const [r, gc] = localGC();
+
+  const centerVec = r(new Vector(center));
+  const normalVec = r(new Vector(normal));
+
+  const mainSpineEdge = r(makeLine(centerVec, r(centerVec.add(normalVec))));
+  const spine = r(assembleWire([mainSpineEdge]));
+
+  const shape = genericSweep(wire, spine, { support });
+  gc();
+
+  return shape;
 };
 
 export const complexExtrude = (wire, center, normal, profileShape) => {

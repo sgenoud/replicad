@@ -12,18 +12,29 @@ export const clearRegister = (keepList = []) => {
   });
 };
 
-export class WrappingObj {
-  constructor(wrapped) {
-    this.oc = getOC();
-    this.wrapped = wrapped;
+export class RegisteredObj {
+  constructor() {
     registerObj(this);
+  }
+
+  delete() {
+    unregisterObj(this);
+  }
+}
+
+export class WrappingObj extends RegisteredObj {
+  constructor(wrapped) {
+    super();
+    this.oc = getOC();
+    if (!this.oc) console.log("wrapping", this.oc);
+    this.wrapped = wrapped;
   }
 
   delete() {
     this.oc = null;
     this.wrapped.delete();
     this.wrapped = null;
-    unregisterObj(this);
+    super.delete();
   }
 }
 

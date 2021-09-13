@@ -1,7 +1,8 @@
 import Sketcher from "./Sketcher.js";
+import FaceSketcher from "./Sketcher2d.js";
+import Sketch from "./Sketch.js";
 
-export { Sketcher };
-export * from "./sketchHelpers.js";
+export { Sketcher, Sketch, FaceSketcher };
 
 export * from "./constants.js";
 export * from "./oclib.js";
@@ -13,3 +14,4 @@ export * from "./shapeHelpers.js";
 export * from "./finders.js";
 export * from "./shortcuts.js";
 export * from "./cannedSketches.js";
+export * from "./addThickness.js";
