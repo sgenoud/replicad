@@ -608,12 +608,9 @@ export class Wire extends _1DShape {
   }
 }
 
-export class Face extends Shape {
-  _geomAdaptor() {
-    return new this.oc.BRepAdaptor_Surface_2(this.wrapped, false);
-  }
 
-  get geomType() {
+export class Surface extends WrappingObj {
+  get surfaceType() {
     const ga = this.oc.GeomAbs_SurfaceType;
 
     const CAST_MAP = new Map([
@@ -630,10 +627,42 @@ export class Face extends Shape {
       [ga.GeomAbs_OtherSurface, "OTHER_SURFACE"],
     ]);
 
-    const geom = this._geomAdaptor();
-    const shapeType = CAST_MAP.get(geom.GetType());
-    geom.delete();
+    const shapeType = CAST_MAP.get(this.wrapped.GetType());
     return shapeType;
+  }
+
+  pointOnSurface(u, v) {
+    const { uMin, uMax, vMin, vMax } = this.UVBounds;
+    const p = new this.oc.gp_Pnt_1();
+
+    const absoluteU = u * (uMax - uMin) + uMin;
+    const absoluteV = v * (vMax - vMin) + vMin;
+
+    this.wrapped.D0(absoluteU, absoluteV, p);
+    const point = new Vector(p);
+    p.delete();
+
+    return point;
+  }
+
+}
+
+
+
+export class Face extends Shape {
+  _geomAdaptor() {
+    return new this.oc.BRepAdaptor_Surface_2(this.wrapped, false);
+  }
+
+  get surface() {
+    return new Surface(this._geomAdaptor())
+  }
+
+  get geomType() {
+    const surface = this.surface
+    const geomType = surface.surfaceType
+    surface.delete()
+    return geomType
   }
 
   get UVBounds() {

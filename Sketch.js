@@ -7,6 +7,7 @@ import {
   twistExtrude,
   revolution,
   genericSweep,
+  loft,
 } from "./addThickness.js";
 
 export default class Sketch extends RegisteredObj {
@@ -50,8 +51,12 @@ export default class Sketch extends RegisteredObj {
     this._defaultDirection = new Vector(newDirection);
   }
 
+  _shouldClean(keep) {
+    return keep === false || (keep !== true && this.autoClean);
+  }
+
   _clean(keep) {
-    if (keep === false || (keep !== true && this.autoClean)) {
+    if (this._shouldClean(keep)) {
       this.delete();
     }
   }
@@ -139,6 +144,19 @@ export default class Sketch extends RegisteredObj {
     const shape = genericSweep(sketch.wire, this.wire, config);
     gc();
 
+    return shape;
+  }
+
+  loftWith(otherSketches, { keep, ...loftConfig } = {}) {
+    const sketchArray = Array.isArray(otherSketches)
+      ? [this, ...otherSketches]
+      : [this, otherSketches];
+    const shape = loft(
+      sketchArray.map((s) => s.wire),
+      loftConfig
+    );
+    this._clean(keep);
+    if (this._shouldClean) sketchArray.slice(1).forEach((s) => s.delete());
     return shape;
   }
 

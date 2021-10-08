@@ -164,6 +164,7 @@ export class Vector extends WrappingObj {
     const ax = makeAx1(center, direction);
     this.wrapped.Rotate(ax, angle * DEG2RAD);
     ax.delete();
+    return this;
   }
 
   transform(T) {

@@ -1,20 +1,26 @@
 import Sketch from "./Sketch";
-import { DEG2RAD } from "./constants.js";
+import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { localGC } from "./register.js";
 import { getOC } from "./oclib.js";
 import { assembleWire } from "./shapeHelpers";
 import { Edge } from "./shapes";
+import { convertSvgEllipseParams } from "./sketcherlib.js";
 
 import {
   normalize2d,
+  angle2d,
   samePoint,
   tangentAt,
   distance2d,
   axis2d,
+  rotate2d,
+  polarToCartesian,
+  cartesiantToPolar,
   make2dSegmentCurve,
   make2dTangentArc,
   make2dThreePointArc,
   make2dBezierCurve,
+  make2dEllipseArc,
 } from "./lib2d";
 
 export default class FaceSketcher {
@@ -86,16 +92,14 @@ export default class FaceSketcher {
 
   polarLine(distance, angle) {
     const angleInRads = angle * DEG2RAD;
-    const x = Math.cos(angleInRads) * distance;
-    const y = Math.sin(angleInRads) * distance;
+    const [x, y] = polarToCartesian(distance, angleInRads);
     return this.line(x, y);
   }
 
   polarLineTo([r, theta]) {
     const angleInRads = theta * DEG2RAD;
-    const x = Math.cos(angleInRads) * r;
-    const y = Math.sin(angleInRads) * r;
-    return this.lineTo([x, y]);
+    const point = polarToCartesian(r, angleInRads);
+    return this.lineTo(point);
   }
 
   threePointsArcTo(end, midPoint) {
@@ -111,9 +115,10 @@ export default class FaceSketcher {
   }
 
   threePointsArc(xDist, yDist, viaXDist, viaYDist) {
+    const [x0, y0] = this.pointer;
     return this.threePointsArcTo(
-      [this.pointer.x + xDist, this.pointer.y + yDist],
-      [this.pointer.x + viaXDist, this.pointer.y + viaYDist]
+      [x0 + xDist, y0 + yDist],
+      [x0 + viaXDist, y0 + viaYDist]
     );
   }
 
@@ -133,12 +138,120 @@ export default class FaceSketcher {
       )
     );
 
-    this.pointer = this;
+    this.pointer = end;
     return this;
   }
 
   tangentArc(xDist, yDist) {
-    return this.tangentArcTo([xDist + this.pointer.x, yDist + this.pointer.y]);
+    const [x0, y0] = this.pointer;
+    return this.tangentArcTo([xDist + x0, yDist + y0]);
+  }
+
+  ellipseTo(
+    end,
+    horizontalRadius,
+    verticalRadius,
+    rotation = 0,
+    longAxis = false,
+    sweep = false
+  ) {
+    let rotationAngle = rotation;
+    let majorRadius = horizontalRadius;
+    let minorRadius = verticalRadius;
+
+    if (horizontalRadius < verticalRadius) {
+      rotationAngle = rotation + 90;
+      majorRadius = verticalRadius;
+      minorRadius = horizontalRadius;
+    }
+    const radRotationAngle = rotationAngle * DEG2RAD;
+
+    /*
+     * The complicated part in this function comes from the scaling that we do
+     * between standardised units and UV.  We need to:
+     *   - stretch the length of the  radiuses and take into account the angle they
+     *     make with the X direction
+     *   - modify the angle (as the scaling is not homogenous in the two directions
+     *     the angle can change.
+     */
+
+    const convertAxis = (ax) => distance2d(this._convertToUV(ax));
+    const r1 = convertAxis(polarToCartesian(majorRadius, radRotationAngle));
+    const r2 = convertAxis(
+      polarToCartesian(minorRadius, radRotationAngle + Math.PI / 2)
+    );
+
+    const xDir = normalize2d(
+      this._convertToUV(rotate2d([1, 0], radRotationAngle))
+    );
+    const [, newRotationAngle] = cartesiantToPolar(xDir);
+
+    const { cx, cy, startAngle, endAngle, clockwise } = convertSvgEllipseParams(
+      this._convertToUV(this.pointer),
+      this._convertToUV(end),
+      r1,
+      r2,
+      newRotationAngle,
+      longAxis,
+      sweep
+    );
+
+    const arc = make2dEllipseArc(
+      r1,
+      r2,
+      clockwise ? startAngle : endAngle,
+      clockwise ? endAngle : startAngle,
+      [cx, cy],
+      xDir
+    );
+
+    this.pendingCurves.push(arc);
+    this.pointer = end;
+    return this;
+  }
+
+  halfEllipseTo(end, minorRadius, longAxis = false, sweep = false) {
+    const angle = angle2d(end, this.pointer);
+    const distance = distance2d(end, this.pointer);
+
+    return this.ellipseTo(
+      end,
+      distance / 2,
+      minorRadius,
+      angle * RAD2DEG,
+      longAxis,
+      sweep
+    );
+  }
+
+  halfEllipse(xDist, yDist, minorRadius, longAxis = false, sweep = false) {
+    const [x0, y0] = this.pointer;
+    return this.halfEllipseTo(
+      [x0 + xDist, y0 + yDist],
+      minorRadius,
+      longAxis,
+      sweep
+    );
+  }
+
+  ellipse(
+    xDist,
+    yDist,
+    horizontalRadius,
+    verticalRadius,
+    rotation = 0,
+    longAxis = false,
+    sweep = false
+  ) {
+    const [x0, y0] = this.pointer;
+    return this.ellipseTo(
+      [xDist + x0, yDist + y0],
+      horizontalRadius,
+      verticalRadius,
+      rotation,
+      longAxis,
+      sweep
+    );
   }
 
   sagittaArcTo(end, sagitta) {

@@ -24,6 +24,35 @@ export const axis2d = (point, direction) => {
   return axis;
 };
 
+export const rotate2d = (point, angle, center = [0, 0]) => {
+  const [px0, py0] = point;
+  const [cx, cy] = center;
+
+  const px = px0 - cx;
+  const py = py0 - cy;
+
+  const sinA = Math.sin(angle);
+  const cosA = Math.cos(angle);
+
+  const xnew = px * cosA - py * sinA;
+  const ynew = px * sinA + py * cosA;
+
+  return [xnew + cx, ynew + cy];
+};
+
+export const polarToCartesian = (r, theta) => {
+  const x = Math.cos(theta) * r;
+  const y = Math.sin(theta) * r;
+  return [x, y];
+};
+
+export const cartesiantToPolar = ([x, y]) => {
+  const r = distance2d([x, y]);
+  const theta = Math.atan(y / x);
+
+  return [r, theta];
+};
+
 export const tangentAt = (curve, index) => {
   const oc = getOC();
   const [r, gc] = localGC();
@@ -48,6 +77,10 @@ export const samePoint = ([x0, y0], [x1, y1]) => {
 
 export const distance2d = ([x0, y0], [x1, y1] = [0, 0]) => {
   return Math.sqrt((x0 - x1) ** 2 + (y0 - y1) ** 2);
+};
+
+export const angle2d = ([x0, y0], [x1, y1] = [0, 0]) => {
+  return Math.atan((y1 - y0) / (x1 - x0));
 };
 
 export const normalize2d = ([x0, y0]) => {
@@ -98,6 +131,30 @@ export const make2dTangentArc = (startPoint, tangent, endPoint) => {
       r(vec(tangent)),
       r(pnt(endPoint))
     )
+  )
+    .Value()
+    .get();
+  gc();
+
+  return segment;
+};
+
+export const make2dEllipseArc = (
+  majorRadius,
+  minorRadius,
+  startAngle,
+  endAngle,
+  center = [0, 0],
+  xDir
+) => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+  const ellipse = r(
+    new oc.gp_Elips2d_2(r(axis2d(center, xDir)), majorRadius, minorRadius, true)
+  );
+
+  const segment = r(
+    new oc.GCE2d_MakeArcOfEllipse_1(ellipse, startAngle, endAngle, true)
   )
     .Value()
     .get();

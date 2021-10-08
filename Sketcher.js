@@ -1,16 +1,18 @@
 import { Vector } from "./geom.js";
 import { makeMirrorMatrix } from "./geomHelpers.js";
 import { localGC } from "./register.js";
-import { DEG2RAD } from "./constants.js";
+import { DEG2RAD, RAD2DEG } from "./constants.js";
+import { distance2d, angle2d, polarToCartesian } from "./lib2d";
 import {
   makeLine,
   makeThreePointArc,
   makeBezierCurve,
   makeTangentArc,
+  makeEllipseArc,
   assembleWire,
 } from "./shapeHelpers.js";
 
-import { BaseSketcher } from "./sketcherlib.js";
+import { BaseSketcher, convertSvgEllipseParams } from "./sketcherlib.js";
 
 export default class Sketcher extends BaseSketcher {
   constructor(plane, origin) {
@@ -81,16 +83,14 @@ export default class Sketcher extends BaseSketcher {
 
   polarLine(distance, angle) {
     const angleInRads = angle * DEG2RAD;
-    const x = Math.cos(angleInRads) * distance;
-    const y = Math.sin(angleInRads) * distance;
+    const [x, y] = polarToCartesian(distance, angleInRads);
     return this.line(x, y);
   }
 
   polarLineTo([r, theta]) {
     const angleInRads = theta * DEG2RAD;
-    const x = Math.cos(angleInRads) * r;
-    const y = Math.sin(angleInRads) * r;
-    return this.lineTo([x, y]);
+    const point = polarToCartesian(r, angleInRads);
+    return this.lineTo(point);
   }
 
   bezierCurveTo(end, controlPoints) {
@@ -223,6 +223,109 @@ export default class Sketcher extends BaseSketcher {
   tangentArc(xDist, yDist) {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.tangentArcTo([xDist + pointer.x, yDist + pointer.y]);
+  }
+
+  ellipseTo(
+    end,
+    horizontalRadius,
+    verticalRadius,
+    rotation = 0,
+    longAxis = false,
+    sweep = false
+  ) {
+    const [r, gc] = localGC();
+    const start = this.plane.toLocalCoords(this.pointer);
+
+    let rotationAngle = rotation;
+    let majorRadius = horizontalRadius;
+    let minorRadius = verticalRadius;
+
+    if (horizontalRadius < verticalRadius) {
+      rotationAngle = rotation + 90;
+      majorRadius = verticalRadius;
+      minorRadius = horizontalRadius;
+    }
+
+    const { cx, cy, startAngle, endAngle, clockwise } = convertSvgEllipseParams(
+      [start.x, start.y],
+      end,
+      majorRadius,
+      minorRadius,
+      rotationAngle * DEG2RAD,
+      longAxis,
+      sweep
+    );
+
+    const xDir = r(
+      new Vector(this.plane.xDir).rotate(
+        rotationAngle,
+        this.plane.origin,
+        this.plane.zDir
+      )
+    );
+
+    const arc = makeEllipseArc(
+      majorRadius,
+      minorRadius,
+      clockwise ? startAngle : endAngle,
+      clockwise ? endAngle : startAngle,
+      r(this.plane.toWorldCoords([cx, cy])),
+      this.plane.zDir,
+      xDir
+    );
+
+    this.pendingEdges.push(arc);
+    this._updatePointer(this.plane.toWorldCoords(end));
+    gc();
+    return this;
+  }
+
+  halfEllipseTo(end, verticalRadius, longAxis = false, sweep = false) {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    const start = [pointer.x, pointer.y];
+    pointer.delete();
+
+    const angle = angle2d(end, start);
+    const distance = distance2d(end, start);
+
+    return this.ellipseTo(
+      end,
+      distance / 2,
+      verticalRadius,
+      angle * RAD2DEG,
+      longAxis,
+      sweep
+    );
+  }
+
+  halfEllipse(xDist, yDist, verticalRadius, longAxis = false, sweep = false) {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.halfEllipseTo(
+      [xDist + pointer.x, yDist + pointer.y],
+      verticalRadius,
+      longAxis,
+      sweep
+    );
+  }
+
+  ellipse(
+    xDist,
+    yDist,
+    horizontalRadius,
+    verticalRadius,
+    rotation = 0,
+    longAxis = false,
+    sweep = false
+  ) {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.ellipseTo(
+      [xDist + pointer.x, yDist + pointer.y],
+      horizontalRadius,
+      verticalRadius,
+      rotation,
+      longAxis,
+      sweep
+    );
   }
 
   sagittaArcTo(end, sagitta) {

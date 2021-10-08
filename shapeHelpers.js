@@ -1,4 +1,4 @@
-import { Edge, Face, Wire, Solid, Vertex } from "./shapes";
+import { Edge, Face, Wire, Solid, Vertex, cast, downcast } from "./shapes";
 import { asPnt, asDir, makeAx3, makeAx2 } from "./geom";
 import { getOC } from "./oclib.js";
 import { localGC } from "./register.js";
@@ -111,6 +111,33 @@ export const makeThreePointArc = (v1, v2, v3) => {
   return new Edge(new oc.BRepBuilderAPI_MakeEdge_24(curve).Edge());
 };
 
+export const makeEllipseArc = (
+  majorRadius,
+  minorRadius,
+  startAngle,
+  endAngle,
+  center = [0, 0, 0],
+  normal = [0, 0, 1],
+  xDir
+) => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const ax = r(makeAx2(center, normal, xDir));
+  if (minorRadius > majorRadius) {
+    throw new Error("The minor radius must be smaller than the major one");
+  }
+
+  const ellipseGp = r(new oc.gp_Elips_2(ax, majorRadius, minorRadius));
+  const edgeMaker = r(
+    new oc.BRepBuilderAPI_MakeEdge_13(ellipseGp, startAngle, endAngle)
+  );
+  const shape = new Edge(edgeMaker.Edge());
+  gc();
+
+  return shape;
+};
+
 export const makeBezierCurve = (points) => {
   const oc = getOC();
   const arrayOfPoints = new oc.TColgp_Array1OfPnt_2(1, points.length);
@@ -185,13 +212,20 @@ export const makeVertex = (point) => {
   return new Vertex(vertex);
 };
 
-export const getBounds = (shape) => {
+export const makeOffset = (face, offset, tolerance = 1e-6) => {
   const oc = getOC();
-  const bbox = new oc.Bnd_Box_1();
-  oc.BRepBndLib.Add(shape.wrapped, bbox, true);
+  const offsetBuilder = new oc.BRepOffsetAPI_MakeOffsetShape_2(
+    face.wrapped,
+    offset,
+    tolerance,
+    oc.BRepOffset_Mode.BRepOffset_Skin,
+    false,
+    false,
+    oc.GeomAbs_JoinType.GeomAbs_Arc,
+    false
+  );
 
-  return {
-    cornerMin: new Vector(bbox.CornerMin()),
-    cornerMax: new Vector(bbox.CornerMax()),
-  };
+  const newShape = cast(downcast(offsetBuilder.Shape()));
+  offsetBuilder.delete();
+  return newShape;
 };
