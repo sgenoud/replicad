@@ -3765,6 +3765,60 @@ export declare class gp_Vec2d {
     constructor(P1: gp_Pnt2d, P2: gp_Pnt2d);
   }
 
+export declare class gp_Elips2d {
+  SetLocation(P: gp_Pnt2d): void;
+  SetMajorRadius(MajorRadius: Quantity_AbsorbedDose): void;
+  SetMinorRadius(MinorRadius: Quantity_AbsorbedDose): void;
+  SetAxis(A: gp_Ax22d): void;
+  SetXAxis(A: gp_Ax2d): void;
+  SetYAxis(A: gp_Ax2d): void;
+  Area(): Quantity_AbsorbedDose;
+  Coefficients(A: Quantity_AbsorbedDose, B: Quantity_AbsorbedDose, C: Quantity_AbsorbedDose, D: Quantity_AbsorbedDose, E: Quantity_AbsorbedDose, F: Quantity_AbsorbedDose): void;
+  Directrix1(): gp_Ax2d;
+  Directrix2(): gp_Ax2d;
+  Eccentricity(): Quantity_AbsorbedDose;
+  Focal(): Quantity_AbsorbedDose;
+  Focus1(): gp_Pnt2d;
+  Focus2(): gp_Pnt2d;
+  Location(): gp_Pnt2d;
+  MajorRadius(): Quantity_AbsorbedDose;
+  MinorRadius(): Quantity_AbsorbedDose;
+  Parameter(): Quantity_AbsorbedDose;
+  Axis(): gp_Ax22d;
+  XAxis(): gp_Ax2d;
+  YAxis(): gp_Ax2d;
+  Reverse(): void;
+  Reversed(): gp_Elips2d;
+  IsDirect(): Standard_Boolean;
+  Mirror_1(P: gp_Pnt2d): void;
+  Mirrored_1(P: gp_Pnt2d): gp_Elips2d;
+  Mirror_2(A: gp_Ax2d): void;
+  Mirrored_2(A: gp_Ax2d): gp_Elips2d;
+  Rotate(P: gp_Pnt2d, Ang: Quantity_AbsorbedDose): void;
+  Rotated(P: gp_Pnt2d, Ang: Quantity_AbsorbedDose): gp_Elips2d;
+  Scale(P: gp_Pnt2d, S: Quantity_AbsorbedDose): void;
+  Scaled(P: gp_Pnt2d, S: Quantity_AbsorbedDose): gp_Elips2d;
+  Transform(T: gp_Trsf2d): void;
+  Transformed(T: gp_Trsf2d): gp_Elips2d;
+  Translate_1(V: gp_Vec2d): void;
+  Translated_1(V: gp_Vec2d): gp_Elips2d;
+  Translate_2(P1: gp_Pnt2d, P2: gp_Pnt2d): void;
+  Translated_2(P1: gp_Pnt2d, P2: gp_Pnt2d): gp_Elips2d;
+  delete(): void;
+}
+
+  export declare class gp_Elips2d_1 extends gp_Elips2d {
+    constructor();
+  }
+
+  export declare class gp_Elips2d_2 extends gp_Elips2d {
+    constructor(MajorAxis: gp_Ax2d, MajorRadius: Quantity_AbsorbedDose, MinorRadius: Quantity_AbsorbedDose, Sense: Standard_Boolean);
+  }
+
+  export declare class gp_Elips2d_3 extends gp_Elips2d {
+    constructor(A: gp_Ax22d, MajorRadius: Quantity_AbsorbedDose, MinorRadius: Quantity_AbsorbedDose);
+  }
+
 export declare class gp_GTrsf {
   SetAffinity_1(A1: gp_Ax1, Ratio: Quantity_AbsorbedDose): void;
   SetAffinity_2(A2: gp_Ax2, Ratio: Quantity_AbsorbedDose): void;
@@ -5488,6 +5542,10 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   gp_Vec2d_3: typeof gp_Vec2d_3;
   gp_Vec2d_4: typeof gp_Vec2d_4;
   gp_Vec2d_5: typeof gp_Vec2d_5;
+  gp_Elips2d: typeof gp_Elips2d;
+  gp_Elips2d_1: typeof gp_Elips2d_1;
+  gp_Elips2d_2: typeof gp_Elips2d_2;
+  gp_Elips2d_3: typeof gp_Elips2d_3;
   gp_GTrsf: typeof gp_GTrsf;
   gp_GTrsf_1: typeof gp_GTrsf_1;
   gp_GTrsf_2: typeof gp_GTrsf_2;
