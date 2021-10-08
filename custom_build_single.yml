@@ -47,6 +47,7 @@ mainBuild:
     - symbol: gp_Pnt2d
     - symbol: gp_Dir2d
     - symbol: gp_Ax2d
+    - symbol: gp_Elips2d
     - symbol: GCE2d_Root
     - symbol: GCE2d_MakeSegment
     - symbol: GCE2d_MakeArcOfCircle
