@@ -1,16 +1,16 @@
-import Sketcher from "./Sketcher.js";
-import FaceSketcher from "./Sketcher2d.js";
-import Sketch from "./Sketch.js";
+import Sketcher from "./Sketcher";
+import FaceSketcher from "./Sketcher2d";
+import Sketch from "./Sketch";
 
 export { Sketcher, Sketch, FaceSketcher };
 
-export * from "./constants.js";
-export * from "./oclib.js";
-export * from "./register.js";
-export * from "./geom.js";
-export * from "./geomHelpers.js";
-export * from "./shapes.js";
-export * from "./shapeHelpers.js";
+export * from "./constants";
+export * from "./oclib";
+export * from "./register";
+export * from "./geom";
+export * from "./geomHelpers";
+export * from "./shapes";
+export * from "./shapeHelpers";
 export * from "./finders.js";
 export * from "./shortcuts.js";
 export * from "./cannedSketches.js";

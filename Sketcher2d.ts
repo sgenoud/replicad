@@ -3,8 +3,9 @@ import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { localGC } from "./register.js";
 import { getOC } from "./oclib.js";
 import { assembleWire } from "./shapeHelpers";
-import { Edge } from "./shapes";
+import { Edge, Face, Wire } from "./shapes";
 import { convertSvgEllipseParams } from "./sketcherlib.js";
+import { Geom2d_Curve, Handle_Geom_Surface } from "../wasm/cadeau_single";
 
 import {
   normalize2d,
@@ -21,10 +22,34 @@ import {
   make2dThreePointArc,
   make2dBezierCurve,
   make2dEllipseArc,
+  Point2D,
 } from "./lib2d";
 
+type UVBounds = {
+  uMin: number;
+  uMax: number;
+  vMin: number;
+  vMax: number;
+};
+
+type SplineConfig =
+  | number
+  | "symmetric"
+  | Point2D
+  | {
+      endSkew?: number | "symmetric" | Point2D;
+      startFactor?: number;
+      endFactor?: number;
+    };
+
 export default class FaceSketcher {
-  constructor(face, origin = [0, 0]) {
+  pointer: Point2D;
+  face: Face;
+  _bounds: UVBounds;
+  firstPoint: Point2D;
+  pendingCurves: Geom2d_Curve[];
+
+  constructor(face: Face, origin: Point2D = [0, 0]) {
     this.pointer = origin;
     this.face = face.clone();
     this._bounds = face.UVBounds;
@@ -33,17 +58,17 @@ export default class FaceSketcher {
     this.pendingCurves = [];
   }
 
-  _convertToUV([x, y]) {
+  _convertToUV([x, y]: Point2D): Point2D {
     const { uMin, uMax, vMin, vMax } = this._bounds;
     return [uMin + x * (uMax - uMin), vMin + y * (vMax - vMin)];
   }
 
-  _convertFromUV([u, v]) {
+  _convertFromUV([u, v]: Point2D): Point2D {
     const { uMin, uMax, vMin, vMax } = this._bounds;
     return [(u - uMin) / (uMax - uMin), (v - vMin) / (vMax - vMin)];
   }
 
-  movePointerTo(point) {
+  movePointerTo(point: Point2D): FaceSketcher {
     if (this.pendingCurves.length)
       throw new Error(
         "You can only move the pointer if there is no curve defined"
@@ -54,7 +79,7 @@ export default class FaceSketcher {
     return this;
   }
 
-  lineTo(point) {
+  lineTo(point: Point2D): FaceSketcher {
     const curve = make2dSegmentCurve(
       this._convertToUV(this.pointer),
       this._convertToUV(point)
@@ -64,19 +89,19 @@ export default class FaceSketcher {
     return this;
   }
 
-  line(xDist, yDist) {
+  line(xDist: number, yDist: number): FaceSketcher {
     return this.lineTo([this.pointer[0] + xDist, this.pointer[1] + yDist]);
   }
 
-  vLine(distance) {
+  vLine(distance: number): FaceSketcher {
     return this.line(0, distance);
   }
 
-  hLine(distance) {
+  hLine(distance: number): FaceSketcher {
     return this.line(distance, 0);
   }
 
-  tangentLine(distance) {
+  tangentLine(distance: number): FaceSketcher {
     const previousCurve = this.pendingCurves.length
       ? this.pendingCurves[this.pendingCurves.length - 1]
       : null;
@@ -90,19 +115,19 @@ export default class FaceSketcher {
     return this.line(direction[0] * distance, direction[1] * distance);
   }
 
-  polarLine(distance, angle) {
+  polarLine(distance: number, angle: number): FaceSketcher {
     const angleInRads = angle * DEG2RAD;
     const [x, y] = polarToCartesian(distance, angleInRads);
     return this.line(x, y);
   }
 
-  polarLineTo([r, theta]) {
+  polarLineTo([r, theta]: Point2D): FaceSketcher {
     const angleInRads = theta * DEG2RAD;
     const point = polarToCartesian(r, angleInRads);
     return this.lineTo(point);
   }
 
-  threePointsArcTo(end, midPoint) {
+  threePointsArcTo(end: Point2D, midPoint: Point2D): FaceSketcher {
     this.pendingCurves.push(
       make2dThreePointArc(
         this._convertToUV(this.pointer),
@@ -114,7 +139,12 @@ export default class FaceSketcher {
     return this;
   }
 
-  threePointsArc(xDist, yDist, viaXDist, viaYDist) {
+  threePointsArc(
+    xDist: number,
+    yDist: number,
+    viaXDist: number,
+    viaYDist: number
+  ): FaceSketcher {
     const [x0, y0] = this.pointer;
     return this.threePointsArcTo(
       [x0 + xDist, y0 + yDist],
@@ -122,7 +152,7 @@ export default class FaceSketcher {
     );
   }
 
-  tangentArcTo(end) {
+  tangentArcTo(end: Point2D): FaceSketcher {
     const previousCurve = this.pendingCurves.length
       ? this.pendingCurves[this.pendingCurves.length - 1]
       : null;
@@ -142,19 +172,19 @@ export default class FaceSketcher {
     return this;
   }
 
-  tangentArc(xDist, yDist) {
+  tangentArc(xDist: number, yDist: number): FaceSketcher {
     const [x0, y0] = this.pointer;
     return this.tangentArcTo([xDist + x0, yDist + y0]);
   }
 
   ellipseTo(
-    end,
-    horizontalRadius,
-    verticalRadius,
+    end: Point2D,
+    horizontalRadius: number,
+    verticalRadius: number,
     rotation = 0,
     longAxis = false,
     sweep = false
-  ) {
+  ): FaceSketcher {
     let rotationAngle = rotation;
     let majorRadius = horizontalRadius;
     let minorRadius = verticalRadius;
@@ -175,7 +205,7 @@ export default class FaceSketcher {
      *     the angle can change.
      */
 
-    const convertAxis = (ax) => distance2d(this._convertToUV(ax));
+    const convertAxis = (ax: Point2D) => distance2d(this._convertToUV(ax));
     const r1 = convertAxis(polarToCartesian(majorRadius, radRotationAngle));
     const r2 = convertAxis(
       polarToCartesian(minorRadius, radRotationAngle + Math.PI / 2)
@@ -210,7 +240,12 @@ export default class FaceSketcher {
     return this;
   }
 
-  halfEllipseTo(end, minorRadius, longAxis = false, sweep = false) {
+  halfEllipseTo(
+    end: Point2D,
+    minorRadius: number,
+    longAxis = false,
+    sweep = false
+  ): FaceSketcher {
     const angle = angle2d(end, this.pointer);
     const distance = distance2d(end, this.pointer);
 
@@ -224,7 +259,13 @@ export default class FaceSketcher {
     );
   }
 
-  halfEllipse(xDist, yDist, minorRadius, longAxis = false, sweep = false) {
+  halfEllipse(
+    xDist: number,
+    yDist: number,
+    minorRadius: number,
+    longAxis = false,
+    sweep = false
+  ): FaceSketcher {
     const [x0, y0] = this.pointer;
     return this.halfEllipseTo(
       [x0 + xDist, y0 + yDist],
@@ -235,14 +276,14 @@ export default class FaceSketcher {
   }
 
   ellipse(
-    xDist,
-    yDist,
-    horizontalRadius,
-    verticalRadius,
+    xDist: number,
+    yDist: number,
+    horizontalRadius: number,
+    verticalRadius: number,
     rotation = 0,
     longAxis = false,
     sweep = false
-  ) {
+  ): FaceSketcher {
     const [x0, y0] = this.pointer;
     return this.ellipseTo(
       [xDist + x0, yDist + y0],
@@ -254,7 +295,7 @@ export default class FaceSketcher {
     );
   }
 
-  sagittaArcTo(end, sagitta) {
+  sagittaArcTo(end: Point2D, sagitta: number): FaceSketcher {
     const [x0, y0] = this.pointer;
     const [x1, y1] = end;
 
@@ -264,7 +305,7 @@ export default class FaceSketcher {
     const sagDir = [-(y1 - y0), x1 - x0];
     const sagDirLen = Math.sqrt(sagDir[0] ** 2 + sagDir[1] ** 2);
 
-    const sagPoint = [
+    const sagPoint: Point2D = [
       midPoint[0] + (sagDir[0] / sagDirLen) * sagitta,
       midPoint[1] + (sagDir[1] / sagDirLen) * sagitta,
     ];
@@ -281,22 +322,22 @@ export default class FaceSketcher {
     return this;
   }
 
-  sagittaArc(xDist, yDist, sagitta) {
+  sagittaArc(xDist: number, yDist: number, sagitta: number): FaceSketcher {
     return this.sagittaArcTo(
       [xDist + this.pointer[0], yDist + this.pointer[1]],
       sagitta
     );
   }
 
-  vSagittaArc(distance, sagitta) {
+  vSagittaArc(distance: number, sagitta: number): FaceSketcher {
     return this.sagittaArc(0, distance, sagitta);
   }
 
-  hSagittaArc(distance, sagitta) {
+  hSagittaArc(distance: number, sagitta: number): FaceSketcher {
     return this.sagittaArc(distance, 0, sagitta);
   }
 
-  bezierCurveTo(end, controlPoints) {
+  bezierCurveTo(end: Point2D, controlPoints: Point2D[]): FaceSketcher {
     this.pendingCurves.push(
       make2dBezierCurve(
         this._convertToUV(this.pointer),
@@ -309,20 +350,30 @@ export default class FaceSketcher {
     return this;
   }
 
-  quadraticBezierCurveTo(end, controlPoint) {
+  quadraticBezierCurveTo(end: Point2D, controlPoint: Point2D): FaceSketcher {
     return this.bezierCurveTo(end, [controlPoint]);
   }
 
-  cubicBezierCurveTo(end, startControlPoint, endControlPoint) {
+  cubicBezierCurveTo(
+    end: Point2D,
+    startControlPoint: Point2D,
+    endControlPoint: Point2D
+  ): FaceSketcher {
     return this.bezierCurveTo(end, [startControlPoint, endControlPoint]);
   }
 
-  smoothSplineTo(end, config) {
-    let conf = config;
-    if (!config || (!config.endSkew && config.endSkew !== 0)) {
-      conf = { endSkew: config };
+  smoothSplineTo(end: Point2D, config?: SplineConfig): FaceSketcher {
+    let conf: {
+      endSkew: number | "symmetric" | Point2D;
+      startFactor?: number;
+      endFactor?: number;
+    };
+    if (!config || config === "symmetric" || typeof config === "number") {
+      conf = { endSkew: (config ?? 0) as "symmetric" | number };
+    } else {
+      conf = { endSkew: 0, ...config };
     }
-    const { endSkew = 0, startFactor = 1, endFactor = 1 } = conf;
+    const { endSkew, startFactor = 1, endFactor = 1 } = conf;
 
     const previousCurve = this.pendingCurves.length
       ? this.pendingCurves[this.pendingCurves.length - 1]
@@ -330,7 +381,7 @@ export default class FaceSketcher {
 
     const defaultDistance = distance2d(this.pointer, end) * 0.25;
 
-    let startPoleDirection;
+    let startPoleDirection: Point2D;
     if (!previousCurve) {
       startPoleDirection = [end[0] - this.pointer[0], end[1] - this.pointer[1]];
     } else {
@@ -338,12 +389,12 @@ export default class FaceSketcher {
     }
 
     startPoleDirection = normalize2d(startPoleDirection);
-    const startControl = [
+    const startControl: Point2D = [
       this.pointer[0] + startPoleDirection[0] * startFactor * defaultDistance,
       this.pointer[1] + startPoleDirection[1] * startFactor * defaultDistance,
     ];
 
-    let endPoleDirection;
+    let endPoleDirection: Point2D;
     if (Array.isArray(endSkew)) {
       endPoleDirection = endSkew;
     } else if (endSkew === "symmetric") {
@@ -359,7 +410,7 @@ export default class FaceSketcher {
     }
 
     endPoleDirection = normalize2d(endPoleDirection);
-    const endControl = [
+    const endControl: Point2D = [
       end[0] - endPoleDirection[0] * endFactor * defaultDistance,
       end[1] - endPoleDirection[1] * endFactor * defaultDistance,
     ];
@@ -367,19 +418,24 @@ export default class FaceSketcher {
     return this.cubicBezierCurveTo(end, startControl, endControl);
   }
 
-  smoothSpline(xDist, yDist, splineConfig) {
+  smoothSpline(
+    xDist: number,
+    yDist: number,
+    splineConfig?: SplineConfig
+  ): FaceSketcher {
     return this.smoothSplineTo(
       [xDist + this.pointer[0], yDist + this.pointer[1]],
       splineConfig
     );
   }
 
-  _adaptSurface() {
+  _adaptSurface(): Handle_Geom_Surface {
     const oc = getOC();
-    return new oc.BRep_Tool.Surface_2(this.face.wrapped);
+    // CHECK THIS: return new oc.BRep_Tool.Surface_2(this.face.wrapped)
+    return oc.BRep_Tool.Surface_2(this.face.wrapped);
   }
 
-  buildWire() {
+  buildWire(): Wire {
     const [r, gc] = localGC();
     const oc = getOC();
 
@@ -417,7 +473,7 @@ export default class FaceSketcher {
     return this.done().fromConfig(shaperConfig);
   }
 
-  done() {
+  done(): Sketch {
     const [r, gc] = localGC();
 
     const wire = this.buildWire();
@@ -436,12 +492,12 @@ export default class FaceSketcher {
     return sketch;
   }
 
-  closeWithMirror(shaperConfig) {
+  closeWithMirror(shaperConfig): Sketch {
     if (samePoint(this.pointer, this.firstPoint))
       throw new Error(
         "Cannot close with a mirror when the sketch is already closed"
       );
-    const startToEndVector = [
+    const startToEndVector: Point2D = [
       this.pointer[0] - this.firstPoint[0],
       this.pointer[1] - this.firstPoint[1],
     ];
@@ -451,8 +507,8 @@ export default class FaceSketcher {
       this._convertToUV(startToEndVector)
     );
 
-    const mirroredCurves = this.pendingCurves.map((c) =>
-      c.Mirrored_2(mirrorAxis).get()
+    const mirroredCurves = this.pendingCurves.map(
+      (c) => c.Mirrored_2(mirrorAxis).get() as Geom2d_Curve
     );
     mirroredCurves.reverse();
     this.pendingCurves.push(...mirroredCurves);

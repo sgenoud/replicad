@@ -1,22 +1,31 @@
 import { localGC } from "./register.js";
 import { getOC } from "./oclib.js";
+import {
+  gp_Pnt2d,
+  gp_Dir2d,
+  gp_Vec2d,
+  gp_Ax2d,
+  Geom2d_Curve,
+} from "../wasm/cadeau_single";
 
-export const pnt = ([x, y]) => {
+export type Point2D = [number, number];
+
+export const pnt = ([x, y]: Point2D): gp_Pnt2d => {
   const oc = getOC();
   return new oc.gp_Pnt2d_3(x, y);
 };
 
-export const direction2d = ([x, y]) => {
+export const direction2d = ([x, y]: Point2D): gp_Dir2d => {
   const oc = getOC();
   return new oc.gp_Dir2d_4(x, y);
 };
 
-export const vec = ([x, y]) => {
+export const vec = ([x, y]: Point2D): gp_Vec2d => {
   const oc = getOC();
   return new oc.gp_Vec2d_4(x, y);
 };
 
-export const axis2d = (point, direction) => {
+export const axis2d = (point: Point2D, direction: Point2D): gp_Ax2d => {
   const oc = getOC();
   const [r, gc] = localGC();
   const axis = new oc.gp_Ax2d_2(r(pnt(point)), r(direction2d(direction)));
@@ -24,7 +33,11 @@ export const axis2d = (point, direction) => {
   return axis;
 };
 
-export const rotate2d = (point, angle, center = [0, 0]) => {
+export const rotate2d = (
+  point: Point2D,
+  angle: number,
+  center: Point2D = [0, 0]
+): Point2D => {
   const [px0, py0] = point;
   const [cx, cy] = center;
 
@@ -40,20 +53,20 @@ export const rotate2d = (point, angle, center = [0, 0]) => {
   return [xnew + cx, ynew + cy];
 };
 
-export const polarToCartesian = (r, theta) => {
+export const polarToCartesian = (r: number, theta: number): Point2D => {
   const x = Math.cos(theta) * r;
   const y = Math.sin(theta) * r;
   return [x, y];
 };
 
-export const cartesiantToPolar = ([x, y]) => {
+export const cartesiantToPolar = ([x, y]: Point2D): [number, number] => {
   const r = distance2d([x, y]);
   const theta = Math.atan(y / x);
 
   return [r, theta];
 };
 
-export const tangentAt = (curve, index) => {
+export const tangentAt = (curve: Geom2d_Curve, index: number): Point2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -65,30 +78,39 @@ export const tangentAt = (curve, index) => {
 
   curve.D1(param, point, dir);
 
-  const tgtVec = [dir.X(), dir.Y()];
+  const tgtVec = [dir.X(), dir.Y()] as Point2D;
   gc();
 
   return tgtVec;
 };
 
-export const samePoint = ([x0, y0], [x1, y1]) => {
+export const samePoint = ([x0, y0]: Point2D, [x1, y1]: Point2D): boolean => {
   return Math.abs(x0 - x1) <= 1e-6 && Math.abs(y0 - y1) <= 1e-6;
 };
 
-export const distance2d = ([x0, y0], [x1, y1] = [0, 0]) => {
+export const distance2d = (
+  [x0, y0]: Point2D,
+  [x1, y1]: Point2D = [0, 0]
+): number => {
   return Math.sqrt((x0 - x1) ** 2 + (y0 - y1) ** 2);
 };
 
-export const angle2d = ([x0, y0], [x1, y1] = [0, 0]) => {
+export const angle2d = (
+  [x0, y0]: Point2D,
+  [x1, y1]: Point2D = [0, 0]
+): number => {
   return Math.atan((y1 - y0) / (x1 - x0));
 };
 
-export const normalize2d = ([x0, y0]) => {
+export const normalize2d = ([x0, y0]: Point2D): Point2D => {
   const l = distance2d([x0, y0]);
   return [x0 / l, y0 / l];
 };
 
-export const make2dSegmentCurve = (startPoint, endPoint) => {
+export const make2dSegmentCurve = (
+  startPoint: Point2D,
+  endPoint: Point2D
+): Geom2d_Curve => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -103,7 +125,11 @@ export const make2dSegmentCurve = (startPoint, endPoint) => {
   return segment;
 };
 
-export const make2dThreePointArc = (startPoint, midPoint, endPoint) => {
+export const make2dThreePointArc = (
+  startPoint: Point2D,
+  midPoint: Point2D,
+  endPoint: Point2D
+): Geom2d_Curve => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -121,7 +147,11 @@ export const make2dThreePointArc = (startPoint, midPoint, endPoint) => {
   return segment;
 };
 
-export const make2dTangentArc = (startPoint, tangent, endPoint) => {
+export const make2dTangentArc = (
+  startPoint: Point2D,
+  tangent: Point2D,
+  endPoint: Point2D
+): Geom2d_Curve => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -140,13 +170,13 @@ export const make2dTangentArc = (startPoint, tangent, endPoint) => {
 };
 
 export const make2dEllipseArc = (
-  majorRadius,
-  minorRadius,
-  startAngle,
-  endAngle,
-  center = [0, 0],
-  xDir
-) => {
+  majorRadius: number,
+  minorRadius: number,
+  startAngle: number,
+  endAngle: number,
+  center: Point2D = [0, 0],
+  xDir: Point2D
+): Geom2d_Curve => {
   const oc = getOC();
   const [r, gc] = localGC();
   const ellipse = r(
@@ -163,7 +193,11 @@ export const make2dEllipseArc = (
   return segment;
 };
 
-export const make2dBezierCurve = (startPoint, controls, endPoint) => {
+export const make2dBezierCurve = (
+  startPoint: Point2D,
+  controls: Point2D[],
+  endPoint: Point2D
+): Geom2d_Curve => {
   const oc = getOC();
   const [r, gc] = localGC();
 

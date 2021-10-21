@@ -1,15 +1,33 @@
-import { WrappingObj, RegisteredObj } from "./register.js";
+import { WrappingObj, RegisteredObj, localGC } from "./register.js";
 import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { getOC } from "./oclib.js";
 
-const round3 = (v) => Math.round(v * 1000) / 1000;
+import {
+  gp_Ax1,
+  gp_Ax2,
+  gp_Ax3,
+  gp_Vec,
+  gp_Dir,
+  gp_Pnt,
+  gp_GTrsf,
+  gp_Trsf,
+  OpenCascadeInstance,
+} from "../wasm/cadeau_single";
 
-export const makeAx3 = (center, dir, xDir) => {
+const round3 = (v: number) => Math.round(v * 1000) / 1000;
+
+export type Point =
+  | [number, number, number]
+  | Vector
+  | [number, number]
+  | { XYZ: Function };
+
+export const makeAx3 = (center: Point, dir: Point, xDir?: Point): gp_Ax3 => {
   const oc = getOC();
   const origin = asPnt(center);
   const direction = asDir(dir);
 
-  let axis;
+  let axis: gp_Ax3;
   if (xDir) {
     const xDirection = asDir(xDir);
     axis = new oc.gp_Ax3_3(origin, direction, xDirection);
@@ -22,12 +40,12 @@ export const makeAx3 = (center, dir, xDir) => {
   return axis;
 };
 
-export const makeAx2 = (center, dir, xDir) => {
+export const makeAx2 = (center: Point, dir: Point, xDir?: Point): gp_Ax2 => {
   const oc = getOC();
   const origin = asPnt(center);
   const direction = asDir(dir);
 
-  let axis;
+  let axis: gp_Ax2;
   if (xDir) {
     const xDirection = asDir(xDir);
     axis = new oc.gp_Ax2_2(origin, direction, xDirection);
@@ -40,7 +58,7 @@ export const makeAx2 = (center, dir, xDir) => {
   return axis;
 };
 
-export const makeAx1 = (center, dir) => {
+export const makeAx1 = (center: Point, dir: Point): gp_Ax1 => {
   const oc = getOC();
   const origin = asPnt(center);
   const direction = asDir(dir);
@@ -50,91 +68,85 @@ export const makeAx1 = (center, dir) => {
   return axis;
 };
 
-export class Vector extends WrappingObj {
-  constructor(...args) {
-    const oc = getOC();
-    let wrapped;
-    if (args.length === 3) wrapped = new oc.gp_Vec_4(...args);
-    else if (args.length === 2) wrapped = new oc.gp_Vec_4(...args, 0);
-    else if (args.length === 0) wrapped = new oc.gp_Vec_4(0, 0, 0);
-    else if (args.length === 1) {
-      const arg = args[0];
+const makeVec = (vector: Point = [0, 0, 0]): gp_Vec => {
+  const oc = getOC();
 
-      if (Array.isArray(arg)) {
-        if (arg.length === 3) wrapped = new oc.gp_Vec_4(...arg);
-        else if (arg.length === 2) wrapped = new oc.gp_Vec_4(...arg, 0);
-        else if (arg.length === 0) wrapped = new oc.gp_Vec_4(0, 0, 0);
-      } else if (arg instanceof Vector) {
-        wrapped = new oc.gp_Vec_3(args[0].wrapped.XYZ());
-      } else if (!arg) {
-        wrapped = new oc.gp_Vec_4(0, 0, 0);
-      } else if (arg.XYZ) wrapped = new oc.gp_Vec_3(args[0].XYZ());
-    }
-    super(wrapped);
+  if (Array.isArray(vector)) {
+    if (vector.length === 3) return new oc.gp_Vec_4(...vector);
+    else if (vector.length === 2) return new oc.gp_Vec_4(...vector, 0);
+  } else if (vector instanceof Vector) {
+    return new oc.gp_Vec_3(vector.wrapped.XYZ());
+  } else if (vector.XYZ) return new oc.gp_Vec_3(vector.XYZ());
+  return new oc.gp_Vec_4(0, 0, 0);
+};
+
+export class Vector extends WrappingObj<gp_Vec> {
+  constructor(vector: Point = [0, 0, 0]) {
+    super(makeVec(vector));
   }
 
-  get repr() {
+  get repr(): string {
     return `x: ${round3(this.x)}, y: ${round3(this.y)}, z: ${round3(this.z)}`;
   }
 
-  get x() {
+  get x(): number {
     return this.wrapped.X();
   }
 
-  get y() {
+  get y(): number {
     return this.wrapped.Y();
   }
 
-  get z() {
+  get z(): number {
     return this.wrapped.Z();
   }
 
-  get Length() {
+  get Length(): number {
     return this.wrapped.Magnitude();
   }
 
-  toTuple() {
+  toTuple(): [number, number, number] {
     return [this.x, this.y, this.z];
   }
 
-  cross(v) {
+  cross(v: Vector): Vector {
     return new Vector(this.wrapped.Crossed(v.wrapped));
   }
 
-  dot(v) {
+  dot(v: Vector): number {
     return this.wrapped.Dot(v.wrapped);
   }
 
-  sub(v) {
+  sub(v: Vector): Vector {
     return new Vector(this.wrapped.Subtracted(v.wrapped));
   }
 
-  add(v) {
+  add(v: Vector): Vector {
     return new Vector(this.wrapped.Added(v.wrapped));
   }
 
-  multiply(scale) {
+  multiply(scale: number): Vector {
     return new Vector(this.wrapped.Multiplied(scale));
   }
 
-  normalized() {
+  normalized(): Vector {
     return new Vector(this.wrapped.Normalized());
   }
 
-  normalize() {
+  normalize(): Vector {
     this.wrapped.Normalize();
     return this;
   }
 
-  getCenter() {
+  getCenter(): Vector {
     return this;
   }
 
-  getAngle(v) {
+  getAngle(v: Vector): number {
     return this.wrapped.Angle(v.wrapped) * RAD2DEG;
   }
 
-  projectToPlane(plane) {
+  projectToPlane(plane: Plane): Vector {
     const base = plane.origin;
     const normal = plane.zDir;
 
@@ -148,55 +160,59 @@ export class Vector extends WrappingObj {
 
     return projection;
   }
-  equals(other) {
+  equals(other: Vector): boolean {
     return this.wrapped.IsEqual(other.wrapped, 0.00001, 0.00001);
   }
 
-  toPnt() {
+  toPnt(): gp_Pnt {
     return new this.oc.gp_Pnt_2(this.wrapped.XYZ());
   }
 
-  toDir() {
+  toDir(): gp_Dir {
     return new this.oc.gp_Dir_3(this.wrapped.XYZ());
   }
 
-  rotate(angle, center = [0, 0, 0], direction = [0, 0, 1]) {
+  rotate(
+    angle: number,
+    center: Point = [0, 0, 0],
+    direction: Point = [0, 0, 1]
+  ): Vector {
     const ax = makeAx1(center, direction);
     this.wrapped.Rotate(ax, angle * DEG2RAD);
     ax.delete();
     return this;
   }
 
-  transform(T) {
+  transform(T: Matrix): Vector {
     const pnt = this.toPnt();
     const trsf = pnt.Transformed(T.wrapped.Trsf());
     return new Vector(trsf);
   }
 }
 
-export function asPnt(coords) {
+export function asPnt(coords: Point): gp_Pnt {
   const v = new Vector(coords);
   const pnt = v.toPnt();
   v.delete();
   return pnt;
 }
 
-export function asDir(coords) {
+export function asDir(coords: Point): gp_Dir {
   const v = new Vector(coords);
   const dir = v.toDir();
   v.delete();
   return dir;
 }
 
-export class Matrix extends WrappingObj {}
+export class Matrix extends WrappingObj<gp_GTrsf> {}
 
-export class Transformation extends WrappingObj {
-  constructor(transform) {
+export class Transformation extends WrappingObj<gp_Trsf> {
+  constructor(transform?: gp_Trsf) {
     const oc = getOC();
     super(transform || new oc.gp_Trsf_1());
   }
 
-  translate(vector) {
+  translate(vector: Point): Transformation {
     const localVect = new Vector(vector);
     this.wrapped.SetTranslation_1(localVect.wrapped);
     localVect.delete();
@@ -204,7 +220,11 @@ export class Transformation extends WrappingObj {
     return this;
   }
 
-  rotate(angle, position = [0, 0, 0], direction = [0, 0, 1]) {
+  rotate(
+    angle: number,
+    position: Point = [0, 0, 0],
+    direction: Point = [0, 0, 1]
+  ): Transformation {
     const dir = asDir(direction);
     const origin = asPnt(position);
     const axis = new this.oc.gp_Ax1_2(origin, dir);
@@ -217,28 +237,43 @@ export class Transformation extends WrappingObj {
     return this;
   }
 
-  mirror(inputPlane, origin) {
-    const shouldClean = [];
-    let plane = inputPlane;
-    if (typeof plane === "string") {
-      plane = createNamedPlane(inputPlane, origin);
-      shouldClean.push(plane);
+  mirror(inputPlane: Plane | PlaneName, origin: Point) {
+    const [r, gc] = localGC();
+    let plane: Plane;
+    if (typeof inputPlane === "string") {
+      plane = r(createNamedPlane(inputPlane, origin));
+    } else {
+      plane = inputPlane;
     }
-
-    const mirrorAxis = new this.oc.gp_Ax2_3(
-      plane.origin.toPnt(),
-      plane.zDir.toDir()
-    );
-    shouldClean.push(mirrorAxis);
-
+    const mirrorAxis = r(makeAx2(plane.origin, plane.zDir));
     this.wrapped.SetMirror_3(mirrorAxis);
+    gc();
 
     return this;
   }
 }
 
 export class Plane extends RegisteredObj {
-  constructor(origin, xDirection = null, normal = [0, 0, 1]) {
+  oc: OpenCascadeInstance;
+
+  xDir: Vector;
+  yDir: Vector;
+  zDir: Vector;
+
+  // @ts-expect-error
+  private _origin: Vector;
+  // @ts-expect-error
+  private lcs: gp_Ax3;
+  // @ts-expect-error
+  private localToGlobal: Matrix;
+  // @ts-expect-error
+  private globalToLocal: Matrix;
+
+  constructor(
+    origin: Point,
+    xDirection: Point | null = null,
+    normal: Point = [0, 0, 1]
+  ) {
     super();
     this.oc = getOC();
 
@@ -248,9 +283,9 @@ export class Plane extends RegisteredObj {
     }
     this.zDir = zDir.normalize();
 
-    let xDir;
+    let xDir: Vector;
     if (!xDirection) {
-      const ax3 = new this.oc.gp_Ax3_4(asPnt(origin), asDir(zDir));
+      const ax3 = makeAx3(origin, zDir);
       xDir = new Vector(ax3.XDirection());
       ax3.delete();
     } else {
@@ -285,18 +320,14 @@ export class Plane extends RegisteredObj {
     return this._origin;
   }
 
-  set origin(newOrigin) {
+  set origin(newOrigin: Vector) {
     this._origin = newOrigin;
     this._calcTransforms();
   }
 
   _calcTransforms() {
     const globalCoordSystem = new this.oc.gp_Ax3_1();
-    const localCoordSystem = new this.oc.gp_Ax3_3(
-      asPnt(this.origin),
-      asDir(this.zDir),
-      asDir(this.xDir)
-    );
+    const localCoordSystem = makeAx3(this.origin, this.zDir, this.xDir);
 
     const forwardT = new this.oc.gp_Trsf_1();
     forwardT.SetTransformation_1(globalCoordSystem, localCoordSystem);
@@ -311,31 +342,47 @@ export class Plane extends RegisteredObj {
     globalCoordSystem.delete();
   }
 
-  setOrigin2d(x, y) {
+  setOrigin2d(x: number, y: number) {
     this.origin = this.toWorldCoords([x, y]);
   }
 
-  toLocalCoords(obj) {
+  toLocalCoords(obj: Vector | { transformShape: (T: Matrix) => any }) {
     if (obj instanceof Vector) {
       return obj.transform(this.globalToLocal);
     } else if (obj.transformShape)
       return obj.transformShape(this.globalToLocal);
   }
 
-  toWorldCoords(v) {
+  toWorldCoords(v: Point) {
     if (v instanceof Vector) {
       return v.transform(this.localToGlobal);
     } else {
       return new Vector(v).transform(this.localToGlobal);
     }
   }
-
-  get Location() {
-    return new Location(this);
-  }
 }
 
-const PLANES_CONFIG = {
+export type PlaneName =
+  | "XY"
+  | "YZ"
+  | "ZX"
+  | "XZ"
+  | "YX"
+  | "ZY"
+  | "front"
+  | "back"
+  | "left"
+  | "right"
+  | "top"
+  | "bottom";
+
+const PLANES_CONFIG: Record<
+  PlaneName,
+  {
+    xDir: [number, number, number];
+    normal: [number, number, number];
+  }
+> = {
   XY: {
     xDir: [1, 0, 0],
     normal: [0, 0, 1],
@@ -386,59 +433,18 @@ const PLANES_CONFIG = {
   },
 };
 
-export const createNamedPlane = (plane, sourceOrigin = [0, 0, 0]) => {
+export const createNamedPlane = (
+  plane: PlaneName,
+  sourceOrigin: Point | number = [0, 0, 0]
+): Plane => {
   const config = PLANES_CONFIG[plane];
   if (!config) throw new Error(`Could not find plane ${plane}`);
-  let origin = sourceOrigin;
-  if (Number.isFinite(sourceOrigin)) {
-    origin = config.normal.map((v) => v * sourceOrigin);
+
+  let origin: Point;
+  if (typeof sourceOrigin === "number") {
+    origin = config.normal.map((v: number) => v * sourceOrigin) as Point;
+  } else {
+    origin = sourceOrigin;
   }
   return new Plane(origin, config.xDir, config.normal);
 };
-
-export class Location extends WrappingObj {
-  constructor(...args) {
-    super(null);
-    let T = new this.oc.gp_Trsf_1();
-
-    if (args.length == 1) {
-      const t = args[0];
-
-      if (t instanceof Vector) {
-        T.SetTranslationPart(t.wrapped);
-      } else if (t instanceof Plane) {
-        const cs = new this.oc.gp_Ax3_3(
-          t.origin.toPnt(),
-          t.zDir.toDir(),
-          t.xDir.toDir()
-        );
-        T.SetTransformation(cs);
-        T.Invert();
-      } else if (t instanceof this.oc.TopLoc_Location) {
-        this.wrapped = t;
-        return;
-      } else if (t instanceof this.oc.gp_Trsf) {
-        T = t;
-      }
-    } else if (args.length == 2) {
-      const [t, v] = args;
-
-      const cs = new this.oc.gp_Ax3_3(
-        v.toPnt(),
-        t.zDir.toDir(),
-        t.xDir.toDir()
-      );
-      T.SetTransformation(cs);
-      T.Invert();
-    } else if (args.length == 3) {
-      const [t, ax, angle] = args;
-      T.SetRotation(
-        new this.oc.gp_Ax1_2(Vector().toPnt(), ax.toDir()),
-        (angle * Math.PI) / 180.0
-      );
-      T.SetTranslationPart(t.wrapped);
-    }
-
-    this.wrapped = new this.oc.TopLoc_Location(T);
-  }
-}
