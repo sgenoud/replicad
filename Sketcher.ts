@@ -18,7 +18,7 @@ import {
   SplineConfig,
   defaultsSplineConfig,
 } from "./sketcherlib.js";
-import { AnyShape, CurveLike, Edge, Wire } from "./shapes.js";
+import { CurveLike, Edge, Wire } from "./shapes.js";
 import { Handle_Geom_BezierCurve } from "../wasm/cadeau_single.js";
 import Sketch from "./Sketch.js";
 
@@ -461,14 +461,13 @@ export default class Sketcher extends RegisteredObj {
     return sketch;
   }
 
-  close(shaperConfig): Sketch | AnyShape {
+  close(): Sketch {
     this._closeSketch();
-    if (!shaperConfig) return this.done();
-    return this.done().fromConfig(shaperConfig);
+    return this.done();
   }
 
-  closeWithMirror(shaperConfig): Sketch | AnyShape {
+  closeWithMirror(): Sketch {
     this._mirrorWire = true;
-    return this.close(shaperConfig);
+    return this.close();
   }
 }

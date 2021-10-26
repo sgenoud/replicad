@@ -3,7 +3,7 @@ import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { localGC } from "./register.js";
 import { getOC } from "./oclib.js";
 import { assembleWire } from "./shapeHelpers";
-import { AnyShape, Edge, Face, Wire } from "./shapes";
+import { Edge, Face, Wire } from "./shapes";
 import {
   convertSvgEllipseParams,
   defaultsSplineConfig,
@@ -451,17 +451,15 @@ export default class FaceSketcher {
     return wire;
   }
 
-  _closeSketch() {
+  protected _closeSketch(): void {
     if (!samePoint(this.pointer, this.firstPoint)) {
       this.lineTo(this.firstPoint);
     }
   }
 
-  close(shaperConfig) {
+  close(): Sketch {
     this._closeSketch();
-    if (!shaperConfig) return this.done();
-
-    return this.done().fromConfig(shaperConfig);
+    return this.done();
   }
 
   done(): Sketch {
@@ -483,7 +481,7 @@ export default class FaceSketcher {
     return sketch;
   }
 
-  closeWithMirror(shaperConfig): Sketch | AnyShape {
+  closeWithMirror(): Sketch {
     if (samePoint(this.pointer, this.firstPoint))
       throw new Error(
         "Cannot close with a mirror when the sketch is already closed"
@@ -505,6 +503,6 @@ export default class FaceSketcher {
     this.pendingCurves.push(...mirroredCurves);
     this.pointer = this.firstPoint;
 
-    return this.close(shaperConfig);
+    return this.close();
   }
 }
