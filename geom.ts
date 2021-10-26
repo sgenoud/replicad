@@ -7,6 +7,7 @@ import {
   gp_Ax2,
   gp_Ax3,
   gp_Vec,
+  gp_XYZ,
   gp_Dir,
   gp_Pnt,
   gp_GTrsf,
@@ -20,7 +21,7 @@ export type Point =
   | [number, number, number]
   | Vector
   | [number, number]
-  | { XYZ: Function };
+  | { XYZ: () => gp_XYZ };
 
 export const makeAx3 = (center: Point, dir: Point, xDir?: Point): gp_Ax3 => {
   const oc = getOC();
@@ -237,7 +238,7 @@ export class Transformation extends WrappingObj<gp_Trsf> {
     return this;
   }
 
-  mirror(inputPlane: Plane | PlaneName, origin: Point) {
+  mirror(inputPlane: Plane | PlaneName, origin: Point): this {
     const [r, gc] = localGC();
     let plane: Plane;
     if (typeof inputPlane === "string") {
@@ -260,13 +261,13 @@ export class Plane extends RegisteredObj {
   yDir: Vector;
   zDir: Vector;
 
-  // @ts-expect-error
+  // @ts-expect-error initialised indirectly
   private _origin: Vector;
-  // @ts-expect-error
+  // @ts-expect-error initialised indirectly
   private lcs: gp_Ax3;
-  // @ts-expect-error
+  // @ts-expect-error initialised indirectly
   private localToGlobal: Matrix;
-  // @ts-expect-error
+  // @ts-expect-error initialised indirectly
   private globalToLocal: Matrix;
 
   constructor(
@@ -302,7 +303,7 @@ export class Plane extends RegisteredObj {
     this.origin = new Vector(origin);
   }
 
-  delete() {
+  delete(): void {
     this.lcs.delete();
     this.localToGlobal.delete();
     this.xDir.delete();
@@ -312,11 +313,11 @@ export class Plane extends RegisteredObj {
     super.delete();
   }
 
-  clone() {
+  clone(): Plane {
     return new Plane(this.origin, this.xDir, this.zDir);
   }
 
-  get origin() {
+  get origin(): Vector {
     return this._origin;
   }
 
@@ -325,7 +326,7 @@ export class Plane extends RegisteredObj {
     this._calcTransforms();
   }
 
-  _calcTransforms() {
+  _calcTransforms(): void {
     const globalCoordSystem = new this.oc.gp_Ax3_1();
     const localCoordSystem = makeAx3(this.origin, this.zDir, this.xDir);
 
@@ -342,18 +343,19 @@ export class Plane extends RegisteredObj {
     globalCoordSystem.delete();
   }
 
-  setOrigin2d(x: number, y: number) {
+  setOrigin2d(x: number, y: number): void {
     this.origin = this.toWorldCoords([x, y]);
   }
 
-  toLocalCoords(obj: Vector | { transformShape: (T: Matrix) => any }) {
+  toLocalCoords(obj: Vector | { transformShape: (T: Matrix) => any }): Point {
     if (obj instanceof Vector) {
       return obj.transform(this.globalToLocal);
     } else if (obj.transformShape)
       return obj.transformShape(this.globalToLocal);
+    throw new Error("Needs to convert a vector or a shape");
   }
 
-  toWorldCoords(v: Point) {
+  toWorldCoords(v: Point): Vector {
     if (v instanceof Vector) {
       return v.transform(this.localToGlobal);
     } else {

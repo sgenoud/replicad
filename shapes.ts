@@ -25,14 +25,16 @@ import {
   TopoDS_CompSolid,
   TopAbs_ShapeEnum,
   STEPControl_StepModelType,
-  GeomAbs_CurveType,
   gp_Vec,
   gp_Pnt,
   Adaptor3d_Surface,
+  BRepAdaptor_Curve,
+  BRepAdaptor_CompCurve,
+  BRepAdaptor_Surface,
 } from "../wasm/cadeau_single";
 import { EdgeFinder, FaceFinder } from "./finders.js";
 
-type AnyShape =
+export type AnyShape =
   | Vertex
   | Edge
   | Wire
@@ -52,6 +54,17 @@ type TopoEntity =
   | "solidCompound"
   | "compound"
   | "shape";
+
+type GenericTopo =
+  | TopoDS_Face
+  | TopoDS_Shape
+  | TopoDS_Edge
+  | TopoDS_Wire
+  | TopoDS_Shell
+  | TopoDS_Vertex
+  | TopoDS_Solid
+  | TopoDS_Compound
+  | TopoDS_CompSolid;
 
 interface CurveLike {
   delete(): void;
@@ -73,7 +86,6 @@ export type RadiusConfig =
 const asTopo = (entity: TopoEntity): TopAbs_ShapeEnum => {
   const oc = getOC();
 
-  // @ts-ignore
   return {
     vertex: oc.TopAbs_ShapeEnum.TopAbs_VERTEX,
     wire: oc.TopAbs_ShapeEnum.TopAbs_WIRE,
@@ -84,13 +96,13 @@ const asTopo = (entity: TopoEntity): TopAbs_ShapeEnum => {
     compound: oc.TopAbs_ShapeEnum.TopAbs_COMPOUND,
     edge: oc.TopAbs_ShapeEnum.TopAbs_EDGE,
     shape: oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
-  }[entity];
+  }[entity] as TopAbs_ShapeEnum;
 };
 
 export const iterTopo = function* iterTopo(
   shape: TopoDS_Shape,
   topo: TopoEntity
-) {
+): IterableIterator<TopoDS_Shape> {
   const oc = getOC();
   const explorer = new oc.TopExp_Explorer_2(
     shape,
@@ -123,7 +135,7 @@ export interface ShapeMesh {
   faceGroups: { start: number; count: number; faceId: number }[];
 }
 
-export const shapeType = (shape: TopoDS_Shape) => {
+export const shapeType = (shape: TopoDS_Shape): TopAbs_ShapeEnum => {
   if (shape.IsNull()) throw new Error("This shape has not type, it is null");
   return shape.ShapeType();
 };
@@ -137,19 +149,19 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return new (<any>this.constructor)(downcast(this.wrapped));
   }
 
-  get hashCode() {
+  get hashCode(): number {
     return this.wrapped.HashCode(HASH_CODE_MAX);
   }
 
-  get isNull() {
+  get isNull(): boolean {
     return this.wrapped.IsNull();
   }
 
-  isSame(other: AnyShape) {
+  isSame(other: AnyShape): boolean {
     return this.wrapped.IsSame(other.wrapped);
   }
 
-  isEqual(other: AnyShape) {
+  isEqual(other: AnyShape): boolean {
     return this.wrapped.IsEqual(other.wrapped);
   }
 
@@ -249,11 +261,11 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return newShape as typeof this;
   }
 
-  _iterTopo(topo: TopoEntity) {
+  _iterTopo(topo: TopoEntity): IterableIterator<TopoDS_Shape> {
     return iterTopo(this.wrapped, topo);
   }
 
-  _listTopo(topo: TopoEntity) {
+  _listTopo(topo: TopoEntity): TopoDS_Shape[] {
     return Array.from(this._iterTopo(topo)).map((e) => {
       return downcast(e);
     });
@@ -331,9 +343,9 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
       const t = triangles.Value(nt);
       let n1 = t.Value(1);
       let n2 = t.Value(2);
-      let n3 = t.Value(3);
+      const n3 = t.Value(3);
       if (orient !== this.oc.TopAbs_Orientation.TopAbs_FORWARD) {
-        let tmp = n1;
+        const tmp = n1;
         n1 = n2;
         n2 = tmp;
       }
@@ -353,7 +365,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return triangulatedFace;
   }
 
-  _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}) {
+  _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
     new this.oc.BRepMesh_IncrementalMesh_2(
       this.wrapped,
       tolerance,
@@ -368,9 +380,9 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     let triangles: number[] = [];
     let vertices: number[] = [];
     let normals: number[] = [];
-    let faceGroups: { start: number; count: number; faceId: number }[] = [];
+    const faceGroups: { start: number; count: number; faceId: number }[] = [];
 
-    for (let face of this.faces) {
+    for (const face of this.faces) {
       const tri = face.triangulation(vertices.length / 3);
 
       if (!tri) continue;
@@ -398,12 +410,12 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     lines: number[];
     edgeGroups: { start: number; count: number; edgeId: number }[];
   } {
-    let recordedEdges = new Set();
-    let lines: number[] = [];
+    const recordedEdges = new Set();
+    const lines: number[] = [];
     const edgeGroups: { start: number; count: number; edgeId: number }[] = [];
     const aLocation = new this.oc.TopLoc_Location_1();
 
-    for (let face of this.faces) {
+    for (const face of this.faces) {
       const faceCleaner = new Cleaner();
       const triangulation = this.oc.BRep_Tool.Triangulation(
         face.wrapped,
@@ -418,7 +430,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
       const faceNodes = triangulation.get().Nodes();
       faceCleaner.add(faceNodes);
 
-      for (let edge of face.edges) {
+      for (const edge of face.edges) {
         faceCleaner.add(edge);
         if (recordedEdges.has(edge.hashCode)) continue;
         const edgeCleaner = new Cleaner();
@@ -474,7 +486,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
   blobSTEP(): Blob {
     const filename = "blob.step";
-    let writer = new this.oc.STEPControl_Writer_1();
+    const writer = new this.oc.STEPControl_Writer_1();
     const progress = new this.oc.Message_ProgressRange_1();
 
     writer.Transfer(
@@ -492,7 +504,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
     if (done === this.oc.IFSelect_ReturnStatus.IFSelect_RetDone) {
       // Read the STEP File from the filesystem and clean up
-      let file = this.oc.FS.readFile("/" + filename);
+      const file = this.oc.FS.readFile("/" + filename);
       this.oc.FS.unlink("/" + filename);
 
       // Return the contents of the STEP File
@@ -506,7 +518,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   blobSTL({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): Blob {
     this._mesh({ tolerance, angularTolerance });
     const filename = "blob.stl";
-    let writer = new this.oc.StlAPI_Writer();
+    const writer = new this.oc.StlAPI_Writer();
     // Convert to a .STEP File
     const progress = new this.oc.Message_ProgressRange_1();
     const done = writer.Write(this.wrapped, filename, progress);
@@ -515,7 +527,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
     if (done) {
       // Read the STEP File from the filesystem and clean up
-      let file = this.oc.FS.readFile("/" + filename);
+      const file = this.oc.FS.readFile("/" + filename);
       this.oc.FS.unlink("/" + filename);
 
       // Return the contents of the STEP File
@@ -530,7 +542,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 export class Vertex extends Shape<TopoDS_Vertex> {}
 export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   protected abstract _geomAdaptor(): CurveLike;
-  get repr() {
+  get repr(): string {
     const { startPoint, endPoint } = this;
     const retVal = `start: (${this.startPoint.repr}) end:(${this.endPoint.repr}}`;
     startPoint.delete();
@@ -556,7 +568,7 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     return outval;
   }
 
-  tangentAt(position: number): Vector {
+  tangentAt(position = 0): Vector {
     const curve = this.curve;
     const tangent = curve.tangentAt(position);
     curve.delete();
@@ -571,7 +583,7 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     return isClosed;
   }
 
-  get isPeriodic() {
+  get isPeriodic(): boolean {
     const curve = this.curve;
     const isPeriodic = curve.isPeriodic;
     curve.delete();
@@ -616,8 +628,7 @@ export class Curve extends WrappingObj<CurveLike> {
   get curveType(): CurveType {
     const ga = this.oc.GeomAbs_CurveType;
 
-    // @ts-ignore
-    const CAST_MAP: Map<keyof GeomAbs_CurveType, CurveType> = new Map([
+    const CAST_MAP: Map<any, CurveType> = new Map([
       [ga.GeomAbs_Line, "LINE"],
       [ga.GeomAbs_Circle, "CIRCLE"],
       [ga.GeomAbs_Ellipse, "ELLIPSE"],
@@ -680,17 +691,20 @@ export class Curve extends WrappingObj<CurveLike> {
 }
 
 export class Edge extends _1DShape<TopoDS_Edge> {
-  protected _geomAdaptor() {
+  protected _geomAdaptor(): BRepAdaptor_Curve {
     return new this.oc.BRepAdaptor_Curve_2(this.wrapped);
   }
 }
 
 export class Wire extends _1DShape<TopoDS_Wire> {
-  protected _geomAdaptor() {
+  protected _geomAdaptor(): BRepAdaptor_CompCurve {
     return new this.oc.BRepAdaptor_CompCurve_2(this.wrapped, false);
   }
 
-  offset2D(offset: number, kind: "arc" | "intersection" | "tangent" = "arc") {
+  offset2D(
+    offset: number,
+    kind: "arc" | "intersection" | "tangent" = "arc"
+  ): Wire {
     const kinds = {
       arc: this.oc.GeomAbs_JoinType.GeomAbs_Arc,
       intersection: this.oc.GeomAbs_JoinType.GeomAbs_Intersection,
@@ -707,6 +721,8 @@ export class Wire extends _1DShape<TopoDS_Wire> {
     const newShape = cast(offsetter.Shape());
     offsetter.delete();
     this.delete();
+    if (!(newShape instanceof Wire))
+      throw new Error("Could not offset with a wire");
     return newShape;
   }
 }
@@ -748,7 +764,7 @@ export class Surface extends WrappingObj<Adaptor3d_Surface> {
 }
 
 export class Face extends Shape<TopoDS_Face> {
-  protected _geomAdaptor() {
+  protected _geomAdaptor(): BRepAdaptor_Surface {
     return new this.oc.BRepAdaptor_Surface_2(this.wrapped, false);
   }
 
@@ -896,9 +912,9 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   _builderIter(
     radiusConfigInput: RadiusConfig,
     builderAdd: (r: number, edge: TopoDS_Edge) => void
-  ) {
+  ): void {
     if (typeof radiusConfigInput === "number") {
-      for (let rawEdge of this._iterTopo("edge")) {
+      for (const rawEdge of this._iterTopo("edge")) {
         builderAdd(radiusConfigInput, downcast(rawEdge));
       }
       return;
@@ -919,7 +935,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
       }
     }
 
-    for (let e of this._iterTopo("edge")) {
+    for (const e of this._iterTopo("edge")) {
       const rawEdge = downcast(e);
       const edge = new Edge(rawEdge);
       const radius = radiusConfigFun(edge);
@@ -929,7 +945,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     finalize && finalize();
   }
 
-  fillet(radiusConfig: RadiusConfig) {
+  fillet(radiusConfig: RadiusConfig): Shape3D {
     const filletBuilder = new this.oc.BRepFilletAPI_MakeFillet(
       this.wrapped,
       this.oc.ChFi3d_FilletShape.ChFi3d_Rational as any
@@ -940,10 +956,16 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     const newShape = cast(filletBuilder.Shape());
     filletBuilder.delete();
     this.delete();
+    if (
+      !(newShape instanceof Solid) &&
+      !(newShape instanceof CompSolid) &&
+      !(newShape instanceof Compound)
+    )
+      throw new Error("Could not fillet as a 3d shape");
     return newShape;
   }
 
-  chamfer(radiusConfig: RadiusConfig) {
+  chamfer(radiusConfig: RadiusConfig): Shape3D {
     const chamferBuilder = new this.oc.BRepFilletAPI_MakeChamfer(this.wrapped);
 
     this._builderIter(radiusConfig, (r, e) => chamferBuilder.Add_2(r, e));
@@ -951,6 +973,12 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     const newShape = cast(chamferBuilder.Shape());
     chamferBuilder.delete();
     this.delete();
+    if (
+      !(newShape instanceof Solid) &&
+      !(newShape instanceof CompSolid) &&
+      !(newShape instanceof Compound)
+    )
+      throw new Error("Could not chamfer as a 3d shape");
     return newShape;
   }
 }
@@ -960,7 +988,9 @@ export class Solid extends _3DShape<TopoDS_Solid> {}
 export class CompSolid extends _3DShape<TopoDS_CompSolid> {}
 export class Compound extends _3DShape<TopoDS_Compound> {}
 
-export function downcast(shape: TopoDS_Shape) {
+export type Shape3D = Solid | CompSolid | Compound;
+
+export function downcast(shape: TopoDS_Shape): GenericTopo {
   const oc = getOC();
   const ta = oc.TopAbs_ShapeEnum;
 

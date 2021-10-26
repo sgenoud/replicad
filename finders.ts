@@ -1,23 +1,41 @@
-import { Vector, asPnt, createNamedPlane } from "./geom.js";
-import { RegisteredObj } from "./register.js";
-import { DEG2RAD } from "./constants.js";
-import { getOC } from "./oclib.js";
+import {
+  Vector,
+  asPnt,
+  createNamedPlane,
+  Point,
+  Plane,
+  PlaneName,
+} from "./geom";
+import { RegisteredObj } from "./register";
+import { DEG2RAD } from "./constants";
+import { Face, Edge, AnyShape, SurfaceType, CurveType } from "./shapes";
+import { getOC } from "./oclib";
 
-const DIRECTIONS = {
+type Direction = "X" | "Y" | "Z";
+
+const DIRECTIONS: Record<Direction, Point> = {
   X: [1, 0, 0],
   Y: [0, 1, 0],
   Z: [0, 0, 1],
 };
-const PLANE_TO_DIR = {
+
+type StandardPlane = "XY" | "XZ" | "YZ";
+const PLANE_TO_DIR: Record<StandardPlane, [number, number, number]> = {
   YZ: [1, 0, 0],
   XZ: [0, 1, 0],
   XY: [0, 0, 1],
 };
 
-class Finder extends RegisteredObj {
+type FaceOrEdge = Face | Edge;
+
+abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
+  protected filters: (({ element: Type, normal: Vector }) => boolean)[];
+  protected references: { delete: () => void }[];
+  abstract applyFilter(shape: AnyShape): Type[];
+  abstract shouldKeep(t: Type): boolean;
+
   constructor() {
     super();
-    this.oc = getOC();
     this.filters = [];
     this.references = [];
   }
@@ -26,11 +44,10 @@ class Finder extends RegisteredObj {
     this.references.forEach((r) => r.delete());
     this.references = [];
     this.filters = [];
-    this.oc = null;
     super.delete();
   }
 
-  inList(elementList, { keepList = false } = {}) {
+  inList(elementList: Type[], { keepList = false } = {}): this {
     if (!keepList) this.references.push(...elementList);
 
     const elementInList = ({ element }) => {
@@ -40,9 +57,9 @@ class Finder extends RegisteredObj {
     return this;
   }
 
-  atAngleWith(direction = "Z", angle = 0) {
-    let myDirection;
-    if (DIRECTIONS[direction]) {
+  atAngleWith(direction: Direction | Point = "Z", angle = 0): this {
+    let myDirection: Vector;
+    if (typeof direction === "string") {
       myDirection = new Vector(DIRECTIONS[direction]);
     } else {
       myDirection = new Vector(direction);
@@ -61,14 +78,15 @@ class Finder extends RegisteredObj {
     return this;
   }
 
-  atDistance(distance, point = [0, 0, 0]) {
+  atDistance(distance: number, point: Point = [0, 0, 0]): this {
     const pnt = asPnt(point);
 
-    const vertexMaker = new this.oc.BRepBuilderAPI_MakeVertex(pnt);
+    const oc = getOC();
+    const vertexMaker = new oc.BRepBuilderAPI_MakeVertex(pnt);
     const vertex = vertexMaker.Vertex();
     vertexMaker.delete();
 
-    const distanceBuilder = new this.oc.BRepExtrema_DistShapeShape_1();
+    const distanceBuilder = new oc.BRepExtrema_DistShapeShape_1();
     distanceBuilder.LoadS1(vertex);
 
     const checkPoint = ({ element }) => {
@@ -84,12 +102,13 @@ class Finder extends RegisteredObj {
     return this;
   }
 
-  containsPoint(point) {
+  containsPoint(point: Point): this {
     return this.atDistance(0, point);
   }
 
-  inBox(corner1, corner2) {
-    const boxMaker = new this.oc.BRepPrimAPI_MakeBox_4(
+  inBox(corner1: Point, corner2: Point) {
+    const oc = getOC();
+    const boxMaker = new oc.BRepPrimAPI_MakeBox_4(
       asPnt(corner1),
       asPnt(corner2)
     );
@@ -97,7 +116,7 @@ class Finder extends RegisteredObj {
     boxMaker.delete();
     this.references.push(box);
 
-    const distanceBuilder = new this.oc.BRepExtrema_DistShapeShape_1();
+    const distanceBuilder = new oc.BRepExtrema_DistShapeShape_1();
     distanceBuilder.LoadS1(box);
 
     const checkPoint = ({ element }) => {
@@ -113,24 +132,27 @@ class Finder extends RegisteredObj {
     return this;
   }
 
-  find(shape, { unique = false, clean = false } = {}) {
-    let elements = this.applyFilter(shape);
+  find(shape: AnyShape, options: { unique: true; clean?: boolean }): Type;
+  find(shape: AnyShape, options: { unique?: false; clean?: boolean }): Type[];
+  find(shape: AnyShape, { unique = false, clean = false } = {}) {
+    const elements = this.applyFilter(shape);
+
+    if (clean) this.delete();
 
     if (unique) {
       if (elements.length !== 1) {
         console.error(elements);
         throw new Error("Finder has not found a unique solution");
       }
-      elements = elements[0];
+      return elements[0];
     }
 
-    if (clean) this.delete();
     return elements;
   }
 
-  either(findersList) {
+  either(findersList: ((f: this) => this)[]): this {
     const builtFinders = findersList.map((finderFunction) => {
-      const finder = new this.constructor();
+      const finder = new (<any>this.constructor())() as this;
       this.references.push(finder);
       finderFunction(finder);
       return finder;
@@ -143,13 +165,13 @@ class Finder extends RegisteredObj {
     return this;
   }
 
-  and(findersList) {
+  and(findersList: ((f: this) => this)[]): this {
     findersList.forEach((f) => f(this));
     return this;
   }
 
-  not(finderFun) {
-    const finder = new this.constructor();
+  not(finderFun: (f: this) => this): this {
+    const finder = new (<any>this.constructor())() as this;
     this.references.push(finder);
     finderFun(finder);
 
@@ -159,7 +181,7 @@ class Finder extends RegisteredObj {
     return this;
   }
 
-  asSizeFcn(size) {
+  asSizeFcn(size: number): (element: Type) => number {
     return (element) => {
       const shouldKeep = this.shouldKeep(element);
       return shouldKeep ? size : 0;
@@ -167,19 +189,22 @@ class Finder extends RegisteredObj {
   }
 }
 
-export class FaceFinder extends Finder {
-  parallelTo(plane) {
-    if (PLANE_TO_DIR[plane]) return this.atAngleWith(PLANE_TO_DIR[plane]);
-    if (plane.zDir) return this.atAngleWith(plane.zDir);
-    if (plane.normalAt) {
+export class FaceFinder extends Finder<Face> {
+  parallelTo(plane: Plane | StandardPlane | Face): this {
+    if (typeof plane === "string" && PLANE_TO_DIR[plane])
+      return this.atAngleWith(PLANE_TO_DIR[plane]);
+    if (typeof plane !== "string" && plane instanceof Plane)
+      return this.atAngleWith(plane.zDir);
+    if (typeof plane !== "string" && plane.normalAt) {
       const normal = plane.normalAt();
       this.atAngleWith(normal);
       normal.delete();
       return this;
     }
+    return this;
   }
 
-  ofSurfaceType(surfaceType) {
+  ofSurfaceType(surfaceType: SurfaceType): this {
     const check = ({ element }) => {
       return element.geomType === surfaceType;
     };
@@ -187,11 +212,13 @@ export class FaceFinder extends Finder {
     return this;
   }
 
-  inPlane(inputPlane, origin) {
-    let plane = inputPlane;
+  inPlane(inputPlane: PlaneName | Plane, origin: Point): this {
+    let plane: Plane;
     if (typeof inputPlane === "string") {
-      plane = createNamedPlane(plane, origin);
+      plane = createNamedPlane(inputPlane, origin);
       this.references.push(plane);
+    } else {
+      plane = inputPlane;
     }
 
     this.parallelTo(plane);
@@ -211,7 +238,7 @@ export class FaceFinder extends Finder {
     return this;
   }
 
-  shouldKeep(element) {
+  shouldKeep(element: Face): boolean {
     const normal = element.normalAt();
     const shouldKeep = this.filters.every((filter) =>
       filter({ normal, element })
@@ -220,8 +247,8 @@ export class FaceFinder extends Finder {
     return shouldKeep;
   }
 
-  applyFilter(shape) {
-    return shape.faces.filter((face) => {
+  applyFilter(shape: AnyShape): Face[] {
+    return shape.faces.filter((face: Face) => {
       const shouldKeep = this.shouldKeep(face);
       if (!shouldKeep) face.delete();
       return shouldKeep;
@@ -229,12 +256,12 @@ export class FaceFinder extends Finder {
   }
 }
 
-export class EdgeFinder extends Finder {
-  inDirection(direction) {
+export class EdgeFinder extends Finder<Edge> {
+  inDirection(direction: Direction | Point): this {
     return this.atAngleWith(direction, 0);
   }
 
-  ofCurveType(curveType) {
+  ofCurveType(curveType: CurveType): this {
     const check = ({ element }) => {
       return element.geomType === curveType;
     };
@@ -242,22 +269,27 @@ export class EdgeFinder extends Finder {
     return this;
   }
 
-  parallelTo(plane) {
-    if (PLANE_TO_DIR[plane]) return this.atAngleWith(PLANE_TO_DIR[plane], 90);
-    if (plane.zDir) return this.atAngleWith(plane.zDir, 90);
-    if (plane.normalAt) {
+  parallelTo(plane: Plane | StandardPlane | Face): this {
+    if (typeof plane === "string" && PLANE_TO_DIR[plane])
+      return this.atAngleWith(PLANE_TO_DIR[plane], 90);
+    if (typeof plane !== "string" && plane instanceof Plane)
+      return this.atAngleWith(plane.zDir, 90);
+    if (typeof plane !== "string" && plane.normalAt) {
       const normal = plane.normalAt();
       this.atAngleWith(normal, 90);
       normal.delete();
       return this;
     }
+    return this;
   }
 
-  inPlane(inputPlane, origin) {
-    let plane = inputPlane;
+  inPlane(inputPlane: PlaneName | Plane, origin: Point): this {
+    let plane: Plane;
     if (typeof inputPlane === "string") {
-      plane = createNamedPlane(plane, origin);
+      plane = createNamedPlane(inputPlane, origin);
       this.references.push(plane);
+    } else {
+      plane = inputPlane;
     }
 
     this.parallelTo(plane);
@@ -277,7 +309,7 @@ export class EdgeFinder extends Finder {
     return this;
   }
 
-  shouldKeep(element) {
+  shouldKeep(element: Edge): boolean {
     const normal = element.tangentAt().normalized();
     const shouldKeep = this.filters.every((filter) =>
       filter({ normal, element })
@@ -286,8 +318,8 @@ export class EdgeFinder extends Finder {
     return shouldKeep;
   }
 
-  applyFilter(shape) {
-    return shape.edges.filter((edge) => {
+  applyFilter(shape: AnyShape): Edge[] {
+    return shape.edges.filter((edge: Edge) => {
       const shouldKeep = this.shouldKeep(edge);
       if (!shouldKeep) edge.delete();
       return shouldKeep;
@@ -295,9 +327,11 @@ export class EdgeFinder extends Finder {
   }
 }
 
-export const combineFinderFilters = (filters) => {
-  const filter = (element) => {
-    for (let { filter, radius } of filters) {
+export const combineFinderFilters = <Type extends FaceOrEdge>(
+  filters: { filter: Finder<Type>; radius: number }[]
+): [(v: Type) => number, () => void] => {
+  const filter = (element: Type) => {
+    for (const { filter, radius } of filters) {
       if (filter.shouldKeep(element)) return radius;
     }
     return 0;

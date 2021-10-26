@@ -4,7 +4,7 @@ const OC: { library: OpenCascadeInstance | null } = {
   library: null,
 };
 
-export const setOC = (oc: OpenCascadeInstance) => {
+export const setOC = (oc: OpenCascadeInstance): void => {
   OC.library = oc;
 };
 
