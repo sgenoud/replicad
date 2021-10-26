@@ -1,16 +1,30 @@
-import { Edge, Face, Wire, Solid, Vertex, cast, downcast } from "./shapes";
-import { asPnt, asDir, makeAx3, makeAx2 } from "./geom";
+import {
+  Edge,
+  Face,
+  Wire,
+  Solid,
+  Vertex,
+  cast,
+  downcast,
+  Shape3D,
+  isShape3D,
+} from "./shapes";
+import { asPnt, makeAx3, makeAx2, Point, asVec } from "./geom";
 import { getOC } from "./oclib.js";
 import { localGC } from "./register.js";
 
-export const makeLine = (v1, v2) => {
+export const makeLine = (v1: Point, v2: Point): Edge => {
   const oc = getOC();
   return new Edge(
-    new oc.BRepBuilderAPI_MakeEdge_3(v1.toPnt(), v2.toPnt()).Edge()
+    new oc.BRepBuilderAPI_MakeEdge_3(asPnt(v1), asPnt(v2)).Edge()
   );
 };
 
-export const makeCircle = (radius, center = [0, 0, 0], normal = [0, 0, 1]) => {
+export const makeCircle = (
+  radius: number,
+  center: Point = [0, 0, 0],
+  normal: Point = [0, 0, 1]
+): Edge => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -25,12 +39,12 @@ export const makeCircle = (radius, center = [0, 0, 0], normal = [0, 0, 1]) => {
 };
 
 export const makeEllipse = (
-  majorRadius,
-  minorRadius,
-  center = [0, 0, 0],
-  normal = [0, 0, 1],
-  xDir
-) => {
+  majorRadius: number,
+  minorRadius: number,
+  center: Point = [0, 0, 0],
+  normal: Point = [0, 0, 1],
+  xDir?: Point
+): Edge => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -48,13 +62,13 @@ export const makeEllipse = (
 };
 
 export const makeHelix = (
-  pitch,
-  height,
-  radius,
-  center = [0, 0, 0],
-  dir = [0, 0, 1],
+  pitch: number,
+  height: number,
+  radius: number,
+  center: Point = [0, 0, 0],
+  dir: Point = [0, 0, 1],
   lefthand = false
-) => {
+): Edge => {
   const oc = getOC();
   const [r, gc] = localGC();
   let myDir = 2 * Math.PI;
@@ -99,12 +113,12 @@ export const makeHelix = (
   return new Edge(w);
 };
 
-export const makeThreePointArc = (v1, v2, v3) => {
+export const makeThreePointArc = (v1: Point, v2: Point, v3: Point): Edge => {
   const oc = getOC();
   const circleGeom = new oc.GC_MakeArcOfCircle_4(
-    v1.toPnt(),
-    v2.toPnt(),
-    v3.toPnt()
+    asPnt(v1),
+    asPnt(v2),
+    asPnt(v3)
   ).Value();
 
   const curve = new oc.Handle_Geom_Curve_2(circleGeom.get());
@@ -112,14 +126,14 @@ export const makeThreePointArc = (v1, v2, v3) => {
 };
 
 export const makeEllipseArc = (
-  majorRadius,
-  minorRadius,
-  startAngle,
-  endAngle,
-  center = [0, 0, 0],
-  normal = [0, 0, 1],
-  xDir
-) => {
+  majorRadius: number,
+  minorRadius: number,
+  startAngle: number,
+  endAngle: number,
+  center: Point = [0, 0, 0],
+  normal: Point = [0, 0, 1],
+  xDir?: Point
+): Edge => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -138,11 +152,11 @@ export const makeEllipseArc = (
   return shape;
 };
 
-export const makeBezierCurve = (points) => {
+export const makeBezierCurve = (points: Point[]): Edge => {
   const oc = getOC();
   const arrayOfPoints = new oc.TColgp_Array1OfPnt_2(1, points.length);
   points.forEach((p, i) => {
-    arrayOfPoints.SetValue(i + 1, p.toPnt());
+    arrayOfPoints.SetValue(i + 1, asPnt(p));
   });
   const bezCurve = new oc.Geom_BezierCurve_1(arrayOfPoints);
 
@@ -150,19 +164,28 @@ export const makeBezierCurve = (points) => {
   return new Edge(new oc.BRepBuilderAPI_MakeEdge_24(curve).Edge());
 };
 
-export const makeTangentArc = (startPoint, startTgt, endPoint) => {
+export const makeTangentArc = (
+  startPoint: Point,
+  startTgt: Point,
+  endPoint: Point
+): Edge => {
   const oc = getOC();
-  const circleGeom = new oc.GC_MakeArcOfCircle_5(
-    startPoint.toPnt(),
-    startTgt.wrapped,
-    endPoint.toPnt()
-  ).Value();
+  const [r, gc] = localGC();
+  const circleGeom = r(
+    new oc.GC_MakeArcOfCircle_5(
+      r(asPnt(startPoint)),
+      r(asVec(startTgt)),
+      r(asPnt(endPoint))
+    ).Value()
+  );
 
-  const curve = new oc.Handle_Geom_Curve_2(circleGeom.get());
-  return new Edge(new oc.BRepBuilderAPI_MakeEdge_24(curve).Edge());
+  const curve = r(new oc.Handle_Geom_Curve_2(circleGeom.get()));
+  const edge = new Edge(r(new oc.BRepBuilderAPI_MakeEdge_24(curve)).Edge());
+  gc();
+  return edge;
 };
 
-export const assembleWire = (listOfEdges) => {
+export const assembleWire = (listOfEdges: (Edge | Wire)[]): Wire => {
   const oc = getOC();
   const wireBuilder = new oc.BRepBuilderAPI_MakeWire_1();
   listOfEdges.forEach((e) => {
@@ -181,7 +204,7 @@ export const assembleWire = (listOfEdges) => {
   return wire;
 };
 
-export const makeFace = (wire) => {
+export const makeFace = (wire: Wire): Face => {
   const oc = getOC();
   const faceBuilder = new oc.BRepBuilderAPI_MakeFace_15(wire.wrapped, false);
   const face = faceBuilder.Face();
@@ -190,9 +213,14 @@ export const makeFace = (wire) => {
   return new Face(face);
 };
 
-export const makeCylinder = (radius, height, location, direction) => {
+export const makeCylinder = (
+  radius: number,
+  height: number,
+  location: Point,
+  direction: Point
+): Solid => {
   const oc = getOC();
-  const axis = new oc.gp_Ax2_3(asPnt(location), asDir(direction));
+  const axis = makeAx2(location, direction);
 
   const cylinder = new oc.BRepPrimAPI_MakeCylinder_3(axis, radius, height);
   const solid = new Solid(cylinder.Shape());
@@ -201,7 +229,7 @@ export const makeCylinder = (radius, height, location, direction) => {
   return solid;
 };
 
-export const makeVertex = (point) => {
+export const makeVertex = (point: Point): Vertex => {
   const oc = getOC();
   const pnt = asPnt(point);
 
@@ -212,20 +240,26 @@ export const makeVertex = (point) => {
   return new Vertex(vertex);
 };
 
-export const makeOffset = (face, offset, tolerance = 1e-6) => {
+export const makeOffset = (
+  face: Face,
+  offset: number,
+  tolerance = 1e-6
+): Shape3D => {
   const oc = getOC();
   const offsetBuilder = new oc.BRepOffsetAPI_MakeOffsetShape_2(
     face.wrapped,
     offset,
     tolerance,
-    oc.BRepOffset_Mode.BRepOffset_Skin,
+    oc.BRepOffset_Mode.BRepOffset_Skin as any,
     false,
     false,
-    oc.GeomAbs_JoinType.GeomAbs_Arc,
+    oc.GeomAbs_JoinType.GeomAbs_Arc as any,
     false
   );
 
   const newShape = cast(downcast(offsetBuilder.Shape()));
   offsetBuilder.delete();
+
+  if (!isShape3D(newShape)) throw new Error("Could not offset to a 3d shape");
   return newShape;
 };

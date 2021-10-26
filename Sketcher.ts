@@ -1,8 +1,8 @@
-import { Vector } from "./geom.js";
+import { Plane, PlaneName, Point, Vector } from "./geom.js";
 import { makeMirrorMatrix } from "./geomHelpers.js";
-import { localGC } from "./register.js";
+import { localGC, RegisteredObj } from "./register.js";
 import { DEG2RAD, RAD2DEG } from "./constants.js";
-import { distance2d, angle2d, polarToCartesian } from "./lib2d";
+import { distance2d, angle2d, polarToCartesian, Point2D } from "./lib2d";
 import {
   makeLine,
   makeThreePointArc,
@@ -12,11 +12,26 @@ import {
   assembleWire,
 } from "./shapeHelpers.js";
 
-import { BaseSketcher, convertSvgEllipseParams } from "./sketcherlib.js";
+import {
+  makePlane,
+  convertSvgEllipseParams,
+  SplineConfig,
+  defaultsSplineConfig,
+} from "./sketcherlib.js";
+import { AnyShape, CurveLike, Edge, Wire } from "./shapes.js";
+import { Handle_Geom_BezierCurve } from "../wasm/cadeau_single.js";
+import Sketch from "./Sketch.js";
 
-export default class Sketcher extends BaseSketcher {
-  constructor(plane, origin) {
-    super(plane, origin);
+export default class Sketcher extends RegisteredObj {
+  plane: Plane;
+  pointer: Vector;
+  firstPoint: Vector;
+  pendingEdges: Edge[];
+  _mirrorWire: boolean;
+
+  constructor(plane?: Plane | PlaneName, origin?: Point) {
+    super();
+    this.plane = makePlane(plane, origin);
 
     this.pointer = new Vector(this.plane.origin);
     this.firstPoint = new Vector(this.plane.origin);
@@ -25,12 +40,17 @@ export default class Sketcher extends BaseSketcher {
     this._mirrorWire = false;
   }
 
-  _updatePointer(newPointer) {
+  delete(): void {
+    this.plane.delete();
+    super.delete();
+  }
+
+  _updatePointer(newPointer: Vector): void {
     this.pointer.delete();
     this.pointer = newPointer;
   }
 
-  movePointerTo([x, y]) {
+  movePointerTo([x, y]: Point2D): this {
     if (this.pendingEdges.length)
       throw new Error(
         "You can only move the pointer if there is no edge defined"
@@ -41,27 +61,27 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
-  lineTo([x, y]) {
+  lineTo([x, y]: Point2D): this {
     const endPoint = this.plane.toWorldCoords([x, y]);
     this.pendingEdges.push(makeLine(this.pointer, endPoint));
     this._updatePointer(endPoint);
     return this;
   }
 
-  line(xDist, yDist) {
+  line(xDist: number, yDist: number): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.lineTo([xDist + pointer.x, yDist + pointer.y]);
   }
 
-  vLine(distance) {
+  vLine(distance: number): this {
     return this.line(0, distance);
   }
 
-  hLine(distance) {
+  hLine(distance: number): this {
     return this.line(distance, 0);
   }
 
-  tangentLine(distance) {
+  tangentLine(distance: number): this {
     const [r, gc] = localGC();
     const previousEdge = this.pendingEdges.length
       ? this.pendingEdges[this.pendingEdges.length - 1]
@@ -81,23 +101,26 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
-  polarLine(distance, angle) {
+  polarLine(distance: number, angle: number): this {
     const angleInRads = angle * DEG2RAD;
     const [x, y] = polarToCartesian(distance, angleInRads);
     return this.line(x, y);
   }
 
-  polarLineTo([r, theta]) {
+  polarLineTo([r, theta]: [number, number]): this {
     const angleInRads = theta * DEG2RAD;
     const point = polarToCartesian(r, angleInRads);
     return this.lineTo(point);
   }
 
-  bezierCurveTo(end, controlPoints) {
-    let cp = controlPoints;
-    if (cp.length === 2 && !Array.isArray(cp[0])) {
-      cp = [cp];
+  bezierCurveTo(end: Point2D, controlPoints: Point2D | Point2D[]): this {
+    let cp: Point2D[];
+    if (controlPoints.length === 2 && !Array.isArray(controlPoints[0])) {
+      cp = [controlPoints as Point2D];
+    } else {
+      cp = controlPoints as Point2D[];
     }
+
     const inWorldPoints = cp.map((p) => this.plane.toWorldCoords(p));
     const endPoint = this.plane.toWorldCoords(end);
 
@@ -109,22 +132,21 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
-  quadraticBezierCurveTo(end, controlPoint) {
+  quadraticBezierCurveTo(end: Point2D, controlPoint: Point2D): this {
     return this.bezierCurveTo(end, [controlPoint]);
   }
 
-  cubicBezierCurveTo(end, startControlPoint, endControlPoint) {
+  cubicBezierCurveTo(
+    end: Point2D,
+    startControlPoint: Point2D,
+    endControlPoint: Point2D
+  ): this {
     return this.bezierCurveTo(end, [startControlPoint, endControlPoint]);
   }
 
-  smoothSplineTo(end, config) {
+  smoothSplineTo(end: Point2D, config?: SplineConfig): this {
     const [r, gc] = localGC();
-
-    let conf = config;
-    if (!config || (!config.endSkew && config.endSkew !== 0)) {
-      conf = { endSkew: config };
-    }
-    const { endSkew = 0, startFactor = 1, endFactor = 1 } = conf;
+    const { endSkew, startFactor, endFactor } = defaultsSplineConfig(config);
 
     const endPoint = this.plane.toWorldCoords(end);
     const previousEdge = this.pendingEdges.length
@@ -133,11 +155,17 @@ export default class Sketcher extends BaseSketcher {
 
     const defaultDistance = r(endPoint.sub(this.pointer)).Length * 0.25;
 
-    let startPoleDirection;
+    let startPoleDirection: Point;
     if (!previousEdge) {
       startPoleDirection = r(endPoint.sub(this.pointer));
     } else if (previousEdge.geomType === "BEZIER_CURVE") {
-      const rawCurve = r(previousEdge.curve).wrapped.Bezier().get();
+      const rawCurve = (
+        r(previousEdge.curve).wrapped as CurveLike & {
+          Bezier: () => Handle_Geom_BezierCurve;
+        }
+      )
+        .Bezier()
+        .get();
       const previousPole = r(new Vector(rawCurve.Pole(rawCurve.NbPoles() - 1)));
 
       startPoleDirection = r(this.pointer.sub(previousPole));
@@ -150,7 +178,7 @@ export default class Sketcher extends BaseSketcher {
     );
     const startControl = r(this.pointer.add(poleDistance));
 
-    let endPoleDirection;
+    let endPoleDirection: Point;
     if (Array.isArray(endSkew)) {
       endPoleDirection = r(this.plane.toWorldCoords(endSkew));
     } else if (endSkew === "symmetric") {
@@ -182,7 +210,7 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
-  smoothSpline(xDist, yDist, splineConfig) {
+  smoothSpline(xDist: number, yDist: number, splineConfig: SplineConfig): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.smoothSplineTo(
       [xDist + pointer.x, yDist + pointer.y],
@@ -190,7 +218,7 @@ export default class Sketcher extends BaseSketcher {
     );
   }
 
-  threePointsArcTo(end, centerPoint) {
+  threePointsArcTo(end: Point2D, centerPoint: Point2D): this {
     const gpoint1 = this.plane.toWorldCoords(centerPoint);
     const gpoint2 = this.plane.toWorldCoords(end);
 
@@ -200,7 +228,12 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
-  threePointsArc(xDist, yDist, viaXDist, viaYDist) {
+  threePointsArc(
+    xDist: number,
+    yDist: number,
+    viaXDist: number,
+    viaYDist: number
+  ): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.threePointsArcTo(
       [pointer.x + xDist, pointer.y + yDist],
@@ -208,8 +241,8 @@ export default class Sketcher extends BaseSketcher {
     );
   }
 
-  tangentArcTo(end) {
-    let endPoint = this.plane.toWorldCoords(end);
+  tangentArcTo(end: Point2D): this {
+    const endPoint = this.plane.toWorldCoords(end);
     const previousEdge = this.pendingEdges[this.pendingEdges.length - 1];
 
     this.pendingEdges.push(
@@ -220,19 +253,19 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
-  tangentArc(xDist, yDist) {
+  tangentArc(xDist: number, yDist: number): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.tangentArcTo([xDist + pointer.x, yDist + pointer.y]);
   }
 
   ellipseTo(
-    end,
-    horizontalRadius,
-    verticalRadius,
+    end: Point2D,
+    horizontalRadius: number,
+    verticalRadius: number,
     rotation = 0,
     longAxis = false,
     sweep = false
-  ) {
+  ): this {
     const [r, gc] = localGC();
     const start = this.plane.toLocalCoords(this.pointer);
 
@@ -280,9 +313,14 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
-  halfEllipseTo(end, verticalRadius, longAxis = false, sweep = false) {
+  halfEllipseTo(
+    end: Point2D,
+    verticalRadius: number,
+    longAxis = false,
+    sweep = false
+  ): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
-    const start = [pointer.x, pointer.y];
+    const start: Point2D = [pointer.x, pointer.y];
     pointer.delete();
 
     const angle = angle2d(end, start);
@@ -298,7 +336,13 @@ export default class Sketcher extends BaseSketcher {
     );
   }
 
-  halfEllipse(xDist, yDist, verticalRadius, longAxis = false, sweep = false) {
+  halfEllipse(
+    xDist: number,
+    yDist: number,
+    verticalRadius: number,
+    longAxis = false,
+    sweep = false
+  ): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.halfEllipseTo(
       [xDist + pointer.x, yDist + pointer.y],
@@ -309,14 +353,14 @@ export default class Sketcher extends BaseSketcher {
   }
 
   ellipse(
-    xDist,
-    yDist,
-    horizontalRadius,
-    verticalRadius,
+    xDist: number,
+    yDist: number,
+    horizontalRadius: number,
+    verticalRadius: number,
     rotation = 0,
     longAxis = false,
     sweep = false
-  ) {
+  ): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.ellipseTo(
       [xDist + pointer.x, yDist + pointer.y],
@@ -328,7 +372,7 @@ export default class Sketcher extends BaseSketcher {
     );
   }
 
-  sagittaArcTo(end, sagitta) {
+  sagittaArcTo(end: Point2D, sagitta: number): this {
     const startPoint = this.pointer;
     const endPoint = this.plane.toWorldCoords(end);
 
@@ -352,20 +396,20 @@ export default class Sketcher extends BaseSketcher {
     return this;
   }
 
-  sagittaArc(xDist, yDist, sagitta) {
+  sagittaArc(xDist: number, yDist: number, sagitta: number): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.sagittaArcTo([xDist + pointer.x, yDist + pointer.y], sagitta);
   }
 
-  vSagittaArc(distance, sagitta) {
+  vSagittaArc(distance: number, sagitta: number): this {
     return this.sagittaArc(0, distance, sagitta);
   }
 
-  hSagittaArc(distance, sagitta) {
+  hSagittaArc(distance: number, sagitta: number): this {
     return this.sagittaArc(distance, 0, sagitta);
   }
 
-  _mirrorWireOnStartEnd(wire) {
+  protected _mirrorWireOnStartEnd(wire: Wire): Wire {
     const startToEndVector = this.pointer.sub(this.firstPoint).normalize();
     const mirrorVector = startToEndVector.cross(this.plane.zDir);
 
@@ -385,7 +429,7 @@ export default class Sketcher extends BaseSketcher {
     return combinedWire;
   }
 
-  buildWire() {
+  protected buildWire(): Wire {
     if (!this.pendingEdges.length)
       throw new Error("No lines to convert into a wire");
 
@@ -401,14 +445,29 @@ export default class Sketcher extends BaseSketcher {
     return wire;
   }
 
-  _closeSketch() {
+  _closeSketch(): void {
     if (!this.pointer.equals(this.firstPoint) && !this._mirrorWire) {
       const endpoint = this.plane.toLocalCoords(this.firstPoint);
       this.lineTo([endpoint.x, endpoint.y]);
     }
   }
 
-  closeWithMirror(shaperConfig) {
+  done(): Sketch {
+    const sketch = new Sketch(this.buildWire(), {
+      defaultOrigin: this.plane.origin,
+      defaultDirection: this.plane.zDir,
+    });
+    this.delete();
+    return sketch;
+  }
+
+  close(shaperConfig): Sketch | AnyShape {
+    this._closeSketch();
+    if (!shaperConfig) return this.done();
+    return this.done().fromConfig(shaperConfig);
+  }
+
+  closeWithMirror(shaperConfig): Sketch | AnyShape {
     this._mirrorWire = true;
     return this.close(shaperConfig);
   }

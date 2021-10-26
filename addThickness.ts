@@ -1,11 +1,26 @@
 import { getOC } from "./oclib";
-import { Solid, cast, downcast } from "./shapes";
+import {
+  Solid,
+  cast,
+  downcast,
+  Face,
+  Shape3D,
+  isShape3D,
+  Wire,
+  Edge,
+} from "./shapes";
 import { makeLine, makeHelix, assembleWire, makeVertex } from "./shapeHelpers";
 import { localGC } from "./register";
-import { Vector, makeAx1 } from "./geom";
+import { Vector, makeAx1, Point } from "./geom";
 import { DEG2RAD } from "./constants";
+import {
+  Handle_Law_Function,
+  Law_Linear,
+  Law_S,
+  TopoDS_Shape,
+} from "../wasm/cadeau_single";
 
-export const basicFaceExtrusion = (face, extrusionVec) => {
+export const basicFaceExtrusion = (face: Face, extrusionVec: Vector): Solid => {
   const oc = getOC();
   const solidBuilder = new oc.BRepPrimAPI_MakePrism_1(
     face.wrapped,
@@ -19,11 +34,11 @@ export const basicFaceExtrusion = (face, extrusionVec) => {
 };
 
 export const revolution = (
-  face,
-  center = [0, 0, 0],
-  direction = [0, 0, 1],
+  face: Face,
+  center: Point = [0, 0, 0],
+  direction: Point = [0, 0, 1],
   angle = 360
-) => {
+): Shape3D => {
   const oc = getOC();
   const ax = makeAx1(center, direction);
 
@@ -37,12 +52,24 @@ export const revolution = (
   const shape = cast(revolBuilder.Shape());
   ax.delete();
   revolBuilder.delete();
+
+  if (!isShape3D(shape)) throw new Error("Could not revolve to a 3d shape");
   return shape;
 };
 
+export interface GenericSweepConfig {
+  frenet?: boolean;
+  auxiliarySpine?: Wire | Edge;
+  law?: null | Handle_Law_Function;
+  transitionMode?: "right" | "transformed" | "round";
+  withContact?: boolean;
+  support?: TopoDS_Shape;
+  forceProfileSpineOthogonality?: boolean;
+}
+
 export const genericSweep = (
-  wire,
-  spine,
+  wire: Wire,
+  spine: Wire,
   {
     frenet = false,
     auxiliarySpine,
@@ -51,8 +78,8 @@ export const genericSweep = (
     withContact,
     support,
     forceProfileSpineOthogonality,
-  } = {}
-) => {
+  }: GenericSweepConfig = {}
+): Shape3D => {
   const oc = getOC();
   const withCorrection =
     transitionMode === "round" ? true : !!forceProfileSpineOthogonality;
@@ -63,7 +90,7 @@ export const genericSweep = (
       transformed: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_Transformed,
       round: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RoundCorner,
       right: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RightCorner,
-    }[transitionMode];
+    }[transitionMode] as any;
     if (mode) sweepBuilder.SetTransitionMode(mode);
   }
 
@@ -76,7 +103,7 @@ export const genericSweep = (
     sweepBuilder.SetMode_5(
       auxiliarySpine.wrapped,
       false,
-      oc.BRepFill_TypeOfContact.BRepFill_NoContact
+      oc.BRepFill_TypeOfContact.BRepFill_NoContact as any
     );
   }
 
@@ -87,20 +114,30 @@ export const genericSweep = (
   sweepBuilder.MakeSolid();
   const shape = cast(sweepBuilder.Shape());
   sweepBuilder.delete();
+  if (!isShape3D(shape)) throw new Error("Could not sweep to a 3d shape");
   return shape;
 };
 
-const buildLawFromProfile = (extrusionLength, { profile, endFactor }) => {
-  let law;
+export interface ExtrusionProfile {
+  profile?: "s-curve" | "linear";
+  endFactor?: number;
+}
+
+const buildLawFromProfile = (
+  extrusionLength: number,
+  { profile, endFactor }: ExtrusionProfile
+): Handle_Law_Function => {
+  let law: Law_S | Law_Linear;
   const oc = getOC();
 
   if (profile === "s-curve") {
     law = new oc.Law_S();
     law.Set_1(0, 1, extrusionLength, endFactor);
-  }
-  if (profile === "linear") {
+  } else if (profile === "linear") {
     law = new oc.Law_Linear();
     law.Set(0, 1, extrusionLength, endFactor);
+  } else {
+    throw new Error("Could not generate a law function");
   }
 
   // This is an API compatibility issue
@@ -108,7 +145,12 @@ const buildLawFromProfile = (extrusionLength, { profile, endFactor }) => {
   return law.Trim(0, extrusionLength, 1e-6);
 };
 
-export const supportExtrude = (wire, center, normal, support) => {
+export const supportExtrude = (
+  wire: Wire,
+  center: Point,
+  normal: Point,
+  support: TopoDS_Shape
+): Shape3D => {
   const [r, gc] = localGC();
 
   const centerVec = r(new Vector(center));
@@ -123,7 +165,12 @@ export const supportExtrude = (wire, center, normal, support) => {
   return shape;
 };
 
-export const complexExtrude = (wire, center, normal, profileShape) => {
+export const complexExtrude = (
+  wire: Wire,
+  center: Point,
+  normal: Point,
+  profileShape?: ExtrusionProfile
+): Shape3D => {
   const [r, gc] = localGC();
 
   const centerVec = r(new Vector(center));
@@ -132,7 +179,7 @@ export const complexExtrude = (wire, center, normal, profileShape) => {
   const mainSpineEdge = r(makeLine(centerVec, r(centerVec.add(normalVec))));
   const spine = r(assembleWire([mainSpineEdge]));
 
-  let law = profileShape
+  const law = profileShape
     ? buildLawFromProfile(normalVec.Length, profileShape)
     : null;
 
@@ -143,12 +190,12 @@ export const complexExtrude = (wire, center, normal, profileShape) => {
 };
 
 export const twistExtrude = (
-  wire,
-  angleDegrees,
-  center,
-  normal,
-  profileShape
-) => {
+  wire: Wire,
+  angleDegrees: number,
+  center: Point,
+  normal: Point,
+  profileShape?: ExtrusionProfile
+): Shape3D => {
   const [r, gc] = localGC();
 
   const centerVec = r(new Vector(center));
@@ -164,7 +211,7 @@ export const twistExtrude = (
     makeHelix(pitch, normalVec.Length, radius, center, normal)
   );
 
-  let law = profileShape
+  const law = profileShape
     ? buildLawFromProfile(normalVec.Length, profileShape)
     : null;
 
@@ -173,8 +220,16 @@ export const twistExtrude = (
 
   return shape;
 };
+export interface LoftConfig {
+  ruled?: boolean;
+  startPoint?: Point;
+  endPoint?: Point;
+}
 
-export const loft = (wires, { ruled = true, startPoint, endPoint } = {}) => {
+export const loft = (
+  wires: Wire[],
+  { ruled = true, startPoint, endPoint }: LoftConfig = {}
+): Shape3D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -192,5 +247,7 @@ export const loft = (wires, { ruled = true, startPoint, endPoint } = {}) => {
 
   const shape = cast(loftBuilder.Shape());
   gc();
+
+  if (!isShape3D(shape)) throw new Error("Could not loft to a 3d shape");
   return shape;
 };

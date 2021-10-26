@@ -21,7 +21,7 @@ export type Point =
   | [number, number, number]
   | Vector
   | [number, number]
-  | { XYZ: () => gp_XYZ };
+  | { XYZ: () => gp_XYZ; delete: () => void };
 
 export const makeAx3 = (center: Point, dir: Point, xDir?: Point): gp_Ax3 => {
   const oc = getOC();
@@ -205,6 +205,11 @@ export function asDir(coords: Point): gp_Dir {
   return dir;
 }
 
+export function asVec(coords: Point): gp_Vec {
+  const v = new Vector(coords);
+  return v.wrapped;
+}
+
 export class Matrix extends WrappingObj<gp_GTrsf> {}
 
 export class Transformation extends WrappingObj<gp_Trsf> {
@@ -347,7 +352,7 @@ export class Plane extends RegisteredObj {
     this.origin = this.toWorldCoords([x, y]);
   }
 
-  toLocalCoords(obj: Vector | { transformShape: (T: Matrix) => any }): Point {
+  toLocalCoords(obj: Vector | { transformShape: (T: Matrix) => any }): Vector {
     if (obj instanceof Vector) {
       return obj.transform(this.globalToLocal);
     } else if (obj.transformShape)

@@ -1,10 +1,19 @@
 import { assembleWire, makeCircle, makeEllipse } from "./shapeHelpers";
-import { Vector } from "./geom";
+import { Plane, PlaneName, Point, Vector } from "./geom";
 import Sketcher from "./Sketcher";
-import { makePlane } from "./sketcherlib.js";
-import Sketch from "./Sketch.js";
+import { makePlane } from "./sketcherlib";
+import Sketch from "./Sketch";
+import { Face } from "./shapes";
 
-export const sketchCircle = (radius, { plane: sourcePlane, origin } = {}) => {
+interface PlaneConfig {
+  plane?: Plane | PlaneName;
+  origin?: Point;
+}
+
+export const sketchCircle = (
+  radius: number,
+  { plane: sourcePlane, origin }: PlaneConfig = {}
+): Sketch => {
   const plane = makePlane(sourcePlane, origin);
   const wire = assembleWire([makeCircle(radius, plane.origin, plane.zDir)]);
   const sketch = new Sketch(wire, {
@@ -18,8 +27,8 @@ export const sketchCircle = (radius, { plane: sourcePlane, origin } = {}) => {
 export const sketchEllipse = (
   xRadius = 1,
   yRadius = 2,
-  { plane: sourcePlane, origin } = {}
-) => {
+  { plane: sourcePlane, origin }: PlaneConfig = {}
+): Sketch => {
   const plane = makePlane(sourcePlane, origin);
   const xDir = new Vector(plane.xDir);
 
@@ -45,7 +54,11 @@ export const sketchEllipse = (
   return sketch;
 };
 
-export const sketchRectangle = (xLength, yLength, { plane, origin } = {}) => {
+export const sketchRectangle = (
+  xLength: number,
+  yLength: number,
+  { plane, origin }: PlaneConfig = {}
+): Sketch => {
   return new Sketcher(plane, origin)
     .movePointerTo([-xLength / 2, yLength / 2])
     .hLine(xLength)
@@ -56,11 +69,11 @@ export const sketchRectangle = (xLength, yLength, { plane, origin } = {}) => {
 };
 
 export const sketchPolysides = (
-  radius,
-  sidesCount,
+  radius: number,
+  sidesCount: number,
   sagitta = 0,
-  { plane, origin } = {}
-) => {
+  { plane, origin }: PlaneConfig = {}
+): Sketch => {
   const points = [...Array(sidesCount).keys()].map((i) => {
     const theta = ((Math.PI * 2) / sidesCount) * i;
     return [radius * Math.sin(theta), radius * Math.cos(theta)];
@@ -81,7 +94,11 @@ export const sketchPolysides = (
   return sketch.done();
 };
 
-export const polysideInnerRadius = (outerRadius, sidesCount, sagitta = 0) => {
+export const polysideInnerRadius = (
+  outerRadius: number,
+  sidesCount: number,
+  sagitta = 0
+): number => {
   const innerAngle = Math.PI / sidesCount; // Half of a side
   const innerRadius = Math.cos(innerAngle) * outerRadius;
 
@@ -90,7 +107,7 @@ export const polysideInnerRadius = (outerRadius, sidesCount, sagitta = 0) => {
   return innerRadius - sagitta;
 };
 
-export const sketchFaceOffset = (face, offset) => {
+export const sketchFaceOffset = (face: Face, offset: number): Sketch => {
   const defaultOrigin = face.center;
   const defaultDirection = face.normalAt();
   const wire = face.outerWire().offset2D(offset);

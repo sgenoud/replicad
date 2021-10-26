@@ -152,7 +152,7 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
 
   either(findersList: ((f: this) => this)[]): this {
     const builtFinders = findersList.map((finderFunction) => {
-      const finder = new (<any>this.constructor())() as this;
+      const finder = new (<any>this.constructor)() as this;
       this.references.push(finder);
       finderFunction(finder);
       return finder;
@@ -171,7 +171,7 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
   }
 
   not(finderFun: (f: this) => this): this {
-    const finder = new (<any>this.constructor())() as this;
+    const finder = new (<any>this.constructor)() as this;
     this.references.push(finder);
     finderFun(finder);
 

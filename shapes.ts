@@ -66,7 +66,7 @@ type GenericTopo =
   | TopoDS_Compound
   | TopoDS_CompSolid;
 
-interface CurveLike {
+export interface CurveLike {
   delete(): void;
   Value(v: number): gp_Pnt;
   IsPeriodic(): boolean;
@@ -956,12 +956,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     const newShape = cast(filletBuilder.Shape());
     filletBuilder.delete();
     this.delete();
-    if (
-      !(newShape instanceof Solid) &&
-      !(newShape instanceof CompSolid) &&
-      !(newShape instanceof Compound)
-    )
-      throw new Error("Could not fillet as a 3d shape");
+    if (!isShape3D(newShape)) throw new Error("Could not fillet as a 3d shape");
     return newShape;
   }
 
@@ -973,11 +968,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     const newShape = cast(chamferBuilder.Shape());
     chamferBuilder.delete();
     this.delete();
-    if (
-      !(newShape instanceof Solid) &&
-      !(newShape instanceof CompSolid) &&
-      !(newShape instanceof Compound)
-    )
+    if (!isShape3D(newShape))
       throw new Error("Could not chamfer as a 3d shape");
     return newShape;
   }
@@ -988,7 +979,15 @@ export class Solid extends _3DShape<TopoDS_Solid> {}
 export class CompSolid extends _3DShape<TopoDS_CompSolid> {}
 export class Compound extends _3DShape<TopoDS_Compound> {}
 
-export type Shape3D = Solid | CompSolid | Compound;
+export type Shape3D = Shell | Solid | CompSolid | Compound;
+export function isShape3D(shape: AnyShape): shape is Shape3D {
+  return (
+    shape instanceof Shell ||
+    shape instanceof Solid ||
+    shape instanceof CompSolid ||
+    shape instanceof Compound
+  );
+}
 
 export function downcast(shape: TopoDS_Shape): GenericTopo {
   const oc = getOC();

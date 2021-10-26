@@ -1,9 +1,10 @@
-import { Plane, createNamedPlane } from "./geom.js";
-import { RegisteredObj } from "./register.js";
-import Sketch from "./Sketch.js";
-import { getOC } from "./oclib.js";
+import { Plane, createNamedPlane, PlaneName, Point } from "./geom.js";
+import { Point2D } from "./lib2d.js";
 
-export const makePlane = (plane = "XY", origin = [0, 0, 0]) => {
+export const makePlane = (
+  plane: Plane | PlaneName = "XY",
+  origin: Point = [0, 0, 0]
+): Plane => {
   if (plane instanceof Plane) {
     return plane.clone();
   } else {
@@ -11,47 +12,42 @@ export const makePlane = (plane = "XY", origin = [0, 0, 0]) => {
   }
 };
 
-export class BaseSketcher extends RegisteredObj {
-  constructor(plane = "XY", origin = [0, 0, 0]) {
-    super();
-    this.oc = getOC();
+export type SplineConfig =
+  | number
+  | "symmetric"
+  | Point2D
+  | {
+      endSkew?: number | "symmetric" | Point2D;
+      startFactor?: number;
+      endFactor?: number;
+    };
 
-    this.plane = makePlane(plane, origin);
+export const defaultsSplineConfig = (
+  config?: SplineConfig
+): {
+  endSkew: number | "symmetric" | Point2D;
+  startFactor: number;
+  endFactor: number;
+} => {
+  let conf: {
+    endSkew: number | "symmetric" | Point2D;
+    startFactor?: number;
+    endFactor?: number;
+  };
+  if (!config || config === "symmetric" || typeof config === "number") {
+    conf = { endSkew: (config ?? 0) as "symmetric" | number };
+  } else {
+    conf = { endSkew: 0, ...config };
   }
+  const { endSkew, startFactor = 1, endFactor = 1 } = conf;
 
-  delete() {
-    this.plane.delete();
-    super.delete();
-  }
-
-  buildWire() {
-    throw new Error("build wire needs to be implemented by children classes");
-  }
-
-  _closeSketch() {
-    // This needs to be implemented to ensure a sketch is closed
-  }
-
-  done() {
-    const sketch = new Sketch(this.buildWire(), {
-      defaultOrigin: this.plane.origin,
-      defaultDirection: this.plane.zDir,
-    });
-    this.delete();
-    return sketch;
-  }
-
-  close(shaperConfig) {
-    this._closeSketch();
-    if (!shaperConfig) return this.done();
-    return this.done().fromConfig(shaperConfig);
-  }
-}
+  return { endSkew, startFactor, endFactor };
+};
 
 /*
  * adapted from https://stackoverflow.com/a/12329083
  */
-function radianAngle(ux, uy, vx, vy) {
+function radianAngle(ux: number, uy: number, vx: number, vy: number): number {
   const dot = ux * vx + uy * vy;
   const mod = Math.sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy));
   let rad = Math.acos(dot / mod);
@@ -62,14 +58,21 @@ function radianAngle(ux, uy, vx, vy) {
 }
 
 export function convertSvgEllipseParams(
-  [x1, y1],
-  [x2, y2],
-  rx,
-  ry,
-  phi,
-  fA,
-  fS
-) {
+  [x1, y1]: [number, number],
+  [x2, y2]: [number, number],
+  rx: number,
+  ry: number,
+  phi: number,
+  fA: boolean,
+  fS: boolean
+): {
+  cx: number;
+  cy: number;
+  startAngle: number;
+  deltaAngle: number;
+  endAngle: number;
+  clockwise: boolean;
+} {
   const PIx2 = Math.PI * 2.0;
 
   if (rx < 0) {
