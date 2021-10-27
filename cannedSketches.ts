@@ -1,9 +1,17 @@
-import { assembleWire, makeCircle, makeEllipse } from "./shapeHelpers";
+import {
+  assembleWire,
+  BSplineApproximationConfig,
+  makeBSplineApproximation,
+  makeCircle,
+  makeEllipse,
+} from "./shapeHelpers";
 import { Plane, PlaneName, Point, Vector } from "./geom";
 import Sketcher from "./Sketcher";
 import { makePlane } from "./sketcherlib";
 import Sketch from "./Sketch";
 import { Face } from "./shapes";
+import { Point2D } from "./lib2d";
+import { localGC } from "./register";
 
 interface PlaneConfig {
   plane?: Plane | PlaneName;
@@ -116,5 +124,31 @@ export const sketchFaceOffset = (face: Face, offset: number): Sketch => {
   defaultOrigin.delete();
   defaultDirection.delete();
 
+  return sketch;
+};
+
+export const sketchParametricFunction = (
+  func: (t: number) => Point2D,
+  { plane: sourcePlane, origin }: PlaneConfig = {},
+  { pointsCount = 400, start = 0, stop = 1 } = {},
+  approximationConfig: BSplineApproximationConfig = {}
+): Sketch => {
+  const [r, gc] = localGC();
+  const plane = r(makePlane(sourcePlane, origin));
+  const stepSize = (stop - start) / pointsCount;
+  const points = [...Array(pointsCount + 1).keys()].map((t) => {
+    const point = func(start + t * stepSize);
+    return r(plane.toWorldCoords(point));
+  });
+
+  const wire = assembleWire([
+    r(makeBSplineApproximation(points, approximationConfig)),
+  ]);
+
+  const sketch = new Sketch(wire, {
+    defaultOrigin: origin,
+    defaultDirection: plane.zDir,
+  });
+  gc();
   return sketch;
 };

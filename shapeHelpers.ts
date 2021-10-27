@@ -12,6 +12,7 @@ import {
 import { asPnt, makeAx3, makeAx2, Point, asVec } from "./geom";
 import { getOC } from "./oclib.js";
 import { localGC } from "./register.js";
+import { GeomAPI_PointsToBSpline } from "../wasm/cadeau_single";
 
 export const makeLine = (v1: Point, v2: Point): Edge => {
   const oc = getOC();
@@ -150,6 +151,70 @@ export const makeEllipseArc = (
   gc();
 
   return shape;
+};
+
+export interface BSplineApproximationConfig {
+  tolerance?: number;
+  degMax?: number;
+  degMin?: number;
+  smoothing?: null | [number, number, number];
+}
+
+export const makeBSplineApproximation = function makeBSplineApproximation(
+  points: Point[],
+  {
+    tolerance = 1e-3,
+    smoothing = null,
+    degMax = 6,
+    degMin = 1,
+  }: BSplineApproximationConfig = {}
+): Edge {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const pnts = r(new oc.TColgp_Array1OfPnt_2(1, points.length));
+
+  points.forEach((point, index) => {
+    pnts.SetValue(index + 1, r(asPnt(point)));
+  });
+
+  let splineBuilder: GeomAPI_PointsToBSpline;
+
+  if (smoothing) {
+    splineBuilder = r(
+      new oc.GeomAPI_PointsToBSpline_5(
+        pnts,
+        smoothing[0],
+        smoothing[1],
+        smoothing[2],
+        degMax,
+        oc.GeomAbs_Shape.GeomAbs_C2 as any,
+        tolerance
+      )
+    );
+  } else {
+    splineBuilder = r(
+      new oc.GeomAPI_PointsToBSpline_2(
+        pnts,
+        degMin,
+        degMax,
+        oc.GeomAbs_Shape.GeomAbs_C2 as any,
+        tolerance
+      )
+    );
+  }
+
+  if (!splineBuilder.IsDone()) {
+    gc();
+    throw new Error("B-spline approximation failed");
+  }
+
+  const splineGeom = r(splineBuilder.Curve());
+
+  const curve = r(new oc.Handle_Geom_Curve_2(splineGeom.get()));
+  const edge = new Edge(new oc.BRepBuilderAPI_MakeEdge_24(curve).Edge());
+  gc();
+  return edge;
 };
 
 export const makeBezierCurve = (points: Point[]): Edge => {
