@@ -68,11 +68,11 @@ export const sketchRectangle = (
   { plane, origin }: PlaneConfig = {}
 ): Sketch => {
   return new Sketcher(plane, origin)
-    .movePointerTo([-xLength / 2, yLength / 2])
+    .movePointerTo([-xLength / 2, -yLength / 2])
     .hLine(xLength)
-    .vLine(-yLength)
-    .hLine(-xLength)
     .vLine(yLength)
+    .hLine(-xLength)
+    .vLine(-yLength)
     .done();
 };
 
@@ -83,7 +83,7 @@ export const sketchPolysides = (
   { plane, origin }: PlaneConfig = {}
 ): Sketch => {
   const points = [...Array(sidesCount).keys()].map((i) => {
-    const theta = ((Math.PI * 2) / sidesCount) * i;
+    const theta = -((Math.PI * 2) / sidesCount) * i;
     return [radius * Math.sin(theta), radius * Math.cos(theta)];
   });
 
@@ -111,8 +111,8 @@ export const polysideInnerRadius = (
   const innerRadius = Math.cos(innerAngle) * outerRadius;
 
   // Only a concave sagitta changes the inner radius
-  if (sagitta <= 0) return innerRadius;
-  return innerRadius - sagitta;
+  if (sagitta >= 0) return innerRadius;
+  return innerRadius + sagitta;
 };
 
 export const sketchFaceOffset = (face: Face, offset: number): Sketch => {

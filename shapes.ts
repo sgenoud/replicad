@@ -1,17 +1,7 @@
 import { WrappingObj, localGC } from "./register.js";
-import {
-  Vector,
-  createNamedPlane,
-  Point,
-  Plane,
-  PlaneName,
-  Matrix,
-  makeAx1,
-} from "./geom.js";
-import { makeMirrorMatrix } from "./geomHelpers.js";
-import { HASH_CODE_MAX, DEG2RAD } from "./constants.js";
+import { Vector, Point, Plane, PlaneName, asPnt } from "./geom.js";
+import { HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
-import { Cleaner } from "./register.js";
 
 import {
   TopoDS_Face,
@@ -33,6 +23,7 @@ import {
   BRepAdaptor_Surface,
 } from "../wasm/cadeau_single";
 import { EdgeFinder, FaceFinder } from "./finders.js";
+import { rotate, translate, mirror, scale as scaleShape } from "./geomHelpers";
 
 export type AnyShape =
   | Vertex
@@ -166,19 +157,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   translate(vector: Point): this {
-    const localVect = new Vector(vector);
-    const T = new this.oc.gp_Trsf_1();
-    T.SetTranslation_1(localVect.wrapped);
-    const transformer = new this.oc.BRepBuilderAPI_Transform_2(
-      this.wrapped,
-      T,
-      true
-    );
-
-    const newShape = cast(transformer.ModifiedShape(this.wrapped));
-    transformer.delete();
-    T.delete();
-    localVect.delete();
+    const newShape = cast(translate(this.wrapped, vector));
     this.delete();
 
     if (this.constructor !== newShape.constructor)
@@ -203,17 +182,15 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     position: Point = [0, 0, 0],
     direction: Point = [0, 0, 1]
   ): this {
-    const [r, gc] = localGC();
-    const axis = r(makeAx1(position, direction));
+    const newShape = cast(rotate(this.wrapped, angle, position, direction));
+    this.delete();
+    if (this.constructor !== newShape.constructor)
+      throw new Error("unexpected types mismatch");
+    return newShape as typeof this;
+  }
 
-    const T = r(new this.oc.gp_Trsf_1());
-    T.SetRotation_1(axis, angle * DEG2RAD);
-    const transformer = r(
-      new this.oc.BRepBuilderAPI_Transform_2(this.wrapped, T, true)
-    );
-
-    const newShape = cast(transformer.ModifiedShape(this.wrapped));
-    gc();
+  mirror(inputPlane: Plane | PlaneName | Point, origin: Point): this {
+    const newShape = cast(mirror(this.wrapped, inputPlane, origin));
     this.delete();
 
     if (this.constructor !== newShape.constructor)
@@ -221,40 +198,9 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return newShape as typeof this;
   }
 
-  mirror(inputPlane: Plane | PlaneName, origin: Point): this {
-    const [r, gc] = localGC();
-    let plane: Plane;
-    if (typeof inputPlane === "string") {
-      plane = r(createNamedPlane(inputPlane, origin));
-    } else {
-      plane = inputPlane;
-    }
-
-    const mirror = r(
-      makeMirrorMatrix({
-        position: plane.origin,
-        normal: plane.zDir,
-      })
-    );
-
-    const newShape = this.transformShape(mirror);
-
-    gc();
+  scale(center: Point, scale: number): this {
+    const newShape = cast(scaleShape(this.wrapped, center, scale));
     this.delete();
-
-    if (this.constructor !== newShape.constructor)
-      throw new Error("unexpected types mismatch");
-    return newShape as typeof this;
-  }
-
-  transformShape(matrix: Matrix): this {
-    const transformer = new this.oc.BRepBuilderAPI_Transform_2(
-      this.wrapped,
-      matrix.wrapped.Trsf(),
-      true
-    );
-    const newShape = cast(transformer.ModifiedShape(this.wrapped));
-    transformer.delete();
 
     if (this.constructor !== newShape.constructor)
       throw new Error("unexpected types mismatch");
@@ -406,58 +352,21 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     };
   }
 
-  meshEdges(): {
+  meshEdges({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): {
     lines: number[];
     edgeGroups: { start: number; count: number; edgeId: number }[];
   } {
+    const [r, gc] = localGC();
     const recordedEdges = new Set();
     const lines: number[] = [];
     const edgeGroups: { start: number; count: number; edgeId: number }[] = [];
-    const aLocation = new this.oc.TopLoc_Location_1();
 
-    for (const face of this.faces) {
-      const faceCleaner = new Cleaner();
-      const triangulation = this.oc.BRep_Tool.Triangulation(
-        face.wrapped,
-        aLocation
-      );
-      faceCleaner.add(triangulation);
+    const addEdge = (): [(p: gp_Pnt) => void, (h: number) => void] => {
+      const start = lines.length;
+      let previousPoint: null | number[] = null;
 
-      if (triangulation.IsNull()) {
-        faceCleaner.clean();
-        continue;
-      }
-      const faceNodes = triangulation.get().Nodes();
-      faceCleaner.add(faceNodes);
-
-      for (const edge of face.edges) {
-        faceCleaner.add(edge);
-        if (recordedEdges.has(edge.hashCode)) continue;
-        const edgeCleaner = new Cleaner();
-
-        const edgeLoc = new this.oc.TopLoc_Location_1();
-        edgeCleaner.add(edgeLoc);
-
-        const polygon = this.oc.BRep_Tool.PolygonOnTriangulation_1(
-          edge.wrapped,
-          triangulation,
-          edgeLoc
-        );
-        edgeCleaner.add(polygon);
-        const edgeNodes = polygon?.get()?.Nodes();
-        if (!edgeNodes) {
-          edgeCleaner.clean();
-          continue;
-        }
-        edgeCleaner.add(edgeNodes);
-
-        const start = lines.length;
-
-        let previousPoint: null | number[] = null;
-        for (let i = edgeNodes.Lower(); i <= edgeNodes.Upper(); i++) {
-          const p = faceNodes
-            .Value(edgeNodes.Value(i))
-            .Transformed(edgeLoc.Transformation());
+      return [
+        (p: gp_Pnt) => {
           if (previousPoint) {
             lines.push(...previousPoint);
             previousPoint = [p.X(), p.Y(), p.Z()];
@@ -467,20 +376,92 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
             // initialized
             previousPoint = [p.X(), p.Y(), p.Z()];
           }
-          p.delete();
+        },
+
+        (edgeHash: number) => {
+          edgeGroups.push({
+            start: start / 3,
+            count: (lines.length - start) / 3,
+            edgeId: edgeHash,
+          });
+
+          recordedEdges.add(edgeHash);
+        },
+      ];
+    };
+
+    const aLocation = r(new this.oc.TopLoc_Location_1());
+
+    for (const face of this.faces) {
+      const triangulation = r(
+        this.oc.BRep_Tool.Triangulation(face.wrapped, aLocation)
+      );
+
+      if (triangulation.IsNull()) {
+        continue;
+      }
+      const faceNodes = r(triangulation.get().Nodes());
+
+      for (const edge of face.edges) {
+        r(edge);
+        if (recordedEdges.has(edge.hashCode)) continue;
+
+        const edgeLoc = r(new this.oc.TopLoc_Location_1());
+
+        const polygon = r(
+          this.oc.BRep_Tool.PolygonOnTriangulation_1(
+            edge.wrapped,
+            triangulation,
+            edgeLoc
+          )
+        );
+        const edgeNodes = polygon?.get()?.Nodes();
+        if (!edgeNodes) {
+          continue;
         }
+        r(edgeNodes);
 
-        edgeGroups.push({
-          start: start / 3,
-          count: (lines.length - start) / 3,
-          edgeId: edge.hashCode,
-        });
+        const [recordPoint, done] = addEdge();
 
-        recordedEdges.add(edge.hashCode);
-        edgeCleaner.clean();
+        for (let i = edgeNodes.Lower(); i <= edgeNodes.Upper(); i++) {
+          const p = r(
+            faceNodes
+              .Value(edgeNodes.Value(i))
+              .Transformed(edgeLoc.Transformation())
+          );
+          recordPoint(p);
+        }
+        done(edge.hashCode);
       }
     }
 
+    for (const edge of this.edges) {
+      r(edge);
+      const edgeHash = edge.hashCode;
+      if (recordedEdges.has(edgeHash)) continue;
+
+      const adaptorCurve = r(new this.oc.BRepAdaptor_Curve_2(edge.wrapped));
+      const tangDef = r(
+        new this.oc.GCPnts_TangentialDeflection_2(
+          adaptorCurve,
+          tolerance,
+          angularTolerance,
+          2,
+          1e-9,
+          1e-7
+        )
+      );
+      const [recordPoint, done] = addEdge();
+      for (let j = 0; j < tangDef.NbPoints(); j++) {
+        const p = r(
+          tangDef.Value(j + 1).Transformed(aLocation.Transformation())
+        );
+        recordPoint(p);
+      }
+      done(edgeHash);
+    }
+
+    gc();
     return { lines, edgeGroups };
   }
 
@@ -780,7 +761,18 @@ export class Face extends Shape<TopoDS_Face> {
   }
 
   get UVBounds(): { uMin: number; uMax: number; vMin: number; vMax: number } {
-    return this.oc.cadeau.UVBounds(this.wrapped);
+    const uMin = { current: 0 };
+    const uMax = { current: 0 };
+    const vMin = { current: 0 };
+    const vMax = { current: 0 };
+    this.oc.BRepTools.UVBounds_1(this.wrapped, uMin, uMax, vMin, vMax);
+
+    return {
+      uMin: uMin.current,
+      uMax: uMax.current,
+      vMin: vMin.current,
+      vMax: vMax.current,
+    };
   }
 
   pointOnSurface(u: number, v: number): Vector {
@@ -799,7 +791,7 @@ export class Face extends Shape<TopoDS_Face> {
     return point;
   }
 
-  normalAt(locationVector?: Vector): Vector {
+  normalAt(locationVector?: Point): Vector {
     let u = 0;
     let v = 0;
 
@@ -812,10 +804,20 @@ export class Face extends Shape<TopoDS_Face> {
     } else {
       const surface = r(this.oc.BRep_Tool.Surface_2(this.wrapped));
 
-      ({ u, v } = this.oc.cadeau.projectPointOnSurface(
-        r(locationVector.toPnt()),
-        surface
-      ));
+      const projectedPoint = r(
+        new this.oc.GeomAPI_ProjectPointOnSurf_2(
+          r(asPnt(locationVector)),
+          surface,
+          this.oc.Extrema_ExtAlgo.Extrema_ExtAlgo_Grad as any
+        )
+      );
+
+      const uPtr = { current: 0 };
+      const vPtr = { current: 0 };
+
+      projectedPoint.LowerDistanceParameters(uPtr, vPtr);
+      u = uPtr.current;
+      v = vPtr.current;
     }
 
     const p = r(new this.oc.gp_Pnt_1());

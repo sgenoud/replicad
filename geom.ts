@@ -10,9 +10,9 @@ import {
   gp_XYZ,
   gp_Dir,
   gp_Pnt,
-  gp_GTrsf,
-  gp_Trsf,
   OpenCascadeInstance,
+  gp_Trsf,
+  TopoDS_Shape,
 } from "../wasm/cadeau_single";
 
 const round3 = (v: number) => Math.round(v * 1000) / 1000;
@@ -183,12 +183,6 @@ export class Vector extends WrappingObj<gp_Vec> {
     ax.delete();
     return this;
   }
-
-  transform(T: Matrix): Vector {
-    const pnt = this.toPnt();
-    const trsf = pnt.Transformed(T.wrapped.Trsf());
-    return new Vector(trsf);
-  }
 }
 
 export function asPnt(coords: Point): gp_Pnt {
@@ -210,7 +204,7 @@ export function asVec(coords: Point): gp_Vec {
   return v.wrapped;
 }
 
-export class Matrix extends WrappingObj<gp_GTrsf> {}
+type CoordSystem = "reference" | { origin: Point; zDir: Point; xDir: Point };
 
 export class Transformation extends WrappingObj<gp_Trsf> {
   constructor(transform?: gp_Trsf) {
@@ -243,19 +237,70 @@ export class Transformation extends WrappingObj<gp_Trsf> {
     return this;
   }
 
-  mirror(inputPlane: Plane | PlaneName, origin: Point): this {
+  mirror(inputPlane: Plane | PlaneName | Point, inputOrigin: Point): this {
     const [r, gc] = localGC();
-    let plane: Plane;
+
+    let origin: Point;
+    let direction: Point;
+
     if (typeof inputPlane === "string") {
-      plane = r(createNamedPlane(inputPlane, origin));
+      const plane = r(createNamedPlane(inputPlane, inputOrigin));
+      origin = plane.origin;
+      direction = plane.zDir;
+    } else if (inputPlane instanceof Plane) {
+      origin = inputOrigin || inputPlane.origin;
+      direction = inputPlane.zDir;
     } else {
-      plane = inputPlane;
+      origin = inputOrigin;
+      direction = inputPlane;
     }
-    const mirrorAxis = r(makeAx2(plane.origin, plane.zDir));
+
+    const mirrorAxis = r(makeAx2(origin, direction));
     this.wrapped.SetMirror_3(mirrorAxis);
     gc();
 
     return this;
+  }
+
+  scale(center: Point, scale: number): this {
+    const pnt = asPnt(center);
+    this.wrapped.SetScale(pnt, scale);
+    pnt.delete();
+    return this;
+  }
+
+  coordSystemChange(fromSystem: CoordSystem, toSystem: CoordSystem): this {
+    const [r, gc] = localGC();
+    const fromAx = r(
+      fromSystem === "reference"
+        ? new this.oc.gp_Ax3_1()
+        : makeAx3(fromSystem.origin, fromSystem.zDir, fromSystem.xDir)
+    );
+
+    const toAx = r(
+      toSystem === "reference"
+        ? new this.oc.gp_Ax3_1()
+        : makeAx3(toSystem.origin, toSystem.zDir, toSystem.xDir)
+    );
+    this.wrapped.SetTransformation_1(fromAx, toAx);
+    gc();
+    return this;
+  }
+
+  transformPoint(point: Point): gp_Pnt {
+    const pnt = asPnt(point);
+    const newPoint = pnt.Transformed(this.wrapped);
+    pnt.delete();
+    return newPoint;
+  }
+
+  transform(shape: TopoDS_Shape): TopoDS_Shape {
+    const transformer = new this.oc.BRepBuilderAPI_Transform_2(
+      shape,
+      this.wrapped,
+      true
+    );
+    return transformer.ModifiedShape(shape);
   }
 }
 
@@ -269,11 +314,9 @@ export class Plane extends RegisteredObj {
   // @ts-expect-error initialised indirectly
   private _origin: Vector;
   // @ts-expect-error initialised indirectly
-  private lcs: gp_Ax3;
+  private localToGlobal: Transformation;
   // @ts-expect-error initialised indirectly
-  private localToGlobal: Matrix;
-  // @ts-expect-error initialised indirectly
-  private globalToLocal: Matrix;
+  private globalToLocal: Transformation;
 
   constructor(
     origin: Point,
@@ -309,7 +352,6 @@ export class Plane extends RegisteredObj {
   }
 
   delete(): void {
-    this.lcs.delete();
     this.localToGlobal.delete();
     this.xDir.delete();
     this.yDir.delete();
@@ -337,35 +379,40 @@ export class Plane extends RegisteredObj {
 
     const forwardT = new this.oc.gp_Trsf_1();
     forwardT.SetTransformation_1(globalCoordSystem, localCoordSystem);
-    this.globalToLocal = new Matrix(new this.oc.gp_GTrsf_2(forwardT));
+    this.globalToLocal = new Transformation();
+    this.globalToLocal.coordSystemChange("reference", {
+      origin: this.origin,
+      zDir: this.zDir,
+      xDir: this.xDir,
+    });
 
-    const inverseT = new this.oc.gp_Trsf_1();
-    inverseT.SetTransformation_1(localCoordSystem, globalCoordSystem);
-    this.localToGlobal = new Matrix(new this.oc.gp_GTrsf_2(inverseT));
-
-    this.lcs = localCoordSystem;
-
-    globalCoordSystem.delete();
+    this.localToGlobal = new Transformation();
+    this.localToGlobal.coordSystemChange(
+      {
+        origin: this.origin,
+        zDir: this.zDir,
+        xDir: this.xDir,
+      },
+      "reference"
+    );
   }
 
   setOrigin2d(x: number, y: number): void {
     this.origin = this.toWorldCoords([x, y]);
   }
 
-  toLocalCoords(obj: Vector | { transformShape: (T: Matrix) => any }): Vector {
-    if (obj instanceof Vector) {
-      return obj.transform(this.globalToLocal);
-    } else if (obj.transformShape)
-      return obj.transformShape(this.globalToLocal);
-    throw new Error("Needs to convert a vector or a shape");
+  toLocalCoords(vec: Vector): Vector {
+    const pnt = this.globalToLocal.transformPoint(vec);
+    const newVec = new Vector(pnt);
+    pnt.delete();
+    return newVec;
   }
 
   toWorldCoords(v: Point): Vector {
-    if (v instanceof Vector) {
-      return v.transform(this.localToGlobal);
-    } else {
-      return new Vector(v).transform(this.localToGlobal);
-    }
+    const pnt = this.localToGlobal.transformPoint(v);
+    const newVec = new Vector(pnt);
+    pnt.delete();
+    return newVec;
   }
 }
 

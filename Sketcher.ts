@@ -1,5 +1,4 @@
 import { Plane, PlaneName, Point, Vector } from "./geom.js";
-import { makeMirrorMatrix } from "./geomHelpers.js";
 import { localGC, RegisteredObj } from "./register.js";
 import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { distance2d, angle2d, polarToCartesian, Point2D } from "./lib2d";
@@ -411,17 +410,9 @@ export default class Sketcher extends RegisteredObj {
 
   protected _mirrorWireOnStartEnd(wire: Wire): Wire {
     const startToEndVector = this.pointer.sub(this.firstPoint).normalize();
-    const mirrorVector = startToEndVector.cross(this.plane.zDir);
+    const normal = startToEndVector.cross(this.plane.zDir);
 
-    const mirror = makeMirrorMatrix({
-      position: this.pointer,
-      normal: mirrorVector,
-    });
-
-    const mirroredWire = wire.transformShape(mirror);
-    startToEndVector.delete();
-    mirrorVector.delete();
-    mirror.delete();
+    const mirroredWire = wire.clone().mirror(normal, this.pointer);
 
     const combinedWire = assembleWire([wire, mirroredWire]);
     mirroredWire.delete();

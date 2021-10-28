@@ -1,23 +1,7 @@
-import { Matrix, Plane, Vector } from "./geom";
+import { Plane, PlaneName, Point, Transformation, Vector } from "./geom";
 import { Face } from "./shapes";
-import { getOC } from "./oclib";
 import { Point2D } from "./lib2d";
-
-export const makeMirrorMatrix = ({
-  position,
-  normal,
-}: {
-  position: Vector;
-  normal: Vector;
-}): Matrix => {
-  const oc = getOC();
-  const mirrorAxis = new oc.gp_Ax2_3(position.toPnt(), normal.toDir());
-  const aTrsf = new oc.gp_Trsf_1();
-  aTrsf.SetMirror_3(mirrorAxis);
-  mirrorAxis.delete();
-
-  return new Matrix(new oc.gp_GTrsf_2(aTrsf));
-};
+import { TopoDS_Shape } from "../wasm/cadeau_single";
 
 export const makePlaneFromFace = (
   face: Face,
@@ -35,3 +19,48 @@ export const makePlaneFromFace = (
   v.delete();
   return new Plane(originPoint, xd, normal);
 };
+
+export function rotate(
+  shape: TopoDS_Shape,
+  angle: number,
+  position: Point = [0, 0, 0],
+  direction: Point = [0, 0, 1]
+): TopoDS_Shape {
+  const transformation = new Transformation();
+  transformation.rotate(angle, position, direction);
+  const newShape = transformation.transform(shape);
+  transformation.delete();
+  return newShape;
+}
+
+export function translate(shape: TopoDS_Shape, vector: Point): TopoDS_Shape {
+  const transformation = new Transformation();
+  transformation.translate(vector);
+  const newShape = transformation.transform(shape);
+  transformation.delete();
+  return newShape;
+}
+
+export function mirror(
+  shape: TopoDS_Shape,
+  inputPlane: Plane | PlaneName | Point,
+  origin: Point
+): TopoDS_Shape {
+  const transformation = new Transformation();
+  transformation.mirror(inputPlane, origin);
+  const newShape = transformation.transform(shape);
+  transformation.delete();
+  return newShape;
+}
+
+export function scale(
+  shape: TopoDS_Shape,
+  center: Point,
+  scale: number
+): TopoDS_Shape {
+  const transformation = new Transformation();
+  transformation.scale(center, scale);
+  const newShape = transformation.transform(shape);
+  transformation.delete();
+  return newShape;
+}
