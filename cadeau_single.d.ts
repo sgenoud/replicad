@@ -1242,6 +1242,48 @@ export declare class GeomAPI_Interpolate {
     constructor(Points: Handle_TColgp_HArray1OfPnt, Parameters: Handle_TColStd_HArray1OfReal, PeriodicFlag: Standard_Boolean, Tolerance: Quantity_AbsorbedDose);
   }
 
+export declare class GeomAPI_ProjectPointOnSurf {
+  Init_1(P: gp_Pnt, Surface: Handle_Geom_Surface, Tolerance: Quantity_AbsorbedDose, Algo: Extrema_ExtAlgo): void;
+  Init_2(P: gp_Pnt, Surface: Handle_Geom_Surface, Algo: Extrema_ExtAlgo): void;
+  Init_3(P: gp_Pnt, Surface: Handle_Geom_Surface, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose, Vmin: Quantity_AbsorbedDose, Vsup: Quantity_AbsorbedDose, Tolerance: Quantity_AbsorbedDose, Algo: Extrema_ExtAlgo): void;
+  Init_4(P: gp_Pnt, Surface: Handle_Geom_Surface, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose, Vmin: Quantity_AbsorbedDose, Vsup: Quantity_AbsorbedDose, Algo: Extrema_ExtAlgo): void;
+  Init_5(Surface: Handle_Geom_Surface, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose, Vmin: Quantity_AbsorbedDose, Vsup: Quantity_AbsorbedDose, Tolerance: Quantity_AbsorbedDose, Algo: Extrema_ExtAlgo): void;
+  Init_6(Surface: Handle_Geom_Surface, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose, Vmin: Quantity_AbsorbedDose, Vsup: Quantity_AbsorbedDose, Algo: Extrema_ExtAlgo): void;
+  SetExtremaAlgo(theAlgo: Extrema_ExtAlgo): void;
+  SetExtremaFlag(theExtFlag: Extrema_ExtFlag): void;
+  Perform(P: gp_Pnt): void;
+  IsDone(): Standard_Boolean;
+  NbPoints(): Graphic3d_ZLayerId;
+  Point(Index: Graphic3d_ZLayerId): gp_Pnt;
+  Parameters(Index: Graphic3d_ZLayerId, U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose): void;
+  Distance(Index: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  NearestPoint(): gp_Pnt;
+  LowerDistanceParameters(U: Quantity_AbsorbedDose, V: Quantity_AbsorbedDose): void;
+  LowerDistance(): Quantity_AbsorbedDose;
+  Extrema(): Extrema_ExtPS;
+  delete(): void;
+}
+
+  export declare class GeomAPI_ProjectPointOnSurf_1 extends GeomAPI_ProjectPointOnSurf {
+    constructor();
+  }
+
+  export declare class GeomAPI_ProjectPointOnSurf_2 extends GeomAPI_ProjectPointOnSurf {
+    constructor(P: gp_Pnt, Surface: Handle_Geom_Surface, Algo: Extrema_ExtAlgo);
+  }
+
+  export declare class GeomAPI_ProjectPointOnSurf_3 extends GeomAPI_ProjectPointOnSurf {
+    constructor(P: gp_Pnt, Surface: Handle_Geom_Surface, Tolerance: Quantity_AbsorbedDose, Algo: Extrema_ExtAlgo);
+  }
+
+  export declare class GeomAPI_ProjectPointOnSurf_4 extends GeomAPI_ProjectPointOnSurf {
+    constructor(P: gp_Pnt, Surface: Handle_Geom_Surface, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose, Vmin: Quantity_AbsorbedDose, Vsup: Quantity_AbsorbedDose, Tolerance: Quantity_AbsorbedDose, Algo: Extrema_ExtAlgo);
+  }
+
+  export declare class GeomAPI_ProjectPointOnSurf_5 extends GeomAPI_ProjectPointOnSurf {
+    constructor(P: gp_Pnt, Surface: Handle_Geom_Surface, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose, Vmin: Quantity_AbsorbedDose, Vsup: Quantity_AbsorbedDose, Algo: Extrema_ExtAlgo);
+  }
+
 export declare class GeomAPI_PointsToBSplineSurface {
   Init_1(Points: TColgp_Array2OfPnt, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose): void;
   Interpolate_1(Points: TColgp_Array2OfPnt, thePeriodic: Standard_Boolean): void;
@@ -1355,6 +1397,39 @@ export declare type GeomAbs_JoinType = {
   GeomAbs_Tangent: {};
   GeomAbs_Intersection: {};
 }
+
+export declare class GCPnts_TangentialDeflection {
+  Initialize_1(C: Adaptor3d_Curve, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose): void;
+  Initialize_2(C: Adaptor3d_Curve, FirstParameter: Quantity_AbsorbedDose, LastParameter: Quantity_AbsorbedDose, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose): void;
+  Initialize_3(C: Adaptor2d_Curve2d, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose): void;
+  Initialize_4(C: Adaptor2d_Curve2d, FirstParameter: Quantity_AbsorbedDose, LastParameter: Quantity_AbsorbedDose, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose): void;
+  AddPoint(thePnt: gp_Pnt, theParam: Quantity_AbsorbedDose, theIsReplace: Standard_Boolean): Graphic3d_ZLayerId;
+  NbPoints(): Graphic3d_ZLayerId;
+  Parameter(I: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  Value(I: Graphic3d_ZLayerId): gp_Pnt;
+  static ArcAngularStep(theRadius: Quantity_AbsorbedDose, theLinearDeflection: Quantity_AbsorbedDose, theAngularDeflection: Quantity_AbsorbedDose, theMinLength: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  delete(): void;
+}
+
+  export declare class GCPnts_TangentialDeflection_1 extends GCPnts_TangentialDeflection {
+    constructor();
+  }
+
+  export declare class GCPnts_TangentialDeflection_2 extends GCPnts_TangentialDeflection {
+    constructor(C: Adaptor3d_Curve, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose);
+  }
+
+  export declare class GCPnts_TangentialDeflection_3 extends GCPnts_TangentialDeflection {
+    constructor(C: Adaptor3d_Curve, FirstParameter: Quantity_AbsorbedDose, LastParameter: Quantity_AbsorbedDose, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose);
+  }
+
+  export declare class GCPnts_TangentialDeflection_4 extends GCPnts_TangentialDeflection {
+    constructor(C: Adaptor2d_Curve2d, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose);
+  }
+
+  export declare class GCPnts_TangentialDeflection_5 extends GCPnts_TangentialDeflection {
+    constructor(C: Adaptor2d_Curve2d, FirstParameter: Quantity_AbsorbedDose, LastParameter: Quantity_AbsorbedDose, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose);
+  }
 
 export declare class GCE2d_MakeArcOfCircle extends GCE2d_Root {
   Value(): Handle_Geom2d_TrimmedCurve;
@@ -4926,11 +5001,9 @@ export declare class GProp_GProps {
     constructor(SystemLocation: gp_Pnt);
   }
 
-export declare class cadeau extends BRepTools {
-  constructor();
-  static UVBounds(f: TopoDS_Face): any;
-  static projectPointOnSurface(P: gp_Pnt, Surface: Handle_Geom_Surface): any;
-  delete(): void;
+export declare type Extrema_ExtAlgo = {
+  Extrema_ExtAlgo_Grad: {};
+  Extrema_ExtAlgo_Tree: {};
 }
 
 type Standard_Boolean = boolean;
@@ -5258,6 +5331,12 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GeomAPI_Interpolate: typeof GeomAPI_Interpolate;
   GeomAPI_Interpolate_1: typeof GeomAPI_Interpolate_1;
   GeomAPI_Interpolate_2: typeof GeomAPI_Interpolate_2;
+  GeomAPI_ProjectPointOnSurf: typeof GeomAPI_ProjectPointOnSurf;
+  GeomAPI_ProjectPointOnSurf_1: typeof GeomAPI_ProjectPointOnSurf_1;
+  GeomAPI_ProjectPointOnSurf_2: typeof GeomAPI_ProjectPointOnSurf_2;
+  GeomAPI_ProjectPointOnSurf_3: typeof GeomAPI_ProjectPointOnSurf_3;
+  GeomAPI_ProjectPointOnSurf_4: typeof GeomAPI_ProjectPointOnSurf_4;
+  GeomAPI_ProjectPointOnSurf_5: typeof GeomAPI_ProjectPointOnSurf_5;
   GeomAPI_PointsToBSplineSurface: typeof GeomAPI_PointsToBSplineSurface;
   GeomAPI_PointsToBSplineSurface_1: typeof GeomAPI_PointsToBSplineSurface_1;
   GeomAPI_PointsToBSplineSurface_2: typeof GeomAPI_PointsToBSplineSurface_2;
@@ -5275,6 +5354,12 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GeomAbs_SurfaceType: GeomAbs_SurfaceType;
   GeomAbs_CurveType: GeomAbs_CurveType;
   GeomAbs_JoinType: GeomAbs_JoinType;
+  GCPnts_TangentialDeflection: typeof GCPnts_TangentialDeflection;
+  GCPnts_TangentialDeflection_1: typeof GCPnts_TangentialDeflection_1;
+  GCPnts_TangentialDeflection_2: typeof GCPnts_TangentialDeflection_2;
+  GCPnts_TangentialDeflection_3: typeof GCPnts_TangentialDeflection_3;
+  GCPnts_TangentialDeflection_4: typeof GCPnts_TangentialDeflection_4;
+  GCPnts_TangentialDeflection_5: typeof GCPnts_TangentialDeflection_5;
   GCE2d_MakeArcOfCircle: typeof GCE2d_MakeArcOfCircle;
   GCE2d_MakeArcOfCircle_1: typeof GCE2d_MakeArcOfCircle_1;
   GCE2d_MakeArcOfCircle_2: typeof GCE2d_MakeArcOfCircle_2;
@@ -5662,7 +5747,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GProp_GProps: typeof GProp_GProps;
   GProp_GProps_1: typeof GProp_GProps_1;
   GProp_GProps_2: typeof GProp_GProps_2;
-  cadeau: typeof cadeau;
+  Extrema_ExtAlgo: Extrema_ExtAlgo;
 };
 
 declare function init(): Promise<OpenCascadeInstance>;
