@@ -8,7 +8,8 @@ import {
   convertSvgEllipseParams,
   defaultsSplineConfig,
   SplineConfig,
-} from "./sketcherlib.js";
+  GenericSketcher,
+} from "./sketcherlib";
 import { Geom2d_Curve, Handle_Geom_Surface } from "../wasm/cadeau_single";
 
 import {
@@ -36,7 +37,7 @@ type UVBounds = {
   vMax: number;
 };
 
-export default class FaceSketcher {
+export default class FaceSketcher implements GenericSketcher {
   pointer: Point2D;
   face: Face;
   firstPoint: Point2D;
@@ -95,6 +96,18 @@ export default class FaceSketcher {
     return this.line(distance, 0);
   }
 
+  polarLineTo([r, theta]: Point2D): this {
+    const angleInRads = theta * DEG2RAD;
+    const point = polarToCartesian(r, angleInRads);
+    return this.lineTo(point);
+  }
+
+  polarLine(distance: number, angle: number): this {
+    const angleInRads = angle * DEG2RAD;
+    const [x, y] = polarToCartesian(distance, angleInRads);
+    return this.line(x, y);
+  }
+
   tangentLine(distance: number): this {
     const previousCurve = this.pendingCurves.length
       ? this.pendingCurves[this.pendingCurves.length - 1]
@@ -107,18 +120,6 @@ export default class FaceSketcher {
       this._convertFromUV(tangentAt(previousCurve, 1))
     );
     return this.line(direction[0] * distance, direction[1] * distance);
-  }
-
-  polarLine(distance: number, angle: number): this {
-    const angleInRads = angle * DEG2RAD;
-    const [x, y] = polarToCartesian(distance, angleInRads);
-    return this.line(x, y);
-  }
-
-  polarLineTo([r, theta]: Point2D): this {
-    const angleInRads = theta * DEG2RAD;
-    const point = polarToCartesian(r, angleInRads);
-    return this.lineTo(point);
   }
 
   threePointsArcTo(end: Point2D, midPoint: Point2D): this {
@@ -144,6 +145,48 @@ export default class FaceSketcher {
       [x0 + xDist, y0 + yDist],
       [x0 + viaXDist, y0 + viaYDist]
     );
+  }
+
+  sagittaArcTo(end: Point2D, sagitta: number): this {
+    const [x0, y0] = this.pointer;
+    const [x1, y1] = end;
+
+    const midPoint = [(x0 + x1) / 2, (y0 + y1) / 2];
+
+    // perpendicular vector of B - A
+    const sagDir = [-(y1 - y0), x1 - x0];
+    const sagDirLen = Math.sqrt(sagDir[0] ** 2 + sagDir[1] ** 2);
+
+    const sagPoint: Point2D = [
+      midPoint[0] + (sagDir[0] / sagDirLen) * sagitta,
+      midPoint[1] + (sagDir[1] / sagDirLen) * sagitta,
+    ];
+
+    this.pendingCurves.push(
+      make2dThreePointArc(
+        this._convertToUV(this.pointer),
+        this._convertToUV(sagPoint),
+        this._convertToUV(end)
+      )
+    );
+    this.pointer = end;
+
+    return this;
+  }
+
+  sagittaArc(xDist: number, yDist: number, sagitta: number): this {
+    return this.sagittaArcTo(
+      [xDist + this.pointer[0], yDist + this.pointer[1]],
+      sagitta
+    );
+  }
+
+  vSagittaArc(distance: number, sagitta: number): this {
+    return this.sagittaArc(0, distance, sagitta);
+  }
+
+  hSagittaArc(distance: number, sagitta: number): this {
+    return this.sagittaArc(distance, 0, sagitta);
   }
 
   tangentArcTo(end: Point2D): this {
@@ -234,41 +277,6 @@ export default class FaceSketcher {
     return this;
   }
 
-  halfEllipseTo(
-    end: Point2D,
-    minorRadius: number,
-    longAxis = false,
-    sweep = false
-  ): this {
-    const angle = angle2d(end, this.pointer);
-    const distance = distance2d(end, this.pointer);
-
-    return this.ellipseTo(
-      end,
-      distance / 2,
-      minorRadius,
-      angle * RAD2DEG,
-      longAxis,
-      sweep
-    );
-  }
-
-  halfEllipse(
-    xDist: number,
-    yDist: number,
-    minorRadius: number,
-    longAxis = false,
-    sweep = false
-  ): this {
-    const [x0, y0] = this.pointer;
-    return this.halfEllipseTo(
-      [x0 + xDist, y0 + yDist],
-      minorRadius,
-      longAxis,
-      sweep
-    );
-  }
-
   ellipse(
     xDist: number,
     yDist: number,
@@ -289,46 +297,28 @@ export default class FaceSketcher {
     );
   }
 
-  sagittaArcTo(end: Point2D, sagitta: number): this {
+  halfEllipseTo(end: Point2D, minorRadius: number, sweep = false): this {
+    const angle = angle2d(end, this.pointer);
+    const distance = distance2d(end, this.pointer);
+
+    return this.ellipseTo(
+      end,
+      distance / 2,
+      minorRadius,
+      angle * RAD2DEG,
+      false,
+      sweep
+    );
+  }
+
+  halfEllipse(
+    xDist: number,
+    yDist: number,
+    minorRadius: number,
+    sweep = false
+  ): this {
     const [x0, y0] = this.pointer;
-    const [x1, y1] = end;
-
-    const midPoint = [(x0 + x1) / 2, (y0 + y1) / 2];
-
-    // perpendicular vector of B - A
-    const sagDir = [-(y1 - y0), x1 - x0];
-    const sagDirLen = Math.sqrt(sagDir[0] ** 2 + sagDir[1] ** 2);
-
-    const sagPoint: Point2D = [
-      midPoint[0] + (sagDir[0] / sagDirLen) * sagitta,
-      midPoint[1] + (sagDir[1] / sagDirLen) * sagitta,
-    ];
-
-    this.pendingCurves.push(
-      make2dThreePointArc(
-        this._convertToUV(this.pointer),
-        this._convertToUV(sagPoint),
-        this._convertToUV(end)
-      )
-    );
-    this.pointer = end;
-
-    return this;
-  }
-
-  sagittaArc(xDist: number, yDist: number, sagitta: number): this {
-    return this.sagittaArcTo(
-      [xDist + this.pointer[0], yDist + this.pointer[1]],
-      sagitta
-    );
-  }
-
-  vSagittaArc(distance: number, sagitta: number): this {
-    return this.sagittaArc(0, distance, sagitta);
-  }
-
-  hSagittaArc(distance: number, sagitta: number): this {
-    return this.sagittaArc(distance, 0, sagitta);
+    return this.halfEllipseTo([x0 + xDist, y0 + yDist], minorRadius, sweep);
   }
 
   bezierCurveTo(end: Point2D, controlPoints: Point2D | Point2D[]): this {
@@ -457,18 +447,13 @@ export default class FaceSketcher {
     }
   }
 
-  close(): Sketch {
-    this._closeSketch();
-    return this.done();
-  }
-
   done(): Sketch {
     const [r, gc] = localGC();
 
     const wire = this.buildWire();
     const sketch = new Sketch(wire);
     if (wire.isClosed) {
-      const face = r(sketch.face({ keep: true }));
+      const face = r(sketch.clone().face());
       sketch.defaultOrigin = r(face.pointOnSurface(0.5, 0.5));
       sketch.defaultDirection = r(r(face.normalAt()).multiply(-1));
     } else {
@@ -479,6 +464,11 @@ export default class FaceSketcher {
     sketch.baseFace = this.face;
     gc();
     return sketch;
+  }
+
+  close(): Sketch {
+    this._closeSketch();
+    return this.done();
   }
 
   closeWithMirror(): Sketch {

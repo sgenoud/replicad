@@ -14,6 +14,12 @@ import {
 } from "./addThickness.js";
 import { Face, Shape3D, Wire } from "./shapes.js";
 
+/**
+ * A line drawing to be acted upon. It defines directions to be acted upon by
+ * definition (extrusion direction for instance).
+ *
+ * Note that all operations will delete the sketch
+ */
 export default class Sketch extends RegisteredObj {
   wire: Wire;
   // @ts-expect-error initialised indirectly
@@ -21,17 +27,14 @@ export default class Sketch extends RegisteredObj {
   // @ts-expect-error initialised indirectly
   _defaultDirection: Vector;
   baseFace?: Face | null;
-  autoClean: boolean;
   constructor(
     wire: Wire,
     {
       defaultOrigin = [0, 0, 0],
       defaultDirection = [0, 0, 1],
-      autoClean = true,
     }: {
       defaultOrigin?: Point;
       defaultDirection?: Point;
-      autoClean?: boolean;
     } = {}
   ) {
     super();
@@ -39,7 +42,6 @@ export default class Sketch extends RegisteredObj {
     this.defaultOrigin = defaultOrigin;
     this.defaultDirection = defaultDirection;
     this.baseFace = null;
-    this.autoClean = autoClean;
   }
 
   delete(): void {
@@ -48,6 +50,15 @@ export default class Sketch extends RegisteredObj {
     this._defaultDirection.delete();
     this.baseFace && this.baseFace.delete();
     super.delete();
+  }
+
+  clone(): Sketch {
+    const sketch = new Sketch(this.wire.clone(), {
+      defaultOrigin: this.defaultOrigin,
+      defaultDirection: this.defaultDirection,
+    });
+    if (this.baseFace) sketch.baseFace = this.baseFace.clone();
+    return sketch;
   }
 
   get defaultOrigin(): Vector {
@@ -66,50 +77,52 @@ export default class Sketch extends RegisteredObj {
     this._defaultDirection = new Vector(newDirection);
   }
 
-  _shouldClean(keep?: boolean): boolean {
-    return keep === false || (keep !== true && this.autoClean);
-  }
-
-  _clean(keep?: boolean): void {
-    if (this._shouldClean(keep)) {
-      this.delete();
-    }
-  }
-
-  face({ keep }: { keep?: boolean } = {}): Face {
+  /**
+   * Transforms the lines into a face. The lines should be closed.
+   */
+  face(): Face {
     const face = makeFace(this.wire);
-    this._clean(keep);
+    this.delete();
     return face;
   }
 
-  revolve(
-    revolutionAxis: Point,
-    { origin, keep }: { origin?: Point; keep?: boolean } = {}
-  ): Shape3D {
-    const face = this.face({ keep: true });
+  /**
+   * Revolves the drawing on an axis (defined by its direction and an origin
+   * (defaults to the sketch origin)
+   */
+  revolve(revolutionAxis: Point, { origin }: { origin?: Point } = {}): Shape3D {
+    const face = makeFace(this.wire);
     const solid = revolution(
       face,
       origin || this.defaultOrigin,
       revolutionAxis
     );
     face.delete();
-    this._clean(keep);
+    this.delete();
     return solid;
   }
 
+  /** Extrudes the sketch to a certain distance.(along the default direction
+   * and origin of the sketch).
+   *
+   * You can define another extrusion direction or origin,
+   *
+   * It is also possible to twist extrude with an angle (in degrees), or to
+   * give a profile to the extrusion (the endFactor will scale the face, and
+   * the profile will define how the scale is applied (either linarly or with
+   * a s-shape).
+   */
   extrude(
     extrusionDistance: number,
     {
       extrusionDirection,
       extrusionProfile,
       twistAngle,
-      keep,
       origin,
     }: {
       extrusionDirection?: Point;
       extrusionProfile?: ExtrusionProfile;
       twistAngle?: number;
-      keep?: boolean;
       origin?: Point;
     } = {}
   ): Shape3D {
@@ -129,7 +142,7 @@ export default class Sketch extends RegisteredObj {
         extrusionProfile
       );
       gc();
-      this._clean(keep);
+      this.delete();
       return solid;
     }
 
@@ -142,17 +155,25 @@ export default class Sketch extends RegisteredObj {
         extrusionProfile
       );
       gc();
-      this._clean(keep);
+      this.delete();
       return solid;
     }
 
-    const face = this.face({ keep });
+    const face = makeFace(this.wire);
     const solid = basicFaceExtrusion(face, extrusionVec);
 
     gc();
+    this.delete();
     return solid;
   }
 
+  /**
+   * Sweep along this sketch another sketch defined in the function
+   * `sketchOnPlane`.
+   *
+   * TODO: clean the interface of the sweep config to make it more
+   * understandable.
+   */
   sweepSketch(
     sketchOnPlane: (plane: Plane, origin: Point) => this,
     sweepConfig: GenericSweepConfig = {}
@@ -176,14 +197,21 @@ export default class Sketch extends RegisteredObj {
     }
     const shape = genericSweep(sketch.wire, this.wire, config);
     gc();
+    this.delete();
 
     return shape;
   }
 
-  loftWith(
-    otherSketches: this | this[],
-    { keep, ...loftConfig }: { keep?: boolean } & LoftConfig = {}
-  ): Shape3D {
+  /** Loft between this sketch and another sketch (or an array of them)
+   *
+   * You can also define a `startPoint` for the loft (that will be placed
+   * before this sketch) and an `endPoint` after the last one.
+   *
+   * You can also define if you want the loft to result in a ruled surface.
+   *
+   * Note that all sketches will be deleted by this operation
+   */
+  loftWith(otherSketches: this | this[], loftConfig: LoftConfig = {}): Shape3D {
     const sketchArray = Array.isArray(otherSketches)
       ? [this, ...otherSketches]
       : [this, otherSketches];
@@ -191,40 +219,8 @@ export default class Sketch extends RegisteredObj {
       sketchArray.map((s) => s.wire),
       loftConfig
     );
-    this._clean(keep);
-    if (this._shouldClean()) sketchArray.slice(1).forEach((s) => s.delete());
+
+    sketchArray.forEach((s) => s.delete());
     return shape;
-  }
-
-  fromConfig({
-    returnType,
-    extrusionDistance,
-    extrusionDirection,
-    twistAngle,
-    extrusionProfile,
-    revolutionAxis = [0, 0, 1],
-    origin,
-  }: {
-    returnType: "wire" | "face" | "revolutionSolid";
-    extrusionDistance: number;
-    extrusionDirection?: Point;
-    twistAngle?: number;
-    extrusionProfile?: ExtrusionProfile;
-    revolutionAxis: Point;
-    origin?: Point;
-  }): Wire | Face | Shape3D {
-    if (returnType === "wire") return this.wire;
-    if (returnType === "face") {
-      return this.face();
-    }
-
-    if (returnType === "revolutionSolid")
-      return this.revolve(revolutionAxis, { origin });
-    return this.extrude(extrusionDistance, {
-      extrusionDirection,
-      twistAngle,
-      extrusionProfile,
-      origin,
-    });
   }
 }

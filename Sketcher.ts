@@ -16,12 +16,13 @@ import {
   convertSvgEllipseParams,
   SplineConfig,
   defaultsSplineConfig,
+  GenericSketcher,
 } from "./sketcherlib.js";
 import { CurveLike, Edge, Wire } from "./shapes.js";
 import { Handle_Geom_BezierCurve } from "../wasm/cadeau_single.js";
 import Sketch from "./Sketch.js";
 
-export default class Sketcher extends RegisteredObj {
+export default class Sketcher extends RegisteredObj implements GenericSketcher {
   plane: Plane;
   pointer: Vector;
   firstPoint: Vector;
@@ -30,7 +31,7 @@ export default class Sketcher extends RegisteredObj {
 
   constructor(plane: Plane);
   constructor(plane?: PlaneName, origin?: Point | number);
-  constructor(plane?: Plane | PlaneName, origin?: Point | number) {
+  constructor(plane?: Plane | PlaneName, origin?: Point) {
     super();
 
     this.plane =
@@ -84,6 +85,18 @@ export default class Sketcher extends RegisteredObj {
     return this.line(distance, 0);
   }
 
+  polarLine(distance: number, angle: number): this {
+    const angleInRads = angle * DEG2RAD;
+    const [x, y] = polarToCartesian(distance, angleInRads);
+    return this.line(x, y);
+  }
+
+  polarLineTo([r, theta]: [number, number]): this {
+    const angleInRads = theta * DEG2RAD;
+    const point = polarToCartesian(r, angleInRads);
+    return this.lineTo(point);
+  }
+
   tangentLine(distance: number): this {
     const [r, gc] = localGC();
     const previousEdge = this.pendingEdges.length
@@ -104,16 +117,188 @@ export default class Sketcher extends RegisteredObj {
     return this;
   }
 
-  polarLine(distance: number, angle: number): this {
-    const angleInRads = angle * DEG2RAD;
-    const [x, y] = polarToCartesian(distance, angleInRads);
-    return this.line(x, y);
+  threePointsArcTo(end: Point2D, innerPoint: Point2D): this {
+    const gpoint1 = this.plane.toWorldCoords(innerPoint);
+    const gpoint2 = this.plane.toWorldCoords(end);
+
+    this.pendingEdges.push(makeThreePointArc(this.pointer, gpoint1, gpoint2));
+
+    this._updatePointer(gpoint2);
+    return this;
   }
 
-  polarLineTo([r, theta]: [number, number]): this {
-    const angleInRads = theta * DEG2RAD;
-    const point = polarToCartesian(r, angleInRads);
-    return this.lineTo(point);
+  threePointsArc(
+    xDist: number,
+    yDist: number,
+    viaXDist: number,
+    viaYDist: number
+  ): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.threePointsArcTo(
+      [pointer.x + xDist, pointer.y + yDist],
+      [pointer.x + viaXDist, pointer.y + viaYDist]
+    );
+  }
+
+  tangentArcTo(end: Point2D): this {
+    const endPoint = this.plane.toWorldCoords(end);
+    const previousEdge = this.pendingEdges[this.pendingEdges.length - 1];
+
+    this.pendingEdges.push(
+      makeTangentArc(previousEdge.endPoint, previousEdge.tangentAt(1), endPoint)
+    );
+
+    this._updatePointer(endPoint);
+    return this;
+  }
+
+  tangentArc(xDist: number, yDist: number): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.tangentArcTo([xDist + pointer.x, yDist + pointer.y]);
+  }
+
+  sagittaArcTo(end: Point2D, sagitta: number): this {
+    const startPoint = this.pointer;
+    const endPoint = this.plane.toWorldCoords(end);
+
+    let p = endPoint.add(startPoint);
+    const midPoint = p.multiply(0.5);
+    p.delete();
+
+    p = endPoint.sub(startPoint);
+    const sagDirection = p.cross(this.plane.zDir).normalized();
+
+    p.delete();
+    const sagVector = sagDirection.multiply(sagitta);
+
+    const sagPoint = midPoint.add(sagVector);
+    sagVector.delete();
+
+    this.pendingEdges.push(makeThreePointArc(this.pointer, sagPoint, endPoint));
+    this._updatePointer(endPoint);
+
+    sagPoint.delete();
+    return this;
+  }
+
+  sagittaArc(xDist: number, yDist: number, sagitta: number): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.sagittaArcTo([xDist + pointer.x, yDist + pointer.y], sagitta);
+  }
+
+  vSagittaArc(distance: number, sagitta: number): this {
+    return this.sagittaArc(0, distance, sagitta);
+  }
+
+  hSagittaArc(distance: number, sagitta: number): this {
+    return this.sagittaArc(distance, 0, sagitta);
+  }
+
+  ellipseTo(
+    end: Point2D,
+    horizontalRadius: number,
+    verticalRadius: number,
+    rotation = 0,
+    longAxis = false,
+    sweep = false
+  ): this {
+    const [r, gc] = localGC();
+    const start = this.plane.toLocalCoords(this.pointer);
+
+    let rotationAngle = rotation;
+    let majorRadius = horizontalRadius;
+    let minorRadius = verticalRadius;
+
+    if (horizontalRadius < verticalRadius) {
+      rotationAngle = rotation + 90;
+      majorRadius = verticalRadius;
+      minorRadius = horizontalRadius;
+    }
+
+    const { cx, cy, startAngle, endAngle, clockwise } = convertSvgEllipseParams(
+      [start.x, start.y],
+      end,
+      majorRadius,
+      minorRadius,
+      rotationAngle * DEG2RAD,
+      longAxis,
+      sweep
+    );
+
+    const xDir = r(
+      new Vector(this.plane.xDir).rotate(
+        rotationAngle,
+        this.plane.origin,
+        this.plane.zDir
+      )
+    );
+
+    const arc = makeEllipseArc(
+      majorRadius,
+      minorRadius,
+      clockwise ? startAngle : endAngle,
+      clockwise ? endAngle : startAngle,
+      r(this.plane.toWorldCoords([cx, cy])),
+      this.plane.zDir,
+      xDir
+    );
+
+    this.pendingEdges.push(arc);
+    this._updatePointer(this.plane.toWorldCoords(end));
+    gc();
+    return this;
+  }
+
+  ellipse(
+    xDist: number,
+    yDist: number,
+    horizontalRadius: number,
+    verticalRadius: number,
+    rotation = 0,
+    longAxis = false,
+    sweep = false
+  ): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.ellipseTo(
+      [xDist + pointer.x, yDist + pointer.y],
+      horizontalRadius,
+      verticalRadius,
+      rotation,
+      longAxis,
+      sweep
+    );
+  }
+
+  halfEllipseTo(end: Point2D, verticalRadius: number, sweep = false): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    const start: Point2D = [pointer.x, pointer.y];
+    pointer.delete();
+
+    const angle = angle2d(end, start);
+    const distance = distance2d(end, start);
+
+    return this.ellipseTo(
+      end,
+      distance / 2,
+      verticalRadius,
+      angle * RAD2DEG,
+      false,
+      sweep
+    );
+  }
+
+  halfEllipse(
+    xDist: number,
+    yDist: number,
+    verticalRadius: number,
+    sweep = false
+  ): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.halfEllipseTo(
+      [xDist + pointer.x, yDist + pointer.y],
+      verticalRadius,
+      sweep
+    );
   }
 
   bezierCurveTo(end: Point2D, controlPoints: Point2D | Point2D[]): this {
@@ -219,197 +404,6 @@ export default class Sketcher extends RegisteredObj {
       [xDist + pointer.x, yDist + pointer.y],
       splineConfig
     );
-  }
-
-  threePointsArcTo(end: Point2D, centerPoint: Point2D): this {
-    const gpoint1 = this.plane.toWorldCoords(centerPoint);
-    const gpoint2 = this.plane.toWorldCoords(end);
-
-    this.pendingEdges.push(makeThreePointArc(this.pointer, gpoint1, gpoint2));
-
-    this._updatePointer(gpoint2);
-    return this;
-  }
-
-  threePointsArc(
-    xDist: number,
-    yDist: number,
-    viaXDist: number,
-    viaYDist: number
-  ): this {
-    const pointer = this.plane.toLocalCoords(this.pointer);
-    return this.threePointsArcTo(
-      [pointer.x + xDist, pointer.y + yDist],
-      [pointer.x + viaXDist, pointer.y + viaYDist]
-    );
-  }
-
-  tangentArcTo(end: Point2D): this {
-    const endPoint = this.plane.toWorldCoords(end);
-    const previousEdge = this.pendingEdges[this.pendingEdges.length - 1];
-
-    this.pendingEdges.push(
-      makeTangentArc(previousEdge.endPoint, previousEdge.tangentAt(1), endPoint)
-    );
-
-    this._updatePointer(endPoint);
-    return this;
-  }
-
-  tangentArc(xDist: number, yDist: number): this {
-    const pointer = this.plane.toLocalCoords(this.pointer);
-    return this.tangentArcTo([xDist + pointer.x, yDist + pointer.y]);
-  }
-
-  ellipseTo(
-    end: Point2D,
-    horizontalRadius: number,
-    verticalRadius: number,
-    rotation = 0,
-    longAxis = false,
-    sweep = false
-  ): this {
-    const [r, gc] = localGC();
-    const start = this.plane.toLocalCoords(this.pointer);
-
-    let rotationAngle = rotation;
-    let majorRadius = horizontalRadius;
-    let minorRadius = verticalRadius;
-
-    if (horizontalRadius < verticalRadius) {
-      rotationAngle = rotation + 90;
-      majorRadius = verticalRadius;
-      minorRadius = horizontalRadius;
-    }
-
-    const { cx, cy, startAngle, endAngle, clockwise } = convertSvgEllipseParams(
-      [start.x, start.y],
-      end,
-      majorRadius,
-      minorRadius,
-      rotationAngle * DEG2RAD,
-      longAxis,
-      sweep
-    );
-
-    const xDir = r(
-      new Vector(this.plane.xDir).rotate(
-        rotationAngle,
-        this.plane.origin,
-        this.plane.zDir
-      )
-    );
-
-    const arc = makeEllipseArc(
-      majorRadius,
-      minorRadius,
-      clockwise ? startAngle : endAngle,
-      clockwise ? endAngle : startAngle,
-      r(this.plane.toWorldCoords([cx, cy])),
-      this.plane.zDir,
-      xDir
-    );
-
-    this.pendingEdges.push(arc);
-    this._updatePointer(this.plane.toWorldCoords(end));
-    gc();
-    return this;
-  }
-
-  halfEllipseTo(
-    end: Point2D,
-    verticalRadius: number,
-    longAxis = false,
-    sweep = false
-  ): this {
-    const pointer = this.plane.toLocalCoords(this.pointer);
-    const start: Point2D = [pointer.x, pointer.y];
-    pointer.delete();
-
-    const angle = angle2d(end, start);
-    const distance = distance2d(end, start);
-
-    return this.ellipseTo(
-      end,
-      distance / 2,
-      verticalRadius,
-      angle * RAD2DEG,
-      longAxis,
-      sweep
-    );
-  }
-
-  halfEllipse(
-    xDist: number,
-    yDist: number,
-    verticalRadius: number,
-    longAxis = false,
-    sweep = false
-  ): this {
-    const pointer = this.plane.toLocalCoords(this.pointer);
-    return this.halfEllipseTo(
-      [xDist + pointer.x, yDist + pointer.y],
-      verticalRadius,
-      longAxis,
-      sweep
-    );
-  }
-
-  ellipse(
-    xDist: number,
-    yDist: number,
-    horizontalRadius: number,
-    verticalRadius: number,
-    rotation = 0,
-    longAxis = false,
-    sweep = false
-  ): this {
-    const pointer = this.plane.toLocalCoords(this.pointer);
-    return this.ellipseTo(
-      [xDist + pointer.x, yDist + pointer.y],
-      horizontalRadius,
-      verticalRadius,
-      rotation,
-      longAxis,
-      sweep
-    );
-  }
-
-  sagittaArcTo(end: Point2D, sagitta: number): this {
-    const startPoint = this.pointer;
-    const endPoint = this.plane.toWorldCoords(end);
-
-    let p = endPoint.add(startPoint);
-    const midPoint = p.multiply(0.5);
-    p.delete();
-
-    p = endPoint.sub(startPoint);
-    const sagDirection = p.cross(this.plane.zDir).normalized();
-
-    p.delete();
-    const sagVector = sagDirection.multiply(sagitta);
-
-    const sagPoint = midPoint.add(sagVector);
-    sagVector.delete();
-
-    this.pendingEdges.push(makeThreePointArc(this.pointer, sagPoint, endPoint));
-    this._updatePointer(endPoint);
-
-    sagPoint.delete();
-    return this;
-  }
-
-  sagittaArc(xDist: number, yDist: number, sagitta: number): this {
-    const pointer = this.plane.toLocalCoords(this.pointer);
-    return this.sagittaArcTo([xDist + pointer.x, yDist + pointer.y], sagitta);
-  }
-
-  vSagittaArc(distance: number, sagitta: number): this {
-    return this.sagittaArc(0, distance, sagitta);
-  }
-
-  hSagittaArc(distance: number, sagitta: number): this {
-    return this.sagittaArc(distance, 0, sagitta);
   }
 
   protected _mirrorWireOnStartEnd(wire: Wire): Wire {
