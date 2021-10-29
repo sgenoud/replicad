@@ -25,7 +25,13 @@ type FaceOrEdge = Face | Edge;
 abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
   protected filters: (({ element: Type, normal: Vector }) => boolean)[];
   protected references: { delete: () => void }[];
-  abstract applyFilter(shape: AnyShape): Type[];
+
+  protected abstract applyFilter(shape: AnyShape): Type[];
+
+  /**
+   * Check if a particular element should be filtered or not according to the
+   * current finder
+   */
   abstract shouldKeep(t: Type): boolean;
 
   constructor() {
@@ -41,6 +47,12 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     super.delete();
   }
 
+  /**
+   * Filter to find elements that are in the list.
+   *
+   * This deletes the elements in the list as the filter deletion, unless
+   * keepList is set as `true`.
+   */
   inList(elementList: Type[], { keepList = false } = {}): this {
     if (!keepList) this.references.push(...elementList);
 
@@ -51,6 +63,12 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     return this;
   }
 
+  /**
+   * Filter to find elements that are at a specified angle (in degrees) with
+   * a direction.
+   *
+   * The element direction corresponds to its normal in the case of a face.
+   */
   atAngleWith(direction: Direction | Point = "Z", angle = 0): this {
     let myDirection: Vector;
     if (typeof direction === "string") {
@@ -72,6 +90,9 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     return this;
   }
 
+  /**
+   * Filter to find elements that are at a specified distance from a point.
+   */
   atDistance(distance: number, point: Point = [0, 0, 0]): this {
     const pnt = asPnt(point);
 
@@ -96,10 +117,18 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     return this;
   }
 
+  /**
+   * Filter to find elements that contain a certain point
+   */
   containsPoint(point: Point): this {
     return this.atDistance(0, point);
   }
 
+  /**
+   * Filter to find elements that are within a box
+   *
+   * The elements that are not fully contained in the box are also found.
+   */
   inBox(corner1: Point, corner2: Point) {
     const oc = getOC();
     const boxMaker = new oc.BRepPrimAPI_MakeBox_4(
@@ -126,6 +155,68 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     return this;
   }
 
+  /**
+   * Combine logically a set of filter with an OR operation.
+   *
+   * You need to pass an array of functions that take a finder as a argument
+   * and return the same finder with some filters applied to it.
+   */
+  either(findersList: ((f: this) => this)[]): this {
+    const builtFinders = findersList.map((finderFunction) => {
+      const finder = new (<any>this.constructor)() as this;
+      this.references.push(finder);
+      finderFunction(finder);
+      return finder;
+    });
+
+    const eitherFilter = ({ element }) =>
+      builtFinders.some((finder) => finder.shouldKeep(element));
+    this.filters.push(eitherFilter);
+
+    return this;
+  }
+
+  /**
+   * Combine logically a set of filter with an AND operation.
+   *
+   * You need to pass an array of functions that take a finder as a argument
+   * and return the same finder with some filters applied to it.
+   *
+   * Note that by default filters are applied with and AND operation, but in
+   * some case you might want to create them dynamically and use this method.
+   */
+  and(findersList: ((f: this) => this)[]): this {
+    findersList.forEach((f) => f(this));
+    return this;
+  }
+
+  /**
+   * Invert the result of a particular finder
+   *
+   * You need to pass a function that take a finder as a argument
+   * and return the same finder with some filters applied to it.
+   */
+  not(finderFun: (f: this) => this): this {
+    const finder = new (<any>this.constructor)() as this;
+    this.references.push(finder);
+    finderFun(finder);
+
+    const notFilter = ({ element }) => !finder.shouldKeep(element);
+    this.filters.push(notFilter);
+
+    return this;
+  }
+
+  /**
+   * Returns all the elements that fit the set of filters defined on this
+   * finder
+   *
+   * If unique is configured as an option it will either return the unique
+   * element found or throw an error.
+   *
+   * If clean is set to true the finder is deleted at the end of the filtering
+   * operation.
+   */
   find(shape: AnyShape, options: { unique: true; clean?: boolean }): Type;
   find(shape: AnyShape, options: { unique?: false; clean?: boolean }): Type[];
   find(shape: AnyShape, { unique = false, clean = false } = {}) {
@@ -143,47 +234,18 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
 
     return elements;
   }
-
-  either(findersList: ((f: this) => this)[]): this {
-    const builtFinders = findersList.map((finderFunction) => {
-      const finder = new (<any>this.constructor)() as this;
-      this.references.push(finder);
-      finderFunction(finder);
-      return finder;
-    });
-
-    const eitherFilter = ({ element }) =>
-      builtFinders.some((finder) => finder.shouldKeep(element));
-    this.filters.push(eitherFilter);
-
-    return this;
-  }
-
-  and(findersList: ((f: this) => this)[]): this {
-    findersList.forEach((f) => f(this));
-    return this;
-  }
-
-  not(finderFun: (f: this) => this): this {
-    const finder = new (<any>this.constructor)() as this;
-    this.references.push(finder);
-    finderFun(finder);
-
-    const notFilter = ({ element }) => !finder.shouldKeep(element);
-    this.filters.push(notFilter);
-
-    return this;
-  }
-
-  asSizeFcn(size: number): (element: Type) => number {
-    return (element) => {
-      const shouldKeep = this.shouldKeep(element);
-      return shouldKeep ? size : 0;
-    };
-  }
 }
 
+/**
+ * With a FaceFinder you can apply a set of filters to find specific faces
+ * within a shape.
+ */
 export class FaceFinder extends Finder<Face> {
+  /** Filter to find faces that are parallel to plane or another face
+   *
+   * Note that this will work only in planar faces (but the method does not
+   * check this assumption).
+   */
   parallelTo(plane: Plane | StandardPlane | Face): this {
     if (typeof plane === "string" && PLANE_TO_DIR[plane])
       return this.atAngleWith(PLANE_TO_DIR[plane]);
@@ -198,6 +260,9 @@ export class FaceFinder extends Finder<Face> {
     return this;
   }
 
+  /**
+   * Filter to find faces that are of a cetain surface type.
+   */
   ofSurfaceType(surfaceType: SurfaceType): this {
     const check = ({ element }) => {
       return element.geomType === surfaceType;
@@ -206,6 +271,11 @@ export class FaceFinder extends Finder<Face> {
     return this;
   }
 
+  /** Filter to find faces that are contained in a plane.
+   *
+   * Note that this will work only in planar faces (but the method does not
+   * check this assumption).
+   */
   inPlane(inputPlane: PlaneName | Plane, origin?: Point | number): this {
     const plane =
       inputPlane instanceof Plane
@@ -247,11 +317,21 @@ export class FaceFinder extends Finder<Face> {
   }
 }
 
+/**
+ * With an EdgeFinder you can apply a set of filters to find specific edges
+ * within a shape.
+ */
 export class EdgeFinder extends Finder<Edge> {
+  /**
+   * Filter to find edges that are in a certain direction
+   */
   inDirection(direction: Direction | Point): this {
     return this.atAngleWith(direction, 0);
   }
 
+  /**
+   * Filter to find edges that are of a cetain curve type.
+   */
   ofCurveType(curveType: CurveType): this {
     const check = ({ element }) => {
       return element.geomType === curveType;
@@ -260,6 +340,12 @@ export class EdgeFinder extends Finder<Edge> {
     return this;
   }
 
+  /**
+   * Filter to find edges that are parallel to a plane.
+   *
+   * Note that this will work only in lines (but the method does not
+   * check this assumption).
+   */
   parallelTo(plane: Plane | StandardPlane | Face): this {
     if (typeof plane === "string" && PLANE_TO_DIR[plane])
       return this.atAngleWith(PLANE_TO_DIR[plane], 90);
@@ -274,6 +360,12 @@ export class EdgeFinder extends Finder<Edge> {
     return this;
   }
 
+  /**
+   * Filter to find edges that within a plane.
+   *
+   * Note that this will work only in lines (but the method does not
+   * check this assumption).
+   */
   inPlane(inputPlane: PlaneName | Plane, origin?: Point | number): this {
     const plane =
       inputPlane instanceof Plane
@@ -315,6 +407,12 @@ export class EdgeFinder extends Finder<Edge> {
   }
 }
 
+/**
+ * Combine a set of finder filters (defined with radius) to pass as a filter
+ * function.
+ *
+ * It returns the filter, as well as a cleanup function.
+ */
 export const combineFinderFilters = <Type extends FaceOrEdge>(
   filters: { filter: Finder<Type>; radius: number }[]
 ): [(v: Type) => number, () => void] => {

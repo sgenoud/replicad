@@ -18,6 +18,9 @@ interface PlaneConfig {
   origin?: Point | number;
 }
 
+/*
+ * Creates the `Sketch` of a circle in a defined plane
+ */
 export const sketchCircle = (
   radius: number,
   planeConfig: PlaneConfig = {}
@@ -36,6 +39,9 @@ export const sketchCircle = (
   return sketch;
 };
 
+/*
+ * Creates the `Sketch` of an ellispe in a defined plane
+ */
 export const sketchEllipse = (
   xRadius = 1,
   yRadius = 2,
@@ -69,6 +75,9 @@ export const sketchEllipse = (
   return sketch;
 };
 
+/*
+ * Creates the `Sketch` of a rectangle in a defined plane
+ */
 export const sketchRectangle = (
   xLength: number,
   yLength: number,
@@ -87,6 +96,12 @@ export const sketchRectangle = (
     .done();
 };
 
+/*
+ * Creates the `Sketch` of an polygon in a defined plane
+ *
+ * The sides of the polygon can be arcs of circle with a defined sagitta.
+ * The radius defines the out radius of the polygon without sagitta
+ */
 export const sketchPolysides = (
   radius: number,
   sidesCount: number,
@@ -117,6 +132,10 @@ export const sketchPolysides = (
   return sketch.done();
 };
 
+/*
+ * Helper function to compute the inner radius of a polyside (even if a sagitta
+ * is defined
+ */
 export const polysideInnerRadius = (
   outerRadius: number,
   sidesCount: number,
@@ -130,6 +149,10 @@ export const polysideInnerRadius = (
   return innerRadius + sagitta;
 };
 
+/*
+ * Creates the `Sketch` of an offset of a certain face. A negative offset will
+ * be within the face, a positive one outside.
+ */
 export const sketchFaceOffset = (face: Face, offset: number): Sketch => {
   const defaultOrigin = face.center;
   const defaultDirection = face.normalAt();
@@ -142,6 +165,11 @@ export const sketchFaceOffset = (face: Face, offset: number): Sketch => {
   return sketch;
 };
 
+/*
+ * Creates the `Sketch` of parametric function in a specified plane
+ *
+ * The sketch will be a spline approximating the function
+ */
 export const sketchParametricFunction = (
   func: (t: number) => Point2D,
   planeConfig: PlaneConfig = {},

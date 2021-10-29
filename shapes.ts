@@ -229,88 +229,6 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return this._listTopo("wire").map((e) => new Wire(e));
   }
 
-  triangulation(index0 = 0): FaceTriangulation | null {
-    const aLocation = new this.oc.TopLoc_Location_1();
-    const triangulation = this.oc.BRep_Tool.Triangulation(
-      this.wrapped,
-      aLocation
-    );
-
-    if (triangulation.IsNull()) {
-      aLocation.delete();
-      triangulation.delete();
-
-      return null;
-    }
-
-    const triangulatedFace: FaceTriangulation = {
-      vertices: [],
-      trianglesIndexes: [],
-      verticesNormals: [],
-    };
-
-    const nodes = triangulation.get().Nodes();
-
-    // write vertex buffer
-    triangulatedFace.vertices = new Array(nodes.Length() * 3);
-    for (let i = nodes.Lower(); i <= nodes.Upper(); i++) {
-      const p = nodes.Value(i).Transformed(aLocation.Transformation());
-      triangulatedFace.vertices[(i - 1) * 3 + 0] = p.X();
-      triangulatedFace.vertices[(i - 1) * 3 + 1] = p.Y();
-      triangulatedFace.vertices[(i - 1) * 3 + 2] = p.Z();
-    }
-
-    const normalsArray = new this.oc.TColgp_Array1OfDir_2(
-      nodes.Lower(),
-      nodes.Upper()
-    );
-    const pc = new this.oc.Poly_Connect_2(triangulation);
-    this.oc.StdPrs_ToolTriangulatedShape.Normal(this.wrapped, pc, normalsArray);
-    triangulatedFace.verticesNormals = new Array(normalsArray.Length() * 3);
-    for (let i = normalsArray.Lower(); i <= normalsArray.Upper(); i++) {
-      const d = normalsArray.Value(i).Transformed(aLocation.Transformation());
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X();
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y();
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z();
-    }
-    nodes.delete();
-    pc.delete();
-
-    // set uvcoords buffers to NULL
-    // necessary for JoinPrimitive to be performed
-    // triangulatedFace.tex_coord = null;
-
-    // write triangle buffer
-    const orient = this.wrapped.Orientation_1();
-    const triangles = triangulation.get().Triangles();
-    triangulatedFace.trianglesIndexes = new Array(triangles.Length() * 3);
-    let validFaceTriCount = 0;
-    for (let nt = 1; nt <= triangulation.get().NbTriangles(); nt++) {
-      const t = triangles.Value(nt);
-      let n1 = t.Value(1);
-      let n2 = t.Value(2);
-      const n3 = t.Value(3);
-      if (orient !== this.oc.TopAbs_Orientation.TopAbs_FORWARD) {
-        const tmp = n1;
-        n1 = n2;
-        n2 = tmp;
-      }
-      // if(TriangleIsValid(nodes.Value(1), nodes.Value(n2), nodes.Value(n3))) {
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 0] =
-        n1 - 1 + index0;
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 1] =
-        n2 - 1 + index0;
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 2] =
-        n3 - 1 + index0;
-      validFaceTriCount++;
-      // }
-    }
-    aLocation.delete();
-    triangulation.delete();
-
-    return triangulatedFace;
-  }
-
   _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
     new this.oc.BRepMesh_IncrementalMesh_2(
       this.wrapped,
@@ -853,6 +771,88 @@ export class Face extends Shape<TopoDS_Face> {
     this.delete();
     return innerWires;
   }
+
+  triangulation(index0 = 0): FaceTriangulation | null {
+    const aLocation = new this.oc.TopLoc_Location_1();
+    const triangulation = this.oc.BRep_Tool.Triangulation(
+      this.wrapped,
+      aLocation
+    );
+
+    if (triangulation.IsNull()) {
+      aLocation.delete();
+      triangulation.delete();
+
+      return null;
+    }
+
+    const triangulatedFace: FaceTriangulation = {
+      vertices: [],
+      trianglesIndexes: [],
+      verticesNormals: [],
+    };
+
+    const nodes = triangulation.get().Nodes();
+
+    // write vertex buffer
+    triangulatedFace.vertices = new Array(nodes.Length() * 3);
+    for (let i = nodes.Lower(); i <= nodes.Upper(); i++) {
+      const p = nodes.Value(i).Transformed(aLocation.Transformation());
+      triangulatedFace.vertices[(i - 1) * 3 + 0] = p.X();
+      triangulatedFace.vertices[(i - 1) * 3 + 1] = p.Y();
+      triangulatedFace.vertices[(i - 1) * 3 + 2] = p.Z();
+    }
+
+    const normalsArray = new this.oc.TColgp_Array1OfDir_2(
+      nodes.Lower(),
+      nodes.Upper()
+    );
+    const pc = new this.oc.Poly_Connect_2(triangulation);
+    this.oc.StdPrs_ToolTriangulatedShape.Normal(this.wrapped, pc, normalsArray);
+    triangulatedFace.verticesNormals = new Array(normalsArray.Length() * 3);
+    for (let i = normalsArray.Lower(); i <= normalsArray.Upper(); i++) {
+      const d = normalsArray.Value(i).Transformed(aLocation.Transformation());
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X();
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y();
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z();
+    }
+    nodes.delete();
+    pc.delete();
+
+    // set uvcoords buffers to NULL
+    // necessary for JoinPrimitive to be performed
+    // triangulatedFace.tex_coord = null;
+
+    // write triangle buffer
+    const orient = this.wrapped.Orientation_1();
+    const triangles = triangulation.get().Triangles();
+    triangulatedFace.trianglesIndexes = new Array(triangles.Length() * 3);
+    let validFaceTriCount = 0;
+    for (let nt = 1; nt <= triangulation.get().NbTriangles(); nt++) {
+      const t = triangles.Value(nt);
+      let n1 = t.Value(1);
+      let n2 = t.Value(2);
+      const n3 = t.Value(3);
+      if (orient !== this.oc.TopAbs_Orientation.TopAbs_FORWARD) {
+        const tmp = n1;
+        n1 = n2;
+        n2 = tmp;
+      }
+      // if(TriangleIsValid(nodes.Value(1), nodes.Value(n2), nodes.Value(n3))) {
+      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 0] =
+        n1 - 1 + index0;
+      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 1] =
+        n2 - 1 + index0;
+      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 2] =
+        n3 - 1 + index0;
+      validFaceTriCount++;
+      // }
+    }
+    aLocation.delete();
+    triangulation.delete();
+
+    return triangulatedFace;
+  }
 }
 
 export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
@@ -928,9 +928,10 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     if (typeof radiusConfigInput === "function") {
       radiusConfigFun = radiusConfigInput;
     } else {
-      radiusConfigFun = radiusConfigInput.filter.asSizeFcn(
-        radiusConfigInput.radius || 1
-      );
+      radiusConfigFun = (element: Edge) => {
+        const shouldKeep = radiusConfigInput.filter.shouldKeep(element);
+        return shouldKeep ? radiusConfigInput.radius || 1 : 0;
+      };
 
       if (radiusConfigInput.filter && !radiusConfigInput.keep) {
         finalize = () => radiusConfigInput.filter.delete();
@@ -947,6 +948,20 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     finalize && finalize();
   }
 
+  /**
+   * Creates a new shapes with some edges filletted, as specified in the
+   * radius config.
+   *
+   * If the radius is a filter finder object (with an EdgeFinder as filter,
+   * and a radius to specifiy the fillet radius), the fillet will only be
+   * applied to the edges as selected by the finder. The finder will be
+   * deleted unless it is explicitly specified to `keep` it.
+   *
+   * If the radius is a number all the edges will be filletted.
+   *
+   * If the radius is a function edges will be filletted according to the
+   * value returned by the function (0 or null will not add any fillet).
+   */
   fillet(radiusConfig: RadiusConfig): Shape3D {
     const filletBuilder = new this.oc.BRepFilletAPI_MakeFillet(
       this.wrapped,
@@ -962,6 +977,20 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     return newShape;
   }
 
+  /**
+   * Creates a new shapes with some edges chamfered, as specified in the
+   * radius config.
+   *
+   * If the radius is a filter finder object (with an EdgeFinder as filter,
+   * and a radius to specifiy the chamfer radius), the fillet will only be
+   * applied to the edges as selected by the finder. The finder will be
+   * deleted unless it is explicitly specified to `keep` it.
+   *
+   * If the radius is a number all the edges will be chamfered.
+   *
+   * If the radius is a function edges will be chamfered according to the
+   * value returned by the function (0 or null will not add any chamfer).
+   */
   chamfer(radiusConfig: RadiusConfig): Shape3D {
     const chamferBuilder = new this.oc.BRepFilletAPI_MakeChamfer(this.wrapped);
 
