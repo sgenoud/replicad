@@ -7,25 +7,29 @@ import {
 } from "./shapeHelpers";
 import { Plane, PlaneName, Point, Vector } from "./geom";
 import Sketcher from "./Sketcher";
-import { makePlane } from "./sketcherlib";
+import { makePlane } from "./geomHelpers";
 import Sketch from "./Sketch";
 import { Face } from "./shapes";
 import { Point2D } from "./lib2d";
 import { localGC } from "./register";
 
 interface PlaneConfig {
-  plane?: Plane | PlaneName;
-  origin?: Point;
+  plane?: PlaneName | Plane;
+  origin?: Point | number;
 }
 
 export const sketchCircle = (
   radius: number,
-  { plane: sourcePlane, origin }: PlaneConfig = {}
+  planeConfig: PlaneConfig = {}
 ): Sketch => {
-  const plane = makePlane(sourcePlane, origin);
+  const plane =
+    planeConfig.plane instanceof Plane
+      ? makePlane(planeConfig.plane)
+      : makePlane(planeConfig.plane, planeConfig.origin);
+
   const wire = assembleWire([makeCircle(radius, plane.origin, plane.zDir)]);
   const sketch = new Sketch(wire, {
-    defaultOrigin: origin,
+    defaultOrigin: plane.origin,
     defaultDirection: plane.zDir,
   });
   plane.delete();
@@ -35,9 +39,12 @@ export const sketchCircle = (
 export const sketchEllipse = (
   xRadius = 1,
   yRadius = 2,
-  { plane: sourcePlane, origin }: PlaneConfig = {}
+  planeConfig: PlaneConfig = {}
 ): Sketch => {
-  const plane = makePlane(sourcePlane, origin);
+  const plane =
+    planeConfig.plane instanceof Plane
+      ? makePlane(planeConfig.plane)
+      : makePlane(planeConfig.plane, planeConfig.origin);
   const xDir = new Vector(plane.xDir);
 
   let majR = xRadius;
@@ -55,7 +62,7 @@ export const sketchEllipse = (
   xDir.delete();
 
   const sketch = new Sketch(wire, {
-    defaultOrigin: origin,
+    defaultOrigin: plane.origin,
     defaultDirection: plane.zDir,
   });
   plane.delete();
@@ -65,9 +72,13 @@ export const sketchEllipse = (
 export const sketchRectangle = (
   xLength: number,
   yLength: number,
-  { plane, origin }: PlaneConfig = {}
+  planeConfig: PlaneConfig = {}
 ): Sketch => {
-  return new Sketcher(plane, origin)
+  const sketcher =
+    planeConfig.plane instanceof Plane
+      ? new Sketcher(planeConfig.plane)
+      : new Sketcher(planeConfig.plane, planeConfig.origin);
+  return sketcher
     .movePointerTo([-xLength / 2, -yLength / 2])
     .hLine(xLength)
     .vLine(yLength)
@@ -80,7 +91,7 @@ export const sketchPolysides = (
   radius: number,
   sidesCount: number,
   sagitta = 0,
-  { plane, origin }: PlaneConfig = {}
+  planeConfig: PlaneConfig = {}
 ): Sketch => {
   const points = [...Array(sidesCount).keys()].map((i) => {
     const theta = -((Math.PI * 2) / sidesCount) * i;
@@ -88,7 +99,11 @@ export const sketchPolysides = (
   });
 
   // We start with the last point to make sure the shape is complete
-  const sketch = new Sketcher(plane, origin).movePointerTo([
+  const sketcher =
+    planeConfig.plane instanceof Plane
+      ? new Sketcher(planeConfig.plane)
+      : new Sketcher(planeConfig.plane, planeConfig.origin);
+  const sketch = sketcher.movePointerTo([
     points[points.length - 1][0],
     points[points.length - 1][1],
   ]);
@@ -129,12 +144,17 @@ export const sketchFaceOffset = (face: Face, offset: number): Sketch => {
 
 export const sketchParametricFunction = (
   func: (t: number) => Point2D,
-  { plane: sourcePlane, origin }: PlaneConfig = {},
+  planeConfig: PlaneConfig = {},
   { pointsCount = 400, start = 0, stop = 1 } = {},
   approximationConfig: BSplineApproximationConfig = {}
 ): Sketch => {
   const [r, gc] = localGC();
-  const plane = r(makePlane(sourcePlane, origin));
+  const plane = r(
+    planeConfig.plane instanceof Plane
+      ? makePlane(planeConfig.plane)
+      : makePlane(planeConfig.plane, planeConfig.origin)
+  );
+
   const stepSize = (stop - start) / pointsCount;
   const points = [...Array(pointsCount + 1).keys()].map((t) => {
     const point = func(start + t * stepSize);
@@ -146,7 +166,7 @@ export const sketchParametricFunction = (
   ]);
 
   const sketch = new Sketch(wire, {
-    defaultOrigin: origin,
+    defaultOrigin: plane.origin,
     defaultDirection: plane.zDir,
   });
   gc();

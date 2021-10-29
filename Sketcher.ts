@@ -1,6 +1,7 @@
-import { Plane, PlaneName, Point, Vector } from "./geom.js";
-import { localGC, RegisteredObj } from "./register.js";
-import { DEG2RAD, RAD2DEG } from "./constants.js";
+import { Plane, PlaneName, Point, Vector } from "./geom";
+import { makePlane } from "./geomHelpers";
+import { localGC, RegisteredObj } from "./register";
+import { DEG2RAD, RAD2DEG } from "./constants";
 import { distance2d, angle2d, polarToCartesian, Point2D } from "./lib2d";
 import {
   makeLine,
@@ -12,7 +13,6 @@ import {
 } from "./shapeHelpers.js";
 
 import {
-  makePlane,
   convertSvgEllipseParams,
   SplineConfig,
   defaultsSplineConfig,
@@ -28,9 +28,13 @@ export default class Sketcher extends RegisteredObj {
   pendingEdges: Edge[];
   _mirrorWire: boolean;
 
-  constructor(plane?: Plane | PlaneName, origin?: Point) {
+  constructor(plane: Plane);
+  constructor(plane?: PlaneName, origin?: Point | number);
+  constructor(plane?: Plane | PlaneName, origin?: Point | number) {
     super();
-    this.plane = makePlane(plane, origin);
+
+    this.plane =
+      plane instanceof Plane ? makePlane(plane) : makePlane(plane, origin);
 
     this.pointer = new Vector(this.plane.origin);
     this.firstPoint = new Vector(this.plane.origin);

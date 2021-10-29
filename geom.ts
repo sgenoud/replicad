@@ -237,7 +237,10 @@ export class Transformation extends WrappingObj<gp_Trsf> {
     return this;
   }
 
-  mirror(inputPlane: Plane | PlaneName | Point, inputOrigin: Point): this {
+  mirror(
+    inputPlane: Plane | PlaneName | Point = "YZ",
+    inputOrigin?: Point
+  ): this {
     const [r, gc] = localGC();
 
     let origin: Point;
@@ -251,7 +254,7 @@ export class Transformation extends WrappingObj<gp_Trsf> {
       origin = inputOrigin || inputPlane.origin;
       direction = inputPlane.zDir;
     } else {
-      origin = inputOrigin;
+      origin = inputOrigin || [0, 0, 0];
       direction = inputPlane;
     }
 

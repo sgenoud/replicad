@@ -1,11 +1,5 @@
-import {
-  Vector,
-  asPnt,
-  createNamedPlane,
-  Point,
-  Plane,
-  PlaneName,
-} from "./geom";
+import { Vector, asPnt, Point, Plane, PlaneName } from "./geom";
+import { makePlane } from "./geomHelpers";
 import { RegisteredObj } from "./register";
 import { DEG2RAD } from "./constants";
 import { Face, Edge, AnyShape, SurfaceType, CurveType } from "./shapes";
@@ -212,14 +206,11 @@ export class FaceFinder extends Finder<Face> {
     return this;
   }
 
-  inPlane(inputPlane: PlaneName | Plane, origin: Point): this {
-    let plane: Plane;
-    if (typeof inputPlane === "string") {
-      plane = createNamedPlane(inputPlane, origin);
-      this.references.push(plane);
-    } else {
-      plane = inputPlane;
-    }
+  inPlane(inputPlane: PlaneName | Plane, origin?: Point | number): this {
+    const plane =
+      inputPlane instanceof Plane
+        ? makePlane(inputPlane)
+        : makePlane(inputPlane, origin);
 
     this.parallelTo(plane);
 
@@ -283,14 +274,11 @@ export class EdgeFinder extends Finder<Edge> {
     return this;
   }
 
-  inPlane(inputPlane: PlaneName | Plane, origin: Point): this {
-    let plane: Plane;
-    if (typeof inputPlane === "string") {
-      plane = createNamedPlane(inputPlane, origin);
-      this.references.push(plane);
-    } else {
-      plane = inputPlane;
-    }
+  inPlane(inputPlane: PlaneName | Plane, origin?: Point | number): this {
+    const plane =
+      inputPlane instanceof Plane
+        ? makePlane(inputPlane)
+        : makePlane(inputPlane, origin);
 
     this.parallelTo(plane);
 

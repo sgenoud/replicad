@@ -1,16 +1,4 @@
-import { Plane, createNamedPlane, PlaneName, Point } from "./geom.js";
-import { Point2D } from "./lib2d.js";
-
-export const makePlane = (
-  plane: Plane | PlaneName = "XY",
-  origin: Point = [0, 0, 0]
-): Plane => {
-  if (plane instanceof Plane) {
-    return plane.clone();
-  } else {
-    return createNamedPlane(plane, origin);
-  }
-};
+import { Point2D } from "./lib2d";
 
 export type SplineConfig =
   | number

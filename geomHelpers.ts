@@ -1,4 +1,11 @@
-import { Plane, PlaneName, Point, Transformation, Vector } from "./geom";
+import {
+  createNamedPlane,
+  Plane,
+  PlaneName,
+  Point,
+  Transformation,
+  Vector,
+} from "./geom";
 import { Face } from "./shapes";
 import { Point2D } from "./lib2d";
 import { TopoDS_Shape } from "../wasm/cadeau_single";
@@ -19,6 +26,21 @@ export const makePlaneFromFace = (
   v.delete();
   return new Plane(originPoint, xd, normal);
 };
+
+function makePlane(plane: Plane): Plane;
+function makePlane(plane?: PlaneName, origin?: Point | number): Plane;
+function makePlane(
+  plane: Plane | PlaneName = "XY",
+  origin: Point | number = [0, 0, 0]
+): Plane {
+  if (plane instanceof Plane) {
+    return plane.clone();
+  } else {
+    return createNamedPlane(plane, origin);
+  }
+}
+
+export { makePlane };
 
 export function rotate(
   shape: TopoDS_Shape,
