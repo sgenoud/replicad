@@ -5,13 +5,13 @@
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "",
   "license": "ISC",
-  "main": "src/index.ts",
+  "main": "src/replicad_single.js",
   "directories": {
-    "lib": "lib",
+    "lib": "src",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "src"
   ],
   "scripts": {
     "buildWasm": "cd build-config; docker run -it --rm -v $(pwd):/src -u $(id -u):$(id -g) donalffons/opencascade.js custom_build_single.yml && mv replicad_single* ../src; cd -"
