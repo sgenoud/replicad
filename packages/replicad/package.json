@@ -12,8 +12,8 @@
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "",
   "license": "AGPL-3.0-or-later",
-  "main": "dist/replicad.js",
-  "module": "dist/replicad.js",
+  "main": "dist/umd/replicad.js",
+  "module": "dist/es/replicad.js",
   "directories": {
     "src": "src",
     "test": "__tests__"
