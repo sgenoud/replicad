@@ -1,4 +1,4 @@
-import { OpenCascadeInstance } from "../wasm/cadeau_single";
+import { OpenCascadeInstance } from "replicad-opencascadejs";
 
 const OC: { library: OpenCascadeInstance | null } = {
   library: null,

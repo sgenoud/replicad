@@ -6,7 +6,7 @@ import {
   gp_Vec2d,
   gp_Ax2d,
   Geom2d_Curve,
-} from "../wasm/cadeau_single";
+} from "replicad-opencascadejs";
 
 export type Point2D = [number, number];
 

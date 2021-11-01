@@ -8,7 +8,7 @@ import {
 } from "./geom";
 import { Face } from "./shapes";
 import { Point2D } from "./lib2d";
-import { TopoDS_Shape } from "../wasm/cadeau_single";
+import { TopoDS_Shape } from "replicad-opencascadejs";
 
 export const makePlaneFromFace = (
   face: Face,

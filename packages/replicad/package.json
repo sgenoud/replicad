@@ -1,13 +1,13 @@
 {
   "name": "replicad",
   "version": "0.5.0",
-  "description": "The library to build browser base 3D models with code",
+  "description": "The library to build browser based 3D models with code",
   "keywords": [
     "cad",
     "opencascadejs",
     "brep",
-    "step",
-    "stl"
+    "STEP",
+    "STL"
   ],
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "",
@@ -21,6 +21,42 @@
     "lib"
   ],
   "scripts": {
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
     "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "es6": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "rules": {
+      "react/prop-types": "off",
+      "@typescript-eslint/no-explicit-any": "off"
+    },
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "eslint": "^8.1.0",
+    "prettier": "^2.4.1",
+    "replicad-opencascadejs": "^0.5.0",
+    "rollup": "^2.58.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "typedoc": "^0.22.7",
+    "typescript": "^4.4.4"
   }
 }

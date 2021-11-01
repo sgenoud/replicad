@@ -18,7 +18,7 @@ import {
   Law_Linear,
   Law_S,
   TopoDS_Shape,
-} from "../wasm/cadeau_single";
+} from "replicad-opencascadejs";
 
 export const basicFaceExtrusion = (face: Face, extrusionVec: Vector): Solid => {
   const oc = getOC();
