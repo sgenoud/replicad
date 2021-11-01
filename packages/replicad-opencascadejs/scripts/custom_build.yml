@@ -1,0 +1,43 @@
+cadeau.wasm:
+  inputs: []
+  bindings:
+    - symbol: cadeau
+  additionalCppCode: |
+    #include <emscripten/val.h>
+    class cadeau: public BRepTools {
+    public:
+      static emscripten::val UVBounds(const TopoDS_Face &f) {
+        Standard_Real uMin;
+        Standard_Real uMax;
+        Standard_Real vMin;
+        Standard_Real vMax;
+        BRepTools::UVBounds(f, uMin, uMax, vMin, vMax);
+        emscripten::val ret(emscripten::val::object());
+        ret.set("uMin", emscripten::val(uMin));
+        ret.set("uMax", emscripten::val(uMax));
+        ret.set("vMin", emscripten::val(vMin));
+        ret.set("vMax", emscripten::val(vMax));
+        return ret;
+      }
+
+      static emscripten::val projectPointOnSurface( 
+        const gp_Pnt & P,
+        const opencascade::handle<Geom_Surface> & Surface
+      ) {
+
+        GeomAPI_ProjectPointOnSurf projectedPoint (P, Surface);
+
+        Standard_Real u;
+        Standard_Real v;
+
+        projectedPoint.LowerDistanceParameters(u, v);
+
+        emscripten::val ret(emscripten::val::object());
+        ret.set("u", emscripten::val(u));
+        ret.set("v", emscripten::val(v));
+        return ret;
+      }
+    };
+  emccFlags:
+    - -sSIDE_MODULE=1
+    - -O3
