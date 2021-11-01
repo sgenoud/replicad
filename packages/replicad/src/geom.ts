@@ -13,7 +13,7 @@ import {
   OpenCascadeInstance,
   gp_Trsf,
   TopoDS_Shape,
-} from "../wasm/cadeau_single";
+} from "replicad-opencascadejs";
 
 const round3 = (v: number) => Math.round(v * 1000) / 1000;
 

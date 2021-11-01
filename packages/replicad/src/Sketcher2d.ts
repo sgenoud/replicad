@@ -10,7 +10,7 @@ import {
   SplineConfig,
   GenericSketcher,
 } from "./sketcherlib";
-import { Geom2d_Curve, Handle_Geom_Surface } from "../wasm/cadeau_single";
+import { Geom2d_Curve, Handle_Geom_Surface } from "replicad-opencascadejs";
 
 import {
   normalize2d,

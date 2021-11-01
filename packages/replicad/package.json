@@ -12,16 +12,17 @@
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "",
   "license": "AGPL-3.0-or-later",
-  "main": "src/index.ts",
+  "main": "dist/replicad.js",
+  "module": "dist/replicad.js",
   "directories": {
-    "lib": "lib",
+    "src": "src",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "scripts": {
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
+    "build": "rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "eslintConfig": {
@@ -49,6 +50,9 @@
     }
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "eslint": "^8.1.0",
     "prettier": "^2.4.1",
@@ -58,5 +62,8 @@
     "rollup-plugin-typescript2": "^0.30.0",
     "typedoc": "^0.22.7",
     "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "rollup-plugin-sourcemaps": "^0.6.3"
   }
 }

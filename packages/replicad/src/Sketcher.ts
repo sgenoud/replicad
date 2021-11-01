@@ -19,7 +19,7 @@ import {
   GenericSketcher,
 } from "./sketcherlib.js";
 import { CurveLike, Edge, Wire } from "./shapes.js";
-import { Handle_Geom_BezierCurve } from "../wasm/cadeau_single.js";
+import { Handle_Geom_BezierCurve } from "replicad-opencascadejs";
 import Sketch from "./Sketch.js";
 
 export default class Sketcher extends RegisteredObj implements GenericSketcher {

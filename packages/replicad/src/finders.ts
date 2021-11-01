@@ -23,7 +23,13 @@ const PLANE_TO_DIR: Record<StandardPlane, [number, number, number]> = {
 type FaceOrEdge = Face | Edge;
 
 abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
-  protected filters: (({ element: Type, normal: Vector }) => boolean)[];
+  protected filters: (({
+    element,
+    normal,
+  }: {
+    element: Type;
+    normal: Vector;
+  }) => boolean)[];
   protected references: { delete: () => void }[];
 
   protected abstract applyFilter(shape: AnyShape): Type[];
@@ -56,7 +62,7 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
   inList(elementList: Type[], { keepList = false } = {}): this {
     if (!keepList) this.references.push(...elementList);
 
-    const elementInList = ({ element }) => {
+    const elementInList = ({ element }: { element: Type }) => {
       return !!elementList.find((e) => e.isSame(element));
     };
     this.filters.push(elementInList);
@@ -77,7 +83,7 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
       myDirection = new Vector(direction);
     }
 
-    const checkAngle = ({ normal }) => {
+    const checkAngle = ({ normal }: { normal: Vector }) => {
       // We do not care about the orientation
       const angleOfNormal = Math.acos(Math.abs(normal.dot(myDirection)));
 
@@ -104,7 +110,7 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     const distanceBuilder = new oc.BRepExtrema_DistShapeShape_1();
     distanceBuilder.LoadS1(vertex);
 
-    const checkPoint = ({ element }) => {
+    const checkPoint = ({ element }: { element: Type }) => {
       distanceBuilder.LoadS2(element.wrapped);
       distanceBuilder.Perform();
 
@@ -142,7 +148,7 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     const distanceBuilder = new oc.BRepExtrema_DistShapeShape_1();
     distanceBuilder.LoadS1(box);
 
-    const checkPoint = ({ element }) => {
+    const checkPoint = ({ element }: { element: Type }) => {
       distanceBuilder.LoadS2(element.wrapped);
       distanceBuilder.Perform();
 
@@ -169,7 +175,7 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
       return finder;
     });
 
-    const eitherFilter = ({ element }) =>
+    const eitherFilter = ({ element }: { element: Type }) =>
       builtFinders.some((finder) => finder.shouldKeep(element));
     this.filters.push(eitherFilter);
 
@@ -201,7 +207,8 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     this.references.push(finder);
     finderFun(finder);
 
-    const notFilter = ({ element }) => !finder.shouldKeep(element);
+    const notFilter = ({ element }: { element: Type }) =>
+      !finder.shouldKeep(element);
     this.filters.push(notFilter);
 
     return this;
@@ -264,7 +271,7 @@ export class FaceFinder extends Finder<Face> {
    * Filter to find faces that are of a cetain surface type.
    */
   ofSurfaceType(surfaceType: SurfaceType): this {
-    const check = ({ element }) => {
+    const check = ({ element }: { element: Face }) => {
       return element.geomType === surfaceType;
     };
     this.filters.push(check);
@@ -284,7 +291,7 @@ export class FaceFinder extends Finder<Face> {
 
     this.parallelTo(plane);
 
-    const centerInPlane = ({ element }) => {
+    const centerInPlane = ({ element }: { element: Face }) => {
       const point = element.center;
       const projectedPoint = point.projectToPlane(plane);
 
@@ -333,7 +340,7 @@ export class EdgeFinder extends Finder<Edge> {
    * Filter to find edges that are of a cetain curve type.
    */
   ofCurveType(curveType: CurveType): this {
-    const check = ({ element }) => {
+    const check = ({ element }: { element: Edge }) => {
       return element.geomType === curveType;
     };
     this.filters.push(check);
@@ -374,7 +381,7 @@ export class EdgeFinder extends Finder<Edge> {
 
     this.parallelTo(plane);
 
-    const firstPointInPlane = ({ element }) => {
+    const firstPointInPlane = ({ element }: { element: Edge }) => {
       const point = element.startPoint;
       const projectedPoint = point.projectToPlane(plane);
 

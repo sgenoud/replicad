@@ -21,7 +21,7 @@ import {
   BRepAdaptor_Curve,
   BRepAdaptor_CompCurve,
   BRepAdaptor_Surface,
-} from "../wasm/cadeau_single";
+} from "replicad-opencascadejs";
 import { EdgeFinder, FaceFinder } from "./finders.js";
 import { rotate, translate, mirror, scale as scaleShape } from "./geomHelpers";
 

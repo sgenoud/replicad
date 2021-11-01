@@ -1,5 +1,5 @@
 import { getOC } from "./oclib";
-import { OpenCascadeInstance } from "../wasm/cadeau_single";
+import { OpenCascadeInstance } from "replicad-opencascadejs";
 
 interface Deletable {
   delete: () => void;

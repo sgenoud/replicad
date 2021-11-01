@@ -12,7 +12,7 @@ import {
 import { asPnt, makeAx3, makeAx2, Point, asVec } from "./geom";
 import { getOC } from "./oclib.js";
 import { localGC } from "./register.js";
-import { GeomAPI_PointsToBSpline } from "../wasm/cadeau_single";
+import { GeomAPI_PointsToBSpline } from "replicad-opencascadejs";
 
 export const makeLine = (v1: Point, v2: Point): Edge => {
   const oc = getOC();
