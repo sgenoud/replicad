@@ -1,11 +1,12 @@
 # `replicad-opencascadejs`
 
-> TODO: description
+An opencascadejs build containing only the APIs necessary to run replicad.
 
 ## Usage
 
 ```
-const replicadOpencascadejs = require('replicad-opencascadejs');
-
-// TODO: DEMONSTRATE API
+yarn buildWasm 
 ```
+
+You need to have a docker instance running and have run 
+`docker-pull dolalffons/opencascade.js`

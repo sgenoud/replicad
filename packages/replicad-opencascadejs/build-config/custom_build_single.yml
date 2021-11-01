@@ -1,5 +1,5 @@
 mainBuild:
-  name: cadeau_single.js
+  name: replicad_single.js
   bindings:
     - symbol: Message_ProgressRange
     - symbol: TColgp_Array1OfDir
