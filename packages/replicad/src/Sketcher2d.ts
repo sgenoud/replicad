@@ -37,12 +37,25 @@ type UVBounds = {
   vMax: number;
 };
 
+/**
+ * The FaceSketcher allows you to sketch on a face that is not planar, for
+ * instance the sides of a cylinder.
+ *
+ * The coordinates passed to the methods corresponds to normalised distances on
+ * this surface, between 0 and 1 in both direction.
+ *
+ * Note that if you are drawing on a closed surface (typically a revolution
+ * surface or a cylinder), the first parameters represents the angle and can be
+ * smaller than 0 or bigger than 1.
+ *
+ * @category Sketching
+ */
 export default class FaceSketcher implements GenericSketcher {
-  pointer: Point2D;
-  face: Face;
-  firstPoint: Point2D;
-  pendingCurves: Geom2d_Curve[];
-  _bounds: UVBounds;
+  protected pointer: Point2D;
+  protected face: Face;
+  protected firstPoint: Point2D;
+  protected pendingCurves: Geom2d_Curve[];
+  protected _bounds: UVBounds;
 
   constructor(face: Face, origin: Point2D = [0, 0]) {
     this.pointer = origin;
@@ -416,7 +429,10 @@ export default class FaceSketcher implements GenericSketcher {
     return oc.BRep_Tool.Surface_2(this.face.wrapped);
   }
 
-  buildWire(): Wire {
+  /**
+   * @ignore
+   */
+  protected buildWire(): Wire {
     const [r, gc] = localGC();
     const oc = getOC();
 
@@ -441,6 +457,9 @@ export default class FaceSketcher implements GenericSketcher {
     return wire;
   }
 
+  /**
+   * @ignore
+   */
   protected _closeSketch(): void {
     if (!samePoint(this.pointer, this.firstPoint)) {
       this.lineTo(this.firstPoint);

@@ -69,6 +69,19 @@ export interface CurveLike {
   D1(v: number, p: gp_Pnt, vPrime: gp_Vec): void;
 }
 
+/**
+ * A generic way to define radii for fillet or chamfer (the operation)
+ *
+ * If the radius is a filter finder object (with an EdgeFinder as filter, and
+ * a radius to specify the fillet radius), the operation will only be applied
+ * to the edges as selected by the finder. The finder will be deleted unless it
+ * is explicitly specified to `keep` it.
+ *
+ * If the radius is a number all the edges will be targetted for the operation.
+ *
+ * If the radius is a function edges will be filletted or chamfered according
+ * to the value returned by the function (0 or null will not add any fillet).
+ */
 export type RadiusConfig =
   | ((e: Edge) => number | null)
   | number
@@ -156,6 +169,11 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return this.wrapped.IsEqual(other.wrapped);
   }
 
+  /**
+   * Translates the shape of an arbitrary vector
+   *
+   * @category Shape Transformations
+   */
   translate(vector: Point): this {
     const newShape = cast(translate(this.wrapped, vector));
     this.delete();
@@ -165,18 +183,38 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return newShape as typeof this;
   }
 
+  /**
+   * Translates the shape on the X axis
+   *
+   * @category Shape Transformations
+   */
   translateX(distance: number): this {
     return this.translate([distance, 0, 0]);
   }
 
+  /**
+   * Translates the shape on the Y axis
+   *
+   * @category Shape Transformations
+   */
   translateY(distance: number): this {
     return this.translate([0, distance, 0]);
   }
 
+  /**
+   * Translates the shape on the Z axis
+   *
+   * @category Shape Transformations
+   */
   translateZ(distance: number): this {
     return this.translate([0, 0, distance]);
   }
 
+  /**
+   * Rotates the shape
+   *
+   * @category Shape Transformations
+   */
   rotate(
     angle: number,
     position: Point = [0, 0, 0],
@@ -189,6 +227,11 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return newShape as typeof this;
   }
 
+  /**
+   * Mirrors the shape through a plane
+   *
+   * @category Shape Transformations
+   */
   mirror(inputPlane: Plane | PlaneName | Point, origin: Point): this {
     const newShape = cast(mirror(this.wrapped, inputPlane, origin));
     this.delete();
@@ -198,6 +241,11 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return newShape as typeof this;
   }
 
+  /**
+   * Returns a scaled version of the shape
+   *
+   * @category Shape Transformations
+   */
   scale(center: Point, scale: number): this {
     const newShape = cast(scaleShape(this.wrapped, center, scale));
     this.delete();
@@ -207,11 +255,11 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return newShape as typeof this;
   }
 
-  _iterTopo(topo: TopoEntity): IterableIterator<TopoDS_Shape> {
+  protected _iterTopo(topo: TopoEntity): IterableIterator<TopoDS_Shape> {
     return iterTopo(this.wrapped, topo);
   }
 
-  _listTopo(topo: TopoEntity): TopoDS_Shape[] {
+  protected _listTopo(topo: TopoEntity): TopoDS_Shape[] {
     return Array.from(this._iterTopo(topo)).map((e) => {
       return downcast(e);
     });
@@ -229,7 +277,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return this._listTopo("wire").map((e) => new Wire(e));
   }
 
-  _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
+  protected _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
     new this.oc.BRepMesh_IncrementalMesh_2(
       this.wrapped,
       tolerance,
@@ -239,6 +287,12 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     );
   }
 
+  /**
+   * Exports the current shape as a set of triangle. These can be used by threejs
+   * for instance to represent the the shape
+   *
+   * @category Shape Export
+   */
   mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): ShapeMesh {
     this._mesh({ tolerance, angularTolerance });
     let triangles: number[] = [];
@@ -270,6 +324,12 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     };
   }
 
+  /**
+   * Exports the current shape as a set of lines. These can be used by threejs
+   * for instance to represent the edges of the shape
+   *
+   * @category Shape Export
+   */
   meshEdges({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): {
     lines: number[];
     edgeGroups: { start: number; count: number; edgeId: number }[];
@@ -383,6 +443,11 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return { lines, edgeGroups };
   }
 
+  /**
+   * Exports the current shape as a STEP file as a Blob
+   *
+   * @category Shape Export
+   */
   blobSTEP(): Blob {
     const filename = "blob.step";
     const writer = new this.oc.STEPControl_Writer_1();
@@ -414,6 +479,14 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     }
   }
 
+  /**
+   * Exports the current shape as a STL file as a Blob
+   *
+   * In order to create a STL file, the shape needs to be meshed. The
+   * tolerances correspond to the values used to mesh the shape.
+   *
+   * @category Shape Export
+   */
   blobSTL({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): Blob {
     this._mesh({ tolerance, angularTolerance });
     const filename = "blob.stl";
@@ -772,6 +845,9 @@ export class Face extends Shape<TopoDS_Face> {
     return innerWires;
   }
 
+  /*
+   * @ignore
+   */
   triangulation(index0 = 0): FaceTriangulation | null {
     const aLocation = new this.oc.TopLoc_Location_1();
     const triangulation = this.oc.BRep_Tool.Triangulation(
@@ -856,6 +932,11 @@ export class Face extends Shape<TopoDS_Face> {
 }
 
 export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
+  /**
+   * Builds a new shape out of the two, fused, shapes
+   *
+   * @category Shape Modifications
+   */
   fuse(other: AnyShape): AnyShape {
     const newBody = new this.oc.BRepAlgoAPI_Fuse_3(this.wrapped, other.wrapped);
     newBody.SimplifyResult(true, true, 1e-3);
@@ -864,6 +945,11 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     return cast(newShape);
   }
 
+  /**
+   * Builds a new shape by removing the tool tape from this shape
+   *
+   * @category Shape Modifications
+   */
   cut(tool: AnyShape): AnyShape {
     const cutter = new this.oc.BRepAlgoAPI_Cut_3(this.wrapped, tool.wrapped);
     cutter.Build();
@@ -876,6 +962,12 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     return newShape;
   }
 
+  /**
+   * Hollows out the current shape, removing the faces found by the `filter` and
+   * keeping a border of `thickness`
+   *
+   * @category Shape Modifications
+   */
   shell(
     {
       filter,
@@ -911,7 +1003,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     return newShape;
   }
 
-  _builderIter(
+  protected _builderIter(
     radiusConfigInput: RadiusConfig,
     builderAdd: (r: number, edge: TopoDS_Edge) => void
   ): void {
@@ -961,6 +1053,8 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * If the radius is a function edges will be filletted according to the
    * value returned by the function (0 or null will not add any fillet).
+   *
+   * @category Shape Modifications
    */
   fillet(radiusConfig: RadiusConfig): Shape3D {
     const filletBuilder = new this.oc.BRepFilletAPI_MakeFillet(
@@ -990,6 +1084,8 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * If the radius is a function edges will be chamfered according to the
    * value returned by the function (0 or null will not add any chamfer).
+   *
+   * @category Shape Modifications
    */
   chamfer(radiusConfig: RadiusConfig): Shape3D {
     const chamferBuilder = new this.oc.BRepFilletAPI_MakeChamfer(this.wrapped);

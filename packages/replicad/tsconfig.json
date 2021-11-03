@@ -5,16 +5,19 @@
     "module":"es2015",
     "strict": true,
     "sourceMap": true,
+    "skipLibCheck": true,
     "declaration": true,
     "allowSyntheticDefaultImports": true,
     "declarationDir": "dist/types",
-    "outDir": "dist/lib",
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "outDir": "dist/lib"
   },
   "include": [
     "src"
-  ]
+  ],
+  "typedocOptions": {
+      "watch": true,
+      "readme": "none",
+      "excludeProtected": true
+  }
 }
 

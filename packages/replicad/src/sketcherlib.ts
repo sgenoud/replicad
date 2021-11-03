@@ -42,6 +42,8 @@ export const defaultsSplineConfig = (
  * from the end point of the previous segment.
  * Once you end your sketch you will receive a `Sketch` object that allows you
  * to give some three dimentionlity to your finished sketch.
+ *
+ * @category Sketching
  */
 export interface GenericSketcher {
   /**
@@ -50,48 +52,66 @@ export interface GenericSketcher {
   movePointerTo(point: Point2D): this;
 
   /**
-   * jDraws a line from the current point to the point given in argument
+   * Draws a line from the current point to the point given in argument
+   *
+   * @category Line Segment
    */
   lineTo(point: Point2D): this;
   /**
    * Draws a line at the horizontal distance xDist and the vertical distance
    * yDist of the current point
+   *
+   * @category Line Segment
    */
   line(xDist: number, yDist: number): this;
   /**
    * Draws a vertical line of length distance from the current point
+   *
+   * @category Line Segment
    */
   vLine(distance: number): this;
   /**
    * Draws an horizontal line of length distance from the current point
+   *
+   * @category Line Segment
    */
   hLine(distance: number): this;
   /**
    * Draws a line from the current point to the point defined in polar
    * coordiates, of radius r and angle theta (in degrees) from the origin
+   *
+   * @category Line Segment
    */
   polarLineTo([r, theta]: [number, number]): this;
   /**
    * Draws a line from the current point to the point defined in polar
    * coordiates, of radius r and angle theta (in degrees) from the current
    * point
+   *
+   * @category Line Segment
    */
   polarLine(r: number, theta: number): this;
   /**
    * Draws a line from the current point as a tangent to the previous part of
    * curve drawn. The distance defines how long the line will be.
+   *
+   * @category Line Segment
    */
   tangentLine(distance: number): this;
 
   /**
    * Draws an arc of circle by defining its end point and a third point through
    * which the arc will pass.
+   *
+   * @category Arc Segment
    */
   threePointsArcTo(end: Point2D, innerPoint: Point2D): this;
   /**
    * Draws an arc of circle by defining its end point and a third point through
    * which the arc will pass. Both poinats are defined in horizontal (x) and
    * vertical (y) distances from the start point.
+   *
+   * @category Arc Segment
    */
   threePointsArc(
     xDist: number,
@@ -103,6 +123,8 @@ export interface GenericSketcher {
    * Draws an arc of circle by defining its end point and the sagitta - the
    * maximum distance between the arc and the straight line going from start
    * to end point.
+   *
+   * @category Arc Segment
    */
   sagittaArcTo(end: Point2D, sagitta: number): this;
   /**
@@ -110,6 +132,8 @@ export interface GenericSketcher {
    * maximum distance between the arc and the straight line going from start
    * to end point.The end point is defined by its horizontal and vertical
    * distances from the start point.
+   *
+   * @category Arc Segment
    */
   sagittaArc(xDist: number, yDist: number, sagitta: number): this;
   /**
@@ -117,6 +141,8 @@ export interface GenericSketcher {
    * - the maximum distance between the arc and the straight line going from
    * start to end point.The end point is defined by its  vertical distance
    * from the start point.
+   *
+   * @category Arc Segment
    */
   vSagittaArc(distance: number, sagitta: number): this;
   /**
@@ -124,17 +150,23 @@ export interface GenericSketcher {
    * sagitta - the maximum distance between the arc and the straight line
    * going from start to end point.The end point is defined by its horizontal
    * distance from the start point.
+   *
+   * @category Arc Segment
    */
   hSagittaArc(distance: number, sagitta: number): this;
   /**
    * Draws an arc of circle from the current point as a tangent to the previous
    * part of curve drawn.
+   *
+   * @category Arc Segment
    */
   tangentArcTo(end: Point2D): this;
   /**
    * Draws an arc of circle from the current point as a tangent to the previous
    * part of curve drawn.The end point is defined by its horizontal and vertical
    * distances from the start point.
+   *
+   * @category Arc Segment
    */
   tangentArc(xDist: number, yDist: number): this;
 
@@ -144,6 +176,8 @@ export interface GenericSketcher {
    * The  shape of the ellipse is defined by both its radiuses, its angle
    * relative to the current coordinat system, as well as the long and sweep
    * flags (as defined for SVG paths)
+   *
+   * @category Ellipse Arc Segment
    */
   ellipseTo(
     end: Point2D,
@@ -160,6 +194,8 @@ export interface GenericSketcher {
    * The  shape of the ellipse is defined by both its radiuses, its angle
    * relative to the current coordinat system, as well as the long and sweep
    * flags (as defined for SVG paths)
+   *
+   * @category Ellipse Arc Segment
    */
   ellipse(
     xDist: number,
@@ -176,6 +212,8 @@ export interface GenericSketcher {
    * line).
    *
    * The sweep flag is to be understood as defined for SVG paths.
+   *
+   * @category Ellipse Arc Segment
    */
   halfEllipseTo(end: Point2D, radius: number, sweep: boolean): this;
 
@@ -185,6 +223,8 @@ export interface GenericSketcher {
    * line).The end point is defined by distances from he start point.
    *
    * The sweep flag is to be understood as defined for SVG paths.
+   *
+   * @category Ellipse Arc Segment
    */
   halfEllipse(
     xDist: number,
@@ -200,11 +240,15 @@ export interface GenericSketcher {
    * This is the generic definition of a bézier curve, you might want to use
    * either the quadratic or cubic (most common) version, unless you know
    * exactly what you are aiming at.
+   *
+   * @category Bezier Curve
    */
   bezierCurveTo(end: Point2D, controlPoints: Point2D | Point2D[]): this;
   /**
    * Draws a quadratic bezier curve to the end point, using the single control
    * point.
+   *
+   * @category Bezier Curve
    */
   quadraticBezierCurveTo(end: Point2D, controlPoint: Point2D): this;
   /**
@@ -214,6 +258,8 @@ export interface GenericSketcher {
    *
    * If you are struggling setting your control points, the smoothSpline might
    * be better for your needs.
+   *
+   * @category Bezier Curve
    */
   cubicBezierCurveTo(
     end: Point2D,
@@ -235,6 +281,8 @@ export interface GenericSketcher {
    * The start- and end- factors decide on how far the control point is from
    * the start and end point. At a factor of 1, the distance corresponds to
    * a quarter of the straight line distance.
+   *
+   * @category Bezier Curve
    */
   smoothSplineTo(end: Point2D, config?: SplineConfig): this;
   /**
@@ -253,6 +301,8 @@ export interface GenericSketcher {
    * The start- and end- factors decide on how far the control point is from
    * the start and end point. At a factor of 1, the distance corresponds to
    * a quarter of the straight line distance.
+   *
+   * @category Bezier Curve
    */
   smoothSpline(xDist: number, yDist: number, splineConfig: SplineConfig): this;
 

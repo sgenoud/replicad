@@ -22,13 +22,23 @@ import { CurveLike, Edge, Wire } from "./shapes.js";
 import { Handle_Geom_BezierCurve } from "replicad-opencascadejs";
 import Sketch from "./Sketch.js";
 
+/**
+ * The FaceSketcher allows you to sketch on a plane.
+ *
+ * @category Sketching
+ */
 export default class Sketcher extends RegisteredObj implements GenericSketcher {
-  plane: Plane;
-  pointer: Vector;
-  firstPoint: Vector;
-  pendingEdges: Edge[];
-  _mirrorWire: boolean;
+  protected plane: Plane;
+  protected pointer: Vector;
+  protected firstPoint: Vector;
+  protected pendingEdges: Edge[];
+  protected _mirrorWire: boolean;
 
+  /**
+   * The sketcher can be defined by a plane, or a simple plane definition,
+   * with either a point of origin, or the position on the normal axis from
+   * the coordinates origin
+   */
   constructor(plane: Plane);
   constructor(plane?: PlaneName, origin?: Point | number);
   constructor(plane?: Plane | PlaneName, origin?: Point) {
@@ -49,7 +59,7 @@ export default class Sketcher extends RegisteredObj implements GenericSketcher {
     super.delete();
   }
 
-  _updatePointer(newPointer: Vector): void {
+  protected _updatePointer(newPointer: Vector): void {
     this.pointer.delete();
     this.pointer = newPointer;
   }
@@ -434,7 +444,7 @@ export default class Sketcher extends RegisteredObj implements GenericSketcher {
     return wire;
   }
 
-  _closeSketch(): void {
+  protected _closeSketch(): void {
     if (!this.pointer.equals(this.firstPoint) && !this._mirrorWire) {
       const endpoint = this.plane.toLocalCoords(this.firstPoint);
       this.lineTo([endpoint.x, endpoint.y]);

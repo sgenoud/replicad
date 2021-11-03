@@ -5,8 +5,8 @@ The library to build browser based 3D models with code.
 ## How to play with it
 
 I am still working on making an accessible toolchain for replicad, so for now
-you can play with my [simple online
-"editor"](https://cadeau.sgenoud.com/editor).
+you can play with my [online
+"visuliser"](https://studio.replicad.xyz/visuliser).
 
 Write in a local file, select it in the tool and it should build your model.
 There is still a lot of work to make this intuitive, but you can play with the
@@ -22,7 +22,7 @@ Here are some basic examples of things you can do with replicad.
 
 #### A simple example
 
-```.js
+```js
 const main = ({ Sketcher }) => {
   const base = new Sketcher("XZ")
     .hLine(-25)
@@ -43,7 +43,7 @@ const main = ({ Sketcher }) => {
 
 #### The open cascade bottle
 
-```.js
+```js
 const defaultParams = {
   width: 50,
   height: 70,

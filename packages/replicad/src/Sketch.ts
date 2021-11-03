@@ -19,11 +19,19 @@ import { Face, Shape3D, Wire } from "./shapes.js";
  * definition (extrusion direction for instance).
  *
  * Note that all operations will delete the sketch
+ *
+ * @category Sketching
  */
 export default class Sketch extends RegisteredObj {
   wire: Wire;
+  /**
+   * @ignore
+   */
   // @ts-expect-error initialised indirectly
   _defaultOrigin: Vector;
+  /**
+   * @ignore
+   */
   // @ts-expect-error initialised indirectly
   _defaultDirection: Vector;
   baseFace?: Face | null;

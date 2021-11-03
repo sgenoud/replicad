@@ -28,7 +28,7 @@ export class RegisteredObj {
 }
 
 export class WrappingObj<Type extends Deletable> extends RegisteredObj {
-  oc: OpenCascadeInstance;
+  protected oc: OpenCascadeInstance;
   private _wrapped: Type | null;
 
   constructor(wrapped: Type) {
@@ -51,20 +51,6 @@ export class WrappingObj<Type extends Deletable> extends RegisteredObj {
     this.wrapped?.delete();
     this._wrapped = null;
     super.delete();
-  }
-}
-
-export class Cleaner {
-  toClean: Deletable[];
-  constructor() {
-    this.toClean = [];
-  }
-  add(element: Deletable) {
-    this.toClean.push(element);
-  }
-  clean() {
-    this.toClean.forEach((d) => d.delete());
-    this.toClean = [];
   }
 }
 

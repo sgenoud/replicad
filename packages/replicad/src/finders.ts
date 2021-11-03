@@ -56,8 +56,13 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
   /**
    * Filter to find elements that are in the list.
    *
-   * This deletes the elements in the list as the filter deletion, unless
-   * keepList is set as `true`.
+   * This deletes the elements in the list as the filter deletion.
+   *
+   * @param __namedParameters.keepList change the behaviour to keep the elements in the list
+   * instead of deleting them
+   *
+   *
+   * @category Filter
    */
   inList(elementList: Type[], { keepList = false } = {}): this {
     if (!keepList) this.references.push(...elementList);
@@ -74,6 +79,8 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
    * a direction.
    *
    * The element direction corresponds to its normal in the case of a face.
+   *
+   * @category Filter
    */
   atAngleWith(direction: Direction | Point = "Z", angle = 0): this {
     let myDirection: Vector;
@@ -98,6 +105,8 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
 
   /**
    * Filter to find elements that are at a specified distance from a point.
+   *
+   * @category Filter
    */
   atDistance(distance: number, point: Point = [0, 0, 0]): this {
     const pnt = asPnt(point);
@@ -125,6 +134,8 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
 
   /**
    * Filter to find elements that contain a certain point
+   *
+   * @category Filter
    */
   containsPoint(point: Point): this {
     return this.atDistance(0, point);
@@ -134,6 +145,8 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
    * Filter to find elements that are within a box
    *
    * The elements that are not fully contained in the box are also found.
+   *
+   * @category Filter
    */
   inBox(corner1: Point, corner2: Point) {
     const oc = getOC();
@@ -166,6 +179,8 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
    *
    * You need to pass an array of functions that take a finder as a argument
    * and return the same finder with some filters applied to it.
+   *
+   * @category Filter Combination
    */
   either(findersList: ((f: this) => this)[]): this {
     const builtFinders = findersList.map((finderFunction) => {
@@ -190,6 +205,8 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
    *
    * Note that by default filters are applied with and AND operation, but in
    * some case you might want to create them dynamically and use this method.
+   *
+   * @category Filter Combination
    */
   and(findersList: ((f: this) => this)[]): this {
     findersList.forEach((f) => f(this));
@@ -201,6 +218,8 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
    *
    * You need to pass a function that take a finder as a argument
    * and return the same finder with some filters applied to it.
+   *
+   * @category Filter Combination
    */
   not(finderFun: (f: this) => this): this {
     const finder = new (<any>this.constructor)() as this;
@@ -246,12 +265,16 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
 /**
  * With a FaceFinder you can apply a set of filters to find specific faces
  * within a shape.
+ *
+ * @category Finders
  */
 export class FaceFinder extends Finder<Face> {
   /** Filter to find faces that are parallel to plane or another face
    *
    * Note that this will work only in planar faces (but the method does not
    * check this assumption).
+   *
+   * @category Filter
    */
   parallelTo(plane: Plane | StandardPlane | Face): this {
     if (typeof plane === "string" && PLANE_TO_DIR[plane])
@@ -269,6 +292,8 @@ export class FaceFinder extends Finder<Face> {
 
   /**
    * Filter to find faces that are of a cetain surface type.
+   *
+   * @category Filter
    */
   ofSurfaceType(surfaceType: SurfaceType): this {
     const check = ({ element }: { element: Face }) => {
@@ -282,6 +307,8 @@ export class FaceFinder extends Finder<Face> {
    *
    * Note that this will work only in planar faces (but the method does not
    * check this assumption).
+   *
+   * @category Filter
    */
   inPlane(inputPlane: PlaneName | Plane, origin?: Point | number): this {
     const plane =
@@ -315,7 +342,7 @@ export class FaceFinder extends Finder<Face> {
     return shouldKeep;
   }
 
-  applyFilter(shape: AnyShape): Face[] {
+  protected applyFilter(shape: AnyShape): Face[] {
     return shape.faces.filter((face: Face) => {
       const shouldKeep = this.shouldKeep(face);
       if (!shouldKeep) face.delete();
@@ -327,10 +354,14 @@ export class FaceFinder extends Finder<Face> {
 /**
  * With an EdgeFinder you can apply a set of filters to find specific edges
  * within a shape.
+ *
+ * @category Finders
  */
 export class EdgeFinder extends Finder<Edge> {
   /**
    * Filter to find edges that are in a certain direction
+   *
+   * @category Filter
    */
   inDirection(direction: Direction | Point): this {
     return this.atAngleWith(direction, 0);
@@ -338,6 +369,8 @@ export class EdgeFinder extends Finder<Edge> {
 
   /**
    * Filter to find edges that are of a cetain curve type.
+   *
+   * @category Filter
    */
   ofCurveType(curveType: CurveType): this {
     const check = ({ element }: { element: Edge }) => {
@@ -352,6 +385,8 @@ export class EdgeFinder extends Finder<Edge> {
    *
    * Note that this will work only in lines (but the method does not
    * check this assumption).
+   *
+   * @category Filter
    */
   parallelTo(plane: Plane | StandardPlane | Face): this {
     if (typeof plane === "string" && PLANE_TO_DIR[plane])
@@ -372,6 +407,8 @@ export class EdgeFinder extends Finder<Edge> {
    *
    * Note that this will work only in lines (but the method does not
    * check this assumption).
+   *
+   * @category Filter
    */
   inPlane(inputPlane: PlaneName | Plane, origin?: Point | number): this {
     const plane =
@@ -405,7 +442,7 @@ export class EdgeFinder extends Finder<Edge> {
     return shouldKeep;
   }
 
-  applyFilter(shape: AnyShape): Edge[] {
+  protected applyFilter(shape: AnyShape): Edge[] {
     return shape.edges.filter((edge: Edge) => {
       const shouldKeep = this.shouldKeep(edge);
       if (!shouldKeep) edge.delete();

@@ -2,19 +2,8 @@
 
 The library to build browser based 3D models with code.
 
-## How to play with it
+For more information, [check the documentation](https://replicad.xyz)
 
-I am still working on making an accessible toolchain for replicad, so for now
-you can play with my [simple online
-"editor"](https://cadeau.sgenoud.com/editor).
-
-Write in a local file, select it in the tool and it should build your model.
-There is still a lot of work to make this intuitive, but you can play with the
-examples below. Note that if you use Chrome the model is recomputed as you
-change your local file.
-
-You need to write a "main" function that receives the complete `replicad`
-library.
 
 ## Examples
 
