@@ -937,12 +937,14 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * @category Shape Modifications
    */
-  fuse(other: AnyShape): AnyShape {
+  fuse(other: Shape3D): Shape3D {
     const newBody = new this.oc.BRepAlgoAPI_Fuse_3(this.wrapped, other.wrapped);
     newBody.SimplifyResult(true, true, 1e-3);
-    const newShape = newBody.Shape();
+    const newShape = cast(newBody.Shape());
     newBody.delete();
-    return cast(newShape);
+    if (!isShape3D(newShape)) throw new Error("Could not fuse as a 3d shape");
+
+    return newShape;
   }
 
   /**
@@ -950,7 +952,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * @category Shape Modifications
    */
-  cut(tool: AnyShape): AnyShape {
+  cut(tool: Shape3D): Shape3D {
     const cutter = new this.oc.BRepAlgoAPI_Cut_3(this.wrapped, tool.wrapped);
     cutter.Build();
     cutter.SimplifyResult(true, true, 1e-3);
@@ -959,6 +961,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     cutter.delete();
     this.delete();
     tool.delete();
+    if (!isShape3D(newShape)) throw new Error("Could not cut as a 3d shape");
     return newShape;
   }
 
@@ -975,7 +978,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
       keepFilter,
     }: { filter: FaceFinder; thickness: number; keepFilter?: boolean },
     tolerance = 1e-3
-  ): AnyShape {
+  ): Shape3D {
     const filteredFaces = filter.find(this, { clean: !keepFilter });
     const facesToRemove = new this.oc.TopTools_ListOfShape_1();
 
@@ -999,6 +1002,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     const newShape = cast(shellBuilder.Shape());
     facesToRemove.delete();
     shellBuilder.delete();
+    if (!isShape3D(newShape)) throw new Error("Could not shell as a 3d shape");
 
     return newShape;
   }

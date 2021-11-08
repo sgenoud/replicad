@@ -23,6 +23,7 @@
   ],
   "scripts": {
     "build": "rollup -c rollup.config.ts",
+    "start": "rollup -w -c rollup.config.ts",
     "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme minimal src",
     "build-docss": "typedoc --help",
     "test": "echo \"Error: run tests from root\" && exit 1"
