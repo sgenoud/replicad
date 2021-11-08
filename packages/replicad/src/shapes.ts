@@ -246,7 +246,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    *
    * @category Shape Transformations
    */
-  scale(center: Point, scale: number): this {
+  scale(scale: number, center: Point = [0, 0, 0]): this {
     const newShape = cast(scaleShape(this.wrapped, center, scale));
     this.delete();
 
