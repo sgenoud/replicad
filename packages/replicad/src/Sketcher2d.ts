@@ -367,7 +367,8 @@ export default class FaceSketcher implements GenericSketcher {
   }
 
   smoothSplineTo(end: Point2D, config?: SplineConfig): this {
-    const { endSkew, startFactor, endFactor } = defaultsSplineConfig(config);
+    const { endTangent, startTangent, startFactor, endFactor } =
+      defaultsSplineConfig(config);
 
     const previousCurve = this.pendingCurves.length
       ? this.pendingCurves[this.pendingCurves.length - 1]
@@ -376,8 +377,10 @@ export default class FaceSketcher implements GenericSketcher {
     const defaultDistance = distance2d(this.pointer, end) * 0.25;
 
     let startPoleDirection: Point2D;
-    if (!previousCurve) {
-      startPoleDirection = [end[0] - this.pointer[0], end[1] - this.pointer[1]];
+    if (startTangent) {
+      startPoleDirection = startTangent;
+    } else if (!previousCurve) {
+      startPoleDirection = [1, 0];
     } else {
       startPoleDirection = this._convertFromUV(tangentAt(previousCurve, 1));
     }
@@ -389,18 +392,10 @@ export default class FaceSketcher implements GenericSketcher {
     ];
 
     let endPoleDirection: Point2D;
-    if (Array.isArray(endSkew)) {
-      endPoleDirection = endSkew;
-    } else if (endSkew === "symmetric") {
+    if (endTangent === "symmetric") {
       endPoleDirection = [-startPoleDirection[0], -startPoleDirection[1]];
     } else {
-      const d = [end[0] - this.pointer[0], end[1] - this.pointer[1]];
-
-      const angle = endSkew * DEG2RAD;
-      endPoleDirection = [
-        d[0] * Math.cos(angle) - d[1] * Math.sin(angle),
-        d[1] * Math.cos(angle) + d[0] * Math.sin(angle),
-      ];
+      endPoleDirection = endTangent;
     }
 
     endPoleDirection = normalize2d(endPoleDirection);
