@@ -344,7 +344,8 @@ export default class Sketcher extends RegisteredObj implements GenericSketcher {
 
   smoothSplineTo(end: Point2D, config?: SplineConfig): this {
     const [r, gc] = localGC();
-    const { endSkew, startFactor, endFactor } = defaultsSplineConfig(config);
+    const { endTangent, startTangent, startFactor, endFactor } =
+      defaultsSplineConfig(config);
 
     const endPoint = this.plane.toWorldCoords(end);
     const previousEdge = this.pendingEdges.length
@@ -354,8 +355,10 @@ export default class Sketcher extends RegisteredObj implements GenericSketcher {
     const defaultDistance = r(endPoint.sub(this.pointer)).Length * 0.25;
 
     let startPoleDirection: Point;
-    if (!previousEdge) {
-      startPoleDirection = r(endPoint.sub(this.pointer));
+    if (startTangent) {
+      startPoleDirection = this.plane.toWorldCoords(startTangent);
+    } else if (!previousEdge) {
+      startPoleDirection = this.plane.toWorldCoords([1, 0]);
     } else if (previousEdge.geomType === "BEZIER_CURVE") {
       const rawCurve = (
         r(previousEdge.curve).wrapped as CurveLike & {
@@ -377,21 +380,10 @@ export default class Sketcher extends RegisteredObj implements GenericSketcher {
     const startControl = r(this.pointer.add(poleDistance));
 
     let endPoleDirection: Point;
-    if (Array.isArray(endSkew)) {
-      endPoleDirection = r(this.plane.toWorldCoords(endSkew));
-    } else if (endSkew === "symmetric") {
+    if (endTangent === "symmetric") {
       endPoleDirection = r(startPoleDirection.multiply(-1));
     } else {
-      const direction = r(endPoint.sub(this.pointer));
-      const d = r(this.plane.toLocalCoords(direction));
-
-      const angle = endSkew * DEG2RAD;
-      endPoleDirection = r(
-        this.plane.toWorldCoords([
-          d.x * Math.cos(angle) - d.y * Math.sin(angle),
-          d.y * Math.cos(angle) + d.x * Math.sin(angle),
-        ])
-      );
+      endPoleDirection = r(this.plane.toWorldCoords(endTangent));
     }
 
     const endPoleDistance = r(

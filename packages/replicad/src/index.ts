@@ -3,9 +3,16 @@ import FaceSketcher from "./Sketcher2d";
 import Sketch from "./Sketch";
 
 import { Point2D } from "./lib2d";
-import { GenericSketcher } from "./sketcherlib";
+import { GenericSketcher, SplineConfig } from "./sketcherlib";
 
-export { Sketcher, Sketch, FaceSketcher, GenericSketcher, Point2D };
+export {
+  Sketcher,
+  Sketch,
+  FaceSketcher,
+  GenericSketcher,
+  SplineConfig,
+  Point2D,
+};
 
 export * from "./constants";
 export * from "./oclib";

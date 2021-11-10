@@ -52,6 +52,10 @@ const config = {
           },
           { to: "/docs/api/", label: "API", position: "left" },
           {
+            href: "https://studio.replicad.xyz/visualiser",
+            label: "Visualiser",
+          },
+          {
             href: "https://github.com/sgenoud/replicad",
             label: "GitHub",
             position: "right",

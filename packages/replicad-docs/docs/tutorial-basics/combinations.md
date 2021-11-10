@@ -37,3 +37,19 @@ const main = ({ sketchCircle, sketchRectangle }) => {
 ```
 
 ![the cylinder cut in the box](/img/tutorial/combinations-2.png)
+
+## Intersecting two shapes
+
+For the intersection we will intersect the cylinder with itself you create
+a fun shape:
+
+```js
+const main = ({ sketchCircle }) => {
+  const cylinder = sketchCircle(20).extrude(40);
+  const sideCylinder = cylinder.clone().rotate(90, [0, 0, 20], [1, 0, 0]);
+
+  return sideCylinder.intersect(cylinder);
+};
+```
+
+![the cylinder intersecting iself](/img/tutorial/combinations-3.png)

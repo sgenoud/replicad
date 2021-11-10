@@ -1,36 +1,67 @@
-import { Point2D } from "./lib2d";
+import { DEG2RAD } from ".";
+import { Point2D, polarToCartesian } from "./lib2d";
 import Sketch from "./Sketch";
 
+type StartSplineTangent = number | Point2D;
+export type SplineTangent = StartSplineTangent | "symmetric";
+
 export type SplineConfig =
-  | number
-  | "symmetric"
-  | Point2D
+  | SplineTangent
   | {
-      endSkew?: number | "symmetric" | Point2D;
+      endTangent?: SplineTangent;
+      startSkew?: StartSplineTangent;
       startFactor?: number;
       endFactor?: number;
     };
 
+const isTangent = (c: unknown): c is SplineTangent =>
+  c === "symmetric" ||
+  typeof c === "number" ||
+  (Array.isArray(c) && c.length === 2);
+
 export const defaultsSplineConfig = (
   config?: SplineConfig
 ): {
-  endSkew: number | "symmetric" | Point2D;
+  endTangent: Point2D | "symmetric";
+  startTangent?: Point2D;
   startFactor: number;
   endFactor: number;
 } => {
   let conf: {
-    endSkew: number | "symmetric" | Point2D;
+    endTangent: SplineTangent;
     startFactor?: number;
     endFactor?: number;
+    startTangent?: StartSplineTangent;
   };
-  if (!config || config === "symmetric" || typeof config === "number") {
-    conf = { endSkew: (config ?? 0) as "symmetric" | number };
+  if (!config) conf = { endTangent: [1, 0] };
+  else if (isTangent(config)) {
+    conf = { endTangent: config };
   } else {
-    conf = { endSkew: 0, ...config };
+    conf = { endTangent: 0, ...config };
   }
-  const { endSkew, startFactor = 1, endFactor = 1 } = conf;
+  const {
+    endTangent: endTgt,
+    startFactor = 1,
+    endFactor = 1,
+    startTangent: startTgt,
+  } = conf;
 
-  return { endSkew, startFactor, endFactor };
+  let endTangent: Point2D | "symmetric";
+  if (typeof endTgt === "number") {
+    endTangent = polarToCartesian(1, endTgt * DEG2RAD);
+    console.log(endTangent);
+  } else {
+    endTangent = endTgt;
+  }
+
+  let startTangent: Point2D | undefined;
+  if (typeof startTgt === "number") {
+    startTangent = polarToCartesian(1, startTgt * DEG2RAD);
+  } else {
+    startTangent = startTgt;
+  }
+
+  return { endTangent, startFactor, endFactor, startTangent };
 };
 
 /**
@@ -233,8 +264,7 @@ export interface GenericSketcher {
     sweep: boolean
   ): this;
 
-  /**
-   * Draws a generic bezier curve to the end point, going using a set of
+  /** Draws a generic bezier curve to the end point, going using a set of
    * control points.
    *
    * This is the generic definition of a bézier curve, you might want to use
@@ -244,15 +274,13 @@ export interface GenericSketcher {
    * @category Bezier Curve
    */
   bezierCurveTo(end: Point2D, controlPoints: Point2D | Point2D[]): this;
-  /**
-   * Draws a quadratic bezier curve to the end point, using the single control
+  /** Draws a quadratic bezier curve to the end point, using the single control
    * point.
    *
    * @category Bezier Curve
    */
   quadraticBezierCurveTo(end: Point2D, controlPoint: Point2D): this;
-  /**
-   * Draws a cubic bezier curve to the end point, using the start  and end
+  /** Draws a cubic bezier curve to the end point, using the start  and end
    * control point to define its shape. This corresponds to the most commonly
    * used bezier curve.
    *
@@ -266,17 +294,16 @@ export interface GenericSketcher {
     startControlPoint: Point2D,
     endControlPoint: Point2D
   ): this;
-  /**
-   * Draws a cubic bezier curve to the end point, attempting to make the line
+  /** Draws a cubic bezier curve to the end point, attempting to make the line
    * smooth with the previous segment.
    *
    * It will base its first control point so that its tangent is the same than
    * the previous segment.
    *
    * The control point relative to the end is by default set to be in the
-   * direction of the straight line between start and end. You can specifiy
-   * the `endSkew` either as an angle (in degrees) to this direction, or as
-   * an absolute direction in the coordinate system (a Point).
+   * direction of the straight line between start and end. You can specifiy the
+   * `endSkew` either as an angle (in degrees) to this direction, or as an
+   * absolute direction in the coordinate system (a Point).
    *
    * The start- and end- factors decide on how far the control point is from
    * the start and end point. At a factor of 1, the distance corresponds to
@@ -285,18 +312,18 @@ export interface GenericSketcher {
    * @category Bezier Curve
    */
   smoothSplineTo(end: Point2D, config?: SplineConfig): this;
-  /**
-   * Draws a cubic bezier curve to the end point, attempting to make the line
+  /** Draws a cubic bezier curve to the end point, attempting to make the line
    * smooth with the previous segment. The end point is defined by its distance
    * to the first point.
    *
    * It will base its first control point so that its tangent is the same than
-   * the previous segment.
+   * the previous segment. You can force another tangent by defining
+   * `startTangent`.
    *
-   * The control point relative to the end is by default set to be in the
-   * direction of the straight line between start and end. You can specifiy
-   * the `endSkew` either as an angle (in degrees) to this direction, or as
-   * an absolute direction in the coordinate system (a Point).
+   * You can configure the tangent of the end point by configuring the
+   * `endTangent`, either as "symmetric" to reproduce the start angle, as an
+   * angle from the X axis (in the coordinate system) or a 2d direction (still
+   * in the coordinate system.
    *
    * The start- and end- factors decide on how far the control point is from
    * the start and end point. At a factor of 1, the distance corresponds to
