@@ -8,7 +8,7 @@ replicad is a library to build browser based 3D models with code.
 
 In the fashion of code cad, it allows you to build 3D models with code.
 
-But, unless most CAD offerings, replicad is a library first. As an abstraction
+But, unlike most CAD offerings, replicad is a library first. As an abstraction
 over opencascade, it gives developers the power to integrate it in their web
 application.
 
