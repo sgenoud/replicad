@@ -98,7 +98,10 @@ export default class Sketch extends RegisteredObj {
    * Revolves the drawing on an axis (defined by its direction and an origin
    * (defaults to the sketch origin)
    */
-  revolve(revolutionAxis: Point, { origin }: { origin?: Point } = {}): Shape3D {
+  revolve(
+    revolutionAxis?: Point,
+    { origin }: { origin?: Point } = {}
+  ): Shape3D {
     const face = makeFace(this.wire);
     const solid = revolution(
       face,
