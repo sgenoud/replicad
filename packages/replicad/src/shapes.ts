@@ -966,6 +966,28 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   }
 
   /**
+   * Builds a new shape by intersecting this shape and another
+   *
+   * @category Shape Modifications
+   */
+  intersect(tool: AnyShape): AnyShape {
+    const intersector = new this.oc.BRepAlgoAPI_Common_3(
+      this.wrapped,
+      tool.wrapped
+    );
+    intersector.Build();
+    intersector.SimplifyResult(true, true, 1e-3);
+
+    const newShape = cast(intersector.Shape());
+    intersector.delete();
+    this.delete();
+    tool.delete();
+    if (!isShape3D(newShape))
+      throw new Error("Could not intersect as a 3d shape");
+    return newShape;
+  }
+
+  /**
    * Hollows out the current shape, removing the faces found by the `filter` and
    * keeping a border of `thickness`
    *
