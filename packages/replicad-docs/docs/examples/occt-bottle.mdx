@@ -1,0 +1,18 @@
+---
+sidebar_position: 1
+title: Opencascade bottle
+---
+
+import CodeBlock from '@theme/CodeBlock';
+import {iframePath} from '../../examples/helpers.js';
+import MyComponentSource from '!!raw-loader!../../examples/bottle.js';
+
+If you have dabbled in opencascade you have read [the bottle tutorial](https://dev.opencascade.org/doc/overview/html/occt__tutorial.html). So what does it look like with replicad?
+
+We can have a look at the component.
+
+<iframe allow="fullscreen" src={iframePath("bottle.js")}></iframe>
+
+And here is what the code looks like.
+
+<CodeBlock className="language-jsx">{MyComponentSource}</CodeBlock>
