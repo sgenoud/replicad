@@ -1,0 +1,18 @@
+---
+sidebar_position: 2
+title: Code CAD Birdhouse
+---
+
+import CodeBlock from '@theme/CodeBlock';
+import {iframePath} from '../../examples/helpers.js';
+import MyComponentSource from '!!raw-loader!../../examples/birdhouse.js';
+
+This is the birdhouse use to [demonstrate many different code cad tools](https://github.com/Irev-Dev/curated-code-cad).
+
+We can have a look at the rendered shape.
+
+<iframe allow="fullscreen" src={iframePath("birdhouse.js")}></iframe>
+
+And here is what the code looks like.
+
+<CodeBlock className="language-jsx">{MyComponentSource}</CodeBlock>

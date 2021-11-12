@@ -1,0 +1,18 @@
+---
+sidebar_position: 5
+title: Wavy vases
+---
+
+import CodeBlock from '@theme/CodeBlock';
+import {iframePath} from '../../examples/helpers.js';
+import MyComponentSource from '!!raw-loader!../../examples/wavyVase.js';
+
+A more complex vase generator that uses twisted extrusion.
+
+We can have a look at the rendered shape.
+
+<iframe allow="fullscreen" src={iframePath("wavyVase.js")}></iframe>
+
+And here is what the code looks like.
+
+<CodeBlock className="language-jsx">{MyComponentSource}</CodeBlock>

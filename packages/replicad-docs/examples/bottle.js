@@ -4,6 +4,8 @@ const defaultParams = {
   thickness: 30,
 };
 
+/** @typedef { typeof import("replicad") } replicadLib */
+/** @type {function(replicadLib, typeof defaultParams): any} */
 const main = (
   { Sketcher, FaceSketcher, localGC, makeCylinder, makeOffset, FaceFinder },
   { width: myWidth, height: myHeight, thickness: myThickness }

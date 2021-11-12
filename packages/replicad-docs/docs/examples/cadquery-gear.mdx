@@ -1,0 +1,21 @@
+---
+sidebar_position: 4
+title: The CadQuery cycloidal gear
+---
+
+import CodeBlock from '@theme/CodeBlock';
+import {iframePath} from '../../examples/helpers.js';
+import MyComponentSource from '!!raw-loader!../../examples/cadquery-cycloidal-gear.js';
+
+As in CadQuery replicad supports sketching parametric functions, we can
+implement [this
+gear](https://cadquery.readthedocs.io/en/latest/examples.html#cycloidal-gear)
+as well.
+
+We can have a look at the rendered shape.
+
+<iframe allow="fullscreen" src={iframePath("cadquery-cycloidal-gear.js")}></iframe>
+
+And here is what the code looks like.
+
+<CodeBlock className="language-jsx">{MyComponentSource}</CodeBlock>

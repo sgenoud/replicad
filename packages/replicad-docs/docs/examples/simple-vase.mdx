@@ -1,0 +1,18 @@
+---
+sidebar_position: 1
+title: A simple vase
+---
+
+import CodeBlock from '@theme/CodeBlock';
+import {iframePath} from '../../examples/helpers.js';
+import MyComponentSource from '!!raw-loader!../../examples/simpleVase.js';
+
+This is a simple vase that shows off the smoothSpline API.
+
+We can have a look at the rendered shape.
+
+<iframe allow="fullscreen" src={iframePath("simpleVase.js")}></iframe>
+
+And here is what the code looks like.
+
+<CodeBlock className="language-jsx">{MyComponentSource}</CodeBlock>
