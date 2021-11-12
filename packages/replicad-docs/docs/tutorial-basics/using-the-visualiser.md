@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-title: The Visualiser
+title: The visualiser
 ---
 
 For now we will use [the visualiser](https://studio.replicad.xyz/visualiser).
