@@ -1,0 +1,67 @@
+{
+  "name": "replicad-threejs-helper",
+  "version": "0.6.1",
+  "description": "Helper to use threejs to render replicad models",
+  "keywords": [
+    "cad",
+    "threejs",
+    "replicad"
+  ],
+  "author": "Steve Genoud <steve@sgenoud.com>",
+  "homepage": "https://replicad.xyz",
+  "license": "AGPL-3.0-or-later",
+  "main": "dist/umd/replicad-threejs-helper.js",
+  "module": "dist/es/replicad-threejs-helper.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgenoud/replicad.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sgenoud/replicad/issues"
+  },
+  "peerDependencies": {
+    "three": "^0.134.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.ts",
+    "start": "rollup -w -c rollup.config.ts",
+    "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme minimal src",
+    "build-docss": "typedoc --help",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "es6": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "rules": {
+      "react/prop-types": "off",
+      "@typescript-eslint/no-explicit-any": "off"
+    },
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/three": "^0.134.0",
+    "typescript": "^4.4.4"
+  }
+}

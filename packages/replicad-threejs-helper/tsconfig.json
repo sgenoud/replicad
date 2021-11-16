@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "es6",
+    "module":"es2015",
+    "strict": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "lib"
+  ],
+  "typedocOptions": {
+      "watch": true,
+      "readme": "none",
+      "excludeProtected": true
+  }
+}
+

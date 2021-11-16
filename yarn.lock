@@ -2877,6 +2877,11 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.9.tgz#152c6c20a7688c30b967ec1841d31ace569863fc"
   integrity sha512-L/TMpyURfBkf+o/526Zb6kd/tchUP3iBDEPjqjb+U2MAJhVRxxrmr2fwpe08E7QsV7YLcpq0tUaQ9O9x97ZIxQ==
 
+"@types/three@^0.134.0":
+  version "0.134.0"
+  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.134.0.tgz#22ae9892f4490faaf35f0ccea127df18407b8ab3"
+  integrity sha512-4YB+99Rgqq27EjiYTItEoZtdjLnTh8W9LxowgpC9eWsjaQJIL4Kn/ZcUKAnW3gB/jS4hqGN8iqmid+RcUZDzpA==
+
 "@types/ua-parser-js@^0.7.36":
   version "0.7.36"
   resolved "https://registry.yarnpkg.com/@types/ua-parser-js/-/ua-parser-js-0.7.36.tgz#9bd0b47f26b5a3151be21ba4ce9f5fa457c5f190"
