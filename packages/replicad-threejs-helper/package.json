@@ -36,32 +36,18 @@
     "build-docss": "typedoc --help",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
-  "eslintConfig": {
-    "env": {
-      "browser": true,
-      "commonjs": true,
-      "es6": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "rules": {
-      "react/prop-types": "off",
-      "@typescript-eslint/no-explicit-any": "off"
-    },
-    "parserOptions": {
-      "ecmaVersion": 2018,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    }
-  },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@types/three": "^0.134.0",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.1.0",
+    "prettier": "^2.4.1",
+    "rollup": "^2.58.0",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-ts": "^1.4.7",
     "typescript": "^4.4.4"
   }
 }
