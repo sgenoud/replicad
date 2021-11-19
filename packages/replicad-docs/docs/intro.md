@@ -27,5 +27,5 @@ tutorial](/docs/tutorial-basics/using-the-visualiser)
 
 ## Integrating replicad in your web application
 
-The tools to do this are still in the process of being cleaned up to be shared
-in this project.
+If you want to use replicad to build your own application, an editor
+a generative 3D design, you can have a look at the [sample app](https://sample-app.replicad.xyz) and read the [documentation that is related to it](/docs/use-as-a-library)

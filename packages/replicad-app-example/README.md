@@ -3,6 +3,8 @@
 This module is here to show how to integrate replicad in a React app with
 react-three-fiber.
 
+You can visit this page at <https://sample-app.replicad.xyz>
+
 This is a basic integration that aims to show how the different pieces can
 stick together:
 

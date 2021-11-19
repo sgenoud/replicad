@@ -25,7 +25,27 @@ export default function ReplicadApp() {
 
   return (
     <main>
-      <h1>A replicad sample app</h1>
+      <h1>
+        A{" "}
+        <a
+          href="https://replicad.xyz"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          replicad
+        </a>{" "}
+        sample app
+      </h1>
+      <p>
+        You can find the code for this app{" "}
+        <a
+          href="https://github.com/sgenoud/replicad/tree/main/packages/replicad-app-example"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          on GitHub
+        </a>
+      </p>
       <section
         style={{
           display: "flex",
@@ -54,7 +74,13 @@ export default function ReplicadApp() {
           <ThreeContext>
             <ReplicadMesh edges={mesh.edges} faces={mesh.faces} />
           </ThreeContext>
-        ) : null}
+        ) : (
+          <div
+            style={{ display: "flex", alignItems: "center", fontSize: "2em" }}
+          >
+            Loading...
+          </div>
+        )}
       </section>
     </main>
   );
