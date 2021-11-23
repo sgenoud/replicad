@@ -1,4 +1,4 @@
-import { DEG2RAD } from ".";
+import { DEG2RAD } from "./constants";
 import { Point2D, polarToCartesian } from "./lib2d";
 import Sketch from "./Sketch";
 

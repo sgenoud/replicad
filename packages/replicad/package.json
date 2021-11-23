@@ -10,7 +10,7 @@
     "STL"
   ],
   "author": "Steve Genoud <steve@sgenoud.com>",
-  "homepage": "",
+  "homepage": "https://replicad.xyz",
   "license": "AGPL-3.0-or-later",
   "main": "dist/umd/replicad.js",
   "module": "dist/es/replicad.js",
