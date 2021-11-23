@@ -46,7 +46,10 @@ export function syncGeometries(
 
   geometries.forEach(({ faces, lines }, i) => {
     syncFaces(faces, replicadMeshes[i].faces);
-    syncLines(lines, replicadMeshes[i].edges, faces);
+    const edges = replicadMeshes[i].edges;
+    edges !== undefined
+      ? syncLines(lines, edges)
+      : syncLinesFromFaces(lines, faces);
   });
 
   return geometries;
@@ -104,18 +107,13 @@ export function syncFaces(
  */
 export function syncLines(
   lines: BufferGeometry,
-  edges: ReplicadMeshedEdges | undefined,
-  shapeGeometry: BufferGeometry,
+  edges: ReplicadMeshedEdges,
   highlight?: number[]
 ): void {
   lines.clearGroups();
   delete lines.userData.edgeGroups;
 
-  if (edges && edges.lines.length) {
-    lines.setAttribute("position", new Float32BufferAttribute(edges.lines, 3));
-  } else {
-    lines.copy(new EdgesGeometry(shapeGeometry, 2));
-  }
+  lines.setAttribute("position", new Float32BufferAttribute(edges.lines, 3));
 
   if (!edges) return;
   if (edges.edgeGroups) {
@@ -132,6 +130,23 @@ export function syncLines(
   }
 }
 
+/**
+ * Update a threejs BufferGeometry from the faces buffer geometry
+ * Uses threejs EdgesGeometry to guess the relevant edges
+ */
+export function syncLinesFromFaces(
+  lines: BufferGeometry,
+  faces: BufferGeometry
+) {
+  lines.clearGroups();
+  delete lines.userData.edgeGroups;
+
+  lines.copy(new EdgesGeometry(faces, 2));
+}
+
+// Finds the group a specific element is part of
+// This makes the link between the triangles / lines that respectively build
+// faces / edges
 const groupFinder =
   (faceIndex: number) =>
   ({ start, count }: { start: number; count: number }) => {
@@ -192,28 +207,31 @@ export function highlightInGeometry(
   );
 }
 
-export function getFaceId(faceIndex: number, geometry: BufferGeometry): number {
+export function getFaceId(
+  triangleIndex: number,
+  geometry: BufferGeometry
+): number {
   const { faceId } =
-    geometry.userData.faceGroups.find(groupFinder(faceIndex * 3)) || {};
+    geometry.userData.faceGroups.find(groupFinder(triangleIndex * 3)) || {};
   return faceId;
 }
 
-export function getEdgeId(edgeIndex: number, geometry: BufferGeometry): number {
+export function getEdgeId(lineIndex: number, geometry: BufferGeometry): number {
   const { edgeId } =
-    geometry.userData.edgeGroups.find(groupFinder(edgeIndex)) || {};
+    geometry.userData.edgeGroups.find(groupFinder(lineIndex)) || {};
   return edgeId;
 }
 
 export function getFaceIndex(
-  faceIndex: number,
+  triangleIndex: number,
   geometry: BufferGeometry
 ): number {
-  return geometry.groups.findIndex(groupFinder(faceIndex * 3));
+  return geometry.groups.findIndex(groupFinder(triangleIndex * 3));
 }
 
 export function getEdgeIndex(
-  edgeIndex: number,
+  lineIndex: number,
   geometry: BufferGeometry
 ): number {
-  return geometry.groups.findIndex(groupFinder(edgeIndex));
+  return geometry.groups.findIndex(groupFinder(lineIndex));
 }

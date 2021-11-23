@@ -1,7 +1,11 @@
 import React, { useRef, useLayoutEffect, useEffect } from "react";
 import { useThree } from "@react-three/fiber";
 import { BufferGeometry } from "three";
-import { syncFaces, syncLines } from "replicad-threejs-helper";
+import {
+  syncFaces,
+  syncLines,
+  syncLinesFromFaces,
+} from "replicad-threejs-helper";
 
 export default React.memo(function ShapeMeshes({ faces, edges }) {
   const { invalidate } = useThree();
@@ -13,7 +17,9 @@ export default React.memo(function ShapeMeshes({ faces, edges }) {
     // We use the three helpers to synchronise the buffer geometry with the
     // new data from the parameters
     if (faces) syncFaces(body.current, faces);
-    if (edges) syncLines(lines.current, edges, body.current);
+
+    if (edges) syncLines(lines.current, edges);
+    else if (faces) syncLinesFromFaces(lines.current, body.current);
 
     // We have configured the canvas to only refresh when there is a change,
     // the invalidate function is here to tell it to recompute
