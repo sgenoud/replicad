@@ -6,7 +6,7 @@ The library to build browser based 3D models with code.
 
 I am still working on making an accessible toolchain for replicad, so for now
 you can play with my [online
-"visuliser"](https://studio.replicad.xyz/visuliser).
+"visualiser"](https://studio.replicad.xyz/visualiser).
 
 Write in a local file, select it in the tool and it should build your model.
 There is still a lot of work to make this intuitive, but you can play with the
