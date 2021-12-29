@@ -1,4 +1,5 @@
 import {
+  AnyShape,
   Edge,
   Face,
   Wire,
@@ -326,5 +327,20 @@ export const makeOffset = (
   offsetBuilder.delete();
 
   if (!isShape3D(newShape)) throw new Error("Could not offset to a 3d shape");
+  return newShape;
+};
+
+export const compoundShapes = (shapeArray: AnyShape[]) => {
+  const oc = getOC();
+  const builder = new oc.TopoDS_Builder();
+  const compound = new oc.TopoDS_Compound();
+  builder.MakeCompound(compound);
+
+  shapeArray.forEach((s) => {
+    builder.Add(compound, s.wrapped);
+    s.delete();
+  });
+
+  const newShape = cast(compound);
   return newShape;
 };
