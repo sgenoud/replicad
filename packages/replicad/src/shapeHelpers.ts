@@ -273,10 +273,64 @@ export const assembleWire = (listOfEdges: (Edge | Wire)[]): Wire => {
 export const makeFace = (wire: Wire): Face => {
   const oc = getOC();
   const faceBuilder = new oc.BRepBuilderAPI_MakeFace_15(wire.wrapped, false);
+  if (!faceBuilder.IsDone()) {
+    faceBuilder.delete();
+    throw new Error("Failed to build the face. Your wire might be non planar.");
+  }
   const face = faceBuilder.Face();
   faceBuilder.delete();
 
   return new Face(face);
+};
+
+export const makeNewFaceWithinFace = (originFace: Face, wire: Wire) => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+  const surface = r(oc.BRep_Tool.Surface_2(originFace.wrapped));
+  const faceBuilder = r(
+    new oc.BRepBuilderAPI_MakeFace_21(surface, wire.wrapped, true)
+  );
+  const face = faceBuilder.Face();
+  gc();
+
+  return new Face(face);
+};
+
+export const makeNonPlanarFace = (wire: Wire): Face => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const faceBuilder = r(
+    new oc.BRepOffsetAPI_MakeFilling(
+      3,
+      15,
+      2,
+      false,
+      1e-5,
+      1e-4,
+      1e-2,
+      0.1,
+      8,
+      9
+    )
+  );
+  wire.edges.forEach((edge) => {
+    faceBuilder.Add_1(
+      r(edge).wrapped,
+      oc.GeomAbs_Shape.GeomAbs_C0 as any,
+      true
+    );
+  });
+
+  faceBuilder.Build();
+  const newFace = cast(faceBuilder.Shape());
+
+  gc();
+
+  if (!(newFace instanceof Face)) {
+    throw new Error("Failed to create a face");
+  }
+  return newFace;
 };
 
 export const makeCylinder = (
