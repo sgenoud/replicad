@@ -1142,6 +1142,10 @@ export function isShape3D(shape: AnyShape): shape is Shape3D {
   );
 }
 
+export function isWire(shape: AnyShape): shape is Wire {
+  return shape instanceof Wire;
+}
+
 export function downcast(shape: TopoDS_Shape): GenericTopo {
   const oc = getOC();
   const ta = oc.TopAbs_ShapeEnum;
