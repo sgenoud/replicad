@@ -336,8 +336,8 @@ export const makeNonPlanarFace = (wire: Wire): Face => {
 export const makeCylinder = (
   radius: number,
   height: number,
-  location: Point,
-  direction: Point
+  location: Point = [0, 0, 0],
+  direction: Point = [0, 0, 1]
 ): Solid => {
   const oc = getOC();
   const axis = makeAx2(location, direction);
