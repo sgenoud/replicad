@@ -1,6 +1,6 @@
 import { Vector, Plane, Point } from "./geom.js";
 import { localGC, RegisteredObj } from "./register.js";
-import { makeFace } from "./shapeHelpers.js";
+import { makeFace, makeNewFaceWithinFace } from "./shapeHelpers.js";
 import {
   basicFaceExtrusion,
   complexExtrude,
@@ -34,7 +34,7 @@ export default class Sketch extends RegisteredObj {
    */
   // @ts-expect-error initialised indirectly
   _defaultDirection: Vector;
-  baseFace?: Face | null;
+  protected _baseFace?: Face | null;
   constructor(
     wire: Wire,
     {
@@ -50,6 +50,15 @@ export default class Sketch extends RegisteredObj {
     this.defaultOrigin = defaultOrigin;
     this.defaultDirection = defaultDirection;
     this.baseFace = null;
+  }
+
+  get baseFace(): Face | null | undefined {
+    return this._baseFace;
+  }
+
+  set baseFace(newFace: Face | null | undefined) {
+    if (!newFace) this._baseFace = newFace;
+    else this._baseFace = newFace.clone();
   }
 
   delete(): void {
@@ -89,7 +98,12 @@ export default class Sketch extends RegisteredObj {
    * Transforms the lines into a face. The lines should be closed.
    */
   face(): Face {
-    const face = makeFace(this.wire);
+    let face;
+    if (!this.baseFace) {
+      face = makeFace(this.wire);
+    } else {
+      face = makeNewFaceWithinFace(this.baseFace, this.wire);
+    }
     this.delete();
     return face;
   }
