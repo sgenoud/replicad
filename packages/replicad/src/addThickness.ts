@@ -6,6 +6,7 @@ import {
   Face,
   Shape3D,
   isShape3D,
+  isWire,
   Wire,
   Edge,
 } from "./shapes";
@@ -67,7 +68,19 @@ export interface GenericSweepConfig {
   forceProfileSpineOthogonality?: boolean;
 }
 
-export const genericSweep = (
+function genericSweep(
+  wire: Wire,
+  spine: Wire,
+  sweepConfig: GenericSweepConfig,
+  shellMode: true
+): [Shape3D, Wire, Wire];
+function genericSweep(
+  wire: Wire,
+  spine: Wire,
+  sweepConfig: GenericSweepConfig,
+  shellMode?: false
+): Shape3D;
+function genericSweep(
   wire: Wire,
   spine: Wire,
   {
@@ -78,8 +91,9 @@ export const genericSweep = (
     withContact,
     support,
     forceProfileSpineOthogonality,
-  }: GenericSweepConfig = {}
-): Shape3D => {
+  }: GenericSweepConfig = {},
+  shellMode = false
+): Shape3D | [Shape3D, Wire, Wire] {
   const oc = getOC();
   const withCorrection =
     transitionMode === "round" ? true : !!forceProfileSpineOthogonality;
@@ -111,12 +125,27 @@ export const genericSweep = (
   else sweepBuilder.SetLaw_1(wire.wrapped, law, !!withContact, withCorrection);
 
   sweepBuilder.Build();
-  sweepBuilder.MakeSolid();
+  if (!shellMode) {
+    sweepBuilder.MakeSolid();
+  }
   const shape = cast(sweepBuilder.Shape());
-  sweepBuilder.delete();
   if (!isShape3D(shape)) throw new Error("Could not sweep to a 3d shape");
+
+  if (shellMode) {
+    const startWire = cast(sweepBuilder.FirstShape());
+    const endWire = cast(sweepBuilder.LastShape());
+    if (!isWire(startWire))
+      throw new Error("Could not sweep with one start wire");
+    if (!isWire(endWire)) throw new Error("Could not sweep with one end wire");
+    sweepBuilder.delete();
+    return [shape, startWire, endWire];
+  }
+
+  sweepBuilder.delete();
   return shape;
-};
+}
+
+export { genericSweep };
 
 export interface ExtrusionProfile {
   profile?: "s-curve" | "linear";
@@ -165,12 +194,27 @@ export const supportExtrude = (
   return shape;
 };
 
-export const complexExtrude = (
+function complexExtrude(
   wire: Wire,
   center: Point,
   normal: Point,
-  profileShape?: ExtrusionProfile
-): Shape3D => {
+  profileShape: ExtrusionProfile | undefined,
+  shellMode: true
+): [Shape3D, Wire, Wire];
+function complexExtrude(
+  wire: Wire,
+  center: Point,
+  normal: Point,
+  profileShape?: ExtrusionProfile,
+  shellMode?: false
+): Shape3D;
+function complexExtrude(
+  wire: Wire,
+  center: Point,
+  normal: Point,
+  profileShape?: ExtrusionProfile,
+  shellMode = false
+): Shape3D | [Shape3D, Wire, Wire] {
   const [r, gc] = localGC();
 
   const centerVec = r(new Vector(center));
@@ -183,19 +227,42 @@ export const complexExtrude = (
     ? buildLawFromProfile(normalVec.Length, profileShape)
     : null;
 
-  const shape = genericSweep(wire, spine, { law });
+  // The ternary operator is here only to make typescript happy
+  const shape = shellMode
+    ? genericSweep(wire, spine, { law }, shellMode)
+    : genericSweep(wire, spine, { law }, shellMode);
+
   gc();
 
   return shape;
-};
+}
 
-export const twistExtrude = (
+export { complexExtrude };
+
+function twistExtrude(
   wire: Wire,
   angleDegrees: number,
   center: Point,
   normal: Point,
-  profileShape?: ExtrusionProfile
-): Shape3D => {
+  profileShape?: ExtrusionProfile,
+  shellMode?: false
+): Shape3D;
+function twistExtrude(
+  wire: Wire,
+  angleDegrees: number,
+  center: Point,
+  normal: Point,
+  profileShape: ExtrusionProfile | undefined,
+  shellMode: true
+): [Shape3D, Wire, Wire];
+function twistExtrude(
+  wire: Wire,
+  angleDegrees: number,
+  center: Point,
+  normal: Point,
+  profileShape?: ExtrusionProfile,
+  shellMode = false
+): Shape3D | [Shape3D, Wire, Wire] {
   const [r, gc] = localGC();
 
   const centerVec = r(new Vector(center));
@@ -215,11 +282,16 @@ export const twistExtrude = (
     ? buildLawFromProfile(normalVec.Length, profileShape)
     : null;
 
-  const shape = genericSweep(wire, spine, { auxiliarySpine, law });
+  // The ternary operator is here only to make typescript happy
+  const shape = shellMode
+    ? genericSweep(wire, spine, { auxiliarySpine, law }, shellMode)
+    : genericSweep(wire, spine, { auxiliarySpine, law }, shellMode);
   gc();
 
   return shape;
-};
+}
+export { twistExtrude };
+
 export interface LoftConfig {
   ruled?: boolean;
   startPoint?: Point;
@@ -228,12 +300,15 @@ export interface LoftConfig {
 
 export const loft = (
   wires: Wire[],
-  { ruled = true, startPoint, endPoint }: LoftConfig = {}
+  { ruled = true, startPoint, endPoint }: LoftConfig = {},
+  returnShell = false
 ): Shape3D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const loftBuilder = r(new oc.BRepOffsetAPI_ThruSections(true, ruled, 1e-6));
+  const loftBuilder = r(
+    new oc.BRepOffsetAPI_ThruSections(!returnShell, ruled, 1e-6)
+  );
 
   if (startPoint) {
     loftBuilder.AddVertex(r(makeVertex(startPoint)).wrapped);
@@ -244,7 +319,6 @@ export const loft = (
   }
 
   loftBuilder.Build();
-
   const shape = cast(loftBuilder.Shape());
   gc();
 

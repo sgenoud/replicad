@@ -236,13 +236,18 @@ export default class Sketch extends RegisteredObj {
    *
    * Note that all sketches will be deleted by this operation
    */
-  loftWith(otherSketches: this | this[], loftConfig: LoftConfig = {}): Shape3D {
+  loftWith(
+    otherSketches: this | this[],
+    loftConfig: LoftConfig = {},
+    returnShell = false
+  ): Shape3D {
     const sketchArray = Array.isArray(otherSketches)
       ? [this, ...otherSketches]
       : [this, otherSketches];
     const shape = loft(
       sketchArray.map((s) => s.wire),
-      loftConfig
+      loftConfig,
+      returnShell
     );
 
     sketchArray.forEach((s) => s.delete());
