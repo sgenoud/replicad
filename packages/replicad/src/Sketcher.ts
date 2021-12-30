@@ -27,7 +27,10 @@ import Sketch from "./Sketch.js";
  *
  * @category Sketching
  */
-export default class Sketcher extends RegisteredObj implements GenericSketcher {
+export default class Sketcher
+  extends RegisteredObj
+  implements GenericSketcher<Sketch>
+{
   protected plane: Plane;
   protected pointer: Vector;
   protected firstPoint: Vector;

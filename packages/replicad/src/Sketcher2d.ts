@@ -29,6 +29,7 @@ import {
   make2dEllipseArc,
   Point2D,
 } from "./lib2d";
+import Blueprint from "./Blueprint";
 
 type UVBounds = {
   uMin: number;
@@ -37,43 +38,24 @@ type UVBounds = {
   vMax: number;
 };
 
-/**
- * The FaceSketcher allows you to sketch on a face that is not planar, for
- * instance the sides of a cylinder.
- *
- * The coordinates passed to the methods corresponds to normalised distances on
- * this surface, between 0 and 1 in both direction.
- *
- * Note that if you are drawing on a closed surface (typically a revolution
- * surface or a cylinder), the first parameters represents the angle and can be
- * smaller than 0 or bigger than 1.
- *
- * @category Sketching
- */
-export default class FaceSketcher implements GenericSketcher {
+export class BaseSketcher2d {
   protected pointer: Point2D;
-  protected face: Face;
   protected firstPoint: Point2D;
   protected pendingCurves: Geom2d_Curve[];
-  protected _bounds: UVBounds;
 
-  constructor(face: Face, origin: Point2D = [0, 0]) {
+  constructor(origin: Point2D = [0, 0]) {
     this.pointer = origin;
-    this.face = face.clone();
-    this._bounds = face.UVBounds;
     this.firstPoint = origin;
 
     this.pendingCurves = [];
   }
 
   protected _convertToUV([x, y]: Point2D): Point2D {
-    const { uMin, uMax, vMin, vMax } = this._bounds;
-    return [uMin + x * (uMax - uMin), vMin + y * (vMax - vMin)];
+    return [x, y];
   }
 
   protected _convertFromUV([u, v]: Point2D): Point2D {
-    const { uMin, uMax, vMin, vMax } = this._bounds;
-    return [(u - uMin) / (uMax - uMin), (v - vMin) / (vMax - vMin)];
+    return [u, v];
   }
 
   movePointerTo(point: Point2D): this {
@@ -418,6 +400,72 @@ export default class FaceSketcher implements GenericSketcher {
     );
   }
 
+  protected _closeSketch(): void {
+    if (!samePoint(this.pointer, this.firstPoint)) {
+      this.lineTo(this.firstPoint);
+    }
+  }
+
+  protected _closeWithMirror() {
+    if (samePoint(this.pointer, this.firstPoint))
+      throw new Error(
+        "Cannot close with a mirror when the sketch is already closed"
+      );
+    const startToEndVector: Point2D = [
+      this.pointer[0] - this.firstPoint[0],
+      this.pointer[1] - this.firstPoint[1],
+    ];
+
+    const mirrorAxis = axis2d(
+      this._convertToUV(this.pointer),
+      this._convertToUV(startToEndVector)
+    );
+
+    const mirroredCurves = this.pendingCurves.map(
+      (c) => c.Mirrored_2(mirrorAxis).get() as Geom2d_Curve
+    );
+    mirroredCurves.reverse();
+    this.pendingCurves.push(...mirroredCurves);
+    this.pointer = this.firstPoint;
+  }
+}
+
+/**
+ * The FaceSketcher allows you to sketch on a face that is not planar, for
+ * instance the sides of a cylinder.
+ *
+ * The coordinates passed to the methods corresponds to normalised distances on
+ * this surface, between 0 and 1 in both direction.
+ *
+ * Note that if you are drawing on a closed surface (typically a revolution
+ * surface or a cylinder), the first parameters represents the angle and can be
+ * smaller than 0 or bigger than 1.
+ *
+ * @category Sketching
+ */
+export default class FaceSketcher
+  extends BaseSketcher2d
+  implements GenericSketcher<Sketch>
+{
+  protected face: Face;
+  protected _bounds: UVBounds;
+
+  constructor(face: Face, origin: Point2D = [0, 0]) {
+    super(origin);
+    this.face = face.clone();
+    this._bounds = face.UVBounds;
+  }
+
+  protected _convertToUV([x, y]: Point2D): Point2D {
+    const { uMin, uMax, vMin, vMax } = this._bounds;
+    return [uMin + x * (uMax - uMin), vMin + y * (vMax - vMin)];
+  }
+
+  protected _convertFromUV([u, v]: Point2D): Point2D {
+    const { uMin, uMax, vMin, vMax } = this._bounds;
+    return [(u - uMin) / (uMax - uMin), (v - vMin) / (vMax - vMin)];
+  }
+
   _adaptSurface(): Handle_Geom_Surface {
     const oc = getOC();
     // CHECK THIS: return new oc.BRep_Tool.Surface_2(this.face.wrapped)
@@ -452,15 +500,6 @@ export default class FaceSketcher implements GenericSketcher {
     return wire;
   }
 
-  /**
-   * @ignore
-   */
-  protected _closeSketch(): void {
-    if (!samePoint(this.pointer, this.firstPoint)) {
-      this.lineTo(this.firstPoint);
-    }
-  }
-
   done(): Sketch {
     const [r, gc] = localGC();
 
@@ -486,27 +525,34 @@ export default class FaceSketcher implements GenericSketcher {
   }
 
   closeWithMirror(): Sketch {
-    if (samePoint(this.pointer, this.firstPoint))
-      throw new Error(
-        "Cannot close with a mirror when the sketch is already closed"
-      );
-    const startToEndVector: Point2D = [
-      this.pointer[0] - this.firstPoint[0],
-      this.pointer[1] - this.firstPoint[1],
-    ];
+    this._closeWithMirror();
+    return this.close();
+  }
+}
 
-    const mirrorAxis = axis2d(
-      this._convertToUV(this.pointer),
-      this._convertToUV(startToEndVector)
-    );
+export class BlueprintSketcher
+  extends BaseSketcher2d
+  implements GenericSketcher<Blueprint>
+{
+  constructor(origin: Point2D = [0, 0]) {
+    super();
+    this.pointer = origin;
+    this.firstPoint = origin;
 
-    const mirroredCurves = this.pendingCurves.map(
-      (c) => c.Mirrored_2(mirrorAxis).get() as Geom2d_Curve
-    );
-    mirroredCurves.reverse();
-    this.pendingCurves.push(...mirroredCurves);
-    this.pointer = this.firstPoint;
+    this.pendingCurves = [];
+  }
 
+ done(): Blueprint {
+    return new Blueprint(this.pendingCurves);
+  }
+
+  close(): Blueprint {
+    this._closeSketch();
+    return this.done();
+  }
+
+  closeWithMirror(): Blueprint {
+    this._closeWithMirror();
     return this.close();
   }
 }

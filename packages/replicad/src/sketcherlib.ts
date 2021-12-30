@@ -1,6 +1,5 @@
 import { DEG2RAD } from "./constants";
 import { Point2D, polarToCartesian } from "./lib2d";
-import Sketch from "./Sketch";
 
 type StartSplineTangent = number | Point2D;
 export type SplineTangent = StartSplineTangent | "symmetric";
@@ -76,7 +75,7 @@ export const defaultsSplineConfig = (
  *
  * @category Sketching
  */
-export interface GenericSketcher {
+export interface GenericSketcher<ReturnType> {
   /**
    * Changes the point to start your drawing from
    */
@@ -336,17 +335,17 @@ export interface GenericSketcher {
   /**
    * Stop drawing and returns the sketch.
    */
-  done(): Sketch;
+  done(): ReturnType;
   /**
    * Stop drawing, make sure the sketch is closed (by adding a straight line to
    * from the last point to the first) and returns the sketch.
    */
-  close(): Sketch;
+  close(): ReturnType;
   /**
    * Stop drawing, make sure the sketch is closed (by mirroring the lines
    * between the first and last points drawn) and returns the sketch.
    */
-  closeWithMirror(): Sketch;
+  closeWithMirror(): ReturnType;
 }
 
 /*
