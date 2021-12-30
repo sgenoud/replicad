@@ -9,6 +9,7 @@ import {
   downcast,
   Shape3D,
   isShape3D,
+  Shell,
 } from "./shapes";
 import { asPnt, makeAx3, makeAx2, Point, asVec } from "./geom";
 import { getOC } from "./oclib.js";
@@ -384,7 +385,7 @@ export const makeOffset = (
   return newShape;
 };
 
-export const compoundShapes = (shapeArray: AnyShape[]) => {
+export const compoundShapes = (shapeArray: AnyShape[]): AnyShape => {
   const oc = getOC();
   const builder = new oc.TopoDS_Builder();
   const compound = new oc.TopoDS_Compound();
@@ -398,3 +399,26 @@ export const compoundShapes = (shapeArray: AnyShape[]) => {
   const newShape = cast(compound);
   return newShape;
 };
+
+export function makeSolid(facesOrShells: Array<Face | Shell>): Solid {
+  const oc = getOC();
+  const [r, gc] = localGC();
+  const shellBuilder = r(
+    new oc.BRepBuilderAPI_Sewing(1e-6, true, true, true, false)
+  );
+
+  facesOrShells.forEach(({ wrapped }) => {
+    shellBuilder.Add(wrapped);
+  });
+
+  shellBuilder.Perform(r(new oc.Message_ProgressRange_1()));
+
+  const shell = r(downcast(shellBuilder.SewedShape()));
+  const solid = cast(r(new oc.ShapeFix_Solid_1()).SolidFromShell(shell));
+
+  gc();
+  if (!(solid instanceof Solid))
+    throw new Error("Could not make a solid of faces and shells");
+
+  return solid;
+}
