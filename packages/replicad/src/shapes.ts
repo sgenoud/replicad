@@ -937,8 +937,21 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * @category Shape Modifications
    */
-  fuse(other: Shape3D): Shape3D {
+  fuse(
+    other: Shape3D,
+    {
+      optimisation = "none",
+    }: { optimisation?: "none" | "commonFace" | "sameFace" } = {}
+  ): Shape3D {
     const newBody = new this.oc.BRepAlgoAPI_Fuse_3(this.wrapped, other.wrapped);
+    if (optimisation === "commonFace") {
+      newBody.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueShift as any);
+    }
+    if (optimisation === "sameFace") {
+      newBody.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull as any);
+    }
+
+    newBody.Build();
     newBody.SimplifyResult(true, true, 1e-3);
     const newShape = cast(newBody.Shape());
     newBody.delete();
@@ -952,8 +965,19 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * @category Shape Modifications
    */
-  cut(tool: Shape3D): Shape3D {
+  cut(
+    tool: Shape3D,
+    {
+      optimisation = "none",
+    }: { optimisation?: "none" | "commonFace" | "sameFace" } = {}
+  ): Shape3D {
     const cutter = new this.oc.BRepAlgoAPI_Cut_3(this.wrapped, tool.wrapped);
+    if (optimisation === "commonFace") {
+      cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueShift as any);
+    }
+    if (optimisation === "sameFace") {
+      cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull as any);
+    }
     cutter.Build();
     cutter.SimplifyResult(true, true, 1e-3);
 
