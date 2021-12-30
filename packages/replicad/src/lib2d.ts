@@ -1,12 +1,71 @@
-import { localGC } from "./register.js";
+import { localGC, WrappingObj } from "./register.js";
 import { getOC } from "./oclib.js";
 import {
+  Bnd_Box2d,
   gp_Pnt2d,
   gp_Dir2d,
   gp_Vec2d,
   gp_Ax2d,
   Geom2d_Curve,
 } from "replicad-opencascadejs";
+
+const round = (v: number): number => Math.round(v * 100) / 100;
+const reprPnt = ([x, y]: Point2D): string => {
+  return `(${round(x)},${round(y)})`;
+};
+
+export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
+  constructor(wrapped: Bnd_Box2d) {
+    const oc = getOC();
+    let boundBox = wrapped;
+    if (!boundBox) {
+      boundBox = new oc.Bnd_Box2d();
+    }
+    super(boundBox);
+  }
+
+  get repr(): string {
+    const [min, max] = this.bounds;
+    return `${reprPnt(min)} - ${reprPnt(max)}`;
+  }
+
+  get bounds(): [Point2D, Point2D] {
+    const xMin = { current: 0 };
+    const yMin = { current: 0 };
+    const xMax = { current: 0 };
+    const yMax = { current: 0 };
+
+    this.wrapped.Get(xMin, yMin, xMax, yMax);
+    return [
+      [xMin.current, yMin.current],
+      [xMax.current, yMax.current],
+    ];
+  }
+
+  get center(): Point2D {
+    const [[xmin, ymin], [xmax, ymax]] = this.bounds;
+    return [xmin + (xmax - xmin) / 2, ymin + (ymax - ymin) / 2];
+  }
+
+  outsidePoint(paddingPercent = 1): Point2D {
+    const [min, max] = this.bounds;
+    const width = max[0] - min[0];
+    const height = max[1] - min[1];
+
+    return [
+      max[0] + (width / 100) * paddingPercent,
+      max[1] + (height / 100) * paddingPercent,
+    ];
+  }
+
+  add(other: BoundingBox2d) {
+    this.wrapped.Add_1(other.wrapped);
+  }
+
+  isOut(other: BoundingBox2d): boolean {
+    return this.wrapped.IsOut_2(other.wrapped);
+  }
+}
 
 export type Point2D = [number, number];
 

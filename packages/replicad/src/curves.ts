@@ -1,5 +1,4 @@
 import {
-  Bnd_Box2d,
   Geom2d_Curve,
   Geom_CylindricalSurface,
   gp_GTrsf2d,
@@ -7,61 +6,12 @@ import {
   Handle_Geom_Surface,
 } from "replicad-opencascadejs";
 
-import { WrappingObj, localGC } from "./register";
+import { localGC } from "./register";
 import { getOC } from "./oclib.js";
 
 import { Edge, Face } from "./shapes";
 import { Plane, makeAx2 } from "./geom";
-import { axis2d, Point2D } from "./lib2d";
-
-const round = (v: number): number => Math.round(v * 100) / 100;
-const reprPnt = ([x, y]: Point2D): string => {
-  return `(${round(x)},${round(y)})`;
-};
-
-export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
-  constructor(wrapped: Bnd_Box2d) {
-    const oc = getOC();
-    let boundBox = wrapped;
-    if (!boundBox) {
-      boundBox = new oc.Bnd_Box2d();
-    }
-    super(boundBox);
-  }
-
-  get repr(): string {
-    const [min, max] = this.bounds;
-    return `${reprPnt(min)} - ${reprPnt(max)}`;
-  }
-
-  get bounds(): [Point2D, Point2D] {
-    const xMin = { current: 0 };
-    const yMin = { current: 0 };
-    const xMax = { current: 0 };
-    const yMax = { current: 0 };
-
-    this.wrapped.Get(xMin, yMin, xMax, yMax);
-    return [
-      [xMin.current, yMin.current],
-      [xMax.current, yMax.current],
-    ];
-  }
-
-  outsidePoint(paddingPercent = 1): Point2D {
-    const [min, max] = this.bounds;
-    const width = max[0] - min[0];
-    const height = max[1] - min[1];
-
-    return [
-      max[0] + (width / 100) * paddingPercent,
-      max[1] + (height / 100) * paddingPercent,
-    ];
-  }
-
-  isOut(other: BoundingBox2d): boolean {
-    return this.wrapped.IsOut_2(other.wrapped);
-  }
-}
+import { axis2d, pnt, Point2D, vec, BoundingBox2d } from "./lib2d";
 
 export const curvesBoundingBox = (curves: Geom2d_Curve[]): BoundingBox2d => {
   const oc = getOC();
@@ -139,13 +89,54 @@ export const stretchTransform2d = (
   return transform;
 };
 
-export const translationTransform2d = ([u, v]: Point2D): gp_GTrsf2d => {
+export const translationTransform2d = (translation: Point2D): gp_GTrsf2d => {
   const oc = getOC();
-  const translation = new oc.gp_GTrsf2d_1();
-  const vec = new oc.gp_XY_2(u, v);
-  translation.SetTranslationPart(vec);
-  vec.delete();
-  return translation;
+  const [r, gc] = localGC();
+
+  const rotation = new oc.gp_Trsf2d_1();
+  rotation.SetTranslation_1(r(vec(translation)));
+  gc();
+
+  const transform = new oc.gp_GTrsf2d_2(rotation);
+  gc();
+  return transform;
+};
+
+export const mirrorTransform2d = (
+  centerOrDirection: Point2D,
+  origin: Point2D = [0, 0],
+  mode = "center"
+): gp_GTrsf2d => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const rotation = new oc.gp_Trsf2d_1();
+  if (mode === "center") {
+    rotation.SetMirror_1(r(pnt(centerOrDirection)));
+  } else {
+    rotation.SetMirror_2(r(axis2d(origin, centerOrDirection)));
+  }
+  gc();
+
+  const transform = new oc.gp_GTrsf2d_2(rotation);
+  gc();
+  return transform;
+};
+
+export const rotateTransform2d = (
+  angle: number,
+  center: Point2D = [0, 0]
+): gp_GTrsf2d => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const rotation = new oc.gp_Trsf2d_1();
+  rotation.SetRotation(r(pnt(center)), angle);
+  gc();
+
+  const transform = new oc.gp_GTrsf2d_2(rotation);
+  gc();
+  return transform;
 };
 
 export function faceRadius(face: Face): null | number {
@@ -194,22 +185,22 @@ export function curvesAsEdgesOnFace(
   }
 
   if (scale === "bounds") {
-    transformation = new oc.gp_GTrsf2d_1();
+    transformation = r(new oc.gp_GTrsf2d_1());
     transformation.SetAffinity(uAxis, bounds.uMax - bounds.uMin);
 
     if (bounds.uMin !== 0) {
-      const translation = new oc.gp_GTrsf2d_1();
+      const translation = r(new oc.gp_GTrsf2d_1());
       translation.SetTranslationPart(new oc.gp_XY_2(0, -bounds.uMin));
       transformation.Multiply(translation);
     }
 
-    const vTransformation = new oc.gp_GTrsf2d_1();
+    const vTransformation = r(new oc.gp_GTrsf2d_1());
     vTransformation.SetAffinity(vAxis, bounds.vMax - bounds.vMin);
     transformation.Multiply(vTransformation);
 
     if (bounds.vMin !== 0) {
-      const translation = new oc.gp_GTrsf2d_1();
-      translation.SetTranslationPart(new oc.gp_XY_2(0, -bounds.vMin));
+      const translation = r(new oc.gp_GTrsf2d_1());
+      translation.SetTranslationPart(r(new oc.gp_XY_2(0, -bounds.vMin)));
       transformation.Multiply(translation);
     }
   }

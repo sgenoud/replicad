@@ -1,15 +1,17 @@
 import { Geom2d_Curve } from "replicad-opencascadejs";
 import { makePlane } from "./geomHelpers";
 import {
-  BoundingBox2d,
   curvesAsEdgesOnFace,
   curvesAsEdgesOnPlane,
   curvesBoundingBox,
+  mirrorTransform2d,
+  rotateTransform2d,
   ScaleMode,
   stretchTransform2d,
   transformCurves,
+  translationTransform2d,
 } from "./curves";
-import { make2dSegmentCurve, Point2D } from "./lib2d";
+import { make2dSegmentCurve, Point2D, BoundingBox2d } from "./lib2d";
 import { assembleWire } from "./shapeHelpers";
 import { Face } from "./shapes";
 import Sketch from "./Sketch";
@@ -17,13 +19,19 @@ import Sketch from "./Sketch";
 import { localGC } from "./register";
 import { getOC } from "./oclib.js";
 import { Plane, PlaneName, Point } from "./geom";
+import { DEG2RAD } from "./constants";
 
-export class Blueprint {
+export default class Blueprint {
   curves: Geom2d_Curve[];
   protected _boundingBox: null | BoundingBox2d;
   constructor(curves: Geom2d_Curve[]) {
     this.curves = curves;
     this._boundingBox = null;
+  }
+
+  delete() {
+    this.curves.forEach((c) => c.delete());
+    if (this._boundingBox) this._boundingBox.delete();
   }
 
   get boundingBox(): BoundingBox2d {
@@ -38,10 +46,47 @@ export class Blueprint {
     direction: Point2D,
     origin: Point2D = [0, 0]
   ): Blueprint {
-    const transform = stretchTransform2d(ratio, direction, origin);
-    return new Blueprint(
+    const [r, gc] = localGC();
+    const transform = r(stretchTransform2d(ratio, direction, origin));
+    const bp = new Blueprint(
       transformCurves(this.curves, transform).map((c) => c.get())
     );
+    gc();
+    return bp;
+  }
+
+  rotate(angle: number, center: Point2D): Blueprint {
+    const [r, gc] = localGC();
+    const transform = r(rotateTransform2d(angle * DEG2RAD, center));
+    const bp = new Blueprint(
+      transformCurves(this.curves, transform).map((c) => c.get())
+    );
+    gc();
+    return bp;
+  }
+
+  translate(xDist: number, yDist: number): Blueprint {
+    const [r, gc] = localGC();
+    const transform = r(translationTransform2d([xDist, yDist]));
+    const bp = new Blueprint(
+      transformCurves(this.curves, transform).map((c) => c.get())
+    );
+    gc();
+    return bp;
+  }
+
+  mirror(
+    centerOrDirection: Point2D,
+    origin: Point2D,
+    mode = "center"
+  ): Blueprint {
+    const [r, gc] = localGC();
+    const transform = r(mirrorTransform2d(centerOrDirection, origin, mode));
+    const bp = new Blueprint(
+      transformCurves(this.curves, transform).map((c) => c.get())
+    );
+    gc();
+    return bp;
   }
 
   sketchOnPlane(inputPlane: Plane): Sketch;

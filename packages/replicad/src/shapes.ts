@@ -1210,3 +1210,4 @@ export function cast(shape: TopoDS_Shape): AnyShape {
   if (!Klass) throw new Error("Could not find a wrapper for this shape type");
   return new Klass(downcast(shape));
 }
+
