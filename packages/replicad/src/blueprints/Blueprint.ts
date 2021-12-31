@@ -1,5 +1,5 @@
 import { Geom2d_Curve } from "replicad-opencascadejs";
-import { makePlane } from "./geomHelpers";
+import { makePlane } from "../geomHelpers";
 import {
   curvesAsEdgesOnFace,
   curvesAsEdgesOnPlane,
@@ -10,18 +10,19 @@ import {
   stretchTransform2d,
   transformCurves,
   translationTransform2d,
-} from "./curves";
-import { make2dSegmentCurve, Point2D, BoundingBox2d } from "./lib2d";
-import { assembleWire } from "./shapeHelpers";
-import { Face } from "./shapes";
-import Sketch from "./Sketch";
+} from "../curves";
+import { make2dSegmentCurve, Point2D, BoundingBox2d } from "../lib2d";
+import { assembleWire } from "../shapeHelpers";
+import { Face } from "../shapes";
+import Sketch from "../sketches/Sketch";
 
-import { localGC } from "./register";
-import { getOC } from "./oclib.js";
-import { Plane, PlaneName, Point } from "./geom";
-import { DEG2RAD } from "./constants";
+import { localGC } from "../register";
+import { getOC } from "../oclib.js";
+import { Plane, PlaneName, Point } from "../geom";
+import { DEG2RAD } from "../constants";
+import { BlueprintInterface } from "./lib";
 
-export default class Blueprint {
+export default class Blueprint implements BlueprintInterface {
   curves: Geom2d_Curve[];
   protected _boundingBox: null | BoundingBox2d;
   constructor(curves: Geom2d_Curve[]) {

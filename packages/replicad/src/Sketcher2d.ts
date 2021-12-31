@@ -1,4 +1,4 @@
-import Sketch from "./Sketch";
+import Sketch from "./sketches/Sketch";
 import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { localGC } from "./register.js";
 import { getOC } from "./oclib.js";
@@ -29,7 +29,7 @@ import {
   make2dEllipseArc,
   Point2D,
 } from "./lib2d";
-import Blueprint from "./Blueprint";
+import Blueprint from "./blueprints/Blueprint";
 
 type UVBounds = {
   uMin: number;
@@ -542,7 +542,7 @@ export class BlueprintSketcher
     this.pendingCurves = [];
   }
 
- done(): Blueprint {
+  done(): Blueprint {
     return new Blueprint(this.pendingCurves);
   }
 

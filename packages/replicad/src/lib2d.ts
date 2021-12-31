@@ -15,7 +15,7 @@ const reprPnt = ([x, y]: Point2D): string => {
 };
 
 export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
-  constructor(wrapped: Bnd_Box2d) {
+  constructor(wrapped?: Bnd_Box2d) {
     const oc = getOC();
     let boundBox = wrapped;
     if (!boundBox) {
