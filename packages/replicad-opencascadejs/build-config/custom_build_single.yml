@@ -14,6 +14,7 @@ mainBuild:
     - symbol: Precision
 
     - symbol: gp_XYZ
+    - symbol: gp_XY
     - symbol: gp_Vec
     - symbol: gp_Pnt
     - symbol: gp_Dir
@@ -22,6 +23,7 @@ mainBuild:
     - symbol: gp_Ax3
     - symbol: gp_Circ
     - symbol: gp_Elips
+    - symbol: gp_Cylinder
     - symbol: gp_Trsf
     - symbol: gp_GTrsf
 
@@ -53,6 +55,13 @@ mainBuild:
     - symbol: GCE2d_MakeArcOfCircle
     - symbol: GCE2d_MakeArcOfEllipse
 
+    - symbol: GeomLib
+    - symbol: gp_Trsf2d
+    - symbol: gp_GTrsf2d
+
+    - symbol: Bnd_Box2d
+    - symbol: BndLib_Add2dCurve
+    - symbol: Geom2dAPI_InterCurveCurve
 
     - symbol: GeomAbs_CurveType
     - symbol: GeomAbs_SurfaceType
@@ -90,6 +99,7 @@ mainBuild:
     - symbol: TopoDS_Compound
     - symbol: TopoDS_CompSolid
     - symbol: TopoDS_Shape
+    - symbol: TopoDS_Builder
     - symbol: TopAbs_ShapeEnum
     - symbol: TopTools_ListOfShape
     - symbol: TopAbs_Orientation
@@ -144,6 +154,7 @@ mainBuild:
     - symbol: BRepAlgoAPI_BooleanOperation
     - symbol: BRepAlgoAPI_Cut
     - symbol: BRepAlgoAPI_Fuse
+    - symbol: BOPAlgo_GlueEnum
     - symbol: BRepAlgoAPI_Section
     - symbol: BRepAlgoAPI_Common
 
@@ -157,7 +168,9 @@ mainBuild:
     - symbol: BRepBuilderAPI_MakeWire
     - symbol: BRepBuilderAPI_MakeFace
     - symbol: BRepBuilderAPI_MakeVertex
+    - symbol: BRepBuilderAPI_MakeSolid
     - symbol: BRepBuilderAPI_TransitionMode
+    - symbol: BRepBuilderAPI_Sewing
     - symbol: BRepPrimAPI_MakeOneAxis
     - symbol: BRepPrimAPI_MakeCylinder
     - symbol: BRepPrimAPI_MakeBox
@@ -174,6 +187,7 @@ mainBuild:
     - symbol: BRepOffsetAPI_MakeOffsetShape
     - symbol: BRepOffsetAPI_MakePipe
     - symbol: BRepOffsetAPI_MakePipeShell
+    - symbol: BRepOffsetAPI_MakeFilling
     - symbol: BRepOffset_Mode
     - symbol: BRepFilletAPI_LocalOperation
     - symbol: BRepFilletAPI_MakeFillet
@@ -185,6 +199,18 @@ mainBuild:
     - symbol: GeomAbs_JoinType
     - symbol: BRepFill_TypeOfContact
     - symbol: Extrema_ExtAlgo
+
+    - symbol: ShapeFix_Root
+    - symbol: ShapeFix_Solid
+    - symbol: ShapeFix_Face
+    - symbol: ShapeFix_Wire
+
+    #- symbol: BRepCheck_Analyzer
+    #- symbol: BRepCheck_Status
+    #- symbol: BRepCheck_Result
+    #- symbol: Handle_BRepCheck_Result
+    #- symbol: BRepCheck_ListOfStatus
+
   emccFlags:
     - -sEXPORT_ES6=1
     - -sUSE_ES6_IMPORT_META=0
