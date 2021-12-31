@@ -20,7 +20,7 @@ import {
 } from "./sketcherlib.js";
 import { CurveLike, Edge, Wire } from "./shapes.js";
 import { Handle_Geom_BezierCurve } from "replicad-opencascadejs";
-import Sketch from "./Sketch.js";
+import Sketch from "./sketches/Sketch.js";
 
 /**
  * The FaceSketcher allows you to sketch on a plane.

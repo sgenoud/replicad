@@ -4,14 +4,14 @@ import {
   makeBSplineApproximation,
   makeCircle,
   makeEllipse,
-} from "./shapeHelpers";
-import { Plane, PlaneName, Point, Vector } from "./geom";
-import Sketcher from "./Sketcher";
-import { makePlane } from "./geomHelpers";
+} from "../shapeHelpers";
+import { Plane, PlaneName, Point, Vector } from "../geom";
+import Sketcher from "../Sketcher";
+import { makePlane } from "../geomHelpers";
 import Sketch from "./Sketch";
-import { Face } from "./shapes";
-import { Point2D } from "./lib2d";
-import { localGC } from "./register";
+import { Face } from "../shapes";
+import { Point2D } from "../lib2d";
+import { localGC } from "../register";
 
 interface PlaneConfig {
   plane?: PlaneName | Plane;

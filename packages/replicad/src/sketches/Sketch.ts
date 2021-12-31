@@ -1,6 +1,6 @@
-import { Vector, Plane, Point } from "./geom.js";
-import { localGC, RegisteredObj } from "./register.js";
-import { makeFace, makeNewFaceWithinFace } from "./shapeHelpers.js";
+import { Vector, Plane, Point } from "../geom.js";
+import { localGC, RegisteredObj } from "../register.js";
+import { makeFace, makeNewFaceWithinFace } from "../shapeHelpers.js";
 import {
   basicFaceExtrusion,
   complexExtrude,
@@ -11,8 +11,9 @@ import {
   ExtrusionProfile,
   GenericSweepConfig,
   LoftConfig,
-} from "./addThickness.js";
-import { Face, Shape3D, Wire } from "./shapes.js";
+} from "../addThickness.js";
+import { Face, Shape3D, Wire } from "../shapes.js";
+import { SketchInterface } from "./lib.js";
 
 /**
  * A line drawing to be acted upon. It defines directions to be acted upon by
@@ -22,7 +23,7 @@ import { Face, Shape3D, Wire } from "./shapes.js";
  *
  * @category Sketching
  */
-export default class Sketch extends RegisteredObj {
+export default class Sketch extends RegisteredObj implements SketchInterface {
   wire: Wire;
   /**
    * @ignore

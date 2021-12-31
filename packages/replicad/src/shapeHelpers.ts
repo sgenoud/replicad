@@ -422,3 +422,22 @@ export function makeSolid(facesOrShells: Array<Face | Shell>): Solid {
 
   return solid;
 }
+
+export const addHolesInFace = (face: Face, holes: Wire[]): Face => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const faceMaker = r(new oc.BRepBuilderAPI_MakeFace_2(face.wrapped));
+  holes.forEach((wire) => {
+    faceMaker.Add(wire.wrapped);
+  });
+
+  const builtFace = r(faceMaker.Face());
+
+  const fixer = r(new oc.ShapeFix_Face_2(builtFace));
+  fixer.FixOrientation_1();
+  const newFace = fixer.Face();
+
+  gc();
+  return new Face(newFace);
+};
