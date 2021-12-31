@@ -129,7 +129,7 @@ export default class Blueprint implements BlueprintInterface {
     if (wire.isClosed) {
       const baseFace = r(sketch.clone().face());
       sketch.defaultOrigin = r(baseFace.pointOnSurface(0.5, 0.5));
-      sketch.defaultDirection = r(r(baseFace.normalAt()).multiply(-1));
+      sketch.defaultDirection = r(r(baseFace.normalAt()));
       sketch.baseFace = face;
     } else {
       const startPoint = r(wire.startPoint);
