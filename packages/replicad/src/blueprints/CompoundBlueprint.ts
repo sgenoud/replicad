@@ -72,7 +72,7 @@ export default class CompoundBlueprint implements BlueprintInterface {
     return new CompoundSketch(sketches);
   }
 
-  sketchOnFace(face: Face, scaleMode: ScaleMode): CompoundSketch {
+  sketchOnFace(face: Face, scaleMode?: ScaleMode): CompoundSketch {
     const sketches = this.blueprints.map((blueprint) =>
       blueprint.sketchOnFace(face, scaleMode)
     );

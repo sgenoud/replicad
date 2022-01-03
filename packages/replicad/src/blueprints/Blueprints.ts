@@ -4,7 +4,6 @@ import CompoundBlueprint from "./CompoundBlueprint";
 import { BlueprintInterface } from "./lib";
 
 import { Face } from "../shapes";
-import Sketch from "../sketches/Sketch";
 
 import { Plane, PlaneName, Point } from "../geom";
 
@@ -66,7 +65,7 @@ export default class Blueprints implements BlueprintInterface {
     );
   }
 
-  sketchOnFace(face: Face, scaleMode: ScaleMode): Sketches {
+  sketchOnFace(face: Face, scaleMode?: ScaleMode): Sketches {
     return new Sketches(
       this.blueprints.map((bp) => bp.sketchOnFace(face, scaleMode))
     );
