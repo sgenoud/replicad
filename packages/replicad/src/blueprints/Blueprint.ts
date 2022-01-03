@@ -78,8 +78,8 @@ export default class Blueprint implements BlueprintInterface {
 
   mirror(
     centerOrDirection: Point2D,
-    origin: Point2D,
-    mode = "center"
+    origin: Point2D = [0, 0],
+    mode: "center" | "plane" = "center"
   ): Blueprint {
     const [r, gc] = localGC();
     const transform = r(mirrorTransform2d(centerOrDirection, origin, mode));
@@ -111,7 +111,7 @@ export default class Blueprint implements BlueprintInterface {
     });
   }
 
-  sketchOnFace(face: Face, scaleMode: ScaleMode): Sketch {
+  sketchOnFace(face: Face, scaleMode?: ScaleMode): Sketch {
     const oc = getOC();
     const [r, gc] = localGC();
 

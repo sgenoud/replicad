@@ -27,3 +27,4 @@ export * from "./shortcuts.js";
 export * from "./addThickness";
 export * from "./blueprints";
 export * from "./sketches";
+export * from "./text";

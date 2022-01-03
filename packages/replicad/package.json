@@ -43,5 +43,9 @@
     "rollup-plugin-ts": "^1.4.7",
     "typedoc": "^0.22.7",
     "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "@types/opentype.js": "^1.3.3",
+    "opentype.js": "^1.3.4"
   }
 }

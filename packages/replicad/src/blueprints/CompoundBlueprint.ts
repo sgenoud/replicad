@@ -51,8 +51,8 @@ export default class CompoundBlueprint implements BlueprintInterface {
 
   mirror(
     centerOrDirection: Point2D,
-    origin: Point2D,
-    mode: "center" | "plane"
+    origin?: Point2D,
+    mode?: "center" | "plane"
   ): CompoundBlueprint {
     return new CompoundBlueprint(
       this.blueprints.map((bp) => bp.mirror(centerOrDirection, origin, mode))

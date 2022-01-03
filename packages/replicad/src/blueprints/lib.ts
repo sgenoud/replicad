@@ -133,8 +133,8 @@ export interface BlueprintInterface {
 
   mirror(
     centerOrDirection: Point2D,
-    origin: Point2D,
-    mode: "center" | "plane"
+    origin?: Point2D,
+    mode?: "center" | "plane"
   ): BlueprintInterface;
 
   sketchOnPlane(inputPlane: Plane): SketchInterface | Sketches;
