@@ -112,6 +112,14 @@ const solidFromShellGenerator = (
   return solid;
 };
 
+/**
+ * A group of sketches that should correspond to a unique face (i.e. an outer
+ * sketch, and multiple holes within this sketch.
+ *
+ * All the sketches should share the same base face (or surface)
+ *
+ * Ideally generated from a `CompoundBlueprint`
+ */
 export default class CompoundSketch implements SketchInterface {
   sketches: Sketch[];
   constructor(sketches: Sketch[]) {

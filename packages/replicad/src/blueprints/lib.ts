@@ -108,6 +108,13 @@ const cleanEdgeCases = (
   }
 };
 
+/**
+ * Groups an array of blueprints such that blueprints that correspond to holes
+ * in other blueprints are set in a `CompoundBlueprint`.
+ *
+ * The current algorithm does not handle cases where blueprints cross each
+ * other
+ */
 export const organiseBlueprints = (blueprints: Blueprint[]): Blueprints => {
   const basicGrouping =
     groupByBoundingBoxOverlap(blueprints).map(addContainmentInfo);
@@ -128,15 +135,24 @@ export interface BlueprintInterface {
     direction: Point2D,
     origin: Point2D
   ): BlueprintInterface;
+
   rotate(angle: number, center: Point2D): BlueprintInterface;
   translate(xDist: number, yDist: number): BlueprintInterface;
 
+  /**
+   * Returns the mirror image of this Blueprint made with a single point (in
+   * center mode, the default, or a plane, (plane mode, with both direction and
+   * origin of the plane).
+   */
   mirror(
     centerOrDirection: Point2D,
     origin?: Point2D,
     mode?: "center" | "plane"
   ): BlueprintInterface;
 
+  /**
+   * Returns the sketched version of the blueprint, on a plane
+   */
   sketchOnPlane(inputPlane: Plane): SketchInterface | Sketches;
   sketchOnPlane(
     inputPlane?: PlaneName,
@@ -147,5 +163,17 @@ export interface BlueprintInterface {
     origin?: Point | number
   ): SketchInterface | Sketches;
 
+  /**
+   * Returns the sketched version of the blueprint, on a face.
+   *
+   * The scale mode corresponds to the way the coordinates of the blueprint are
+   * interpreted match with the face:
+   *
+   * - `original` uses global coordinates (1mm in the blueprint is 1mm on the
+   *   face). This is the default, but currently supported only for planar
+   *   and circular faces
+   * - `bounds` normalises the UV parameters on the face to [0,1] intervals.
+   * - `native` uses the default UV parameters of opencascade
+   */
   sketchOnFace(face: Face, scaleMode: ScaleMode): SketchInterface | Sketches;
 }

@@ -8,13 +8,15 @@ export interface SketchInterface {
    * Transforms the lines into a face. The lines should be closed.
    */
   face(): Face;
+
   /**
    * Revolves the drawing on an axis (defined by its direction and an origin
    * (defaults to the sketch origin)
    */
   revolve(revolutionAxis?: Point, config?: { origin?: Point }): Shape3D;
 
-  /** Extrudes the sketch to a certain distance.(along the default direction
+  /**
+   * Extrudes the sketch to a certain distance.(along the default direction
    * and origin of the sketch).
    *
    * You can define another extrusion direction or origin,
@@ -34,7 +36,8 @@ export interface SketchInterface {
     }
   ): Shape3D;
 
-  /** Loft between this sketch and another sketch (or an array of them)
+  /**
+   * Loft between this sketch and another sketch (or an array of them)
    *
    * You can also define a `startPoint` for the loft (that will be placed
    * before this sketch) and an `endPoint` after the last one.

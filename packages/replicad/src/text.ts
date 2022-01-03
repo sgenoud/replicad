@@ -8,6 +8,12 @@ import opentype from "opentype.js";
 
 const FONT_REGISTER: Record<string, opentype.Font> = {};
 
+/**
+ * Import a font in the text system. If the font family is not defined it will
+ * set its name as "default"
+ *
+ * The font should be in TTF
+ */
 export const loadFont = async (fontPath: string, fontFamily = "default") => {
   // @ts-expect-error missing info in the types
   const font = await opentype.load(fontPath, null, { isUrl: true });
@@ -72,6 +78,12 @@ const sketchFontCommands = function* (commands: opentype.PathCommand[]) {
   }
 };
 
+/**
+ * Creates the `Blueprints` of a text, in a defined font size and a font familiy
+ * (which will be the default).
+ *
+ * @category Blueprints
+ */
 export function textBlueprints(
   text: string,
   { startX = 0, startY = 0, fontSize = 16, fontFamily = "default" } = {}
@@ -82,6 +94,12 @@ export function textBlueprints(
   return organiseBlueprints(blueprints).mirror([0, 0]);
 }
 
+/**
+ * Creates the `Sketches` of a text, in a defined font size and a font familiy
+ * (which will be the default).
+ *
+ * @category Sketching
+ */
 export function sketchText(
   text: string,
   textConfig?: {

@@ -65,6 +65,7 @@ In addition to the `Sketcher` class, replicad provides some sketching functions
 to draw common and useful shapes. You can for instance:
 
 - sketch a rectangle, polygon, circle or ellipse
+- draw some text in a ttf font
 - draw based on a parametric function
 - draw an offset of a face
 

@@ -22,6 +22,12 @@ import { Plane, PlaneName, Point } from "../geom";
 import { DEG2RAD } from "../constants";
 import { BlueprintInterface } from "./lib";
 
+/**
+ * A Blueprint is an abstract Sketch, a 2D set of curves that can then be
+ * sketched on different surfaces (faces or planes)
+ *
+ * You should create them by "sketching" with a `BlueprintSketcher`
+ */
 export default class Blueprint implements BlueprintInterface {
   curves: Geom2d_Curve[];
   protected _boundingBox: null | BoundingBox2d;
