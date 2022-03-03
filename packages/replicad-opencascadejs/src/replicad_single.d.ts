@@ -1660,6 +1660,23 @@ export declare class GCPnts_TangentialDeflection {
     constructor(C: Adaptor2d_Curve2d, FirstParameter: Quantity_AbsorbedDose, LastParameter: Quantity_AbsorbedDose, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose);
   }
 
+export declare class IGESControl_Reader extends XSControl_Reader {
+  SetReadVisible(ReadRoot: Standard_Boolean): void;
+  GetReadVisible(): Standard_Boolean;
+  IGESModel(): Handle_IGESData_IGESModel;
+  NbRootsForTransfer(): Graphic3d_ZLayerId;
+  PrintTransferInfo(failwarn: IFSelect_PrintFail, mode: IFSelect_PrintCount): void;
+  delete(): void;
+}
+
+  export declare class IGESControl_Reader_1 extends IGESControl_Reader {
+    constructor();
+  }
+
+  export declare class IGESControl_Reader_2 extends IGESControl_Reader {
+    constructor(WS: Handle_XSControl_WorkSession, scratch: Standard_Boolean);
+  }
+
 export declare class BndLib_Add2dCurve {
   constructor();
   static Add_1(C: Adaptor2d_Curve2d, Tol: Quantity_AbsorbedDose, B: Bnd_Box2d): void;
@@ -2028,6 +2045,12 @@ export declare class StlAPI_Writer {
   delete(): void;
 }
 
+export declare class StlAPI_Reader {
+  constructor();
+  Read(theShape: TopoDS_Shape, theFileName: Standard_CString): Standard_Boolean;
+  delete(): void;
+}
+
 export declare class BRepGProp_Face {
   Load_1(F: TopoDS_Face): void;
   VIntegrationOrder(): Graphic3d_ZLayerId;
@@ -2083,6 +2106,48 @@ export declare type IFSelect_ReturnStatus = {
   IFSelect_RetFail: {};
   IFSelect_RetStop: {};
 }
+
+export declare class XSControl_Reader {
+  SetNorm(norm: Standard_CString): Standard_Boolean;
+  SetWS(WS: Handle_XSControl_WorkSession, scratch: Standard_Boolean): void;
+  WS(): Handle_XSControl_WorkSession;
+  ReadFile(filename: Standard_CString): IFSelect_ReturnStatus;
+  ReadStream(theName: Standard_CString, theIStream: Standard_IStream): IFSelect_ReturnStatus;
+  Model(): Handle_Interface_InterfaceModel;
+  GiveList_1(first: Standard_CString, second: Standard_CString): Handle_TColStd_HSequenceOfTransient;
+  GiveList_2(first: Standard_CString, ent: Handle_Standard_Transient): Handle_TColStd_HSequenceOfTransient;
+  NbRootsForTransfer(): Graphic3d_ZLayerId;
+  RootForTransfer(num: Graphic3d_ZLayerId): Handle_Standard_Transient;
+  TransferOneRoot(num: Graphic3d_ZLayerId, theProgress: Message_ProgressRange): Standard_Boolean;
+  TransferOne(num: Graphic3d_ZLayerId, theProgress: Message_ProgressRange): Standard_Boolean;
+  TransferEntity(start: Handle_Standard_Transient, theProgress: Message_ProgressRange): Standard_Boolean;
+  TransferList(list: Handle_TColStd_HSequenceOfTransient, theProgress: Message_ProgressRange): Graphic3d_ZLayerId;
+  TransferRoots(theProgress: Message_ProgressRange): Graphic3d_ZLayerId;
+  ClearShapes(): void;
+  NbShapes(): Graphic3d_ZLayerId;
+  Shape(num: Graphic3d_ZLayerId): TopoDS_Shape;
+  OneShape(): TopoDS_Shape;
+  PrintCheckLoad_1(failsonly: Standard_Boolean, mode: IFSelect_PrintCount): void;
+  PrintCheckLoad_2(theStream: Standard_OStream, failsonly: Standard_Boolean, mode: IFSelect_PrintCount): void;
+  PrintCheckTransfer_1(failsonly: Standard_Boolean, mode: IFSelect_PrintCount): void;
+  PrintCheckTransfer_2(theStream: Standard_OStream, failsonly: Standard_Boolean, mode: IFSelect_PrintCount): void;
+  PrintStatsTransfer_1(what: Graphic3d_ZLayerId, mode: Graphic3d_ZLayerId): void;
+  PrintStatsTransfer_2(theStream: Standard_OStream, what: Graphic3d_ZLayerId, mode: Graphic3d_ZLayerId): void;
+  GetStatsTransfer(list: Handle_TColStd_HSequenceOfTransient, nbMapped: Graphic3d_ZLayerId, nbWithResult: Graphic3d_ZLayerId, nbWithFail: Graphic3d_ZLayerId): void;
+  delete(): void;
+}
+
+  export declare class XSControl_Reader_1 extends XSControl_Reader {
+    constructor();
+  }
+
+  export declare class XSControl_Reader_2 extends XSControl_Reader {
+    constructor(norm: Standard_CString);
+  }
+
+  export declare class XSControl_Reader_3 extends XSControl_Reader {
+    constructor(WS: Handle_XSControl_WorkSession, scratch: Standard_Boolean);
+  }
 
 export declare class BRepFeat_Form extends BRepBuilderAPI_MakeShape {
   Modified(F: TopoDS_Shape): TopTools_ListOfShape;
@@ -2252,6 +2317,32 @@ export declare class TopoDS_Face extends TopoDS_Shape {
   constructor()
   delete(): void;
 }
+
+export declare class ShapeUpgrade_UnifySameDomain extends Standard_Transient {
+  Initialize(aShape: TopoDS_Shape, UnifyEdges: Standard_Boolean, UnifyFaces: Standard_Boolean, ConcatBSplines: Standard_Boolean): void;
+  AllowInternalEdges(theValue: Standard_Boolean): void;
+  KeepShape(theShape: TopoDS_Shape): void;
+  KeepShapes(theShapes: TopTools_MapOfShape): void;
+  SetSafeInputMode(theValue: Standard_Boolean): void;
+  SetLinearTolerance(theValue: Quantity_AbsorbedDose): void;
+  SetAngularTolerance(theValue: Quantity_AbsorbedDose): void;
+  Build(): void;
+  Shape(): TopoDS_Shape;
+  History_1(): Handle_BRepTools_History;
+  History_2(): Handle_BRepTools_History;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class ShapeUpgrade_UnifySameDomain_1 extends ShapeUpgrade_UnifySameDomain {
+    constructor();
+  }
+
+  export declare class ShapeUpgrade_UnifySameDomain_2 extends ShapeUpgrade_UnifySameDomain {
+    constructor(aShape: TopoDS_Shape, UnifyEdges: Standard_Boolean, UnifyFaces: Standard_Boolean, ConcatBSplines: Standard_Boolean);
+  }
 
 export declare class TColgp_Array2OfPnt {
   Init(theValue: gp_Pnt): void;
@@ -4744,6 +4835,22 @@ export declare class STEPControl_Writer {
     constructor(WS: Handle_XSControl_WorkSession, scratch: Standard_Boolean);
   }
 
+export declare class STEPControl_Reader extends XSControl_Reader {
+  StepModel(): Handle_StepData_StepModel;
+  TransferRoot(num: Graphic3d_ZLayerId, theProgress: Message_ProgressRange): Standard_Boolean;
+  NbRootsForTransfer(): Graphic3d_ZLayerId;
+  FileUnits(theUnitLengthNames: TColStd_SequenceOfAsciiString, theUnitAngleNames: TColStd_SequenceOfAsciiString, theUnitSolidAngleNames: TColStd_SequenceOfAsciiString): void;
+  delete(): void;
+}
+
+  export declare class STEPControl_Reader_1 extends STEPControl_Reader {
+    constructor();
+  }
+
+  export declare class STEPControl_Reader_2 extends STEPControl_Reader {
+    constructor(WS: Handle_XSControl_WorkSession, scratch: Standard_Boolean);
+  }
+
 export declare type STEPControl_StepModelType = {
   STEPControl_AsIs: {};
   STEPControl_ManifoldSolidBrep: {};
@@ -5970,6 +6077,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GCPnts_TangentialDeflection_3: typeof GCPnts_TangentialDeflection_3;
   GCPnts_TangentialDeflection_4: typeof GCPnts_TangentialDeflection_4;
   GCPnts_TangentialDeflection_5: typeof GCPnts_TangentialDeflection_5;
+  IGESControl_Reader: typeof IGESControl_Reader;
+  IGESControl_Reader_1: typeof IGESControl_Reader_1;
+  IGESControl_Reader_2: typeof IGESControl_Reader_2;
   BndLib_Add2dCurve: typeof BndLib_Add2dCurve;
   GCE2d_MakeArcOfCircle: typeof GCE2d_MakeArcOfCircle;
   GCE2d_MakeArcOfCircle_1: typeof GCE2d_MakeArcOfCircle_1;
@@ -6013,11 +6123,16 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   StdPrs_ToolTriangulatedShape: typeof StdPrs_ToolTriangulatedShape;
   BOPAlgo_GlueEnum: BOPAlgo_GlueEnum;
   StlAPI_Writer: typeof StlAPI_Writer;
+  StlAPI_Reader: typeof StlAPI_Reader;
   BRepGProp_Face: typeof BRepGProp_Face;
   BRepGProp_Face_1: typeof BRepGProp_Face_1;
   BRepGProp_Face_2: typeof BRepGProp_Face_2;
   BRepGProp: typeof BRepGProp;
   IFSelect_ReturnStatus: IFSelect_ReturnStatus;
+  XSControl_Reader: typeof XSControl_Reader;
+  XSControl_Reader_1: typeof XSControl_Reader_1;
+  XSControl_Reader_2: typeof XSControl_Reader_2;
+  XSControl_Reader_3: typeof XSControl_Reader_3;
   BRepFeat_Form: typeof BRepFeat_Form;
   BRepFeat_MakeDPrism: typeof BRepFeat_MakeDPrism;
   BRepFeat_MakeDPrism_1: typeof BRepFeat_MakeDPrism_1;
@@ -6033,6 +6148,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   TopoDS_Shape: typeof TopoDS_Shape;
   TopoDS_CompSolid: typeof TopoDS_CompSolid;
   TopoDS_Face: typeof TopoDS_Face;
+  ShapeUpgrade_UnifySameDomain: typeof ShapeUpgrade_UnifySameDomain;
+  ShapeUpgrade_UnifySameDomain_1: typeof ShapeUpgrade_UnifySameDomain_1;
+  ShapeUpgrade_UnifySameDomain_2: typeof ShapeUpgrade_UnifySameDomain_2;
   TColgp_Array2OfPnt: typeof TColgp_Array2OfPnt;
   TColgp_Array2OfPnt_1: typeof TColgp_Array2OfPnt_1;
   TColgp_Array2OfPnt_2: typeof TColgp_Array2OfPnt_2;
@@ -6297,6 +6415,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   STEPControl_Writer: typeof STEPControl_Writer;
   STEPControl_Writer_1: typeof STEPControl_Writer_1;
   STEPControl_Writer_2: typeof STEPControl_Writer_2;
+  STEPControl_Reader: typeof STEPControl_Reader;
+  STEPControl_Reader_1: typeof STEPControl_Reader_1;
+  STEPControl_Reader_2: typeof STEPControl_Reader_2;
   STEPControl_StepModelType: STEPControl_StepModelType;
   BRepLib: typeof BRepLib;
   BRepPrimAPI_MakeTorus: typeof BRepPrimAPI_MakeTorus;

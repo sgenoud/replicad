@@ -205,6 +205,12 @@ mainBuild:
     - symbol: ShapeFix_Face
     - symbol: ShapeFix_Wire
 
+    - symbol: STEPControl_Reader
+    - symbol: IGESControl_Reader
+    - symbol: XSControl_Reader
+    - symbol: StlAPI_Reader
+    - symbol: ShapeUpgrade_UnifySameDomain
+
     #- symbol: BRepCheck_Analyzer
     #- symbol: BRepCheck_Status
     #- symbol: BRepCheck_Result
