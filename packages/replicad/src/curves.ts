@@ -27,7 +27,7 @@ export const curvesBoundingBox = (curves: Geom2d_Curve[]): BoundingBox2d => {
 
 export function curvesAsEdgesOnPlane(curves: Geom2d_Curve[], plane: Plane) {
   const [r, gc] = localGC();
-  const ax = r(makeAx2(plane.origin, plane.zDir));
+  const ax = r(makeAx2(plane.origin, plane.zDir, plane.xDir));
 
   const oc = getOC();
 

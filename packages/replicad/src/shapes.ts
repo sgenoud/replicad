@@ -744,6 +744,12 @@ export class Face extends Shape<TopoDS_Face> {
     return new Surface(this._geomAdaptor());
   }
 
+  get orientation(): "forward" | "backward" {
+    const orient = this.wrapped.Orientation_1();
+    if (orient === this.oc.TopAbs_Orientation.TopAbs_FORWARD) return "forward";
+    return "backward";
+  }
+
   get geomType(): SurfaceType {
     const surface = this.surface;
     const geomType = surface.surfaceType;
@@ -900,7 +906,7 @@ export class Face extends Shape<TopoDS_Face> {
     // triangulatedFace.tex_coord = null;
 
     // write triangle buffer
-    const orient = this.wrapped.Orientation_1();
+    const orient = this.orientation;
     const triangles = triangulation.get().Triangles();
     triangulatedFace.trianglesIndexes = new Array(triangles.Length() * 3);
     let validFaceTriCount = 0;
@@ -909,7 +915,7 @@ export class Face extends Shape<TopoDS_Face> {
       let n1 = t.Value(1);
       let n2 = t.Value(2);
       const n3 = t.Value(3);
-      if (orient !== this.oc.TopAbs_Orientation.TopAbs_FORWARD) {
+      if (orient === "backward") {
         const tmp = n1;
         n1 = n2;
         n2 = tmp;
@@ -1210,4 +1216,3 @@ export function cast(shape: TopoDS_Shape): AnyShape {
   if (!Klass) throw new Error("Could not find a wrapper for this shape type");
   return new Klass(downcast(shape));
 }
-
