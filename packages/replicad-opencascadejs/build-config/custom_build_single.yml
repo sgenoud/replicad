@@ -148,13 +148,13 @@ mainBuild:
     - symbol: Law_BSpFunc
     - symbol: Law_S
 
-    - symbol: BRepAlgoAPI_BuilderAlgo
     - symbol: BRepAlgoAPI_Algo
     - symbol: BRepAlgoAPI_BuilderAlgo
     - symbol: BRepAlgoAPI_BooleanOperation
     - symbol: BRepAlgoAPI_Cut
     - symbol: BRepAlgoAPI_Fuse
     - symbol: BOPAlgo_GlueEnum
+    - symbol: BOPAlgo_Options
     - symbol: BRepAlgoAPI_Section
     - symbol: BRepAlgoAPI_Common
 
@@ -206,7 +206,6 @@ mainBuild:
     - symbol: ShapeFix_Wire
 
     - symbol: STEPControl_Reader
-    - symbol: IGESControl_Reader
     - symbol: XSControl_Reader
     - symbol: StlAPI_Reader
     - symbol: ShapeUpgrade_UnifySameDomain

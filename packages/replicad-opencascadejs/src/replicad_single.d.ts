@@ -373,6 +373,21 @@ export declare class BRepAlgoAPI_Cut extends BRepAlgoAPI_BooleanOperation {
 
 export declare class BRepAlgoAPI_Algo extends BRepBuilderAPI_MakeShape {
   Shape(): TopoDS_Shape;
+  Clear(): void;
+  SetRunParallel(theFlag: Standard_Boolean): void;
+  RunParallel(): Standard_Boolean;
+  SetFuzzyValue(theFuzz: Quantity_AbsorbedDose): void;
+  FuzzyValue(): Quantity_AbsorbedDose;
+  HasErrors(): Standard_Boolean;
+  HasWarnings(): Standard_Boolean;
+  HasError(theType: Handle_Standard_Type): Standard_Boolean;
+  HasWarning(theType: Handle_Standard_Type): Standard_Boolean;
+  DumpErrors(theOS: Standard_OStream): void;
+  DumpWarnings(theOS: Standard_OStream): void;
+  ClearWarnings(): void;
+  GetReport(): Handle_Message_Report;
+  SetProgressIndicator(theProgress: Message_ProgressScope): void;
+  SetUseOBB(theUseOBB: Standard_Boolean): void;
   delete(): void;
 }
 
@@ -1660,23 +1675,6 @@ export declare class GCPnts_TangentialDeflection {
     constructor(C: Adaptor2d_Curve2d, FirstParameter: Quantity_AbsorbedDose, LastParameter: Quantity_AbsorbedDose, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose);
   }
 
-export declare class IGESControl_Reader extends XSControl_Reader {
-  SetReadVisible(ReadRoot: Standard_Boolean): void;
-  GetReadVisible(): Standard_Boolean;
-  IGESModel(): Handle_IGESData_IGESModel;
-  NbRootsForTransfer(): Graphic3d_ZLayerId;
-  PrintTransferInfo(failwarn: IFSelect_PrintFail, mode: IFSelect_PrintCount): void;
-  delete(): void;
-}
-
-  export declare class IGESControl_Reader_1 extends IGESControl_Reader {
-    constructor();
-  }
-
-  export declare class IGESControl_Reader_2 extends IGESControl_Reader {
-    constructor(WS: Handle_XSControl_WorkSession, scratch: Standard_Boolean);
-  }
-
 export declare class BndLib_Add2dCurve {
   constructor();
   static Add_1(C: Adaptor2d_Curve2d, Tol: Quantity_AbsorbedDose, B: Bnd_Box2d): void;
@@ -1774,7 +1772,7 @@ export declare class GeomLib {
   static Inertia(Points: TColgp_Array1OfPnt, Bary: gp_Pnt, XDir: gp_Dir, YDir: gp_Dir, Xgap: Quantity_AbsorbedDose, YGap: Quantity_AbsorbedDose, ZGap: Quantity_AbsorbedDose): void;
   static RemovePointsFromArray(NumPoints: Graphic3d_ZLayerId, InParameters: TColStd_Array1OfReal, OutParameters: Handle_TColStd_HArray1OfReal): void;
   static DensifyArray1OfReal(MinNumPoints: Graphic3d_ZLayerId, InParameters: TColStd_Array1OfReal, OutParameters: Handle_TColStd_HArray1OfReal): void;
-  static FuseIntervals(Interval1: TColStd_Array1OfReal, Interval2: TColStd_Array1OfReal, Fusion: TColStd_SequenceOfReal, Confusion: Quantity_AbsorbedDose): void;
+  static FuseIntervals(Interval1: TColStd_Array1OfReal, Interval2: TColStd_Array1OfReal, Fusion: TColStd_SequenceOfReal, Confusion: Quantity_AbsorbedDose, IsAdjustToFirstInterval: Standard_Boolean): void;
   static EvalMaxParametricDistance(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: Quantity_AbsorbedDose, Parameters: TColStd_Array1OfReal, MaxDistance: Quantity_AbsorbedDose): void;
   static EvalMaxDistanceAlongParameter(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: Quantity_AbsorbedDose, Parameters: TColStd_Array1OfReal, MaxDistance: Quantity_AbsorbedDose): void;
   static CancelDenominatorDerivative(BSurf: Handle_Geom_BSplineSurface, UDirection: Standard_Boolean, VDirection: Standard_Boolean): void;
@@ -2037,6 +2035,39 @@ export declare type BOPAlgo_GlueEnum = {
   BOPAlgo_GlueShift: {};
   BOPAlgo_GlueFull: {};
 }
+
+export declare class BOPAlgo_Options {
+  Allocator(): Handle_NCollection_BaseAllocator;
+  Clear(): void;
+  AddError(theAlert: Handle_Message_Alert): void;
+  AddWarning(theAlert: Handle_Message_Alert): void;
+  HasErrors(): Standard_Boolean;
+  HasError(theType: Handle_Standard_Type): Standard_Boolean;
+  HasWarnings(): Standard_Boolean;
+  HasWarning(theType: Handle_Standard_Type): Standard_Boolean;
+  GetReport(): Handle_Message_Report;
+  DumpErrors(theOS: Standard_OStream): void;
+  DumpWarnings(theOS: Standard_OStream): void;
+  ClearWarnings(): void;
+  static GetParallelMode(): Standard_Boolean;
+  static SetParallelMode(theNewMode: Standard_Boolean): void;
+  SetRunParallel(theFlag: Standard_Boolean): void;
+  RunParallel(): Standard_Boolean;
+  SetFuzzyValue(theFuzz: Quantity_AbsorbedDose): void;
+  FuzzyValue(): Quantity_AbsorbedDose;
+  SetProgressIndicator(theProgress: Message_ProgressScope): void;
+  SetUseOBB(theUseOBB: Standard_Boolean): void;
+  UseOBB(): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class BOPAlgo_Options_1 extends BOPAlgo_Options {
+    constructor();
+  }
+
+  export declare class BOPAlgo_Options_2 extends BOPAlgo_Options {
+    constructor(theAllocator: Handle_NCollection_BaseAllocator);
+  }
 
 export declare class StlAPI_Writer {
   constructor()
@@ -6077,9 +6108,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GCPnts_TangentialDeflection_3: typeof GCPnts_TangentialDeflection_3;
   GCPnts_TangentialDeflection_4: typeof GCPnts_TangentialDeflection_4;
   GCPnts_TangentialDeflection_5: typeof GCPnts_TangentialDeflection_5;
-  IGESControl_Reader: typeof IGESControl_Reader;
-  IGESControl_Reader_1: typeof IGESControl_Reader_1;
-  IGESControl_Reader_2: typeof IGESControl_Reader_2;
   BndLib_Add2dCurve: typeof BndLib_Add2dCurve;
   GCE2d_MakeArcOfCircle: typeof GCE2d_MakeArcOfCircle;
   GCE2d_MakeArcOfCircle_1: typeof GCE2d_MakeArcOfCircle_1;
@@ -6122,6 +6150,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRep_Tool: typeof BRep_Tool;
   StdPrs_ToolTriangulatedShape: typeof StdPrs_ToolTriangulatedShape;
   BOPAlgo_GlueEnum: BOPAlgo_GlueEnum;
+  BOPAlgo_Options: typeof BOPAlgo_Options;
+  BOPAlgo_Options_1: typeof BOPAlgo_Options_1;
+  BOPAlgo_Options_2: typeof BOPAlgo_Options_2;
   StlAPI_Writer: typeof StlAPI_Writer;
   StlAPI_Reader: typeof StlAPI_Reader;
   BRepGProp_Face: typeof BRepGProp_Face;
