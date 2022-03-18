@@ -1,6 +1,6 @@
 {
   "name": "replicad",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "The library to build browser based 3D models with code",
   "keywords": [
     "cad",
@@ -36,7 +36,7 @@
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.1.0",
     "prettier": "^2.4.1",
-    "replicad-opencascadejs": "^0.7.0",
+    "replicad-opencascadejs": "^0.8.0",
     "rollup": "^2.58.0",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-terser": "^7.0.2",
