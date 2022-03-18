@@ -8,7 +8,7 @@ export type SplineConfig =
   | SplineTangent
   | {
       endTangent?: SplineTangent;
-      startSkew?: StartSplineTangent;
+      startTangent?: StartSplineTangent;
       startFactor?: number;
       endFactor?: number;
     };
@@ -48,7 +48,6 @@ export const defaultsSplineConfig = (
   let endTangent: Point2D | "symmetric";
   if (typeof endTgt === "number") {
     endTangent = polarToCartesian(1, endTgt * DEG2RAD);
-    console.log(endTangent);
   } else {
     endTangent = endTgt;
   }
