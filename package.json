@@ -4,6 +4,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+      "prepare-packages": "lerna exec yarn build --no-private --no-bail",
+      "publish-packages": "lerna publish"
+  },
   "devDependencies": {
     "eslint": "^8.1.0",
     "lerna": "^4.0.0",
