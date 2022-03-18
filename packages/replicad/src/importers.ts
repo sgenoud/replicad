@@ -7,6 +7,8 @@ const uniqueId = () =>
 
 /**
  * Creates a new shapes from a STEP file (as a Blob or a File).
+ *
+ * @category Import
  */
 export async function importSTEP(STLBlob: Blob) {
   const oc = getOC();
@@ -39,6 +41,8 @@ export async function importSTEP(STLBlob: Blob) {
  *
  * This function tries to clean a bit the triangulation of faces, but can fail
  * in bad ways.
+ *
+ * @category Import
  */
 export async function importSTL(STLBlob: Blob) {
   const oc = getOC();
