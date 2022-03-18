@@ -59,14 +59,12 @@ export default class CompoundBlueprint implements BlueprintInterface {
     );
   }
 
-  sketchOnPlane(plane: Plane): CompoundSketch;
-  sketchOnPlane(plane?: PlaneName, origin?: Point | number): CompoundSketch;
   sketchOnPlane(
     plane?: PlaneName | Plane,
     origin?: Point | number
   ): CompoundSketch {
     const sketches = this.blueprints.map((blueprint) =>
-      plane ? blueprint.sketchOnPlane() : blueprint.sketchOnPlane(plane, origin)
+        blueprint.sketchOnPlane(plane, origin)
     );
 
     return new CompoundSketch(sketches);

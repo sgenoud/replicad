@@ -96,8 +96,6 @@ export default class Blueprint implements BlueprintInterface {
     return bp;
   }
 
-  sketchOnPlane(inputPlane: Plane): Sketch;
-  sketchOnPlane(inputPlane?: PlaneName, origin?: Point | number): Sketch;
   sketchOnPlane(
     inputPlane?: PlaneName | Plane,
     origin?: Point | number

@@ -55,13 +55,9 @@ export default class Blueprints implements BlueprintInterface {
     );
   }
 
-  sketchOnPlane(plane: Plane): Sketches;
-  sketchOnPlane(plane?: PlaneName, origin?: Point | number): Sketches;
   sketchOnPlane(plane?: PlaneName | Plane, origin?: Point | number): Sketches {
     return new Sketches(
-      this.blueprints.map((bp) =>
-        plane ? bp.sketchOnPlane() : bp.sketchOnPlane(plane, origin)
-      )
+      this.blueprints.map((bp) => bp.sketchOnPlane(plane, origin))
     );
   }
 
