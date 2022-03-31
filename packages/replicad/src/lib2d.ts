@@ -47,6 +47,16 @@ export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
     return [xmin + (xmax - xmin) / 2, ymin + (ymax - ymin) / 2];
   }
 
+  get width(): number {
+    const [[xmin], [xmax]] = this.bounds;
+    return Math.abs(xmax - xmin);
+  }
+
+  get height(): number {
+    const [[ymin], [, ymax]] = this.bounds;
+    return Math.abs(ymax - ymin);
+  }
+
   outsidePoint(paddingPercent = 1): Point2D {
     const [min, max] = this.bounds;
     const width = max[0] - min[0];
