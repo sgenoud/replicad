@@ -1675,6 +1675,15 @@ export declare class GCPnts_TangentialDeflection {
     constructor(C: Adaptor2d_Curve2d, FirstParameter: Quantity_AbsorbedDose, LastParameter: Quantity_AbsorbedDose, AngularDeflection: Quantity_AbsorbedDose, CurvatureDeflection: Quantity_AbsorbedDose, MinimumOfPoints: Graphic3d_ZLayerId, UTol: Quantity_AbsorbedDose, theMinLen: Quantity_AbsorbedDose);
   }
 
+export declare class BRepBndLib {
+  constructor();
+  static Add(S: TopoDS_Shape, B: Bnd_Box, useTriangulation: Standard_Boolean): void;
+  static AddClose(S: TopoDS_Shape, B: Bnd_Box): void;
+  static AddOptimal(S: TopoDS_Shape, B: Bnd_Box, useTriangulation: Standard_Boolean, useShapeTolerance: Standard_Boolean): void;
+  static AddOBB(theS: TopoDS_Shape, theOBB: Bnd_OBB, theIsTriangulationUsed: Standard_Boolean, theIsOptimal: Standard_Boolean, theIsShapeToleranceUsed: Standard_Boolean): void;
+  delete(): void;
+}
+
 export declare class BndLib_Add2dCurve {
   constructor();
   static Add_1(C: Adaptor2d_Curve2d, Tol: Quantity_AbsorbedDose, B: Bnd_Box2d): void;
@@ -2068,6 +2077,13 @@ export declare class BOPAlgo_Options {
   export declare class BOPAlgo_Options_2 extends BOPAlgo_Options {
     constructor(theAllocator: Handle_NCollection_BaseAllocator);
   }
+
+export declare class StlAPI {
+  constructor();
+  static Write(theShape: TopoDS_Shape, theFile: Standard_CString, theAsciiMode: Standard_Boolean): Standard_Boolean;
+  static Read(theShape: TopoDS_Shape, aFile: Standard_CString): Standard_Boolean;
+  delete(): void;
+}
 
 export declare class StlAPI_Writer {
   constructor()
@@ -5356,6 +5372,137 @@ export declare class Bnd_Box2d {
   delete(): void;
 }
 
+export declare class Bnd_Box {
+  SetWhole(): void;
+  SetVoid(): void;
+  Set_1(P: gp_Pnt): void;
+  Set_2(P: gp_Pnt, D: gp_Dir): void;
+  Update_1(aXmin: Quantity_AbsorbedDose, aYmin: Quantity_AbsorbedDose, aZmin: Quantity_AbsorbedDose, aXmax: Quantity_AbsorbedDose, aYmax: Quantity_AbsorbedDose, aZmax: Quantity_AbsorbedDose): void;
+  Update_2(X: Quantity_AbsorbedDose, Y: Quantity_AbsorbedDose, Z: Quantity_AbsorbedDose): void;
+  GetGap(): Quantity_AbsorbedDose;
+  SetGap(Tol: Quantity_AbsorbedDose): void;
+  Enlarge(Tol: Quantity_AbsorbedDose): void;
+  Get(theXmin: Quantity_AbsorbedDose, theYmin: Quantity_AbsorbedDose, theZmin: Quantity_AbsorbedDose, theXmax: Quantity_AbsorbedDose, theYmax: Quantity_AbsorbedDose, theZmax: Quantity_AbsorbedDose): void;
+  CornerMin(): gp_Pnt;
+  CornerMax(): gp_Pnt;
+  OpenXmin(): void;
+  OpenXmax(): void;
+  OpenYmin(): void;
+  OpenYmax(): void;
+  OpenZmin(): void;
+  OpenZmax(): void;
+  IsOpen(): Standard_Boolean;
+  IsOpenXmin(): Standard_Boolean;
+  IsOpenXmax(): Standard_Boolean;
+  IsOpenYmin(): Standard_Boolean;
+  IsOpenYmax(): Standard_Boolean;
+  IsOpenZmin(): Standard_Boolean;
+  IsOpenZmax(): Standard_Boolean;
+  IsWhole(): Standard_Boolean;
+  IsVoid(): Standard_Boolean;
+  IsXThin(tol: Quantity_AbsorbedDose): Standard_Boolean;
+  IsYThin(tol: Quantity_AbsorbedDose): Standard_Boolean;
+  IsZThin(tol: Quantity_AbsorbedDose): Standard_Boolean;
+  IsThin(tol: Quantity_AbsorbedDose): Standard_Boolean;
+  Transformed(T: gp_Trsf): Bnd_Box;
+  Add_1(Other: Bnd_Box): void;
+  Add_2(P: gp_Pnt): void;
+  Add_3(P: gp_Pnt, D: gp_Dir): void;
+  Add_4(D: gp_Dir): void;
+  IsOut_1(P: gp_Pnt): Standard_Boolean;
+  IsOut_2(L: gp_Lin): Standard_Boolean;
+  IsOut_3(P: gp_Pln): Standard_Boolean;
+  IsOut_4(Other: Bnd_Box): Standard_Boolean;
+  IsOut_5(Other: Bnd_Box, T: gp_Trsf): Standard_Boolean;
+  IsOut_6(T1: gp_Trsf, Other: Bnd_Box, T2: gp_Trsf): Standard_Boolean;
+  IsOut_7(P1: gp_Pnt, P2: gp_Pnt, D: gp_Dir): Standard_Boolean;
+  Distance(Other: Bnd_Box): Quantity_AbsorbedDose;
+  Dump(): void;
+  SquareExtent(): Quantity_AbsorbedDose;
+  FinitePart(): Bnd_Box;
+  HasFinitePart(): Standard_Boolean;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  InitFromJson(theSStream: Standard_SStream, theStreamPos: Graphic3d_ZLayerId): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class Bnd_Box_1 extends Bnd_Box {
+    constructor();
+  }
+
+  export declare class Bnd_Box_2 extends Bnd_Box {
+    constructor(theMin: gp_Pnt, theMax: gp_Pnt);
+  }
+
+export declare class Bnd_OBB {
+  ReBuild(theListOfPoints: TColgp_Array1OfPnt, theListOfTolerances: TColStd_Array1OfReal, theIsOptimal: Standard_Boolean): void;
+  SetCenter(theCenter: gp_Pnt): void;
+  SetXComponent(theXDirection: gp_Dir, theHXSize: Quantity_AbsorbedDose): void;
+  SetYComponent(theYDirection: gp_Dir, theHYSize: Quantity_AbsorbedDose): void;
+  SetZComponent(theZDirection: gp_Dir, theHZSize: Quantity_AbsorbedDose): void;
+  Position(): gp_Ax3;
+  Center(): gp_XYZ;
+  XDirection(): gp_XYZ;
+  YDirection(): gp_XYZ;
+  ZDirection(): gp_XYZ;
+  XHSize(): Quantity_AbsorbedDose;
+  YHSize(): Quantity_AbsorbedDose;
+  ZHSize(): Quantity_AbsorbedDose;
+  IsVoid(): Standard_Boolean;
+  SetVoid(): void;
+  SetAABox(theFlag: Standard_Boolean): void;
+  IsAABox(): Standard_Boolean;
+  Enlarge(theGapAdd: Quantity_AbsorbedDose): void;
+  GetVertex(theP: gp_Pnt [8]): Standard_Boolean;
+  SquareExtent(): Quantity_AbsorbedDose;
+  IsOut_1(theOther: Bnd_OBB): Standard_Boolean;
+  IsOut_2(theP: gp_Pnt): Standard_Boolean;
+  IsCompletelyInside(theOther: Bnd_OBB): Standard_Boolean;
+  Add_1(theOther: Bnd_OBB): void;
+  Add_2(theP: gp_Pnt): void;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  delete(): void;
+}
+
+  export declare class Bnd_OBB_1 extends Bnd_OBB {
+    constructor();
+  }
+
+  export declare class Bnd_OBB_2 extends Bnd_OBB {
+    constructor(theCenter: gp_Pnt, theXDirection: gp_Dir, theYDirection: gp_Dir, theZDirection: gp_Dir, theHXSize: Quantity_AbsorbedDose, theHYSize: Quantity_AbsorbedDose, theHZSize: Quantity_AbsorbedDose);
+  }
+
+  export declare class Bnd_OBB_3 extends Bnd_OBB {
+    constructor(theBox: Bnd_Box);
+  }
+
+export declare class Geom2dAPI_ProjectPointOnCurve {
+  Init_1(P: gp_Pnt2d, Curve: Handle_Geom2d_Curve): void;
+  Init_2(P: gp_Pnt2d, Curve: Handle_Geom2d_Curve, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose): void;
+  NbPoints(): Graphic3d_ZLayerId;
+  Point(Index: Graphic3d_ZLayerId): gp_Pnt2d;
+  Parameter_1(Index: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  Parameter_2(Index: Graphic3d_ZLayerId, U: Quantity_AbsorbedDose): void;
+  Distance(Index: Graphic3d_ZLayerId): Quantity_AbsorbedDose;
+  NearestPoint(): gp_Pnt2d;
+  LowerDistanceParameter(): Quantity_AbsorbedDose;
+  LowerDistance(): Quantity_AbsorbedDose;
+  Extrema(): Extrema_ExtPC2d;
+  delete(): void;
+}
+
+  export declare class Geom2dAPI_ProjectPointOnCurve_1 extends Geom2dAPI_ProjectPointOnCurve {
+    constructor();
+  }
+
+  export declare class Geom2dAPI_ProjectPointOnCurve_2 extends Geom2dAPI_ProjectPointOnCurve {
+    constructor(P: gp_Pnt2d, Curve: Handle_Geom2d_Curve);
+  }
+
+  export declare class Geom2dAPI_ProjectPointOnCurve_3 extends Geom2dAPI_ProjectPointOnCurve {
+    constructor(P: gp_Pnt2d, Curve: Handle_Geom2d_Curve, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose);
+  }
+
 export declare class Geom2dAPI_InterCurveCurve {
   Init_1(C1: Handle_Geom2d_Curve, C2: Handle_Geom2d_Curve, Tol: Quantity_AbsorbedDose): void;
   Init_2(C1: Handle_Geom2d_Curve, Tol: Quantity_AbsorbedDose): void;
@@ -6108,6 +6255,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GCPnts_TangentialDeflection_3: typeof GCPnts_TangentialDeflection_3;
   GCPnts_TangentialDeflection_4: typeof GCPnts_TangentialDeflection_4;
   GCPnts_TangentialDeflection_5: typeof GCPnts_TangentialDeflection_5;
+  BRepBndLib: typeof BRepBndLib;
   BndLib_Add2dCurve: typeof BndLib_Add2dCurve;
   GCE2d_MakeArcOfCircle: typeof GCE2d_MakeArcOfCircle;
   GCE2d_MakeArcOfCircle_1: typeof GCE2d_MakeArcOfCircle_1;
@@ -6153,6 +6301,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BOPAlgo_Options: typeof BOPAlgo_Options;
   BOPAlgo_Options_1: typeof BOPAlgo_Options_1;
   BOPAlgo_Options_2: typeof BOPAlgo_Options_2;
+  StlAPI: typeof StlAPI;
   StlAPI_Writer: typeof StlAPI_Writer;
   StlAPI_Reader: typeof StlAPI_Reader;
   BRepGProp_Face: typeof BRepGProp_Face;
@@ -6508,6 +6657,17 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepFilletAPI_MakeFillet: typeof BRepFilletAPI_MakeFillet;
   BRepFilletAPI_LocalOperation: typeof BRepFilletAPI_LocalOperation;
   Bnd_Box2d: typeof Bnd_Box2d;
+  Bnd_Box: typeof Bnd_Box;
+  Bnd_Box_1: typeof Bnd_Box_1;
+  Bnd_Box_2: typeof Bnd_Box_2;
+  Bnd_OBB: typeof Bnd_OBB;
+  Bnd_OBB_1: typeof Bnd_OBB_1;
+  Bnd_OBB_2: typeof Bnd_OBB_2;
+  Bnd_OBB_3: typeof Bnd_OBB_3;
+  Geom2dAPI_ProjectPointOnCurve: typeof Geom2dAPI_ProjectPointOnCurve;
+  Geom2dAPI_ProjectPointOnCurve_1: typeof Geom2dAPI_ProjectPointOnCurve_1;
+  Geom2dAPI_ProjectPointOnCurve_2: typeof Geom2dAPI_ProjectPointOnCurve_2;
+  Geom2dAPI_ProjectPointOnCurve_3: typeof Geom2dAPI_ProjectPointOnCurve_3;
   Geom2dAPI_InterCurveCurve: typeof Geom2dAPI_InterCurveCurve;
   Geom2dAPI_InterCurveCurve_1: typeof Geom2dAPI_InterCurveCurve_1;
   Geom2dAPI_InterCurveCurve_2: typeof Geom2dAPI_InterCurveCurve_2;

@@ -62,6 +62,12 @@ mainBuild:
     - symbol: Bnd_Box2d
     - symbol: BndLib_Add2dCurve
     - symbol: Geom2dAPI_InterCurveCurve
+    - symbol: Geom2dAPI_ProjectPointOnCurve 
+
+
+    - symbol: Bnd_Box
+    - symbol: Bnd_OBB
+    - symbol: BRepBndLib
 
     - symbol: GeomAbs_CurveType
     - symbol: GeomAbs_SurfaceType
@@ -210,11 +216,8 @@ mainBuild:
     - symbol: StlAPI_Reader
     - symbol: ShapeUpgrade_UnifySameDomain
 
-    #- symbol: BRepCheck_Analyzer
-    #- symbol: BRepCheck_Status
-    #- symbol: BRepCheck_Result
-    #- symbol: Handle_BRepCheck_Result
-    #- symbol: BRepCheck_ListOfStatus
+    - symbol: StlAPI
+
 
   emccFlags:
     - -sEXPORT_ES6=1
