@@ -8,6 +8,7 @@ import {
   rotateTransform2d,
   ScaleMode,
   stretchTransform2d,
+  scaleTransform2d,
   transformCurves,
   translationTransform2d,
 } from "../curves";
@@ -55,6 +56,18 @@ export default class Blueprint implements BlueprintInterface {
   ): Blueprint {
     const [r, gc] = localGC();
     const transform = r(stretchTransform2d(ratio, direction, origin));
+    const bp = new Blueprint(
+      transformCurves(this.curves, transform).map((c) => c.get())
+    );
+    gc();
+    return bp;
+  }
+
+  scale(scaleFactor: number, center?: Point2D): Blueprint {
+    const [r, gc] = localGC();
+
+    const centerPoint = center || this.boundingBox.center;
+    const transform = r(scaleTransform2d(scaleFactor, centerPoint));
     const bp = new Blueprint(
       transformCurves(this.curves, transform).map((c) => c.get())
     );

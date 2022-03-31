@@ -132,9 +132,23 @@ export const rotateTransform2d = (
 
   const rotation = new oc.gp_Trsf2d_1();
   rotation.SetRotation(r(pnt(center)), angle);
-  gc();
 
   const transform = new oc.gp_GTrsf2d_2(rotation);
+  gc();
+  return transform;
+};
+
+export const scaleTransform2d = (
+  scaleFactor: number,
+  center: Point2D = [0, 0]
+): gp_GTrsf2d => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const scaling = new oc.gp_Trsf2d_1();
+  scaling.SetScale(r(pnt(center)), scaleFactor);
+
+  const transform = new oc.gp_GTrsf2d_2(scaling);
   gc();
   return transform;
 };

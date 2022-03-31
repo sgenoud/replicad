@@ -43,6 +43,13 @@ export default class CompoundBlueprint implements BlueprintInterface {
     );
   }
 
+  scale(scaleFactor: number, center: Point2D): CompoundBlueprint {
+    const centerPoint = center || this.boundingBox.center;
+    return new CompoundBlueprint(
+      this.blueprints.map((bp) => bp.scale(scaleFactor, centerPoint))
+    );
+  }
+
   translate(xDist: number, yDist: number): CompoundBlueprint {
     return new CompoundBlueprint(
       this.blueprints.map((bp) => bp.translate(xDist, yDist))
@@ -64,7 +71,7 @@ export default class CompoundBlueprint implements BlueprintInterface {
     origin?: Point | number
   ): CompoundSketch {
     const sketches = this.blueprints.map((blueprint) =>
-        blueprint.sketchOnPlane(plane, origin)
+      blueprint.sketchOnPlane(plane, origin)
     );
 
     return new CompoundSketch(sketches);

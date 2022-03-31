@@ -39,6 +39,13 @@ export default class Blueprints implements BlueprintInterface {
     );
   }
 
+  scale(scaleFactor: number, center?: Point2D): Blueprints {
+    const centerPoint = center || this.boundingBox.center;
+    return new Blueprints(
+      this.blueprints.map((bp) => bp.scale(scaleFactor, centerPoint))
+    );
+  }
+
   translate(xDist: number, yDist: number): Blueprints {
     return new Blueprints(
       this.blueprints.map((bp) => bp.translate(xDist, yDist))
