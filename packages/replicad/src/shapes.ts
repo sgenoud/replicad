@@ -1,4 +1,4 @@
-import { WrappingObj, localGC } from "./register.js";
+import { WrappingObj, GCWithScope } from "./register.js";
 import { Vector, Point, Plane, PlaneName, asPnt } from "./geom.js";
 import { HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
@@ -334,7 +334,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     lines: number[];
     edgeGroups: { start: number; count: number; edgeId: number }[];
   } {
-    const [r, gc] = localGC();
+    const r = GCWithScope();
     const recordedEdges = new Set();
     const lines: number[] = [];
     const edgeGroups: { start: number; count: number; edgeId: number }[] = [];
@@ -439,7 +439,6 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
       done(edgeHash);
     }
 
-    gc();
     return { lines, edgeGroups };
   }
 
@@ -792,7 +791,7 @@ export class Face extends Shape<TopoDS_Face> {
     let u = 0;
     let v = 0;
 
-    const [r, gc] = localGC();
+    const r = GCWithScope();
 
     if (!locationVector) {
       const { uMin, uMax, vMin, vMax } = this.UVBounds;
@@ -824,7 +823,6 @@ export class Face extends Shape<TopoDS_Face> {
     props.Normal(u, v, p, vn);
 
     const normal = new Vector(vn);
-    gc();
     return normal;
   }
 

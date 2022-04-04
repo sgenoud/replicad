@@ -1,5 +1,5 @@
 import { Vector, Plane, Point } from "../geom.js";
-import { localGC, RegisteredObj } from "../register.js";
+import { localGC } from "../register.js";
 import { makeFace, makeNewFaceWithinFace } from "../shapeHelpers.js";
 import {
   basicFaceExtrusion,
@@ -23,7 +23,7 @@ import { SketchInterface } from "./lib.js";
  *
  * @category Sketching
  */
-export default class Sketch extends RegisteredObj implements SketchInterface {
+export default class Sketch implements SketchInterface {
   wire: Wire;
   /**
    * @ignore
@@ -46,7 +46,6 @@ export default class Sketch extends RegisteredObj implements SketchInterface {
       defaultDirection?: Point;
     } = {}
   ) {
-    super();
     this.wire = wire;
     this.defaultOrigin = defaultOrigin;
     this.defaultDirection = defaultDirection;
@@ -67,7 +66,6 @@ export default class Sketch extends RegisteredObj implements SketchInterface {
     this._defaultOrigin.delete();
     this._defaultDirection.delete();
     this.baseFace && this.baseFace.delete();
-    super.delete();
   }
 
   clone(): Sketch {

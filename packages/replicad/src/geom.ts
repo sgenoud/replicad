@@ -1,4 +1,4 @@
-import { WrappingObj, RegisteredObj, localGC } from "./register.js";
+import { WrappingObj,  GCWithScope } from "./register.js";
 import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { getOC } from "./oclib.js";
 
@@ -241,7 +241,7 @@ export class Transformation extends WrappingObj<gp_Trsf> {
     inputPlane: Plane | PlaneName | Point = "YZ",
     inputOrigin?: Point
   ): this {
-    const [r, gc] = localGC();
+    const r = GCWithScope();
 
     let origin: Point;
     let direction: Point;
@@ -260,7 +260,6 @@ export class Transformation extends WrappingObj<gp_Trsf> {
 
     const mirrorAxis = r(makeAx2(origin, direction));
     this.wrapped.SetMirror_3(mirrorAxis);
-    gc();
 
     return this;
   }
@@ -273,7 +272,7 @@ export class Transformation extends WrappingObj<gp_Trsf> {
   }
 
   coordSystemChange(fromSystem: CoordSystem, toSystem: CoordSystem): this {
-    const [r, gc] = localGC();
+    const r = GCWithScope();
     const fromAx = r(
       fromSystem === "reference"
         ? new this.oc.gp_Ax3_1()
@@ -286,7 +285,6 @@ export class Transformation extends WrappingObj<gp_Trsf> {
         : makeAx3(toSystem.origin, toSystem.zDir, toSystem.xDir)
     );
     this.wrapped.SetTransformation_1(fromAx, toAx);
-    gc();
     return this;
   }
 
@@ -307,7 +305,7 @@ export class Transformation extends WrappingObj<gp_Trsf> {
   }
 }
 
-export class Plane extends RegisteredObj {
+export class Plane {
   oc: OpenCascadeInstance;
 
   xDir: Vector;
@@ -326,7 +324,6 @@ export class Plane extends RegisteredObj {
     xDirection: Point | null = null,
     normal: Point = [0, 0, 1]
   ) {
-    super();
     this.oc = getOC();
 
     const zDir = new Vector(normal);
@@ -360,7 +357,6 @@ export class Plane extends RegisteredObj {
     this.yDir.delete();
     this.zDir.delete();
     this._origin.delete();
-    super.delete();
   }
 
   clone(): Plane {

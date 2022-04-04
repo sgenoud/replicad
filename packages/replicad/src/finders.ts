@@ -1,6 +1,5 @@
 import { Vector, asPnt, Point, Plane, PlaneName } from "./geom";
 import { makePlane } from "./geomHelpers";
-import { RegisteredObj } from "./register";
 import { DEG2RAD } from "./constants";
 import { Face, Edge, AnyShape, SurfaceType, CurveType } from "./shapes";
 import { getOC } from "./oclib";
@@ -22,7 +21,7 @@ const PLANE_TO_DIR: Record<StandardPlane, [number, number, number]> = {
 
 type FaceOrEdge = Face | Edge;
 
-abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
+abstract class Finder<Type extends FaceOrEdge> {
   protected filters: (({
     element,
     normal,
@@ -41,7 +40,6 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
   abstract shouldKeep(t: Type): boolean;
 
   constructor() {
-    super();
     this.filters = [];
     this.references = [];
   }
@@ -50,7 +48,6 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     this.references.forEach((r) => r.delete());
     this.references = [];
     this.filters = [];
-    super.delete();
   }
 
   /**

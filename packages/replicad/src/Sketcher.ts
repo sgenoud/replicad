@@ -1,6 +1,6 @@
 import { Plane, PlaneName, Point, Vector } from "./geom";
 import { makePlane } from "./geomHelpers";
-import { localGC, RegisteredObj } from "./register";
+import { localGC } from "./register";
 import { DEG2RAD, RAD2DEG } from "./constants";
 import { distance2d, angle2d, polarToCartesian, Point2D } from "./lib2d";
 import {
@@ -27,10 +27,7 @@ import Sketch from "./sketches/Sketch.js";
  *
  * @category Sketching
  */
-export default class Sketcher
-  extends RegisteredObj
-  implements GenericSketcher<Sketch>
-{
+export default class Sketcher implements GenericSketcher<Sketch> {
   protected plane: Plane;
   protected pointer: Vector;
   protected firstPoint: Vector;
@@ -45,8 +42,6 @@ export default class Sketcher
   constructor(plane: Plane);
   constructor(plane?: PlaneName, origin?: Point | number);
   constructor(plane?: Plane | PlaneName, origin?: Point) {
-    super();
-
     this.plane =
       plane instanceof Plane ? makePlane(plane) : makePlane(plane, origin);
 
@@ -59,7 +54,6 @@ export default class Sketcher
 
   delete(): void {
     this.plane.delete();
-    super.delete();
   }
 
   protected _updatePointer(newPointer: Vector): void {
