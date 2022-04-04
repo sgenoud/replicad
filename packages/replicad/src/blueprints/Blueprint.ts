@@ -17,7 +17,7 @@ import { assembleWire } from "../shapeHelpers";
 import { Face } from "../shapes";
 import Sketch from "../sketches/Sketch";
 
-import { localGC } from "../register";
+import { localGC, GCWithObject } from "../register";
 import { getOC } from "../oclib.js";
 import { Plane, PlaneName, Point } from "../geom";
 import { DEG2RAD } from "../constants";
@@ -34,6 +34,9 @@ export default class Blueprint implements BlueprintInterface {
   protected _boundingBox: null | BoundingBox2d;
   constructor(curves: Geom2d_Curve[]) {
     this.curves = curves;
+
+    const registerForGC = GCWithObject(this);
+    this.curves.forEach(registerForGC);
     this._boundingBox = null;
   }
 
@@ -120,7 +123,6 @@ export default class Blueprint implements BlueprintInterface {
 
     const edges = curvesAsEdgesOnPlane(this.curves, plane);
     const wire = assembleWire(edges);
-    edges.forEach((e) => e.delete());
 
     return new Sketch(wire, {
       defaultOrigin: plane.origin,
@@ -134,7 +136,6 @@ export default class Blueprint implements BlueprintInterface {
 
     const edges = curvesAsEdgesOnFace(this.curves, face, scaleMode);
     const wire = assembleWire(edges);
-    edges.forEach((e) => e.delete());
 
     oc.BRepLib.BuildCurves3d_2(wire.wrapped);
 

@@ -54,6 +54,15 @@ export const GCWithScope = () => {
   return gcWithScope;
 };
 
+export const GCWithObject = (obj: any) => {
+  function registerForGC<Type extends Deletable>(value: Type): Type {
+    deletetableRegistry.register(obj, value);
+    return value;
+  }
+
+  return registerForGC;
+};
+
 export const localGC = (
   debug?: boolean
 ): [
