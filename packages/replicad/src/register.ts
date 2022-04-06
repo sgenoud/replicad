@@ -15,6 +15,7 @@ if (!(globalThis as any).FinalizationRegistry) {
 const deletetableRegistry = new (globalThis as any).FinalizationRegistry(
   (heldValue: Deletable) => {
     try {
+      console.log("gc!");
       heldValue.delete();
     } catch (e) {
       console.error(e);
@@ -28,8 +29,6 @@ export class WrappingObj<Type extends Deletable> {
 
   constructor(wrapped: Type) {
     this.oc = getOC();
-    if (!this.oc) console.log("wrapping", this.oc);
-
     if (wrapped) {
       deletetableRegistry.register(this, wrapped, wrapped);
     }

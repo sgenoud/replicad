@@ -11,7 +11,7 @@ import {
   isShape3D,
   Shell,
 } from "./shapes";
-import { asPnt, makeAx3, makeAx2, Point, asVec } from "./geom";
+import { asPnt, makeAx3, makeAx2, Point, Vector } from "./geom";
 import { getOC } from "./oclib.js";
 import { localGC } from "./register.js";
 import { GeomAPI_PointsToBSpline } from "replicad-opencascadejs";
@@ -241,7 +241,7 @@ export const makeTangentArc = (
   const circleGeom = r(
     new oc.GC_MakeArcOfCircle_5(
       r(asPnt(startPoint)),
-      r(asVec(startTgt)),
+      new Vector(startTgt).wrapped,
       r(asPnt(endPoint))
     ).Value()
   );

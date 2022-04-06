@@ -1,4 +1,4 @@
-import { WrappingObj,  GCWithScope } from "./register.js";
+import { WrappingObj, GCWithScope } from "./register.js";
 import { DEG2RAD, RAD2DEG } from "./constants.js";
 import { getOC } from "./oclib.js";
 
@@ -197,11 +197,6 @@ export function asDir(coords: Point): gp_Dir {
   const dir = v.toDir();
   v.delete();
   return dir;
-}
-
-export function asVec(coords: Point): gp_Vec {
-  const v = new Vector(coords);
-  return v.wrapped;
 }
 
 type CoordSystem = "reference" | { origin: Point; zDir: Point; xDir: Point };

@@ -281,7 +281,6 @@ export class FaceFinder extends Finder<Face> {
     if (typeof plane !== "string" && plane.normalAt) {
       const normal = plane.normalAt();
       this.atAngleWith(normal);
-      normal.delete();
       return this;
     }
     return this;
@@ -320,9 +319,6 @@ export class FaceFinder extends Finder<Face> {
       const projectedPoint = point.projectToPlane(plane);
 
       const isSamePoint = point.equals(projectedPoint);
-      point.delete();
-      projectedPoint.delete();
-
       return isSamePoint;
     };
 
@@ -335,14 +331,12 @@ export class FaceFinder extends Finder<Face> {
     const shouldKeep = this.filters.every((filter) =>
       filter({ normal, element })
     );
-    normal.delete();
     return shouldKeep;
   }
 
   protected applyFilter(shape: AnyShape): Face[] {
     return shape.faces.filter((face: Face) => {
       const shouldKeep = this.shouldKeep(face);
-      if (!shouldKeep) face.delete();
       return shouldKeep;
     });
   }
@@ -393,7 +387,6 @@ export class EdgeFinder extends Finder<Edge> {
     if (typeof plane !== "string" && plane.normalAt) {
       const normal = plane.normalAt();
       this.atAngleWith(normal, 90);
-      normal.delete();
       return this;
     }
     return this;
@@ -420,8 +413,6 @@ export class EdgeFinder extends Finder<Edge> {
       const projectedPoint = point.projectToPlane(plane);
 
       const isSamePoint = point.equals(projectedPoint);
-      point.delete();
-      projectedPoint.delete();
 
       return isSamePoint;
     };
@@ -435,14 +426,12 @@ export class EdgeFinder extends Finder<Edge> {
     const shouldKeep = this.filters.every((filter) =>
       filter({ normal, element })
     );
-    normal.delete();
     return shouldKeep;
   }
 
   protected applyFilter(shape: AnyShape): Edge[] {
     return shape.edges.filter((edge: Edge) => {
       const shouldKeep = this.shouldKeep(edge);
-      if (!shouldKeep) edge.delete();
       return shouldKeep;
     });
   }
