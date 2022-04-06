@@ -1,4 +1,4 @@
-import { WrappingObj, localGC } from "./register.js";
+import { WrappingObj, GCWithScope } from "./register.js";
 import { Vector, Point, Plane, PlaneName, asPnt } from "./geom.js";
 import { HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
@@ -334,7 +334,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     lines: number[];
     edgeGroups: { start: number; count: number; edgeId: number }[];
   } {
-    const [r, gc] = localGC();
+    const r = GCWithScope();
     const recordedEdges = new Set();
     const lines: number[] = [];
     const edgeGroups: { start: number; count: number; edgeId: number }[] = [];
@@ -439,7 +439,6 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
       done(edgeHash);
     }
 
-    gc();
     return { lines, edgeGroups };
   }
 
@@ -792,7 +791,7 @@ export class Face extends Shape<TopoDS_Face> {
     let u = 0;
     let v = 0;
 
-    const [r, gc] = localGC();
+    const r = GCWithScope();
 
     if (!locationVector) {
       const { uMin, uMax, vMin, vMax } = this.UVBounds;
@@ -824,7 +823,6 @@ export class Face extends Shape<TopoDS_Face> {
     props.Normal(u, v, p, vn);
 
     const normal = new Vector(vn);
-    gc();
     return normal;
   }
 
@@ -1024,14 +1022,42 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    * @category Shape Modifications
    */
   shell(
-    {
-      filter,
-      thickness,
-      keepFilter,
-    }: { filter: FaceFinder; thickness: number; keepFilter?: boolean },
+    config: { filter: FaceFinder; thickness: number },
+    tolerance?: number
+  ): Shape3D;
+  shell(
+    thickness: number,
+    finderFcn: (f: FaceFinder) => FaceFinder,
+    tolerance?: number
+  ): Shape3D;
+  shell(
+    thicknessOrConfig: { filter: FaceFinder; thickness: number } | number,
+    toleranceOrFinderFcn:
+      | null
+      | number
+      | ((f: FaceFinder) => FaceFinder) = null,
     tolerance = 1e-3
   ): Shape3D {
-    const filteredFaces = filter.find(this, { clean: !keepFilter });
+    const tol =
+      typeof toleranceOrFinderFcn === "number"
+        ? toleranceOrFinderFcn
+        : tolerance;
+    let filter;
+    let thickness;
+
+    if (typeof thicknessOrConfig === "number") {
+      thickness = thicknessOrConfig;
+      const ff = new FaceFinder();
+      filter =
+        typeof toleranceOrFinderFcn === "function"
+          ? toleranceOrFinderFcn(ff)
+          : ff;
+    } else {
+      thickness = thicknessOrConfig.thickness;
+      filter = thicknessOrConfig.filter;
+    }
+
+    const filteredFaces = filter.find(this);
     const facesToRemove = new this.oc.TopTools_ListOfShape_1();
 
     filteredFaces.forEach((face: Face) => {
@@ -1044,7 +1070,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
       this.wrapped,
       facesToRemove,
       -Math.abs(thickness),
-      tolerance,
+      tol,
       this.oc.BRepOffset_Mode.BRepOffset_Skin as any,
       false,
       false,
@@ -1112,13 +1138,24 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * @category Shape Modifications
    */
-  fillet(radiusConfig: RadiusConfig): Shape3D {
+  fillet(
+    radiusConfig: RadiusConfig,
+    filter?: (e: EdgeFinder) => EdgeFinder
+  ): Shape3D {
     const filletBuilder = new this.oc.BRepFilletAPI_MakeFillet(
       this.wrapped,
       this.oc.ChFi3d_FilletShape.ChFi3d_Rational as any
     );
 
-    this._builderIter(radiusConfig, (r, e) => filletBuilder.Add_2(r, e));
+    let config = radiusConfig;
+    if (typeof radiusConfig === "number" && filter) {
+      config = {
+        radius: radiusConfig,
+        filter: filter(new EdgeFinder()),
+      };
+    }
+
+    this._builderIter(config, (r, e) => filletBuilder.Add_2(r, e));
 
     const newShape = cast(filletBuilder.Shape());
     filletBuilder.delete();
@@ -1143,10 +1180,20 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * @category Shape Modifications
    */
-  chamfer(radiusConfig: RadiusConfig): Shape3D {
+  chamfer(
+    radiusConfig: RadiusConfig,
+    filter?: (e: EdgeFinder) => EdgeFinder
+  ): Shape3D {
     const chamferBuilder = new this.oc.BRepFilletAPI_MakeChamfer(this.wrapped);
 
-    this._builderIter(radiusConfig, (r, e) => chamferBuilder.Add_2(r, e));
+    let config = radiusConfig;
+    if (typeof radiusConfig === "number" && filter) {
+      config = {
+        radius: radiusConfig,
+        filter: filter(new EdgeFinder()),
+      };
+    }
+    this._builderIter(config, (r, e) => chamferBuilder.Add_2(r, e));
 
     const newShape = cast(chamferBuilder.Shape());
     chamferBuilder.delete();

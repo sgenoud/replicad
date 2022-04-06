@@ -1,38 +1,35 @@
 import {
-  Geom2d_Curve,
   Geom_CylindricalSurface,
   gp_GTrsf2d,
-  Handle_Geom2d_Curve,
   Handle_Geom_Surface,
 } from "replicad-opencascadejs";
 
-import { localGC } from "./register";
+import { localGC, WrappingObj } from "./register";
 import { getOC } from "./oclib.js";
 
 import { Edge, Face } from "./shapes";
 import { Plane, makeAx2 } from "./geom";
-import { axis2d, pnt, Point2D, vec, BoundingBox2d } from "./lib2d";
+import { axis2d, pnt, Point2D, vec, BoundingBox2d, Curve2D } from "./lib2d";
 
-export const curvesBoundingBox = (curves: Geom2d_Curve[]): BoundingBox2d => {
+export const curvesBoundingBox = (curves: Curve2D[]): BoundingBox2d => {
   const oc = getOC();
   const boundBox = new oc.Bnd_Box2d();
 
   curves.forEach((c) => {
-    const h = new oc.Handle_Geom2d_Curve_2(c);
-    oc.BndLib_Add2dCurve.Add_3(h, 1e-6, boundBox);
+    oc.BndLib_Add2dCurve.Add_3(c.wrapped, 1e-6, boundBox);
   });
 
   return new BoundingBox2d(boundBox);
 };
 
-export function curvesAsEdgesOnPlane(curves: Geom2d_Curve[], plane: Plane) {
+export function curvesAsEdgesOnPlane(curves: Curve2D[], plane: Plane) {
   const [r, gc] = localGC();
   const ax = r(makeAx2(plane.origin, plane.zDir, plane.xDir));
 
   const oc = getOC();
 
   const edges = curves.map((curve) => {
-    const curve3d = oc.GeomLib.To3d(ax, new oc.Handle_Geom2d_Curve_2(curve));
+    const curve3d = oc.GeomLib.To3d(ax, curve.wrapped);
     return new Edge(new oc.BRepBuilderAPI_MakeEdge_24(curve3d).Edge());
   });
 
@@ -41,14 +38,16 @@ export function curvesAsEdgesOnPlane(curves: Geom2d_Curve[], plane: Plane) {
 }
 
 export const curvesAsEdgesOnSurface = (
-  curves: Handle_Geom2d_Curve[],
+  curves: Curve2D[],
   geomSurf: Handle_Geom_Surface
 ) => {
   const [r, gc] = localGC();
   const oc = getOC();
 
   const modifiedCurves = curves.map((curve) => {
-    const edgeBuilder = r(new oc.BRepBuilderAPI_MakeEdge_30(curve, geomSurf));
+    const edgeBuilder = r(
+      new oc.BRepBuilderAPI_MakeEdge_30(curve.wrapped, geomSurf)
+    );
     return new Edge(edgeBuilder.Edge());
   });
 
@@ -57,56 +56,58 @@ export const curvesAsEdgesOnSurface = (
 };
 
 export const transformCurves = (
-  curves: Geom2d_Curve[],
+  curves: Curve2D[],
   transformation: gp_GTrsf2d | null
-): Handle_Geom2d_Curve[] => {
-  const [r, gc] = localGC();
+): Curve2D[] => {
   const oc = getOC();
 
   const modifiedCurves = curves.map((curve) => {
-    let handle = new oc.Handle_Geom2d_Curve_2(curve);
-    if (transformation) {
-      handle = oc.GeomLib.GTransform(r(handle), transformation);
-    }
-    return handle;
+    if (!transformation) return curve.clone();
+    return new Curve2D(oc.GeomLib.GTransform(curve.wrapped, transformation));
   });
 
-  gc();
   return modifiedCurves;
 };
+
+export class Transformation2D extends WrappingObj<gp_GTrsf2d> {
+  transformCurves(curves: Curve2D[]) {
+    return transformCurves(curves, this.wrapped);
+  }
+}
 
 export const stretchTransform2d = (
   ratio: number,
   direction: Point2D,
   origin: Point2D = [0, 0]
-): gp_GTrsf2d => {
+): Transformation2D => {
   const oc = getOC();
   const axis = axis2d(origin, direction);
   const transform = new oc.gp_GTrsf2d_1();
   transform.SetAffinity(axis, ratio);
 
   axis.delete();
-  return transform;
+  return new Transformation2D(transform);
 };
 
-export const translationTransform2d = (translation: Point2D): gp_GTrsf2d => {
+export const translationTransform2d = (
+  translation: Point2D
+): Transformation2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
   const rotation = new oc.gp_Trsf2d_1();
   rotation.SetTranslation_1(r(vec(translation)));
-  gc();
 
   const transform = new oc.gp_GTrsf2d_2(rotation);
   gc();
-  return transform;
+  return new Transformation2D(transform);
 };
 
 export const mirrorTransform2d = (
   centerOrDirection: Point2D,
   origin: Point2D = [0, 0],
   mode = "center"
-): gp_GTrsf2d => {
+): Transformation2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -116,17 +117,16 @@ export const mirrorTransform2d = (
   } else {
     rotation.SetMirror_2(r(axis2d(origin, centerOrDirection)));
   }
-  gc();
 
   const transform = new oc.gp_GTrsf2d_2(rotation);
   gc();
-  return transform;
+  return new Transformation2D(transform);
 };
 
 export const rotateTransform2d = (
   angle: number,
   center: Point2D = [0, 0]
-): gp_GTrsf2d => {
+): Transformation2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -135,13 +135,13 @@ export const rotateTransform2d = (
 
   const transform = new oc.gp_GTrsf2d_2(rotation);
   gc();
-  return transform;
+  return new Transformation2D(transform);
 };
 
 export const scaleTransform2d = (
   scaleFactor: number,
   center: Point2D = [0, 0]
-): gp_GTrsf2d => {
+): Transformation2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -150,7 +150,7 @@ export const scaleTransform2d = (
 
   const transform = new oc.gp_GTrsf2d_2(scaling);
   gc();
-  return transform;
+  return new Transformation2D(transform);
 };
 
 export function faceRadius(face: Face): null | number {
@@ -169,7 +169,7 @@ export function faceRadius(face: Face): null | number {
 export type ScaleMode = "original" | "bounds" | "native";
 
 export function curvesAsEdgesOnFace(
-  curves: Geom2d_Curve[],
+  curves: Curve2D[],
   face: Face,
   scale: ScaleMode = "original"
 ) {
@@ -179,7 +179,7 @@ export function curvesAsEdgesOnFace(
   let geomSurf = r(oc.BRep_Tool.Surface_2(face.wrapped));
   const bounds = face.UVBounds;
 
-  let transformation = null;
+  let transformation: null | gp_GTrsf2d = null;
   const uAxis = r(axis2d([0, 0], [0, 1]));
   const vAxis = r(axis2d([0, 0], [1, 0]));
 
@@ -194,8 +194,8 @@ export function curvesAsEdgesOnFace(
       geomSurf = geomSurf.get().UReversed();
     }
     const radius = cylinder.Radius();
-    const affinity = r(stretchTransform2d(1 / radius, [0, 1]));
-    transformation = affinity;
+    const affinity = stretchTransform2d(1 / radius, [0, 1]);
+    transformation = affinity.wrapped;
   }
 
   if (scale === "bounds") {
@@ -221,7 +221,6 @@ export function curvesAsEdgesOnFace(
 
   const modifiedCurves = transformCurves(curves, transformation);
   const edges = curvesAsEdgesOnSurface(modifiedCurves, geomSurf);
-  modifiedCurves.forEach((c) => c.delete());
 
   gc();
   return edges;

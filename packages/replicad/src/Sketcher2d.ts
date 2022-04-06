@@ -10,13 +10,16 @@ import {
   SplineConfig,
   GenericSketcher,
 } from "./sketcherlib";
-import { Geom2d_Curve, Handle_Geom_Surface } from "replicad-opencascadejs";
+import {
+  Handle_Geom2d_Curve,
+  Handle_Geom_Surface,
+} from "replicad-opencascadejs";
+import { Curve2D } from "./lib2d";
 
 import {
   normalize2d,
   angle2d,
   samePoint,
-  tangentAt,
   distance2d,
   axis2d,
   rotate2d,
@@ -41,7 +44,7 @@ type UVBounds = {
 export class BaseSketcher2d {
   protected pointer: Point2D;
   protected firstPoint: Point2D;
-  protected pendingCurves: Geom2d_Curve[];
+  protected pendingCurves: Curve2D[];
 
   constructor(origin: Point2D = [0, 0]) {
     this.pointer = origin;
@@ -112,7 +115,7 @@ export class BaseSketcher2d {
       throw new Error("You need a previous curve to sketch a tangent line");
 
     const direction = normalize2d(
-      this._convertFromUV(tangentAt(previousCurve, 1))
+      this._convertFromUV(previousCurve.tangentAt(1))
     );
     return this.line(direction[0] * distance, direction[1] * distance);
   }
@@ -195,7 +198,7 @@ export class BaseSketcher2d {
     this.pendingCurves.push(
       make2dTangentArc(
         this._convertToUV(this.pointer),
-        tangentAt(previousCurve, 1),
+        previousCurve.tangentAt(1),
         this._convertToUV(end)
       )
     );
@@ -364,7 +367,7 @@ export class BaseSketcher2d {
     } else if (!previousCurve) {
       startPoleDirection = [1, 0];
     } else {
-      startPoleDirection = this._convertFromUV(tangentAt(previousCurve, 1));
+      startPoleDirection = this._convertFromUV(previousCurve.tangentAt(1));
     }
 
     startPoleDirection = normalize2d(startPoleDirection);
@@ -422,9 +425,11 @@ export class BaseSketcher2d {
     );
 
     const mirroredCurves = this.pendingCurves.map(
-      (c) => c.Mirrored_2(mirrorAxis).get() as Geom2d_Curve
+      (c) =>
+        new Curve2D(c.innerCurve.Mirrored_2(mirrorAxis) as Handle_Geom2d_Curve)
     );
     mirroredCurves.reverse();
+    mirroredCurves.map(c => c.reverse());
     this.pendingCurves.push(...mirroredCurves);
     this.pointer = this.firstPoint;
   }
@@ -484,12 +489,7 @@ export default class FaceSketcher
     const edges = this.pendingCurves.map((curve) => {
       return r(
         new Edge(
-          r(
-            new oc.BRepBuilderAPI_MakeEdge_30(
-              r(new oc.Handle_Geom2d_Curve_2(curve)),
-              geomSurf
-            )
-          ).Edge()
+          r(new oc.BRepBuilderAPI_MakeEdge_30(curve.wrapped, geomSurf)).Edge()
         )
       );
     });

@@ -4,37 +4,33 @@ import { OpenCascadeInstance } from "replicad-opencascadejs";
 interface Deletable {
   delete: () => void;
 }
-const REGISTER = new Set<Deletable>();
 
-export const registerObj = (obj: any) => {
-  REGISTER.add(obj);
-};
-export const unregisterObj = (obj: Deletable) => REGISTER.delete(obj);
-export const clearRegister = (keepList: any[] = []) => {
-  REGISTER.forEach((s) => {
-    if (keepList.find((k) => (k.isSame ? k.isSame(s) : k === s))) return;
-    s.delete();
-  });
-};
-
-export class RegisteredObj {
-  constructor() {
-    registerObj(this);
-  }
-
-  delete() {
-    unregisterObj(this);
-  }
+if (!(globalThis as any).FinalizationRegistry) {
+  (globalThis as any).FinalizationRegistry = (() => ({
+    register: () => null,
+    unregister: () => null,
+  })) as any;
 }
 
-export class WrappingObj<Type extends Deletable> extends RegisteredObj {
+const deletetableRegistry = new (globalThis as any).FinalizationRegistry(
+  (heldValue: Deletable) => {
+    try {
+      heldValue.delete();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
+
+export class WrappingObj<Type extends Deletable> {
   protected oc: OpenCascadeInstance;
   private _wrapped: Type | null;
 
   constructor(wrapped: Type) {
-    super();
     this.oc = getOC();
-    if (!this.oc) console.log("wrapping", this.oc);
+    if (wrapped) {
+      deletetableRegistry.register(this, wrapped, wrapped);
+    }
     this._wrapped = wrapped;
   }
 
@@ -44,15 +40,39 @@ export class WrappingObj<Type extends Deletable> extends RegisteredObj {
   }
 
   set wrapped(newWrapped: Type) {
+    if (this._wrapped) {
+      deletetableRegistry.unregister(this._wrapped);
+      this._wrapped.delete();
+    }
+
+    deletetableRegistry.register(this, newWrapped, newWrapped);
     this._wrapped = newWrapped;
   }
 
   delete() {
+    deletetableRegistry.unregister(this.wrapped);
     this.wrapped?.delete();
     this._wrapped = null;
-    super.delete();
   }
 }
+
+export const GCWithScope = () => {
+  function gcWithScope<Type extends Deletable>(value: Type): Type {
+    deletetableRegistry.register(gcWithScope, value);
+    return value;
+  }
+
+  return gcWithScope;
+};
+
+export const GCWithObject = (obj: any) => {
+  function registerForGC<Type extends Deletable>(value: Type): Type {
+    deletetableRegistry.register(obj, value);
+    return value;
+  }
+
+  return registerForGC;
+};
 
 export const localGC = (
   debug?: boolean

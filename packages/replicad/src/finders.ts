@@ -1,9 +1,9 @@
 import { Vector, asPnt, Point, Plane, PlaneName } from "./geom";
 import { makePlane } from "./geomHelpers";
-import { RegisteredObj } from "./register";
 import { DEG2RAD } from "./constants";
 import { Face, Edge, AnyShape, SurfaceType, CurveType } from "./shapes";
 import { getOC } from "./oclib";
+import { GCWithObject } from "./register";
 
 type Direction = "X" | "Y" | "Z";
 
@@ -22,7 +22,7 @@ const PLANE_TO_DIR: Record<StandardPlane, [number, number, number]> = {
 
 type FaceOrEdge = Face | Edge;
 
-abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
+abstract class Finder<Type extends FaceOrEdge> {
   protected filters: (({
     element,
     normal,
@@ -30,7 +30,6 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     element: Type;
     normal: Vector;
   }) => boolean)[];
-  protected references: { delete: () => void }[];
 
   protected abstract applyFilter(shape: AnyShape): Type[];
 
@@ -41,16 +40,11 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
   abstract shouldKeep(t: Type): boolean;
 
   constructor() {
-    super();
     this.filters = [];
-    this.references = [];
   }
 
   delete() {
-    this.references.forEach((r) => r.delete());
-    this.references = [];
     this.filters = [];
-    super.delete();
   }
 
   /**
@@ -58,15 +52,9 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
    *
    * This deletes the elements in the list as the filter deletion.
    *
-   * @param __namedParameters.keepList change the behaviour to keep the elements in the list
-   * instead of deleting them
-   *
-   *
    * @category Filter
    */
-  inList(elementList: Type[], { keepList = false } = {}): this {
-    if (!keepList) this.references.push(...elementList);
-
+  inList(elementList: Type[]): this {
     const elementInList = ({ element }: { element: Type }) => {
       return !!elementList.find((e) => e.isSame(element));
     };
@@ -98,7 +86,6 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     };
 
     this.filters.push(checkAngle);
-    this.references.push(myDirection);
 
     return this;
   }
@@ -127,7 +114,7 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     };
 
     this.filters.push(checkPoint);
-    this.references.push(distanceBuilder);
+    GCWithObject(checkPoint)(distanceBuilder);
 
     return this;
   }
@@ -156,7 +143,6 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
     );
     const box = boxMaker.Solid();
     boxMaker.delete();
-    this.references.push(box);
 
     const distanceBuilder = new oc.BRepExtrema_DistShapeShape_1();
     distanceBuilder.LoadS1(box);
@@ -168,8 +154,12 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
       return distanceBuilder.Value() < 1e-6;
     };
 
+    // We cleanup the box and the distance builder when the function disappears
+    const gc = GCWithObject(checkPoint);
+    gc(box);
+    gc(distanceBuilder);
+
     this.filters.push(checkPoint);
-    this.references.push(distanceBuilder);
 
     return this;
   }
@@ -185,7 +175,6 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
   either(findersList: ((f: this) => this)[]): this {
     const builtFinders = findersList.map((finderFunction) => {
       const finder = new (<any>this.constructor)() as this;
-      this.references.push(finder);
       finderFunction(finder);
       return finder;
     });
@@ -223,7 +212,6 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
    */
   not(finderFun: (f: this) => this): this {
     const finder = new (<any>this.constructor)() as this;
-    this.references.push(finder);
     finderFun(finder);
 
     const notFilter = ({ element }: { element: Type }) =>
@@ -239,16 +227,12 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
    *
    * If unique is configured as an option it will either return the unique
    * element found or throw an error.
-   *
-   * If clean is set to true the finder is deleted at the end of the filtering
-   * operation.
    */
-  find(shape: AnyShape, options: { unique: true; clean?: boolean }): Type;
-  find(shape: AnyShape, options: { unique?: false; clean?: boolean }): Type[];
-  find(shape: AnyShape, { unique = false, clean = false } = {}) {
+  find(shape: AnyShape, options: { unique: true }): Type;
+  find(shape: AnyShape): Type[];
+  find(shape: AnyShape, options: { unique?: false }): Type[];
+  find(shape: AnyShape, { unique = false } = {}) {
     const elements = this.applyFilter(shape);
-
-    if (clean) this.delete();
 
     if (unique) {
       if (elements.length !== 1) {
@@ -269,6 +253,12 @@ abstract class Finder<Type extends FaceOrEdge> extends RegisteredObj {
  * @category Finders
  */
 export class FaceFinder extends Finder<Face> {
+  clone(): FaceFinder {
+    const ff = new FaceFinder();
+    ff.filters = [...this.filters];
+    return ff;
+  }
+
   /** Filter to find faces that are parallel to plane or another face
    *
    * Note that this will work only in planar faces (but the method does not
@@ -284,7 +274,6 @@ export class FaceFinder extends Finder<Face> {
     if (typeof plane !== "string" && plane.normalAt) {
       const normal = plane.normalAt();
       this.atAngleWith(normal);
-      normal.delete();
       return this;
     }
     return this;
@@ -323,9 +312,6 @@ export class FaceFinder extends Finder<Face> {
       const projectedPoint = point.projectToPlane(plane);
 
       const isSamePoint = point.equals(projectedPoint);
-      point.delete();
-      projectedPoint.delete();
-
       return isSamePoint;
     };
 
@@ -338,14 +324,12 @@ export class FaceFinder extends Finder<Face> {
     const shouldKeep = this.filters.every((filter) =>
       filter({ normal, element })
     );
-    normal.delete();
     return shouldKeep;
   }
 
   protected applyFilter(shape: AnyShape): Face[] {
     return shape.faces.filter((face: Face) => {
       const shouldKeep = this.shouldKeep(face);
-      if (!shouldKeep) face.delete();
       return shouldKeep;
     });
   }
@@ -358,6 +342,12 @@ export class FaceFinder extends Finder<Face> {
  * @category Finders
  */
 export class EdgeFinder extends Finder<Edge> {
+  clone(): EdgeFinder {
+    const ef = new EdgeFinder();
+    ef.filters = [...this.filters];
+    return ef;
+  }
+
   /**
    * Filter to find edges that are in a certain direction
    *
@@ -396,7 +386,6 @@ export class EdgeFinder extends Finder<Edge> {
     if (typeof plane !== "string" && plane.normalAt) {
       const normal = plane.normalAt();
       this.atAngleWith(normal, 90);
-      normal.delete();
       return this;
     }
     return this;
@@ -423,8 +412,6 @@ export class EdgeFinder extends Finder<Edge> {
       const projectedPoint = point.projectToPlane(plane);
 
       const isSamePoint = point.equals(projectedPoint);
-      point.delete();
-      projectedPoint.delete();
 
       return isSamePoint;
     };
@@ -438,14 +425,12 @@ export class EdgeFinder extends Finder<Edge> {
     const shouldKeep = this.filters.every((filter) =>
       filter({ normal, element })
     );
-    normal.delete();
     return shouldKeep;
   }
 
   protected applyFilter(shape: AnyShape): Edge[] {
     return shape.edges.filter((edge: Edge) => {
       const shouldKeep = this.shouldKeep(edge);
-      if (!shouldKeep) edge.delete();
       return shouldKeep;
     });
   }

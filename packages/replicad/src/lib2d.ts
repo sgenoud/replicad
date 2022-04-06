@@ -1,4 +1,4 @@
-import { localGC, WrappingObj } from "./register.js";
+import { localGC, WrappingObj, GCWithScope } from "./register.js";
 import { getOC } from "./oclib.js";
 import {
   Bnd_Box2d,
@@ -7,6 +7,7 @@ import {
   gp_Vec2d,
   gp_Ax2d,
   Geom2d_Curve,
+  Handle_Geom2d_Curve,
 } from "replicad-opencascadejs";
 
 const round = (v: number): number => Math.round(v * 100) / 100;
@@ -135,24 +136,6 @@ export const cartesiantToPolar = ([x, y]: Point2D): [number, number] => {
   return [r, theta];
 };
 
-export const tangentAt = (curve: Geom2d_Curve, index: number): Point2D => {
-  const oc = getOC();
-  const [r, gc] = localGC();
-
-  const paramLength = curve.LastParameter() - curve.FirstParameter();
-  const param = paramLength * index + curve.FirstParameter();
-
-  const point = r(new oc.gp_Pnt2d_1());
-  const dir = r(new oc.gp_Vec2d_1());
-
-  curve.D1(param, point, dir);
-
-  const tgtVec = [dir.X(), dir.Y()] as Point2D;
-  gc();
-
-  return tgtVec;
-};
-
 export const samePoint = ([x0, y0]: Point2D, [x1, y1]: Point2D): boolean => {
   return Math.abs(x0 - x1) <= 1e-6 && Math.abs(y0 - y1) <= 1e-6;
 };
@@ -176,29 +159,153 @@ export const normalize2d = ([x0, y0]: Point2D): Point2D => {
   return [x0 / l, y0 / l];
 };
 
+function zip<Type>(arrays: Array<Type[]>) {
+  return arrays[0].map(function (_: any, i: number) {
+    return arrays.map(function (array) {
+      return array[i];
+    });
+  });
+}
+
+export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
+  constructor(handle: Handle_Geom2d_Curve) {
+    const oc = getOC();
+    const inner = handle.get();
+    super(new oc.Handle_Geom2d_Curve_2(inner));
+  }
+
+  get repr() {
+    return `${reprPnt(this.firstPoint)} - ${reprPnt(this.lastPoint)}`;
+  }
+
+  get innerCurve(): Geom2d_Curve {
+    return this.wrapped.get();
+  }
+
+  get firstPoint(): Point2D {
+    return this.value(this.firstParameter);
+  }
+
+  get firstParameter(): number {
+    return this.innerCurve.FirstParameter();
+  }
+
+  get lastParameter(): number {
+    return this.innerCurve.LastParameter();
+  }
+
+  clone(): Curve2D {
+    return new Curve2D(this.wrapped);
+  }
+
+  reverse(): void {
+    this.innerCurve.Reverse();
+  }
+
+  parameter(point: Point2D): number {
+    const oc = getOC();
+    const r = GCWithScope();
+
+    const projector = r(
+      new oc.Geom2dAPI_ProjectPointOnCurve_2(pnt(point), this.wrapped)
+    );
+
+    if (projector.LowerDistance() > 1e-6) {
+      throw new Error("Point not on curve");
+    }
+    return projector.LowerDistanceParameter();
+  }
+
+  value(parameter: number): Point2D {
+    const pnt = this.innerCurve.Value(parameter);
+    const vec: Point2D = [pnt.X(), pnt.Y()];
+    pnt.delete();
+    return vec;
+  }
+
+  get lastPoint(): Point2D {
+    return this.value(this.lastParameter);
+  }
+
+  tangentAt(index: number): Point2D {
+    const oc = getOC();
+    const [r, gc] = localGC();
+
+    const paramLength =
+      this.innerCurve.LastParameter() - this.innerCurve.FirstParameter();
+    const param = paramLength * index + this.innerCurve.FirstParameter();
+
+    const point = r(new oc.gp_Pnt2d_1());
+    const dir = r(new oc.gp_Vec2d_1());
+
+    this.innerCurve.D1(param, point, dir);
+
+    const tgtVec = [dir.X(), dir.Y()] as Point2D;
+    gc();
+
+    return tgtVec;
+  }
+
+  splitAt(points: Point2D[]): Curve2D[] {
+    const oc = getOC();
+
+    let parameters = points.map((point) => {
+      return this.parameter(point);
+    });
+
+    // We only split on each point once
+    parameters = Array.from(new Set(parameters)).sort((a, b) => a - b);
+    const firstParam = this.firstParameter;
+    const lastParam = this.lastParameter;
+
+    if (firstParam > lastParam) {
+      parameters.reverse();
+    }
+
+    // We do not split again on the start and end
+    if (parameters[0] === firstParam) parameters = parameters.slice(1);
+    if (parameters[parameters.length] === lastParam)
+      parameters = parameters.slice(0, -1);
+
+    if (!parameters.length) return [this];
+
+    return zip([
+      [firstParam, ...parameters],
+      [...parameters, lastParam],
+    ]).map(([first, last]) => {
+      const trimmed = new oc.Geom2d_TrimmedCurve(
+        this.wrapped,
+        first,
+        last,
+        true,
+        true
+      );
+      return new Curve2D(new oc.Handle_Geom2d_Curve_2(trimmed));
+    });
+  }
+}
+
 export const make2dSegmentCurve = (
   startPoint: Point2D,
   endPoint: Point2D
-): Geom2d_Curve => {
+): Curve2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
   const segment = r(
     new oc.GCE2d_MakeSegment_1(r(pnt(startPoint)), r(pnt(endPoint)))
-  )
-    .Value()
-    .get();
+  ).Value();
 
   gc();
 
-  return segment;
+  return new Curve2D(segment);
 };
 
 export const make2dThreePointArc = (
   startPoint: Point2D,
   midPoint: Point2D,
   endPoint: Point2D
-): Geom2d_Curve => {
+): Curve2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -208,19 +315,17 @@ export const make2dThreePointArc = (
       r(pnt(midPoint)),
       r(pnt(endPoint))
     )
-  )
-    .Value()
-    .get();
+  ).Value();
   gc();
 
-  return segment;
+  return new Curve2D(segment);
 };
 
 export const make2dTangentArc = (
   startPoint: Point2D,
   tangent: Point2D,
   endPoint: Point2D
-): Geom2d_Curve => {
+): Curve2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -230,12 +335,10 @@ export const make2dTangentArc = (
       r(vec(tangent)),
       r(pnt(endPoint))
     )
-  )
-    .Value()
-    .get();
+  ).Value();
   gc();
 
-  return segment;
+  return new Curve2D(segment);
 };
 
 export const make2dEllipseArc = (
@@ -245,7 +348,7 @@ export const make2dEllipseArc = (
   endAngle: number,
   center: Point2D = [0, 0],
   xDir: Point2D
-): Geom2d_Curve => {
+): Curve2D => {
   const oc = getOC();
   const [r, gc] = localGC();
   const ellipse = r(
@@ -254,19 +357,17 @@ export const make2dEllipseArc = (
 
   const segment = r(
     new oc.GCE2d_MakeArcOfEllipse_1(ellipse, startAngle, endAngle, true)
-  )
-    .Value()
-    .get();
+  ).Value();
   gc();
 
-  return segment;
+  return new Curve2D(segment);
 };
 
 export const make2dBezierCurve = (
   startPoint: Point2D,
   controls: Point2D[],
   endPoint: Point2D
-): Geom2d_Curve => {
+): Curve2D => {
   const oc = getOC();
   const [r, gc] = localGC();
 
@@ -284,5 +385,5 @@ export const make2dBezierCurve = (
   const bezCurve = new oc.Geom2d_BezierCurve_1(arrayOfPoints);
   gc();
 
-  return bezCurve;
+  return new Curve2D(new oc.Handle_Geom2d_Curve_2(bezCurve));
 };
