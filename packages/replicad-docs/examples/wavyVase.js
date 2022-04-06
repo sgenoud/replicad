@@ -15,13 +15,7 @@ const defaultParams = {
 /** @typedef { typeof import("replicad") } replicadLib */
 /** @type {function(replicadLib, typeof defaultParams): any} */
 const main = (
-  {
-    EdgeFinder,
-    FaceFinder,
-    sketchCircle,
-    sketchPolysides,
-    polysideInnerRadius,
-  },
+  { sketchCircle, sketchPolysides, polysideInnerRadius },
   {
     height,
     radius,
@@ -46,10 +40,7 @@ const main = (
   });
 
   if (bottomFillet) {
-    shape = shape.fillet({
-      filter: new EdgeFinder().inPlane("XY"),
-      radius: bottomFillet,
-    });
+    shape = shape.fillet(bottomFillet, (e) => e.inPlane("XY"));
   }
 
   if (holeMode === 1 || holeMode === 2) {
@@ -66,25 +57,19 @@ const main = (
 
       shape = shape.cut(
         hole
-          .fillet({
-            filter: new EdgeFinder().inPlane("XY"),
-            radius: Math.max(wallThickness / 3, bottomFillet - wallThickness),
-          })
+          .fillet(
+            Math.max(wallThickness / 3, bottomFillet - wallThickness),
+            (e) => e.inPlane("XY")
+          )
           .translate([0, 0, wallThickness])
       );
     } else if (holeMode === 2) {
-      shape = shape.shell({
-        filter: new FaceFinder().inPlane("XY", height),
-        thickness: wallThickness,
-      });
+      shape = shape.shell(wallThickness, (f) => f.inPlane("XY", height));
     }
   }
 
   if (topFillet) {
-    shape = shape.fillet({
-      filter: new EdgeFinder().inPlane("XY", height),
-      radius: topFillet,
-    });
+    shape = shape.fillet(topFillet, (e) => e.inPlane("XY", height));
   }
   return shape;
 };

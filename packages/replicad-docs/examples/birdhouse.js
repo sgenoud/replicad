@@ -9,7 +9,7 @@ const defaultParams = {
 /** @typedef { typeof import("replicad") } replicadLib */
 /** @type {function(replicadLib, typeof defaultParams): any} */
 function main(
-  { Sketcher, FaceFinder, EdgeFinder, sketchCircle },
+  { Sketcher, sketchCircle },
   { width: inputWidth, height, thickness, holeDia, hookHeight }
 ) {
   const length = inputWidth;
@@ -21,16 +21,12 @@ function main(
     .lineTo([width / 2, 0])
     .close()
     .extrude(length)
-    .shell({
-      filter: new FaceFinder().parallelTo("XZ"),
-      thickness,
-    })
-    .fillet({
-      filter: new EdgeFinder()
+    .shell(thickness, (f) => f.parallelTo("XZ"))
+    .fillet(thickness / 2, (e) =>
+      e
         .inDirection("Y")
-        .either([(f) => f.inPlane("XY"), (f) => f.inPlane("XY", height)]),
-      radius: thickness / 2,
-    });
+        .either([(f) => f.inPlane("XY"), (f) => f.inPlane("XY", height)])
+    );
 
   const hole = sketchCircle(holeDia / 2, {
     plane: "YZ",

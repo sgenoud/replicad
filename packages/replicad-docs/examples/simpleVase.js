@@ -14,7 +14,7 @@ const defaultParams = {
 /** @typedef { typeof import("replicad") } replicadLib */
 /** @type {function(replicadLib, typeof defaultParams): any} */
 const main = (
-  { Sketcher, EdgeFinder, FaceFinder },
+  { Sketcher },
   {
     height,
     baseWidth,
@@ -51,17 +51,11 @@ const main = (
   let vase = sketchVaseProfile.lineTo([0, height]).close().revolve();
 
   if (wallThickness) {
-    vase = vase.shell({
-      filter: new FaceFinder().containsPoint([0, 0, height]),
-      thickness: wallThickness,
-    });
+    vase = vase.shell(wallThickness, (f) => f.containsPoint([0, 0, height]));
   }
 
   if (topFillet) {
-    vase = vase.fillet({
-      filter: new EdgeFinder().inPlane("XY", height),
-      radius: wallThickness / 3,
-    });
+    vase = vase.fillet(wallThickness / 3, (e) => e.inPlane("XY", height));
   }
 
   return vase;

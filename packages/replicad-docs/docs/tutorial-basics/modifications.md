@@ -22,17 +22,14 @@ const main = ({ sketchRectangle }) => {
 When configuring a fillet with a number, all the edges of the shape will be
 filletted.
 
-If you want to target specific edges you will need to pass a finder within
+If you want to target specific edges you will need to configure a finder within
 a filter configuration. For instance to fillet only the top edges:
 
 ```js
-const main = ({ sketchRectangle, EdgeFinder }) => {
+const main = ({ sketchRectangle }) => {
   return sketchRectangle(30, 50)
     .extrude(20)
-    .fillet({
-      filter: new EdgeFinder().inPlane("XY", 20),
-      radius: 2,
-    });
+    .fillet(2, (e) => e.inPlane("XY", 20));
 };
 ```
 
@@ -66,16 +63,13 @@ const main = ({ sketchRectangle, EdgeFinder, combineFinderFilters }) => {
 ## Shell
 
 With a shell you can hollow out a full shape (keeping a wall of a certain
-thickness). You need to specify a face that will be hollow, and you use
+thickness). You need to specify a face that will be hollow, and you configure
 a finder for this.
 
 ```js
-const main = ({ sketchRectangle, FaceFinder }) => {
+const main = ({ sketchRectangle }) => {
   return sketchRectangle(30, 50)
     .extrude(20)
-    .shell({
-      filter: new FaceFinder().inPlane("XY", 20),
-      thickness: 5,
-    });
+    .shell(5, (f) => f.inPlane("XY", 20)));
 };
 ```
