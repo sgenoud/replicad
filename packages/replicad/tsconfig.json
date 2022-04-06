@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es2021",
+    "target": "es6",
     "module":"es2015",
     "strict": true,
     "sourceMap": true,

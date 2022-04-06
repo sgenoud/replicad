@@ -4,13 +4,23 @@ import { OpenCascadeInstance } from "replicad-opencascadejs";
 interface Deletable {
   delete: () => void;
 }
-const deletetableRegistry = new FinalizationRegistry((heldValue: Deletable) => {
-  try {
-    heldValue.delete();
-  } catch (e) {
-    console.error(e);
+
+if (!(globalThis as any).FinalizationRegistry) {
+  (globalThis as any).FinalizationRegistry = (() => ({
+    register: () => null,
+    unregister: () => null,
+  })) as any;
+}
+
+const deletetableRegistry = new (globalThis as any).FinalizationRegistry(
+  (heldValue: Deletable) => {
+    try {
+      heldValue.delete();
+    } catch (e) {
+      console.error(e);
+    }
   }
-});
+);
 
 export class WrappingObj<Type extends Deletable> {
   protected oc: OpenCascadeInstance;
