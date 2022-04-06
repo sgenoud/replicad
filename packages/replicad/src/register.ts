@@ -5,8 +5,11 @@ interface Deletable {
   delete: () => void;
 }
 const deletetableRegistry = new FinalizationRegistry((heldValue: Deletable) => {
-  console.log("deleting wrapped");
-  heldValue.delete();
+  try {
+    heldValue.delete();
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 export class WrappingObj<Type extends Deletable> {

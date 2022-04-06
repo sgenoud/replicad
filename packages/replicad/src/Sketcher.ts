@@ -57,7 +57,6 @@ export default class Sketcher implements GenericSketcher<Sketch> {
   }
 
   protected _updatePointer(newPointer: Vector): void {
-    this.pointer.delete();
     this.pointer = newPointer;
   }
 
@@ -67,7 +66,6 @@ export default class Sketcher implements GenericSketcher<Sketch> {
         "You can only move the pointer if there is no edge defined"
       );
     this._updatePointer(this.plane.toWorldCoords([x, y]));
-    this.firstPoint.delete();
     this.firstPoint = new Vector(this.pointer);
     return this;
   }
@@ -170,21 +168,17 @@ export default class Sketcher implements GenericSketcher<Sketch> {
 
     let p = endPoint.add(startPoint);
     const midPoint = p.multiply(0.5);
-    p.delete();
 
     p = endPoint.sub(startPoint);
     const sagDirection = p.cross(this.plane.zDir).normalized();
 
-    p.delete();
     const sagVector = sagDirection.multiply(sagitta);
 
     const sagPoint = midPoint.add(sagVector);
-    sagVector.delete();
 
     this.pendingEdges.push(makeThreePointArc(this.pointer, sagPoint, endPoint));
     this._updatePointer(endPoint);
 
-    sagPoint.delete();
     return this;
   }
 
@@ -279,7 +273,6 @@ export default class Sketcher implements GenericSketcher<Sketch> {
   halfEllipseTo(end: Point2D, verticalRadius: number, sweep = false): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     const start: Point2D = [pointer.x, pointer.y];
-    pointer.delete();
 
     const angle = angle2d(end, start);
     const distance = distance2d(end, start);
@@ -412,7 +405,6 @@ export default class Sketcher implements GenericSketcher<Sketch> {
     const mirroredWire = wire.clone().mirror(normal, this.pointer);
 
     const combinedWire = assembleWire([wire, mirroredWire]);
-    mirroredWire.delete();
 
     return combinedWire;
   }
@@ -422,14 +414,11 @@ export default class Sketcher implements GenericSketcher<Sketch> {
       throw new Error("No lines to convert into a wire");
 
     let wire = assembleWire(this.pendingEdges);
-    this.pendingEdges.forEach((e) => e.delete());
 
     if (this._mirrorWire) {
       wire = this._mirrorWireOnStartEnd(wire);
     }
 
-    this.pointer.delete();
-    this.firstPoint.delete();
     return wire;
   }
 
@@ -445,7 +434,6 @@ export default class Sketcher implements GenericSketcher<Sketch> {
       defaultOrigin: this.plane.origin,
       defaultDirection: this.plane.zDir,
     });
-    this.delete();
     return sketch;
   }
 

@@ -1,4 +1,3 @@
-import { Geom2d_Curve } from "replicad-opencascadejs";
 import { makePlane } from "../geomHelpers";
 import {
   curvesAsEdgesOnFace,
@@ -9,15 +8,13 @@ import {
   ScaleMode,
   stretchTransform2d,
   scaleTransform2d,
-  transformCurves,
   translationTransform2d,
 } from "../curves";
-import { make2dSegmentCurve, Point2D, BoundingBox2d } from "../lib2d";
+import { make2dSegmentCurve, Point2D, BoundingBox2d, Curve2D } from "../lib2d";
 import { assembleWire } from "../shapeHelpers";
 import { Face } from "../shapes";
 import Sketch from "../sketches/Sketch";
 
-import { localGC, GCWithObject } from "../register";
 import { getOC } from "../oclib.js";
 import { Plane, PlaneName, Point } from "../geom";
 import { DEG2RAD } from "../constants";
@@ -30,13 +27,10 @@ import { BlueprintInterface } from "./lib";
  * You should create them by "sketching" with a `BlueprintSketcher`
  */
 export default class Blueprint implements BlueprintInterface {
-  curves: Geom2d_Curve[];
+  curves: Curve2D[];
   protected _boundingBox: null | BoundingBox2d;
-  constructor(curves: Geom2d_Curve[]) {
+  constructor(curves: Curve2D[]) {
     this.curves = curves;
-
-    const registerForGC = GCWithObject(this);
-    this.curves.forEach(registerForGC);
     this._boundingBox = null;
   }
 
@@ -57,45 +51,32 @@ export default class Blueprint implements BlueprintInterface {
     direction: Point2D,
     origin: Point2D = [0, 0]
   ): Blueprint {
-    const [r, gc] = localGC();
-    const transform = r(stretchTransform2d(ratio, direction, origin));
-    const bp = new Blueprint(
-      transformCurves(this.curves, transform).map((c) => c.get())
+    const curves = stretchTransform2d(ratio, direction, origin).transformCurves(
+      this.curves
     );
-    gc();
-    return bp;
+    return new Blueprint(curves);
   }
 
   scale(scaleFactor: number, center?: Point2D): Blueprint {
-    const [r, gc] = localGC();
-
     const centerPoint = center || this.boundingBox.center;
-    const transform = r(scaleTransform2d(scaleFactor, centerPoint));
-    const bp = new Blueprint(
-      transformCurves(this.curves, transform).map((c) => c.get())
+    const curves = scaleTransform2d(scaleFactor, centerPoint).transformCurves(
+      this.curves
     );
-    gc();
-    return bp;
+    return new Blueprint(curves);
   }
 
   rotate(angle: number, center: Point2D): Blueprint {
-    const [r, gc] = localGC();
-    const transform = r(rotateTransform2d(angle * DEG2RAD, center));
-    const bp = new Blueprint(
-      transformCurves(this.curves, transform).map((c) => c.get())
+    const curves = rotateTransform2d(angle * DEG2RAD, center).transformCurves(
+      this.curves
     );
-    gc();
-    return bp;
+    return new Blueprint(curves);
   }
 
   translate(xDist: number, yDist: number): Blueprint {
-    const [r, gc] = localGC();
-    const transform = r(translationTransform2d([xDist, yDist]));
-    const bp = new Blueprint(
-      transformCurves(this.curves, transform).map((c) => c.get())
+    const curves = translationTransform2d([xDist, yDist]).transformCurves(
+      this.curves
     );
-    gc();
-    return bp;
+    return new Blueprint(curves);
   }
 
   mirror(
@@ -103,13 +84,12 @@ export default class Blueprint implements BlueprintInterface {
     origin: Point2D = [0, 0],
     mode: "center" | "plane" = "center"
   ): Blueprint {
-    const [r, gc] = localGC();
-    const transform = r(mirrorTransform2d(centerOrDirection, origin, mode));
-    const bp = new Blueprint(
-      transformCurves(this.curves, transform).map((c) => c.get())
-    );
-    gc();
-    return bp;
+    const curves = mirrorTransform2d(
+      centerOrDirection,
+      origin,
+      mode
+    ).transformCurves(this.curves);
+    return new Blueprint(curves);
   }
 
   sketchOnPlane(
@@ -132,7 +112,6 @@ export default class Blueprint implements BlueprintInterface {
 
   sketchOnFace(face: Face, scaleMode?: ScaleMode): Sketch {
     const oc = getOC();
-    const [r, gc] = localGC();
 
     const edges = curvesAsEdgesOnFace(this.curves, face, scaleMode);
     const wire = assembleWire(edges);
@@ -145,40 +124,35 @@ export default class Blueprint implements BlueprintInterface {
     const sketch = new Sketch(wire);
 
     if (wire.isClosed) {
-      const baseFace = r(sketch.clone().face());
-      sketch.defaultOrigin = r(baseFace.pointOnSurface(0.5, 0.5));
-      sketch.defaultDirection = r(r(baseFace.normalAt()));
+      const baseFace = sketch.clone().face();
+      sketch.defaultOrigin = baseFace.pointOnSurface(0.5, 0.5);
+      sketch.defaultDirection = baseFace.normalAt();
       sketch.baseFace = face;
     } else {
-      const startPoint = r(wire.startPoint);
+      const startPoint = wire.startPoint;
       sketch.defaultOrigin = startPoint;
-      sketch.defaultDirection = r(face.normalAt(startPoint));
+      sketch.defaultDirection = face.normalAt(startPoint);
       sketch.baseFace = face;
     }
-    gc();
     return sketch;
   }
 
   get firstPoint(): Point2D {
-    const c = this.curves[0];
-    const pnt = c.Value(c.FirstParameter());
-    const vec: Point2D = [pnt.X(), pnt.Y()];
-    pnt.delete();
-    return vec;
+    return this.curves[0].firstPoint;
   }
 
   isInside(point: Point2D): boolean {
     const oc = getOC();
     const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
-    const segment = new oc.Handle_Geom2d_Curve_2(
-      make2dSegmentCurve(point, this.boundingBox.outsidePoint())
-    );
+    const segment = make2dSegmentCurve(point, this.boundingBox.outsidePoint());
     let crossCounts = 0;
 
     this.curves.forEach((c) => {
-      intersector.Init_1(segment, new oc.Handle_Geom2d_Curve_2(c), 1e-6);
+      intersector.Init_1(segment.wrapped, c.wrapped, 1e-6);
       crossCounts += intersector.NbPoints();
     });
+
+    intersector.delete();
 
     return !!(crossCounts % 2);
   }
