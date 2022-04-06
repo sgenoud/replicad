@@ -15,7 +15,6 @@ if (!(globalThis as any).FinalizationRegistry) {
 const deletetableRegistry = new (globalThis as any).FinalizationRegistry(
   (heldValue: Deletable) => {
     try {
-      console.log("gc!");
       heldValue.delete();
     } catch (e) {
       console.error(e);

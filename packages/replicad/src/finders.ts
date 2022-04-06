@@ -3,6 +3,7 @@ import { makePlane } from "./geomHelpers";
 import { DEG2RAD } from "./constants";
 import { Face, Edge, AnyShape, SurfaceType, CurveType } from "./shapes";
 import { getOC } from "./oclib";
+import { GCWithObject } from "./register";
 
 type Direction = "X" | "Y" | "Z";
 
@@ -29,7 +30,6 @@ abstract class Finder<Type extends FaceOrEdge> {
     element: Type;
     normal: Vector;
   }) => boolean)[];
-  protected references: { delete: () => void }[];
 
   protected abstract applyFilter(shape: AnyShape): Type[];
 
@@ -41,12 +41,9 @@ abstract class Finder<Type extends FaceOrEdge> {
 
   constructor() {
     this.filters = [];
-    this.references = [];
   }
 
   delete() {
-    this.references.forEach((r) => r.delete());
-    this.references = [];
     this.filters = [];
   }
 
@@ -55,15 +52,9 @@ abstract class Finder<Type extends FaceOrEdge> {
    *
    * This deletes the elements in the list as the filter deletion.
    *
-   * @param __namedParameters.keepList change the behaviour to keep the elements in the list
-   * instead of deleting them
-   *
-   *
    * @category Filter
    */
-  inList(elementList: Type[], { keepList = false } = {}): this {
-    if (!keepList) this.references.push(...elementList);
-
+  inList(elementList: Type[]): this {
     const elementInList = ({ element }: { element: Type }) => {
       return !!elementList.find((e) => e.isSame(element));
     };
@@ -95,7 +86,6 @@ abstract class Finder<Type extends FaceOrEdge> {
     };
 
     this.filters.push(checkAngle);
-    this.references.push(myDirection);
 
     return this;
   }
@@ -124,7 +114,7 @@ abstract class Finder<Type extends FaceOrEdge> {
     };
 
     this.filters.push(checkPoint);
-    this.references.push(distanceBuilder);
+    GCWithObject(checkPoint)(distanceBuilder);
 
     return this;
   }
@@ -153,7 +143,6 @@ abstract class Finder<Type extends FaceOrEdge> {
     );
     const box = boxMaker.Solid();
     boxMaker.delete();
-    this.references.push(box);
 
     const distanceBuilder = new oc.BRepExtrema_DistShapeShape_1();
     distanceBuilder.LoadS1(box);
@@ -165,8 +154,12 @@ abstract class Finder<Type extends FaceOrEdge> {
       return distanceBuilder.Value() < 1e-6;
     };
 
+    // We cleanup the box and the distance builder when the function disappears
+    const gc = GCWithObject(checkPoint);
+    gc(box);
+    gc(distanceBuilder);
+
     this.filters.push(checkPoint);
-    this.references.push(distanceBuilder);
 
     return this;
   }
@@ -182,7 +175,6 @@ abstract class Finder<Type extends FaceOrEdge> {
   either(findersList: ((f: this) => this)[]): this {
     const builtFinders = findersList.map((finderFunction) => {
       const finder = new (<any>this.constructor)() as this;
-      this.references.push(finder);
       finderFunction(finder);
       return finder;
     });
@@ -220,7 +212,6 @@ abstract class Finder<Type extends FaceOrEdge> {
    */
   not(finderFun: (f: this) => this): this {
     const finder = new (<any>this.constructor)() as this;
-    this.references.push(finder);
     finderFun(finder);
 
     const notFilter = ({ element }: { element: Type }) =>
@@ -236,16 +227,12 @@ abstract class Finder<Type extends FaceOrEdge> {
    *
    * If unique is configured as an option it will either return the unique
    * element found or throw an error.
-   *
-   * If clean is set to true the finder is deleted at the end of the filtering
-   * operation.
    */
-  find(shape: AnyShape, options: { unique: true; clean?: boolean }): Type;
-  find(shape: AnyShape, options: { unique?: false; clean?: boolean }): Type[];
-  find(shape: AnyShape, { unique = false, clean = false } = {}) {
+  find(shape: AnyShape, options: { unique: true }): Type;
+  find(shape: AnyShape): Type[];
+  find(shape: AnyShape, options: { unique?: false }): Type[];
+  find(shape: AnyShape, { unique = false } = {}) {
     const elements = this.applyFilter(shape);
-
-    if (clean) this.delete();
 
     if (unique) {
       if (elements.length !== 1) {
@@ -266,6 +253,12 @@ abstract class Finder<Type extends FaceOrEdge> {
  * @category Finders
  */
 export class FaceFinder extends Finder<Face> {
+  clone(): FaceFinder {
+    const ff = new FaceFinder();
+    ff.filters = [...this.filters];
+    return ff;
+  }
+
   /** Filter to find faces that are parallel to plane or another face
    *
    * Note that this will work only in planar faces (but the method does not
@@ -349,6 +342,12 @@ export class FaceFinder extends Finder<Face> {
  * @category Finders
  */
 export class EdgeFinder extends Finder<Edge> {
+  clone(): EdgeFinder {
+    const ef = new EdgeFinder();
+    ef.filters = [...this.filters];
+    return ef;
+  }
+
   /**
    * Filter to find edges that are in a certain direction
    *
