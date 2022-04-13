@@ -206,14 +206,26 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     const oc = getOC();
     const r = GCWithScope();
 
-    const projector = r(
-      new oc.Geom2dAPI_ProjectPointOnCurve_2(pnt(point), this.wrapped)
-    );
+    let lowerDistance;
+    let lowerDistanceParameter;
+    try {
+      const projector = r(
+        new oc.Geom2dAPI_ProjectPointOnCurve_2(pnt(point), this.wrapped)
+      );
+      lowerDistance = projector.LowerDistance();
+      lowerDistanceParameter = projector.LowerDistanceParameter();
+    } catch (e) {
+      // Perhaps it failed because it is on an extremity
+      if (samePoint(point, this.firstPoint)) return this.firstParameter;
+      if (samePoint(point, this.lastPoint)) return this.lastParameter;
 
-    if (projector.LowerDistance() > 1e-6) {
+      throw new Error("Failed to find parameter");
+    }
+
+    if (lowerDistance > 1e-6) {
       throw new Error("Point not on curve");
     }
-    return projector.LowerDistanceParameter();
+    return lowerDistanceParameter;
   }
 
   value(parameter: number): Point2D {
@@ -264,7 +276,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
 
     // We do not split again on the start and end
     if (parameters[0] === firstParam) parameters = parameters.slice(1);
-    if (parameters[parameters.length] === lastParam)
+    if (parameters[parameters.length - 1] === lastParam)
       parameters = parameters.slice(0, -1);
 
     if (!parameters.length) return [this];
@@ -273,14 +285,18 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       [firstParam, ...parameters],
       [...parameters, lastParam],
     ]).map(([first, last]) => {
-      const trimmed = new oc.Geom2d_TrimmedCurve(
-        this.wrapped,
-        first,
-        last,
-        true,
-        true
-      );
-      return new Curve2D(new oc.Handle_Geom2d_Curve_2(trimmed));
+      try {
+        const trimmed = new oc.Geom2d_TrimmedCurve(
+          this.wrapped,
+          first,
+          last,
+          true,
+          true
+        );
+        return new Curve2D(new oc.Handle_Geom2d_Curve_2(trimmed));
+      } catch (e) {
+        throw new Error("Failed to split the curve");
+      }
     });
   }
 }
