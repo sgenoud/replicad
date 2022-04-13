@@ -6,6 +6,8 @@ interface Deletable {
 }
 
 if (!(globalThis as any).FinalizationRegistry) {
+  console.log("Garbage collection will not work");
+
   (globalThis as any).FinalizationRegistry = (() => ({
     register: () => null,
     unregister: () => null,
