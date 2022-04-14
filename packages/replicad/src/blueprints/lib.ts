@@ -49,7 +49,10 @@ const addContainmentInfo = (
   groupedBlueprints: Blueprint[]
 ): ContainedBlueprint[] => {
   return groupedBlueprints.map((blueprint, index) => {
-    const point = blueprint.firstPoint;
+    const firstCurve = blueprint.curves[0];
+    const point = firstCurve.value(
+      (firstCurve.lastParameter + firstCurve.firstParameter) / 2
+    );
 
     const isIn = groupedBlueprints.filter((potentialOuterBlueprint, j) => {
       if (index === j) return false;
