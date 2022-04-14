@@ -18,6 +18,10 @@ export default class Blueprints implements BlueprintInterface {
     this._boundingBox = null;
   }
 
+  clone() {
+    return new Blueprints(this.blueprints);
+  }
+
   get boundingBox(): BoundingBox2d {
     if (!this._boundingBox) {
       const box = new BoundingBox2d();

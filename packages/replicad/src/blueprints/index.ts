@@ -14,3 +14,4 @@ export {
 };
 
 export * from "./cannedBlueprints";
+export * from "./booleanOperations";

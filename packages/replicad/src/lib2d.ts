@@ -8,6 +8,7 @@ import {
   gp_Ax2d,
   Geom2d_Curve,
   Handle_Geom2d_Curve,
+  Geom2dAPI_InterCurveCurve,
 } from "replicad-opencascadejs";
 
 const round = (v: number): number => Math.round(v * 100) / 100;
@@ -65,7 +66,7 @@ export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
 
     return [
       max[0] + (width / 100) * paddingPercent,
-      max[1] + (height / 100) * paddingPercent,
+      max[1] + (height / 100) * paddingPercent * 0.9,
     ];
   }
 
@@ -266,7 +267,9 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     });
 
     // We only split on each point once
-    parameters = Array.from(new Set(parameters)).sort((a, b) => a - b);
+    parameters = Array.from(new Set(parameters.map((p) => p.toFixed(9))))
+      .map((p) => Number.parseFloat(p))
+      .sort((a, b) => a - b);
     const firstParam = this.firstParameter;
     const lastParam = this.lastParameter;
 
@@ -275,8 +278,9 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     }
 
     // We do not split again on the start and end
-    if (parameters[0] === firstParam) parameters = parameters.slice(1);
-    if (parameters[parameters.length - 1] === lastParam)
+    if (Math.abs(parameters[0] - firstParam) < 1e-8)
+      parameters = parameters.slice(1);
+    if (Math.abs(parameters[parameters.length - 1] - lastParam) < 1e-8)
       parameters = parameters.slice(0, -1);
 
     if (!parameters.length) return [this];
@@ -402,4 +406,59 @@ export const make2dBezierCurve = (
   gc();
 
   return new Curve2D(new oc.Handle_Geom2d_Curve_2(bezCurve));
+};
+
+function* pointsIteration(
+  intersector: Geom2dAPI_InterCurveCurve
+): Generator<Point2D> {
+  const nPoints = intersector.NbPoints();
+  if (!nPoints) return;
+
+  for (let i = 1; i <= nPoints; i++) {
+    const point = intersector.Point(i);
+    yield [point.X(), point.Y()];
+  }
+}
+
+function* commonSegmentsIteration(
+  intersector: Geom2dAPI_InterCurveCurve
+): Generator<Curve2D> {
+  const nSegments = intersector.NbSegments();
+  if (!nSegments) return;
+
+  const oc = getOC();
+
+  for (let i = 1; i <= nSegments; i++) {
+    const h1 = new oc.Handle_Geom2d_Curve_1();
+    const h2 = new oc.Handle_Geom2d_Curve_1();
+    intersector.Segment(i, h1, h2);
+    yield new Curve2D(h1);
+    h2.delete();
+  }
+}
+
+export const intersectCurves = (first: Curve2D, second: Curve2D) => {
+  const oc = getOC();
+  const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
+
+  let intersections;
+  let commonSegments;
+
+  try {
+    intersector.Init_1(first.wrapped, second.wrapped, 1e-6);
+
+    intersections = Array.from(pointsIteration(intersector));
+    commonSegments = Array.from(commonSegmentsIteration(intersector));
+  } catch (e) {
+    throw new Error("Intersections failed between curves");
+  } finally {
+    intersector.delete();
+  }
+
+  const commonSegmentsPoints = commonSegments.flatMap((c) => [
+    c.firstPoint,
+    c.lastPoint,
+  ]);
+
+  return { intersections, commonSegments, commonSegmentsPoints };
 };

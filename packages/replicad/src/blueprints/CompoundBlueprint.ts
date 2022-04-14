@@ -18,6 +18,10 @@ export default class CompoundBlueprint implements BlueprintInterface {
     this._boundingBox = null;
   }
 
+  clone() {
+    return new CompoundBlueprint(this.blueprints);
+  }
+
   get boundingBox(): BoundingBox2d {
     if (!this._boundingBox) {
       const box = new BoundingBox2d();

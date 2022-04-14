@@ -168,7 +168,7 @@ export default class CompoundSketch implements SketchInterface {
       extrusionProfile?: ExtrusionProfile;
       twistAngle?: number;
       origin?: Point;
-    }
+    } = {}
   ): Shape3D {
     const [r, gc] = localGC();
 

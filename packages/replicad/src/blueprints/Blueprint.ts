@@ -39,6 +39,10 @@ export default class Blueprint implements BlueprintInterface {
     if (this._boundingBox) this._boundingBox.delete();
   }
 
+  clone() {
+    return new Blueprint(this.curves);
+  }
+
   get boundingBox(): BoundingBox2d {
     if (!this._boundingBox) {
       this._boundingBox = curvesBoundingBox(this.curves);
@@ -155,5 +159,17 @@ export default class Blueprint implements BlueprintInterface {
     intersector.delete();
 
     return !!(crossCounts % 2);
+  }
+
+  intersects(other: Blueprint) {
+    const oc = getOC();
+    const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
+    for (const myCurve of this.curves) {
+      for (const otherCurve of other.curves) {
+        intersector.Init_1(myCurve.wrapped, otherCurve.wrapped, 1e-6);
+        if (intersector.NbPoints() || intersector.NbSegments()) return true;
+      }
+    }
+    return false;
   }
 }
