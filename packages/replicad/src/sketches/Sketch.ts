@@ -103,8 +103,15 @@ export default class Sketch implements SketchInterface {
     } else {
       face = makeNewFaceWithinFace(this.baseFace, this.wire);
     }
-    this.delete();
     return face;
+  }
+
+  wires(): Wire {
+    return this.wire.clone();
+  }
+
+  faces(): Face {
+    return this.face();
   }
 
   /**
