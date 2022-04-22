@@ -15,3 +15,4 @@ export {
 
 export * from "./cannedBlueprints";
 export * from "./booleanOperations";
+export * from "./boolean2D";
