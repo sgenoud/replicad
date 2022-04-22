@@ -94,6 +94,14 @@ export class BaseSketcher2d {
     return this.line(distance, 0);
   }
 
+  vLineTo(yPos: number): this {
+    return this.lineTo([this.pointer[0], yPos]);
+  }
+
+  hLineTo(xPos: number): this {
+    return this.lineTo([xPos, this.pointer[1]]);
+  }
+
   polarLineTo([r, theta]: Point2D): this {
     const angleInRads = theta * DEG2RAD;
     const point = polarToCartesian(r, angleInRads);
@@ -429,7 +437,7 @@ export class BaseSketcher2d {
         new Curve2D(c.innerCurve.Mirrored_2(mirrorAxis) as Handle_Geom2d_Curve)
     );
     mirroredCurves.reverse();
-    mirroredCurves.map(c => c.reverse());
+    mirroredCurves.map((c) => c.reverse());
     this.pendingCurves.push(...mirroredCurves);
     this.pointer = this.firstPoint;
   }

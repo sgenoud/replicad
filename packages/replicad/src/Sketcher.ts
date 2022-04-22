@@ -90,6 +90,16 @@ export default class Sketcher implements GenericSketcher<Sketch> {
     return this.line(distance, 0);
   }
 
+  vLineTo(yPos: number): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.lineTo([pointer.x, yPos]);
+  }
+
+  hLineTo(xPos: number): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.lineTo([xPos, pointer.y]);
+  }
+
   polarLine(distance: number, angle: number): this {
     const angleInRads = angle * DEG2RAD;
     const [x, y] = polarToCartesian(distance, angleInRads);

@@ -106,6 +106,18 @@ export interface GenericSketcher<ReturnType> {
    */
   hLine(distance: number): this;
   /**
+   * Draws a vertical line to the y coordinate
+   *
+   * @category Line Segment
+   */
+  vLineTo(yPos: number): this;
+  /**
+   * Draws an horizontal line to the x coordinate
+   *
+   * @category Line Segment
+   */
+  hLineTo(xPos: number): this;
+  /**
    * Draws a line from the current point to the point defined in polar
    * coordiates, of radius r and angle theta (in degrees) from the origin
    *
