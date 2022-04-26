@@ -209,14 +209,13 @@ export default class Sketch implements SketchInterface {
     sketchOnPlane: (plane: Plane, origin: Point) => this,
     sweepConfig: GenericSweepConfig = {}
   ): Shape3D {
-    const [r, gc] = localGC();
+    const startPoint = this.wire.startPoint;
+    const normal = this.wire.tangentAt(1e-9).multiply(-1).normalize();
+    const xDir = normal.cross(this.defaultDirection).multiply(-1);
 
-    const startPoint = r(this.wire.startPoint);
-    const normal = r(r(this.wire.tangentAt(1e-9)).multiply(-1)).normalize();
-    const xDir = r(r(normal.cross(r(this.defaultDirection))).multiply(-1));
-
-    const sketch = r(
-      sketchOnPlane(r(new Plane(startPoint, xDir, normal)), startPoint)
+    const sketch = sketchOnPlane(
+      new Plane(startPoint, xDir, normal),
+      startPoint
     );
 
     const config: GenericSweepConfig = {
@@ -227,7 +226,6 @@ export default class Sketch implements SketchInterface {
       config.support = this.baseFace.wrapped;
     }
     const shape = genericSweep(sketch.wire, this.wire, config);
-    gc();
     this.delete();
 
     return shape;
