@@ -12,6 +12,7 @@ import Sketch from "./Sketch";
 import { Face } from "../shapes";
 import { Point2D } from "../lib2d";
 import { localGC } from "../register";
+import { roundedRectangleBlueprint } from "../blueprints/cannedBlueprints";
 
 interface PlaneConfig {
   plane?: PlaneName | Plane;
@@ -100,6 +101,21 @@ export const sketchRectangle = (
     .hLine(-xLength)
     .vLine(-yLength)
     .done();
+};
+
+/**
+ * Creates the `Sketch` of a rounded rectangle in a defined plane
+ *
+ * @category Sketching
+ */
+export const sketchRoundedRectangle = (
+  width: number,
+  height: number,
+  r: number | { rx?: number; ry?: number } = 0,
+  planeConfig: PlaneConfig = {}
+): Sketch => {
+  const bp = roundedRectangleBlueprint(width, height, r);
+  return bp.sketchOnPlane(planeConfig.plane, planeConfig.origin);
 };
 
 /**
