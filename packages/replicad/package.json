@@ -1,6 +1,6 @@
 {
   "name": "replicad",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "The library to build browser based 3D models with code",
   "keywords": [
     "cad",
