@@ -42,35 +42,35 @@ export const roundedRectangleBlueprint = (
     rx = 0;
     ry = 0;
   }
+  const symmetricRadius = rx === ry;
 
   const sk = new BlueprintSketcher([
     Math.min(0, -(width / 2 - rx)),
     -height / 2,
   ]);
 
+  const addFillet = (xDist: number, yDist: number) => {
+    if (withRadius) {
+      if (symmetricRadius) sk.tangentArc(xDist, yDist);
+      else sk.ellipse(xDist, yDist, rx, ry, 0, false, true);
+    }
+  };
+
   if (rx < width / 2) {
     sk.hLine(width - 2 * rx);
   }
-  if (withRadius) {
-    sk.ellipse(rx, ry, rx, ry, 0, false, true);
-  }
+  addFillet(rx, ry);
   if (ry < height / 2) {
     sk.vLine(height - 2 * ry);
   }
-  if (withRadius) {
-    sk.ellipse(-rx, ry, rx, ry, 0, false, true);
-  }
+  addFillet(-rx, ry);
   if (rx < width / 2) {
     sk.hLine(-(width - 2 * rx));
   }
-  if (withRadius) {
-    sk.ellipse(-rx, -ry, rx, ry, 0, false, true);
-  }
+  addFillet(-rx, -ry);
   if (ry < height / 2) {
     sk.vLine(-(height - 2 * ry));
   }
-  if (withRadius) {
-    sk.ellipse(rx, -ry, rx, ry, 0, false, true);
-  }
+  addFillet(rx, -ry);
   return sk.close();
 };
