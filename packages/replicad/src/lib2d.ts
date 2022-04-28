@@ -55,7 +55,7 @@ export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
   }
 
   get height(): number {
-    const [[ymin], [, ymax]] = this.bounds;
+    const [[, ymin], [, ymax]] = this.bounds;
     return Math.abs(ymax - ymin);
   }
 

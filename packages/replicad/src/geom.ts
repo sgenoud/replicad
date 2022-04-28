@@ -13,12 +13,14 @@ import {
   OpenCascadeInstance,
   gp_Trsf,
   TopoDS_Shape,
+  Bnd_Box,
 } from "replicad-opencascadejs";
 
 const round3 = (v: number) => Math.round(v * 1000) / 1000;
 
+export type SimplePoint = [number, number, number];
 export type Point =
-  | [number, number, number]
+  | SimplePoint
   | Vector
   | [number, number]
   | { XYZ: () => gp_XYZ; delete: () => void };
@@ -496,3 +498,66 @@ export const createNamedPlane = (
   }
   return new Plane(origin, config.xDir, config.normal);
 };
+
+export class BoundingBox extends WrappingObj<Bnd_Box> {
+  constructor(wrapped?: Bnd_Box) {
+    const oc = getOC();
+    let boundBox = wrapped;
+    if (!boundBox) {
+      boundBox = new oc.Bnd_Box_1();
+    }
+    super(boundBox);
+  }
+
+  get repr(): string {
+    const [min, max] = this.bounds;
+    return `${new Vector(min).repr} - ${new Vector(max).repr}`;
+  }
+
+  get bounds(): [SimplePoint, SimplePoint] {
+    const xMin = { current: 0 };
+    const yMin = { current: 0 };
+    const zMin = { current: 0 };
+    const xMax = { current: 0 };
+    const yMax = { current: 0 };
+    const zMax = { current: 0 };
+
+    this.wrapped.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+    return [
+      [xMin.current, yMin.current, zMin.current],
+      [xMax.current, yMax.current, zMax.current],
+    ];
+  }
+
+  get center(): SimplePoint {
+    const [[xmin, ymin, zmin], [xmax, ymax, zmax]] = this.bounds;
+    return [
+      xmin + (xmax - xmin) / 2,
+      ymin + (ymax - ymin) / 2,
+      zmin + (zmax - zmin) / 2,
+    ];
+  }
+
+  get width(): number {
+    const [[xmin], [xmax]] = this.bounds;
+    return Math.abs(xmax - xmin);
+  }
+
+  get height(): number {
+    const [[, ymin], [, ymax]] = this.bounds;
+    return Math.abs(ymax - ymin);
+  }
+
+  get depth(): number {
+    const [[, , zmin], [, zmax]] = this.bounds;
+    return Math.abs(zmax - zmin);
+  }
+
+  add(other: BoundingBox) {
+    this.wrapped.Add_1(other.wrapped);
+  }
+
+  isOut(other: BoundingBox): boolean {
+    return this.wrapped.IsOut_4(other.wrapped);
+  }
+}

@@ -1,5 +1,5 @@
 import { WrappingObj, GCWithScope } from "./register.js";
-import { Vector, Point, Plane, PlaneName, asPnt } from "./geom.js";
+import { Vector, Point, Plane, PlaneName, asPnt, BoundingBox } from "./geom.js";
 import { HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
 
@@ -275,6 +275,12 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
   get wires(): Wire[] {
     return this._listTopo("wire").map((e) => new Wire(e));
+  }
+
+  get boundingBox(): BoundingBox {
+    const bbox = new BoundingBox();
+    this.oc.BRepBndLib.Add(this.wrapped, bbox.wrapped, true);
+    return bbox;
   }
 
   protected _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
