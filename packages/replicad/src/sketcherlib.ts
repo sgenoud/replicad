@@ -383,6 +383,8 @@ export function convertSvgEllipseParams(
 ): {
   cx: number;
   cy: number;
+  rx: number;
+  ry: number;
   startAngle: number;
   deltaAngle: number;
   endAngle: number;
@@ -474,6 +476,8 @@ export function convertSvgEllipseParams(
     deltaAngle: deltaAngle,
     endAngle: endAngle,
     clockwise: !!fS,
+    rx,
+    ry,
   };
 
   return outputObj;

@@ -10,7 +10,14 @@ import {
   scaleTransform2d,
   translationTransform2d,
 } from "../curves";
-import { make2dSegmentCurve, Point2D, BoundingBox2d, Curve2D } from "../lib2d";
+import {
+  adaptedCurveToPathElem,
+  make2dSegmentCurve,
+  Point2D,
+  BoundingBox2d,
+  Curve2D,
+  samePoint,
+} from "../lib2d";
 import { assembleWire } from "../shapeHelpers";
 import { Face } from "../shapes";
 import Sketch from "../sketches/Sketch";
@@ -19,6 +26,8 @@ import { getOC } from "../oclib.js";
 import { Plane, PlaneName, Point } from "../geom";
 import { DEG2RAD } from "../constants";
 import { BlueprintInterface } from "./lib";
+import round5 from "../utils/round5";
+import { asSVG, viewbox } from "./svg";
 
 /**
  * A Blueprint is an abstract Sketch, a 2D set of curves that can then be
@@ -141,8 +150,43 @@ export default class Blueprint implements BlueprintInterface {
     return sketch;
   }
 
+  toSVGPathD() {
+    const oc = getOC();
+    const bp = this.clone().mirror([1, 0], [0, 0], "plane");
+
+    const path = bp.curves.map((c) => {
+      const adaptor = new oc.Geom2dAdaptor_Curve_2(c.wrapped);
+      return adaptedCurveToPathElem(adaptor, c.lastPoint);
+    });
+
+    const [startX, startY] = bp.curves[0].firstPoint;
+    return `M ${round5(startX)} ${round5(startY)} ${path.join(" ")}${
+      bp.isClosed() ? " Z" : ""
+    }`;
+  }
+
+  toSVGPath() {
+    return `<path d="${this.toSVGPathD()}" />`;
+  }
+
+  toSVGViewBox(margin = 1) {
+    return viewbox(this.boundingBox, margin);
+  }
+
+  toSVGPaths() {
+    return [this.toSVGPathD()];
+  }
+
+  toSVG(margin = 1) {
+    return asSVG(this.toSVGPath(), this.boundingBox, margin);
+  }
+
   get firstPoint(): Point2D {
     return this.curves[0].firstPoint;
+  }
+
+  get lastPoint(): Point2D {
+    return this.curves[this.curves.length - 1].lastPoint;
   }
 
   isInside(point: Point2D): boolean {
@@ -159,6 +203,10 @@ export default class Blueprint implements BlueprintInterface {
     intersector.delete();
 
     return !!(crossCounts % 2);
+  }
+
+  isClosed() {
+    return samePoint(this.firstPoint, this.lastPoint);
   }
 
   intersects(other: Blueprint) {

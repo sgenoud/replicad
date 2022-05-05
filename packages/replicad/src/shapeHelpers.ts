@@ -441,4 +441,3 @@ export const addHolesInFace = (face: Face, holes: Wire[]): Face => {
   gc();
   return new Face(newFace);
 };
-

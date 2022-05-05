@@ -24,6 +24,9 @@ import {
 } from "replicad-opencascadejs";
 import { EdgeFinder, FaceFinder } from "./finders.js";
 import { rotate, translate, mirror, scale as scaleShape } from "./geomHelpers";
+import { CurveType, findCurveType } from "./definitionMaps";
+
+export { CurveType };
 
 export type AnyShape =
   | Vertex
@@ -582,17 +585,6 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   }
 }
 
-export type CurveType =
-  | "LINE"
-  | "CIRCLE"
-  | "ELLIPSE"
-  | "HYPERBOLA"
-  | "PARABOLA"
-  | "BEZIER_CURVE"
-  | "BSPLINE_CURVE"
-  | "OFFSET_CURVE"
-  | "OTHER_CURVE";
-
 export class Curve extends WrappingObj<CurveLike> {
   get repr(): string {
     const { startPoint, endPoint } = this;
@@ -603,24 +595,8 @@ export class Curve extends WrappingObj<CurveLike> {
   }
 
   get curveType(): CurveType {
-    const ga = this.oc.GeomAbs_CurveType;
-
-    const CAST_MAP: Map<any, CurveType> = new Map([
-      [ga.GeomAbs_Line, "LINE"],
-      [ga.GeomAbs_Circle, "CIRCLE"],
-      [ga.GeomAbs_Ellipse, "ELLIPSE"],
-      [ga.GeomAbs_Hyperbola, "HYPERBOLA"],
-      [ga.GeomAbs_Parabola, "PARABOLA"],
-      [ga.GeomAbs_BezierCurve, "BEZIER_CURVE"],
-      [ga.GeomAbs_BSplineCurve, "BSPLINE_CURVE"],
-      [ga.GeomAbs_OffsetCurve, "OFFSET_CURVE"],
-      [ga.GeomAbs_OtherCurve, "OTHER_CURVE"],
-    ]);
-
     const technicalType = this.wrapped.GetType && this.wrapped.GetType();
-    const shapeType = CAST_MAP.get(technicalType);
-    if (!shapeType) throw new Error("unknown type");
-    return shapeType;
+    return findCurveType(technicalType);
   }
 
   get startPoint(): Vector {

@@ -259,24 +259,29 @@ export class BaseSketcher2d {
     );
     const [, newRotationAngle] = cartesiantToPolar(xDir);
 
-    const { cx, cy, startAngle, endAngle, clockwise } = convertSvgEllipseParams(
-      this._convertToUV(this.pointer),
-      this._convertToUV(end),
-      r1,
-      r2,
-      newRotationAngle,
-      longAxis,
-      sweep
-    );
+    const { cx, cy, startAngle, endAngle, clockwise, rx, ry } =
+      convertSvgEllipseParams(
+        this._convertToUV(this.pointer),
+        this._convertToUV(end),
+        r1,
+        r2,
+        newRotationAngle,
+        longAxis,
+        sweep
+      );
 
     const arc = make2dEllipseArc(
-      r1,
-      r2,
+      rx,
+      ry,
       clockwise ? startAngle : endAngle,
       clockwise ? endAngle : startAngle,
       [cx, cy],
       xDir
     );
+
+    if (!clockwise) {
+      arc.reverse();
+    }
 
     this.pendingCurves.push(arc);
     this.pointer = end;
@@ -312,7 +317,7 @@ export class BaseSketcher2d {
       distance / 2,
       minorRadius,
       angle * RAD2DEG,
-      false,
+      true,
       sweep
     );
   }

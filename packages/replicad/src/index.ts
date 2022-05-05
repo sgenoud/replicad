@@ -1,10 +1,11 @@
 import Sketcher from "./Sketcher";
 import FaceSketcher, { BaseSketcher2d, BlueprintSketcher } from "./Sketcher2d";
 
-import { Point2D, BoundingBox2d, Curve2D } from "./lib2d";
+import { Point2D, BoundingBox2d, Curve2D, axis2d } from "./lib2d";
 import { GenericSketcher, SplineConfig } from "./sketcherlib";
 
 export {
+  axis2d,
   Sketcher,
   BaseSketcher2d,
   FaceSketcher,

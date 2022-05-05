@@ -226,15 +226,16 @@ export default class Sketcher implements GenericSketcher<Sketch> {
       minorRadius = horizontalRadius;
     }
 
-    const { cx, cy, startAngle, endAngle, clockwise } = convertSvgEllipseParams(
-      [start.x, start.y],
-      end,
-      majorRadius,
-      minorRadius,
-      rotationAngle * DEG2RAD,
-      longAxis,
-      sweep
-    );
+    const { cx, cy, rx, ry, startAngle, endAngle, clockwise } =
+      convertSvgEllipseParams(
+        [start.x, start.y],
+        end,
+        majorRadius,
+        minorRadius,
+        rotationAngle * DEG2RAD,
+        longAxis,
+        sweep
+      );
 
     const xDir = r(
       new Vector(this.plane.xDir).rotate(
@@ -245,14 +246,20 @@ export default class Sketcher implements GenericSketcher<Sketch> {
     );
 
     const arc = makeEllipseArc(
-      majorRadius,
-      minorRadius,
+      rx,
+      ry,
       clockwise ? startAngle : endAngle,
       clockwise ? endAngle : startAngle,
       r(this.plane.toWorldCoords([cx, cy])),
       this.plane.zDir,
       xDir
     );
+
+    if (!clockwise) {
+      // This does not work, we may need to hack a bit more within
+      // makeEllipseArc
+      arc.wrapped.Reverse();
+    }
 
     this.pendingEdges.push(arc);
     this._updatePointer(this.plane.toWorldCoords(end));
@@ -400,7 +407,11 @@ export default class Sketcher implements GenericSketcher<Sketch> {
     return this;
   }
 
-  smoothSpline(xDist: number, yDist: number, splineConfig: SplineConfig): this {
+  smoothSpline(
+    xDist: number,
+    yDist: number,
+    splineConfig: SplineConfig = {}
+  ): this {
     const pointer = this.plane.toLocalCoords(this.pointer);
     return this.smoothSplineTo(
       [xDist + pointer.x, yDist + pointer.y],

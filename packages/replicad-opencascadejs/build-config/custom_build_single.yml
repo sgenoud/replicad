@@ -49,6 +49,7 @@ mainBuild:
     - symbol: gp_Pnt2d
     - symbol: gp_Dir2d
     - symbol: gp_Ax2d
+    - symbol: gp_Circ2d
     - symbol: gp_Elips2d
     - symbol: GCE2d_Root
     - symbol: GCE2d_MakeSegment
@@ -140,6 +141,13 @@ mainBuild:
     - symbol: Adaptor3d_Curve
     - symbol: Adaptor3d_Surface
     - symbol: BRepAdaptor_CompCurve
+
+    - symbol: Geom2dAdaptor_Curve
+    - symbol: Adaptor2d_Curve2d
+
+    - symbol: Geom2dConvert_BSplineCurveToBezierCurve
+    - symbol: Geom2dConvert
+    - symbol: Convert_ParameterisationType
 
     - symbol: StlAPI_Writer
     - symbol: STEPControl_Writer

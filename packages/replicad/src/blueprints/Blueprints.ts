@@ -2,6 +2,7 @@ import { Point2D, BoundingBox2d } from "../lib2d";
 import Blueprint from "./Blueprint";
 import CompoundBlueprint from "./CompoundBlueprint";
 import { BlueprintInterface } from "./lib";
+import { asSVG, viewbox } from "./svg";
 
 import { Face } from "../shapes";
 
@@ -76,5 +77,22 @@ export default class Blueprints implements BlueprintInterface {
     return new Sketches(
       this.blueprints.map((bp) => bp.sketchOnFace(face, scaleMode))
     );
+  }
+
+  toSVGViewBox(margin = 1) {
+    return viewbox(this.boundingBox, margin);
+  }
+
+  toSVGPaths() {
+    return this.blueprints.map((bp) => bp.toSVGPaths());
+  }
+
+  toSVG(margin = 1) {
+    const elements = this.blueprints.map((bp) => {
+      if (bp instanceof Blueprint) return bp.toSVGPath();
+      else return bp.toSVGGroup();
+    });
+
+    return asSVG(elements.join("\n    "), this.boundingBox, margin);
   }
 }

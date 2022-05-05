@@ -9,7 +9,12 @@ import {
   Geom2d_Curve,
   Handle_Geom2d_Curve,
   Geom2dAPI_InterCurveCurve,
+  Geom2dAdaptor_Curve,
 } from "replicad-opencascadejs";
+
+import { findCurveType } from "./definitionMaps";
+import { RAD2DEG } from "./constants";
+import round5 from "./utils/round5";
 
 const round = (v: number): number => Math.round(v * 100) / 100;
 const reprPnt = ([x, y]: Point2D): string => {
@@ -132,7 +137,7 @@ export const polarToCartesian = (r: number, theta: number): Point2D => {
 
 export const cartesiantToPolar = ([x, y]: Point2D): [number, number] => {
   const r = distance2d([x, y]);
-  const theta = Math.atan(y / x);
+  const theta = Math.atan2(y, x);
 
   return [r, theta];
 };
@@ -152,7 +157,7 @@ export const angle2d = (
   [x0, y0]: Point2D,
   [x1, y1]: Point2D = [0, 0]
 ): number => {
-  return Math.atan((y1 - y0) / (x1 - x0));
+  return Math.atan2(y1 - y0, x1 - x0);
 };
 
 export const normalize2d = ([x0, y0]: Point2D): Point2D => {
@@ -367,7 +372,8 @@ export const make2dEllipseArc = (
   startAngle: number,
   endAngle: number,
   center: Point2D = [0, 0],
-  xDir: Point2D
+  xDir: Point2D,
+  direct = true
 ): Curve2D => {
   const oc = getOC();
   const [r, gc] = localGC();
@@ -376,7 +382,7 @@ export const make2dEllipseArc = (
   );
 
   const segment = r(
-    new oc.GCE2d_MakeArcOfEllipse_1(ellipse, startAngle, endAngle, true)
+    new oc.GCE2d_MakeArcOfEllipse_1(ellipse, startAngle, endAngle, direct)
   ).Value();
   gc();
 
@@ -461,4 +467,70 @@ export const intersectCurves = (first: Curve2D, second: Curve2D) => {
   ]);
 
   return { intersections, commonSegments, commonSegmentsPoints };
+};
+
+const fromPnt = (pnt: gp_Pnt2d) => `${round(pnt.X())} ${round(pnt.Y())}`;
+
+export const adaptedCurveToPathElem = (
+  adaptor: Geom2dAdaptor_Curve,
+  lastPoint: Point2D
+): string => {
+  const oc = getOC();
+  const curveType = findCurveType(adaptor.GetType());
+
+  const [endX, endY] = lastPoint;
+  const endpoint = `${round5(endX)} ${round5(endY)}`;
+  if (curveType === "LINE") {
+    return `L ${endpoint}`;
+  }
+  if (curveType === "BEZIER_CURVE") {
+    const curve = adaptor.Bezier().get();
+    const deg = curve.Degree();
+
+    if (deg === 2) {
+      return `Q ${fromPnt(curve.Pole(2))} ${endpoint}`;
+    }
+
+    if (deg === 3) {
+      const p1 = fromPnt(curve.Pole(2));
+      const p2 = fromPnt(curve.Pole(3));
+      return `C ${p1} ${p2} ${endpoint}`;
+    }
+
+    console.warn(`bezier of degree ${deg} not implemented, using a line`);
+    return `L ${endpoint}`;
+  }
+  if (curveType === "CIRCLE") {
+    const curve = adaptor.Circle();
+    const radius = curve.Radius();
+
+    const p1 = adaptor.FirstParameter();
+    const p2 = adaptor.LastParameter();
+
+    const paramAngle = (p2 - p1) * RAD2DEG;
+
+    return `A ${radius} ${radius} 0 ${Math.abs(paramAngle) > 180 ? "1" : "0"} ${
+      curve.IsDirect() ? "1" : "0"
+    } ${endpoint}`;
+  }
+
+  if (curveType === "ELLIPSE") {
+    const curve = adaptor.Ellipse();
+    const rx = curve.MajorRadius();
+    const ry = curve.MinorRadius();
+
+    const p1 = adaptor.FirstParameter();
+    const p2 = adaptor.LastParameter();
+
+    const paramAngle = (p2 - p1) * RAD2DEG;
+
+    const angle =
+      180 - curve.XAxis().Direction().Angle(new oc.gp_Dir2d_1()) * RAD2DEG;
+
+    return `A ${round5(rx)} ${round5(ry)} ${round5(angle)} ${
+      Math.abs(paramAngle) > 180 ? "1" : "0"
+    } ${curve.IsDirect() ? "1" : "0"} ${endpoint}`;
+  }
+  console.warn(`${curveType} not implemented, using a line`);
+  return `L ${endpoint}`;
 };
