@@ -12,7 +12,7 @@ import {
   Geom2dAdaptor_Curve,
 } from "replicad-opencascadejs";
 
-import { findCurveType } from "./definitionMaps";
+import { CurveType, findCurveType } from "./definitionMaps";
 import { RAD2DEG } from "./constants";
 import round5 from "./utils/round5";
 
@@ -200,6 +200,18 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     return this.innerCurve.LastParameter();
   }
 
+  private adaptor(): Geom2dAdaptor_Curve {
+    const oc = getOC();
+    return new oc.Geom2dAdaptor_Curve_2(this.wrapped);
+  }
+
+  get geomType(): CurveType {
+    const adaptor = this.adaptor();
+    const curveType = findCurveType(adaptor.GetType());
+    adaptor.delete();
+    return curveType;
+  }
+
   clone(): Curve2D {
     return new Curve2D(this.wrapped);
   }
@@ -295,6 +307,15 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       [...parameters, lastParam],
     ]).map(([first, last]) => {
       try {
+        if (this.geomType === "BEZIER_CURVE") {
+          const curveCopy = new oc.Geom2d_BezierCurve_1(
+            this.adaptor().Bezier().get().Poles_2()
+          );
+          curveCopy.Segment(first, last);
+          const newCurve = new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy));
+
+          return newCurve;
+        }
         const trimmed = new oc.Geom2d_TrimmedCurve(
           this.wrapped,
           first,
