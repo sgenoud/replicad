@@ -8,7 +8,7 @@ import {
   intersectBlueprints,
 } from "./booleanOperations";
 
-type Shape2D = Blueprint | Blueprints | CompoundBlueprint | null;
+export type Shape2D = Blueprint | Blueprints | CompoundBlueprint | null;
 
 const allBlueprints = (shape: Shape2D): Blueprint[] => {
   if (shape instanceof Blueprint) return [shape];

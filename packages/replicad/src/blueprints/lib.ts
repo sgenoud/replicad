@@ -139,7 +139,7 @@ export interface DrawingInterface {
   translate(xDist: number, yDist: number): DrawingInterface;
 
   /**
-   * Returns the mirror image of this Blueprint made with a single point (in
+   * Returns the mirror image of this drawing made with a single point (in
    * center mode, the default, or a plane, (plane mode, with both direction and
    * origin of the plane).
    */
@@ -150,7 +150,7 @@ export interface DrawingInterface {
   ): DrawingInterface;
 
   /**
-   * Returns the sketched version of the blueprint, on a plane
+   * Returns the sketched version of the drawing, on a plane
    */
   sketchOnPlane(inputPlane: Plane): SketchInterface | Sketches;
   sketchOnPlane(
@@ -163,16 +163,31 @@ export interface DrawingInterface {
   ): SketchInterface | Sketches;
 
   /**
-   * Returns the sketched version of the blueprint, on a face.
+   * Returns the sketched version of the drawing, on a face.
    *
-   * The scale mode corresponds to the way the coordinates of the blueprint are
+   * The scale mode corresponds to the way the coordinates of the drawing are
    * interpreted match with the face:
    *
-   * - `original` uses global coordinates (1mm in the blueprint is 1mm on the
+   * - `original` uses global coordinates (1mm in the drawing is 1mm on the
    *   face). This is the default, but currently supported only for planar
    *   and circular faces
    * - `bounds` normalises the UV parameters on the face to [0,1] intervals.
    * - `native` uses the default UV parameters of opencascade
    */
   sketchOnFace(face: Face, scaleMode: ScaleMode): SketchInterface | Sketches;
+
+  /**
+   * Formats the drawing as an SVG image
+   */
+  toSVG(margin: number): string;
+
+  /**
+   * Returns the SVG viewbox that corresponds to this drawing
+   */
+  toSVGViewBox(margin?: number): string;
+
+  /**
+   * Formats the drawing as a list of SVG paths
+   */
+  toSVGPaths(): string[] | string[][];
 }
