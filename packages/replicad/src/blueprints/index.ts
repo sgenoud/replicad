@@ -1,7 +1,7 @@
 import Blueprint from "./Blueprint";
 import CompoundBlueprint from "./CompoundBlueprint";
 import Blueprints from "./Blueprints";
-import { organiseBlueprints, BlueprintInterface } from "./lib";
+import { organiseBlueprints, DrawingInterface } from "./lib";
 import { ScaleMode } from "../curves";
 
 export {
@@ -9,7 +9,7 @@ export {
   CompoundBlueprint,
   Blueprints,
   organiseBlueprints,
-  BlueprintInterface,
+  DrawingInterface,
   ScaleMode,
 };
 

@@ -131,16 +131,12 @@ export const organiseBlueprints = (blueprints: Blueprint[]): Blueprints => {
   );
 };
 
-export interface BlueprintInterface {
+export interface DrawingInterface {
   boundingBox: BoundingBox2d;
-  stretch(
-    ratio: number,
-    direction: Point2D,
-    origin: Point2D
-  ): BlueprintInterface;
+  stretch(ratio: number, direction: Point2D, origin: Point2D): DrawingInterface;
 
-  rotate(angle: number, center: Point2D): BlueprintInterface;
-  translate(xDist: number, yDist: number): BlueprintInterface;
+  rotate(angle: number, center: Point2D): DrawingInterface;
+  translate(xDist: number, yDist: number): DrawingInterface;
 
   /**
    * Returns the mirror image of this Blueprint made with a single point (in
@@ -151,7 +147,7 @@ export interface BlueprintInterface {
     centerOrDirection: Point2D,
     origin?: Point2D,
     mode?: "center" | "plane"
-  ): BlueprintInterface;
+  ): DrawingInterface;
 
   /**
    * Returns the sketched version of the blueprint, on a plane

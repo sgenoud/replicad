@@ -1,7 +1,7 @@
 import { Point2D, BoundingBox2d } from "../lib2d";
 import Blueprint from "./Blueprint";
 import CompoundBlueprint from "./CompoundBlueprint";
-import { BlueprintInterface } from "./lib";
+import { DrawingInterface } from "./lib";
 import { asSVG, viewbox } from "./svg";
 
 import { Face } from "../shapes";
@@ -11,7 +11,7 @@ import { Plane, PlaneName, Point } from "../geom";
 import { ScaleMode } from "../curves";
 import Sketches from "../sketches/Sketches";
 
-export default class Blueprints implements BlueprintInterface {
+export default class Blueprints implements DrawingInterface {
   blueprints: Array<Blueprint | CompoundBlueprint>;
   protected _boundingBox: BoundingBox2d | null;
   constructor(blueprints: Array<Blueprint | CompoundBlueprint>) {

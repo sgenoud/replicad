@@ -25,7 +25,7 @@ import Sketch from "../sketches/Sketch";
 import { getOC } from "../oclib.js";
 import { Plane, PlaneName, Point } from "../geom";
 import { DEG2RAD } from "../constants";
-import { BlueprintInterface } from "./lib";
+import { DrawingInterface } from "./lib";
 import round5 from "../utils/round5";
 import { asSVG, viewbox } from "./svg";
 
@@ -35,7 +35,7 @@ import { asSVG, viewbox } from "./svg";
  *
  * You should create them by "sketching" with a `BlueprintSketcher`
  */
-export default class Blueprint implements BlueprintInterface {
+export default class Blueprint implements DrawingInterface {
   curves: Curve2D[];
   protected _boundingBox: null | BoundingBox2d;
   constructor(curves: Curve2D[]) {
