@@ -387,6 +387,45 @@ export const make2dTangentArc = (
   return new Curve2D(segment);
 };
 
+export const make2dCircle = (
+  radius: number,
+  center: Point2D = [0, 0]
+): Curve2D => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+
+  const segment = r(
+    new oc.GCE2d_MakeCircle_7(r(pnt(center)), radius, true)
+  ).Value();
+  gc();
+
+  return new Curve2D(segment as unknown as Handle_Geom2d_Curve);
+};
+
+export const make2dEllipse = (
+  majorRadius: number,
+  minorRadius: number,
+  xDir: Point2D = [1, 0],
+  center: Point2D = [0, 0],
+  direct = true
+): Curve2D => {
+  const oc = getOC();
+  const [r, gc] = localGC();
+  const ellipse = r(
+    new oc.gp_Elips2d_2(
+      r(axis2d(center, xDir)),
+      majorRadius,
+      minorRadius,
+      direct
+    )
+  );
+
+  const segment = r(new oc.GCE2d_MakeEllipse_1(ellipse)).Value();
+  gc();
+
+  return new Curve2D(segment as unknown as Handle_Geom2d_Curve);
+};
+
 export const make2dEllipseArc = (
   majorRadius: number,
   minorRadius: number,
@@ -530,9 +569,14 @@ export const adaptedCurveToPathElem = (
 
     const paramAngle = (p2 - p1) * RAD2DEG;
 
+    const end =
+      paramAngle !== 360
+        ? endpoint
+        : `${round5(endX)} ${round5(endY + 0.0001)}`;
+
     return `A ${radius} ${radius} 0 ${Math.abs(paramAngle) > 180 ? "1" : "0"} ${
       curve.IsDirect() ? "1" : "0"
-    } ${endpoint}`;
+    } ${end}`;
   }
 
   if (curveType === "ELLIPSE") {
@@ -545,12 +589,17 @@ export const adaptedCurveToPathElem = (
 
     const paramAngle = (p2 - p1) * RAD2DEG;
 
+    const end =
+      paramAngle !== 360
+        ? endpoint
+        : `${round5(endX)} ${round5(endY + 0.0001)}`;
+
     const angle =
       180 - curve.XAxis().Direction().Angle(new oc.gp_Dir2d_1()) * RAD2DEG;
 
     return `A ${round5(rx)} ${round5(ry)} ${round5(angle)} ${
       Math.abs(paramAngle) > 180 ? "1" : "0"
-    } ${curve.IsDirect() ? "1" : "0"} ${endpoint}`;
+    } ${curve.IsDirect() ? "1" : "0"} ${end}`;
   }
   console.warn(`${curveType} not implemented, using a line`);
   return `L ${endpoint}`;

@@ -1,9 +1,11 @@
-import { BoundingBox2d, Point2D } from "./lib2d";
+import { BoundingBox2d, make2dCircle, make2dEllipse, Point2D } from "./lib2d";
 import {
   Blueprint,
   cut2D,
   DrawingInterface,
   fuse2D,
+  polysidesBlueprint,
+  roundedRectangleBlueprint,
   ScaleMode,
   Shape2D,
 } from "./blueprints";
@@ -12,6 +14,7 @@ import { Face } from "./shapes";
 import { BaseSketcher2d } from "./Sketcher2d";
 import { SketchInterface, Sketches } from "./sketches";
 import { GenericSketcher } from "./sketcherlib";
+import { textBlueprints } from "./text";
 
 export class Drawing implements DrawingInterface {
   private innerShape: Shape2D;
@@ -113,6 +116,83 @@ export class DrawingPen
   }
 }
 
-export function draw() {
+/**
+ * Creates a drawing pen to programatically draw in 2D.
+ *
+ * @category Drawing
+ */
+export function draw(): DrawingPen {
   return new DrawingPen();
+}
+
+/**
+ * Creates the `Drawing` of a rectangle with (optional) rounded corners.
+ *
+ * The rectangle is centered on [0, 0]
+ *
+ * @category Drawing
+ */
+export function drawRoundedRectangle(
+  width: number,
+  height: number,
+  r: number | { rx?: number; ry?: number } = 0
+): Drawing {
+  return new Drawing(roundedRectangleBlueprint(width, height, r));
+}
+export const drawRectangle = drawRoundedRectangle;
+
+/**
+ * Creates the `Drawing` of a circle.
+ *
+ * The circle is centered on [0, 0]
+ *
+ * @category Drawing
+ */
+export function drawCircle(radius: number): Drawing {
+  return new Drawing(new Blueprint([make2dCircle(radius)]));
+}
+
+/**
+ * Creates the `Drawing` of an ellipse.
+ *
+ * The ellipse is centered on [0, 0], with axes aligned with the coordinates.
+ *
+ * @category Drawing
+ */
+export function drawEllipse(majorRadius: number, minorRadius: number): Drawing {
+  const [minor, major] = [majorRadius, minorRadius].sort((a, b) => a - b);
+  const direction: Point2D = major === majorRadius ? [1, 0] : [0, 1];
+
+  return new Drawing(new Blueprint([make2dEllipse(major, minor, direction)]));
+}
+
+/**
+ * Creates the `Drawing` of an polygon in a defined plane
+ *
+ * The sides of the polygon can be arcs of circle with a defined sagitta.
+ * The radius defines the out radius of the polygon without sagitta
+ *
+ * @category Drawing
+ */
+export function drawPolysides(
+  radius: number,
+  sidesCount: number,
+  sagitta = 0
+): Drawing {
+  return new Drawing(polysidesBlueprint(radius, sidesCount, sagitta));
+}
+
+/**
+ * Creates the `Drawing` of a text, in a defined font size and a font familiy
+ * (which will be the default).
+ *
+ * @category Drawing
+ */
+export function drawText(
+  text: string,
+  { startX = 0, startY = 0, fontSize = 16, fontFamily = "default" } = {}
+): Drawing {
+  return new Drawing(
+    textBlueprints(text, { startX, startY, fontSize, fontFamily })
+  );
 }

@@ -36,6 +36,7 @@ mainBuild:
     - symbol: Geom2d_Geometry
     - symbol: Geom2d_Ellipse
     - symbol: Geom2d_Circle
+    - symbol: Geom2d_Conic
     - symbol: Handle_Geom2d_Geometry
     - symbol: Handle_Geom2d_Line
     - symbol: Handle_Geom2d_Curve
@@ -55,6 +56,8 @@ mainBuild:
     - symbol: GCE2d_MakeSegment
     - symbol: GCE2d_MakeArcOfCircle
     - symbol: GCE2d_MakeArcOfEllipse
+    - symbol: GCE2d_MakeCircle
+    - symbol: GCE2d_MakeEllipse
 
     - symbol: GeomLib
     - symbol: gp_Trsf2d

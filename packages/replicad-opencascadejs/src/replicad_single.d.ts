@@ -495,6 +495,27 @@ export declare class BRepAlgoAPI_Common extends BRepAlgoAPI_BooleanOperation {
     constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, PF: BOPAlgo_PaveFiller);
   }
 
+export declare class Geom2d_Conic extends Geom2d_Curve {
+  SetAxis(theA: gp_Ax22d): void;
+  SetXAxis(theAX: gp_Ax2d): void;
+  SetYAxis(theAY: gp_Ax2d): void;
+  SetLocation(theP: gp_Pnt2d): void;
+  XAxis(): gp_Ax2d;
+  YAxis(): gp_Ax2d;
+  Eccentricity(): Quantity_AbsorbedDose;
+  Location(): gp_Pnt2d;
+  Position(): gp_Ax22d;
+  Reverse(): void;
+  ReversedParameter(U: Quantity_AbsorbedDose): Quantity_AbsorbedDose;
+  Continuity(): GeomAbs_Shape;
+  IsCN(N: Graphic3d_ZLayerId): Standard_Boolean;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
 export declare class Handle_Geom2d_BezierCurve {
   Nullify(): void;
   IsNull(): boolean;
@@ -1785,6 +1806,27 @@ export declare class GCE2d_MakeSegment extends GCE2d_Root {
     constructor(Line: gp_Lin2d, P1: gp_Pnt2d, P2: gp_Pnt2d);
   }
 
+export declare class GCE2d_MakeEllipse extends GCE2d_Root {
+  Value(): Handle_Geom2d_Ellipse;
+  delete(): void;
+}
+
+  export declare class GCE2d_MakeEllipse_1 extends GCE2d_MakeEllipse {
+    constructor(E: gp_Elips2d);
+  }
+
+  export declare class GCE2d_MakeEllipse_2 extends GCE2d_MakeEllipse {
+    constructor(MajorAxis: gp_Ax2d, MajorRadius: Quantity_AbsorbedDose, MinorRadius: Quantity_AbsorbedDose, Sense: Standard_Boolean);
+  }
+
+  export declare class GCE2d_MakeEllipse_3 extends GCE2d_MakeEllipse {
+    constructor(Axis: gp_Ax22d, MajorRadius: Quantity_AbsorbedDose, MinorRadius: Quantity_AbsorbedDose);
+  }
+
+  export declare class GCE2d_MakeEllipse_4 extends GCE2d_MakeEllipse {
+    constructor(S1: gp_Pnt2d, S2: gp_Pnt2d, Center: gp_Pnt2d);
+  }
+
 export declare class GCE2d_MakeArcOfEllipse extends GCE2d_Root {
   Value(): Handle_Geom2d_TrimmedCurve;
   delete(): void;
@@ -1808,6 +1850,43 @@ export declare class GCE2d_Root {
   Status(): gce_ErrorType;
   delete(): void;
 }
+
+export declare class GCE2d_MakeCircle extends GCE2d_Root {
+  Value(): Handle_Geom2d_Circle;
+  delete(): void;
+}
+
+  export declare class GCE2d_MakeCircle_1 extends GCE2d_MakeCircle {
+    constructor(C: gp_Circ2d);
+  }
+
+  export declare class GCE2d_MakeCircle_2 extends GCE2d_MakeCircle {
+    constructor(A: gp_Ax2d, Radius: Quantity_AbsorbedDose, Sense: Standard_Boolean);
+  }
+
+  export declare class GCE2d_MakeCircle_3 extends GCE2d_MakeCircle {
+    constructor(A: gp_Ax22d, Radius: Quantity_AbsorbedDose);
+  }
+
+  export declare class GCE2d_MakeCircle_4 extends GCE2d_MakeCircle {
+    constructor(Circ: gp_Circ2d, Dist: Quantity_AbsorbedDose);
+  }
+
+  export declare class GCE2d_MakeCircle_5 extends GCE2d_MakeCircle {
+    constructor(Circ: gp_Circ2d, Point: gp_Pnt2d);
+  }
+
+  export declare class GCE2d_MakeCircle_6 extends GCE2d_MakeCircle {
+    constructor(P1: gp_Pnt2d, P2: gp_Pnt2d, P3: gp_Pnt2d);
+  }
+
+  export declare class GCE2d_MakeCircle_7 extends GCE2d_MakeCircle {
+    constructor(P: gp_Pnt2d, Radius: Quantity_AbsorbedDose, Sense: Standard_Boolean);
+  }
+
+  export declare class GCE2d_MakeCircle_8 extends GCE2d_MakeCircle {
+    constructor(Center: gp_Pnt2d, Point: gp_Pnt2d, Sense: Standard_Boolean);
+  }
 
 export declare class GeomLib {
   constructor();
@@ -6295,6 +6374,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepAlgoAPI_Common_2: typeof BRepAlgoAPI_Common_2;
   BRepAlgoAPI_Common_3: typeof BRepAlgoAPI_Common_3;
   BRepAlgoAPI_Common_4: typeof BRepAlgoAPI_Common_4;
+  Geom2d_Conic: typeof Geom2d_Conic;
   Handle_Geom2d_BezierCurve: typeof Handle_Geom2d_BezierCurve;
   Handle_Geom2d_BezierCurve_1: typeof Handle_Geom2d_BezierCurve_1;
   Handle_Geom2d_BezierCurve_2: typeof Handle_Geom2d_BezierCurve_2;
@@ -6448,11 +6528,25 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GCE2d_MakeSegment_3: typeof GCE2d_MakeSegment_3;
   GCE2d_MakeSegment_4: typeof GCE2d_MakeSegment_4;
   GCE2d_MakeSegment_5: typeof GCE2d_MakeSegment_5;
+  GCE2d_MakeEllipse: typeof GCE2d_MakeEllipse;
+  GCE2d_MakeEllipse_1: typeof GCE2d_MakeEllipse_1;
+  GCE2d_MakeEllipse_2: typeof GCE2d_MakeEllipse_2;
+  GCE2d_MakeEllipse_3: typeof GCE2d_MakeEllipse_3;
+  GCE2d_MakeEllipse_4: typeof GCE2d_MakeEllipse_4;
   GCE2d_MakeArcOfEllipse: typeof GCE2d_MakeArcOfEllipse;
   GCE2d_MakeArcOfEllipse_1: typeof GCE2d_MakeArcOfEllipse_1;
   GCE2d_MakeArcOfEllipse_2: typeof GCE2d_MakeArcOfEllipse_2;
   GCE2d_MakeArcOfEllipse_3: typeof GCE2d_MakeArcOfEllipse_3;
   GCE2d_Root: typeof GCE2d_Root;
+  GCE2d_MakeCircle: typeof GCE2d_MakeCircle;
+  GCE2d_MakeCircle_1: typeof GCE2d_MakeCircle_1;
+  GCE2d_MakeCircle_2: typeof GCE2d_MakeCircle_2;
+  GCE2d_MakeCircle_3: typeof GCE2d_MakeCircle_3;
+  GCE2d_MakeCircle_4: typeof GCE2d_MakeCircle_4;
+  GCE2d_MakeCircle_5: typeof GCE2d_MakeCircle_5;
+  GCE2d_MakeCircle_6: typeof GCE2d_MakeCircle_6;
+  GCE2d_MakeCircle_7: typeof GCE2d_MakeCircle_7;
+  GCE2d_MakeCircle_8: typeof GCE2d_MakeCircle_8;
   GeomLib: typeof GeomLib;
   BRepExtrema_DistShapeShape: typeof BRepExtrema_DistShapeShape;
   BRepExtrema_DistShapeShape_1: typeof BRepExtrema_DistShapeShape_1;

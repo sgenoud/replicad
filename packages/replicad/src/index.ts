@@ -31,3 +31,4 @@ export * from "./blueprints";
 export * from "./sketches";
 export * from "./text";
 export * from "./importers";
+export * from "./draw";
