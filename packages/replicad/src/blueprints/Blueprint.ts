@@ -28,6 +28,7 @@ import { DEG2RAD } from "../constants";
 import { DrawingInterface } from "./lib";
 import round5 from "../utils/round5";
 import { asSVG, viewbox } from "./svg";
+import { GCWithScope } from "../register";
 
 /**
  * A Blueprint is an abstract Sketch, a 2D set of curves that can then be
@@ -133,6 +134,7 @@ export default class Blueprint implements DrawingInterface {
 
     const wireFixer = new oc.ShapeFix_Wire_2(wire.wrapped, face.wrapped, 1e-9);
     wireFixer.FixEdgeCurves();
+    wireFixer.delete();
 
     const sketch = new Sketch(wire);
 
@@ -151,12 +153,11 @@ export default class Blueprint implements DrawingInterface {
   }
 
   toSVGPathD() {
-    const oc = getOC();
+    const r = GCWithScope();
     const bp = this.clone().mirror([1, 0], [0, 0], "plane");
 
     const path = bp.curves.map((c) => {
-      const adaptor = new oc.Geom2dAdaptor_Curve_2(c.wrapped);
-      return adaptedCurveToPathElem(adaptor, c.lastPoint);
+      return adaptedCurveToPathElem(r(c.adaptor()), c.lastPoint);
     });
 
     const [startX, startY] = bp.curves[0].firstPoint;
@@ -218,6 +219,7 @@ export default class Blueprint implements DrawingInterface {
         if (intersector.NbPoints() || intersector.NbSegments()) return true;
       }
     }
+    intersector.delete();
     return false;
   }
 }

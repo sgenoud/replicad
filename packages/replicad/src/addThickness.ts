@@ -180,18 +180,13 @@ export const supportExtrude = (
   normal: Point,
   support: TopoDS_Shape
 ): Shape3D => {
-  const [r, gc] = localGC();
+  const centerVec = new Vector(center);
+  const normalVec = new Vector(normal);
 
-  const centerVec = r(new Vector(center));
-  const normalVec = r(new Vector(normal));
+  const mainSpineEdge = makeLine(centerVec, centerVec.add(normalVec));
+  const spine = assembleWire([mainSpineEdge]);
 
-  const mainSpineEdge = r(makeLine(centerVec, r(centerVec.add(normalVec))));
-  const spine = r(assembleWire([mainSpineEdge]));
-
-  const shape = genericSweep(wire, spine, { support });
-  gc();
-
-  return shape;
+  return genericSweep(wire, spine, { support });
 };
 
 function complexExtrude(
@@ -215,13 +210,11 @@ function complexExtrude(
   profileShape?: ExtrusionProfile,
   shellMode = false
 ): Shape3D | [Shape3D, Wire, Wire] {
-  const [r, gc] = localGC();
+  const centerVec = new Vector(center);
+  const normalVec = new Vector(normal);
 
-  const centerVec = r(new Vector(center));
-  const normalVec = r(new Vector(normal));
-
-  const mainSpineEdge = r(makeLine(centerVec, r(centerVec.add(normalVec))));
-  const spine = r(assembleWire([mainSpineEdge]));
+  const mainSpineEdge = makeLine(centerVec, centerVec.add(normalVec));
+  const spine = assembleWire([mainSpineEdge]);
 
   const law = profileShape
     ? buildLawFromProfile(normalVec.Length, profileShape)
@@ -231,8 +224,6 @@ function complexExtrude(
   const shape = shellMode
     ? genericSweep(wire, spine, { law }, shellMode)
     : genericSweep(wire, spine, { law }, shellMode);
-
-  gc();
 
   return shape;
 }
@@ -263,19 +254,21 @@ function twistExtrude(
   profileShape?: ExtrusionProfile,
   shellMode = false
 ): Shape3D | [Shape3D, Wire, Wire] {
-  const [r, gc] = localGC();
+  const centerVec = new Vector(center);
+  const normalVec = new Vector(normal);
 
-  const centerVec = r(new Vector(center));
-  const normalVec = r(new Vector(normal));
-
-  const mainSpineEdge = r(makeLine(centerVec, r(centerVec.add(normalVec))));
-  const spine = r(assembleWire([mainSpineEdge]));
+  const mainSpineEdge = makeLine(centerVec, centerVec.add(normalVec));
+  const spine = assembleWire([mainSpineEdge]);
 
   const pitch = (360.0 / angleDegrees) * normalVec.Length;
   const radius = 1;
 
-  const auxiliarySpine = r(
-    makeHelix(pitch, normalVec.Length, radius, center, normal)
+  const auxiliarySpine = makeHelix(
+    pitch,
+    normalVec.Length,
+    radius,
+    center,
+    normal
   );
 
   const law = profileShape
@@ -286,7 +279,6 @@ function twistExtrude(
   const shape = shellMode
     ? genericSweep(wire, spine, { auxiliarySpine, law }, shellMode)
     : genericSweep(wire, spine, { auxiliarySpine, law }, shellMode);
-  gc();
 
   return shape;
 }

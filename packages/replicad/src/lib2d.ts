@@ -229,7 +229,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     let lowerDistanceParameter;
     try {
       const projector = r(
-        new oc.Geom2dAPI_ProjectPointOnCurve_2(pnt(point), this.wrapped)
+        new oc.Geom2dAPI_ProjectPointOnCurve_2(r(pnt(point)), this.wrapped)
       );
       lowerDistance = projector.LowerDistance();
       lowerDistanceParameter = projector.LowerDistanceParameter();
@@ -279,6 +279,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
 
   splitAt(points: Point2D[]): Curve2D[] {
     const oc = getOC();
+    const r = GCWithScope();
 
     let parameters = points.map((point) => {
       return this.parameter(point);
@@ -310,7 +311,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       try {
         if (this.geomType === "BEZIER_CURVE") {
           const curveCopy = new oc.Geom2d_BezierCurve_1(
-            this.adaptor().Bezier().get().Poles_2()
+            r(this.adaptor()).Bezier().get().Poles_2()
           );
           curveCopy.Segment(first, last);
           const newCurve = new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy));
@@ -605,7 +606,9 @@ export const BSplineToBezier = (adaptor: Geom2dAdaptor_Curve): Curve2D[] => {
     }
   }
 
-  return Array.from(bezierCurves());
+  const curves = Array.from(bezierCurves());
+  convert.delete();
+  return curves;
 };
 
 const fromPnt = (pnt: gp_Pnt2d) => `${round(pnt.X())} ${round(pnt.Y())}`;
@@ -673,8 +676,9 @@ export const adaptedCurveToPathElem = (
         ? endpoint
         : `${round5(endX)} ${round5(endY + 0.0001)}`;
 
-    const angle =
-      180 - curve.XAxis().Direction().Angle(new oc.gp_Dir2d_1()) * RAD2DEG;
+    const dir0 = new oc.gp_Dir2d_1();
+    const angle = 180 - curve.XAxis().Direction().Angle(dir0) * RAD2DEG;
+    dir0.delete();
 
     return `A ${round5(rx)} ${round5(ry)} ${round5(angle)} ${
       Math.abs(paramAngle) > 180 ? "1" : "0"
