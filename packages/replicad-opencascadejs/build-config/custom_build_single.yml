@@ -67,7 +67,7 @@ mainBuild:
     - symbol: BndLib_Add2dCurve
     - symbol: Geom2dAPI_InterCurveCurve
     - symbol: Geom2dAPI_ProjectPointOnCurve 
-
+    - symbol: Geom2dAPI_PointsToBSpline
 
     - symbol: Bnd_Box
     - symbol: Bnd_OBB

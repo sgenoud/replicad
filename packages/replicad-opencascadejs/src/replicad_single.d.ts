@@ -5722,6 +5722,41 @@ export declare class Geom2dAPI_ProjectPointOnCurve {
     constructor(P: gp_Pnt2d, Curve: Handle_Geom2d_Curve, Umin: Quantity_AbsorbedDose, Usup: Quantity_AbsorbedDose);
   }
 
+export declare class Geom2dAPI_PointsToBSpline {
+  Init_1(Points: TColgp_Array1OfPnt2d, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose): void;
+  Init_2(YValues: TColStd_Array1OfReal, X0: Quantity_AbsorbedDose, DX: Quantity_AbsorbedDose, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose): void;
+  Init_3(Points: TColgp_Array1OfPnt2d, ParType: Approx_ParametrizationType, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose): void;
+  Init_4(Points: TColgp_Array1OfPnt2d, Parameters: TColStd_Array1OfReal, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose): void;
+  Init_5(Points: TColgp_Array1OfPnt2d, Weight1: Quantity_AbsorbedDose, Weight2: Quantity_AbsorbedDose, Weight3: Quantity_AbsorbedDose, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose): void;
+  Curve(): Handle_Geom2d_BSplineCurve;
+  IsDone(): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class Geom2dAPI_PointsToBSpline_1 extends Geom2dAPI_PointsToBSpline {
+    constructor();
+  }
+
+  export declare class Geom2dAPI_PointsToBSpline_2 extends Geom2dAPI_PointsToBSpline {
+    constructor(Points: TColgp_Array1OfPnt2d, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose);
+  }
+
+  export declare class Geom2dAPI_PointsToBSpline_3 extends Geom2dAPI_PointsToBSpline {
+    constructor(YValues: TColStd_Array1OfReal, X0: Quantity_AbsorbedDose, DX: Quantity_AbsorbedDose, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose);
+  }
+
+  export declare class Geom2dAPI_PointsToBSpline_4 extends Geom2dAPI_PointsToBSpline {
+    constructor(Points: TColgp_Array1OfPnt2d, ParType: Approx_ParametrizationType, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose);
+  }
+
+  export declare class Geom2dAPI_PointsToBSpline_5 extends Geom2dAPI_PointsToBSpline {
+    constructor(Points: TColgp_Array1OfPnt2d, Parameters: TColStd_Array1OfReal, DegMin: Graphic3d_ZLayerId, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol2D: Quantity_AbsorbedDose);
+  }
+
+  export declare class Geom2dAPI_PointsToBSpline_6 extends Geom2dAPI_PointsToBSpline {
+    constructor(Points: TColgp_Array1OfPnt2d, Weight1: Quantity_AbsorbedDose, Weight2: Quantity_AbsorbedDose, Weight3: Quantity_AbsorbedDose, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Quantity_AbsorbedDose);
+  }
+
 export declare class Geom2dAPI_InterCurveCurve {
   Init_1(C1: Handle_Geom2d_Curve, C2: Handle_Geom2d_Curve, Tol: Quantity_AbsorbedDose): void;
   Init_2(C1: Handle_Geom2d_Curve, Tol: Quantity_AbsorbedDose): void;
@@ -6949,6 +6984,13 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Geom2dAPI_ProjectPointOnCurve_1: typeof Geom2dAPI_ProjectPointOnCurve_1;
   Geom2dAPI_ProjectPointOnCurve_2: typeof Geom2dAPI_ProjectPointOnCurve_2;
   Geom2dAPI_ProjectPointOnCurve_3: typeof Geom2dAPI_ProjectPointOnCurve_3;
+  Geom2dAPI_PointsToBSpline: typeof Geom2dAPI_PointsToBSpline;
+  Geom2dAPI_PointsToBSpline_1: typeof Geom2dAPI_PointsToBSpline_1;
+  Geom2dAPI_PointsToBSpline_2: typeof Geom2dAPI_PointsToBSpline_2;
+  Geom2dAPI_PointsToBSpline_3: typeof Geom2dAPI_PointsToBSpline_3;
+  Geom2dAPI_PointsToBSpline_4: typeof Geom2dAPI_PointsToBSpline_4;
+  Geom2dAPI_PointsToBSpline_5: typeof Geom2dAPI_PointsToBSpline_5;
+  Geom2dAPI_PointsToBSpline_6: typeof Geom2dAPI_PointsToBSpline_6;
   Geom2dAPI_InterCurveCurve: typeof Geom2dAPI_InterCurveCurve;
   Geom2dAPI_InterCurveCurve_1: typeof Geom2dAPI_InterCurveCurve_1;
   Geom2dAPI_InterCurveCurve_2: typeof Geom2dAPI_InterCurveCurve_2;

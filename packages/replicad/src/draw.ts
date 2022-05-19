@@ -1,4 +1,10 @@
-import { BoundingBox2d, make2dCircle, make2dEllipse, Point2D } from "./lib2d";
+import {
+  BoundingBox2d,
+  make2dCircle,
+  make2dEllipse,
+  make2dInerpolatedBSplineCurve,
+  Point2D,
+} from "./lib2d";
 import {
   Blueprint,
   cut2D,
@@ -15,6 +21,7 @@ import { BaseSketcher2d } from "./Sketcher2d";
 import { SketchInterface, Sketches } from "./sketches";
 import { GenericSketcher } from "./sketcherlib";
 import { textBlueprints } from "./text";
+import { BSplineApproximationConfig } from ".";
 
 export class Drawing implements DrawingInterface {
   private innerShape: Shape2D;
@@ -196,3 +203,26 @@ export function drawText(
     textBlueprints(text, { startX, startY, fontSize, fontFamily })
   );
 }
+
+/**
+ * Creates the `Drawing` of parametric function
+ *
+ * The drawing will be a spline approximating the function. Note that the
+ * degree should be at maximum 3 if you need to export the drawing as an SVG.
+ *
+ * @category Drawing
+ */
+export const drawParametricFunction = (
+  func: (t: number) => Point2D,
+  { pointsCount = 400, start = 0, stop = 1 } = {},
+  approximationConfig: BSplineApproximationConfig = {}
+): Drawing => {
+  const stepSize = (stop - start) / pointsCount;
+  const points = [...Array(pointsCount + 1).keys()].map((t) => {
+    return func(start + t * stepSize);
+  });
+
+  return new Drawing(
+    new Blueprint([make2dInerpolatedBSplineCurve(points, approximationConfig)])
+  );
+};

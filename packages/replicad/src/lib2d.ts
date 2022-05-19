@@ -10,6 +10,7 @@ import {
   Handle_Geom2d_Curve,
   Geom2dAPI_InterCurveCurve,
   Geom2dAdaptor_Curve,
+  Geom2dAPI_PointsToBSpline,
 } from "replicad-opencascadejs";
 
 import { CurveType, findCurveType } from "./definitionMaps";
@@ -200,7 +201,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     return this.innerCurve.LastParameter();
   }
 
-  private adaptor(): Geom2dAdaptor_Curve {
+  adaptor(): Geom2dAdaptor_Curve {
     const oc = getOC();
     return new oc.Geom2dAdaptor_Curve_2(this.wrapped);
   }
@@ -474,6 +475,62 @@ export const make2dBezierCurve = (
   return new Curve2D(new oc.Handle_Geom2d_Curve_2(bezCurve));
 };
 
+export function make2dInerpolatedBSplineCurve(
+  points: Point2D[],
+  {
+    tolerance = 1e-3,
+    smoothing = null,
+    degMax = 3,
+    degMin = 1,
+  }: {
+    tolerance?: number;
+    smoothing?: null | [number, number, number];
+    degMax?: number;
+    degMin?: number;
+  } = {}
+) {
+  const r = GCWithScope();
+  const oc = getOC();
+
+  const pnts = r(new oc.TColgp_Array1OfPnt2d_2(1, points.length));
+
+  points.forEach((point, index) => {
+    pnts.SetValue(index + 1, r(pnt(point)));
+  });
+
+  let splineBuilder: Geom2dAPI_PointsToBSpline;
+
+  if (smoothing) {
+    splineBuilder = r(
+      new oc.Geom2dAPI_PointsToBSpline_6(
+        pnts,
+        smoothing[0],
+        smoothing[1],
+        smoothing[2],
+        degMax,
+        oc.GeomAbs_Shape.GeomAbs_C2 as any,
+        tolerance
+      )
+    );
+  } else {
+    splineBuilder = r(
+      new oc.Geom2dAPI_PointsToBSpline_2(
+        pnts,
+        degMin,
+        degMax,
+        oc.GeomAbs_Shape.GeomAbs_C2 as any,
+        tolerance
+      )
+    );
+  }
+
+  if (!splineBuilder.IsDone()) {
+    throw new Error("B-spline approximation failed");
+  }
+
+  return new Curve2D(splineBuilder.Curve());
+}
+
 function* pointsIteration(
   intersector: Geom2dAPI_InterCurveCurve
 ): Generator<Point2D> {
@@ -527,6 +584,28 @@ export const intersectCurves = (first: Curve2D, second: Curve2D) => {
   ]);
 
   return { intersections, commonSegments, commonSegmentsPoints };
+};
+
+export const BSplineToBezier = (adaptor: Geom2dAdaptor_Curve): Curve2D[] => {
+  if (findCurveType(adaptor.GetType()) !== "BSPLINE_CURVE")
+    throw new Error("You can only convert a Bspline");
+
+  const handle = adaptor.BSpline();
+
+  const oc = getOC();
+  const convert = new oc.Geom2dConvert_BSplineCurveToBezierCurve_1(handle);
+
+  function* bezierCurves(): Generator<Curve2D> {
+    const nArcs = convert.NbArcs();
+    if (!nArcs) return;
+
+    for (let i = 1; i <= nArcs; i++) {
+      const arc = convert.Arc(i);
+      yield new Curve2D(arc);
+    }
+  }
+
+  return Array.from(bezierCurves());
 };
 
 const fromPnt = (pnt: gp_Pnt2d) => `${round(pnt.X())} ${round(pnt.Y())}`;
@@ -600,6 +679,13 @@ export const adaptedCurveToPathElem = (
     return `A ${round5(rx)} ${round5(ry)} ${round5(angle)} ${
       Math.abs(paramAngle) > 180 ? "1" : "0"
     } ${curve.IsDirect() ? "1" : "0"} ${end}`;
+  }
+
+  if (curveType === "BSPLINE_CURVE") {
+    const bezierCurves = BSplineToBezier(adaptor);
+    return bezierCurves
+      .map((c) => adaptedCurveToPathElem(c.adaptor(), c.lastPoint))
+      .join(" ");
   }
   console.warn(`${curveType} not implemented, using a line`);
   return `L ${endpoint}`;
