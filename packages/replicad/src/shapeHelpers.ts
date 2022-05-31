@@ -14,6 +14,7 @@ import {
 import { asPnt, makeAx3, makeAx2, Point, Vector } from "./geom";
 import { getOC } from "./oclib.js";
 import { localGC } from "./register.js";
+import zip from "./utils/zip";
 import { GeomAPI_PointsToBSpline } from "replicad-opencascadejs";
 
 export const makeLine = (v1: Point, v2: Point): Edge => {
@@ -350,6 +351,15 @@ export const makeCylinder = (
   return solid;
 };
 
+export const makeSphere = (radius: number): Solid => {
+  const oc = getOC();
+
+  const sphereMaker = new oc.BRepPrimAPI_MakeSphere_1(radius);
+  const sphere = new Solid(sphereMaker.Shape());
+  sphereMaker.delete();
+  return sphere;
+};
+
 export const makeVertex = (point: Point): Vertex => {
   const oc = getOC();
   const pnt = asPnt(point);
@@ -400,6 +410,8 @@ export const compoundShapes = (shapeArray: AnyShape[]): AnyShape => {
   return newShape;
 };
 
+export const makeCompound = compoundShapes;
+
 export function makeSolid(facesOrShells: Array<Face | Shell>): Solid {
   const oc = getOC();
   const [r, gc] = localGC();
@@ -440,4 +452,13 @@ export const addHolesInFace = (face: Face, holes: Wire[]): Face => {
 
   gc();
   return new Face(newFace);
+};
+
+export const makePolygon = (points: Point[]): Face => {
+  if (points.length < 3)
+    throw new Error("You need at least 3 points to make a polygon");
+  const edges = zip([points, [...points.slice(1), points[0]]]).map(
+    ([p1, p2]: any) => makeLine(p1, p2)
+  );
+  return makeFace(assembleWire(edges));
 };
