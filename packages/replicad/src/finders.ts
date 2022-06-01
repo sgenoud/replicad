@@ -28,7 +28,7 @@ abstract class Finder<Type extends FaceOrEdge> {
     normal,
   }: {
     element: Type;
-    normal: Vector;
+    normal: Vector | null;
   }) => boolean)[];
 
   protected abstract applyFilter(shape: AnyShape): Type[];
@@ -78,8 +78,9 @@ abstract class Finder<Type extends FaceOrEdge> {
       myDirection = new Vector(direction);
     }
 
-    const checkAngle = ({ normal }: { normal: Vector }) => {
+    const checkAngle = ({ normal }: { normal: Vector | null }) => {
       // We do not care about the orientation
+      if (!normal) return false;
       const angleOfNormal = Math.acos(Math.abs(normal.dot(myDirection)));
 
       return Math.abs(angleOfNormal - DEG2RAD * angle) < 1e-6;
@@ -421,11 +422,15 @@ export class EdgeFinder extends Finder<Edge> {
   }
 
   shouldKeep(element: Edge): boolean {
-    const normal = element.tangentAt().normalized();
-    const shouldKeep = this.filters.every((filter) =>
-      filter({ normal, element })
-    );
-    return shouldKeep;
+    let normal: Vector | null = null;
+
+    try {
+      normal = element.tangentAt().normalized();
+    } catch (error) {
+      console.error("failed to compute a normal", error);
+    }
+
+    return this.filters.every((filter) => filter({ normal, element }));
   }
 
   protected applyFilter(shape: AnyShape): Edge[] {
