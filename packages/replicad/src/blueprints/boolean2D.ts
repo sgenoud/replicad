@@ -91,8 +91,10 @@ const fuseIntersectingBlueprints = (
         !(
           newFused instanceof Blueprint || newFused instanceof CompoundBlueprint
         )
-      )
+      ) {
+        console.error(newFused);
         throw new Error("Bug in blueprint fusing algorigthm");
+      }
       savedBlueprint.current = newFused;
       if (otherIsFused) {
         fused.get(currentIndex).current = false;

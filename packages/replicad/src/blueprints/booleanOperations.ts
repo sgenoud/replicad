@@ -235,7 +235,12 @@ function booleanOperation(
   | Blueprint
   | Blueprints
   | null
-  | { firstCurveInSecond: boolean; secondCurveInFirst: boolean } {
+  | { identical: true }
+  | {
+      firstCurveInSecond: boolean;
+      secondCurveInFirst: boolean;
+      identical: false;
+    } {
   const segments = blueprintsIntersectionSegments(first, second);
 
   // The case where we have no intersections
@@ -247,9 +252,14 @@ function booleanOperation(
     const secondCurveInFirst = first.isInside(secondBlueprintPoint);
 
     return {
+      identical: false,
       firstCurveInSecond,
       secondCurveInFirst,
     };
+  }
+
+  if (segments.every(([, secondSegment]) => secondSegment === "same")) {
+    return { identical: true };
   }
 
   let lastWasSame: null | Segment = null;
@@ -353,6 +363,10 @@ export const fuseBlueprints = (
   )
     return result;
 
+  if (result.identical) {
+    return first.clone();
+  }
+
   if (result.firstCurveInSecond) {
     return second.clone();
   }
@@ -380,6 +394,10 @@ export const cutBlueprints = (
   )
     return result;
 
+  if (result.identical) {
+    return null;
+  }
+
   if (result.firstCurveInSecond) {
     return null;
   }
@@ -406,6 +424,10 @@ export const intersectBlueprints = (
     result instanceof Blueprints
   )
     return result;
+
+  if (result.identical) {
+    return first.clone();
+  }
 
   if (result.firstCurveInSecond) {
     return first.clone();
