@@ -132,6 +132,7 @@ export const organiseBlueprints = (blueprints: Blueprint[]): Blueprints => {
 };
 
 export interface DrawingInterface {
+  clone(): DrawingInterface;
   boundingBox: BoundingBox2d;
   stretch(ratio: number, direction: Point2D, origin: Point2D): DrawingInterface;
 

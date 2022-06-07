@@ -30,6 +30,10 @@ export class Drawing implements DrawingInterface {
     this.innerShape = innerShape;
   }
 
+  clone(): Drawing {
+    return new Drawing(this.innerShape?.clone() || null);
+  }
+
   get boundingBox(): BoundingBox2d {
     if (!this.innerShape) return new BoundingBox2d();
     return this.innerShape.boundingBox;
