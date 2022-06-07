@@ -359,6 +359,21 @@ export class EdgeFinder extends Finder<Edge> {
   }
 
   /**
+   * Filter to find edges of a certain length
+   *
+   * @category Filter
+   */
+  ofLength(length: number | ((l: number) => boolean)): this {
+    const check = ({ element }: { element: Edge }) => {
+      if (typeof length === "number")
+        return Math.abs(element.length - length) < 1e-9;
+      return length(element.length);
+    };
+    this.filters.push(check);
+    return this;
+  }
+
+  /**
    * Filter to find edges that are of a cetain curve type.
    *
    * @category Filter
