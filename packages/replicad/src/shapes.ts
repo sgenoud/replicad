@@ -173,6 +173,26 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   /**
+   * Simplifies the shape by removing unnecessary edges and faces
+   */
+  simplify(): this {
+    const oc = getOC();
+    const shapeUpgrader = new oc.ShapeUpgrade_UnifySameDomain_2(
+      this.wrapped,
+      true,
+      true,
+      false
+    );
+    shapeUpgrader.Build();
+    const newShape = cast(shapeUpgrader.Shape());
+    shapeUpgrader.delete();
+
+    if (this.constructor !== newShape.constructor)
+      throw new Error("unexpected types mismatch");
+    return newShape as typeof this;
+  }
+
+  /**
    * Translates the shape of an arbitrary vector
    *
    * @category Shape Transformations
