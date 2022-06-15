@@ -1099,12 +1099,14 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   protected _builderIter(
     radiusConfigInput: RadiusConfig,
     builderAdd: (r: number, edge: TopoDS_Edge) => void
-  ): void {
+  ): number {
     if (typeof radiusConfigInput === "number") {
+      let edgeCount = 0;
       for (const rawEdge of this._iterTopo("edge")) {
         builderAdd(radiusConfigInput, downcast(rawEdge));
+        edgeCount += 1;
       }
-      return;
+      return edgeCount;
     }
 
     let radiusConfigFun: (e: Edge) => number | null;
@@ -1123,14 +1125,19 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
       }
     }
 
+    let edgeAddedCount = 0;
     for (const e of this._iterTopo("edge")) {
       const rawEdge = downcast(e);
       const edge = new Edge(rawEdge);
       const radius = radiusConfigFun(edge);
-      if (radius) builderAdd(radius, rawEdge);
+      if (radius) {
+        builderAdd(radius, rawEdge);
+        edgeAddedCount += 1;
+      }
       edge.delete();
     }
     finalize && finalize();
+    return edgeAddedCount;
   }
 
   /**
@@ -1166,7 +1173,10 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
       };
     }
 
-    this._builderIter(config, (r, e) => filletBuilder.Add_2(r, e));
+    const edgesFound = this._builderIter(config, (r, e) =>
+      filletBuilder.Add_2(r, e)
+    );
+    if (!edgesFound) throw new Error("Could not fillet, no edge was selected");
 
     const newShape = cast(filletBuilder.Shape());
     filletBuilder.delete();
@@ -1204,7 +1214,10 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
         filter: filter(new EdgeFinder()),
       };
     }
-    this._builderIter(config, (r, e) => chamferBuilder.Add_2(r, e));
+    const edgesFound = this._builderIter(config, (r, e) =>
+      chamferBuilder.Add_2(r, e)
+    );
+    if (!edgesFound) throw new Error("Could not chamfer, no edge was selected");
 
     const newShape = cast(chamferBuilder.Shape());
     chamferBuilder.delete();
