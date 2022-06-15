@@ -9,6 +9,7 @@ mainBuild:
     - symbol: TColStd_Array1OfBoolean
     - symbol: TColgp_Array1OfVec
     - symbol: TColStd_Array1OfInteger
+    - symbol: TColStd_Array1OfReal 
     - symbol: Poly_Array1OfTriangle
     - symbol: Standard_Transient
     - symbol: Precision
@@ -188,6 +189,7 @@ mainBuild:
     - symbol: BRepBuilderAPI_MakeSolid
     - symbol: BRepBuilderAPI_TransitionMode
     - symbol: BRepBuilderAPI_Sewing
+    - symbol: BRepBuilderAPI_WireError
     - symbol: BRepPrimAPI_MakeOneAxis
     - symbol: BRepPrimAPI_MakeCylinder
     - symbol: BRepPrimAPI_MakeBox
@@ -227,8 +229,9 @@ mainBuild:
     - symbol: StlAPI_Reader
     - symbol: ShapeUpgrade_UnifySameDomain
 
-    - symbol: StlAPI
+    - symbol: ShapeFix_EdgeConnect
 
+    - symbol: StlAPI
 
   emccFlags:
     - -sEXPORT_ES6=1

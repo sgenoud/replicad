@@ -241,7 +241,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       throw new Error("Failed to find parameter");
     }
 
-    if (lowerDistance > 1e-6) {
+    if (lowerDistance > 1e-9) {
       throw new Error("Point not on curve");
     }
     return lowerDistanceParameter;
@@ -286,7 +286,15 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     });
 
     // We only split on each point once
-    parameters = Array.from(new Set(parameters.map((p) => p.toFixed(9))))
+    parameters = Array.from(
+      new Set(
+        parameters.map((p) => {
+          let num = p;
+          if (Math.abs(p) < 1e-9) num = 0;
+          return num.toFixed(10);
+        })
+      )
+    )
       .map((p) => Number.parseFloat(p))
       .sort((a, b) => a - b);
     const firstParam = this.firstParameter;
@@ -297,11 +305,12 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     }
 
     // We do not split again on the start and end
-    if (Math.abs(parameters[0] - firstParam) < 1e-8)
+    if (Math.abs(parameters[0] - firstParam) < 1e-9)
       parameters = parameters.slice(1);
-    if (Math.abs(parameters[parameters.length - 1] - lastParam) < 1e-8)
-      parameters = parameters.slice(0, -1);
+    if (!parameters.length) return [this];
 
+    if (Math.abs(parameters[parameters.length - 1] - lastParam) < 1e-9)
+      parameters = parameters.slice(0, -1);
     if (!parameters.length) return [this];
 
     return zip([
@@ -314,10 +323,22 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
             r(this.adaptor()).Bezier().get().Poles_2()
           );
           curveCopy.Segment(first, last);
-          const newCurve = new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy));
-
-          return newCurve;
+          return new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy));
         }
+        if (this.geomType === "BSPLINE_CURVE") {
+          const adapted = r(this.adaptor()).BSpline().get();
+
+          const curveCopy = new oc.Geom2d_BSplineCurve_1(
+            adapted.Poles_2(),
+            adapted.Knots_2(),
+            adapted.Multiplicities_2(),
+            adapted.Degree(),
+            adapted.IsPeriodic()
+          );
+          curveCopy.Segment(first, last, 1e-9);
+          return new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy));
+        }
+
         const trimmed = new oc.Geom2d_TrimmedCurve(
           this.wrapped,
           first,
@@ -569,7 +590,7 @@ export const intersectCurves = (first: Curve2D, second: Curve2D) => {
   let commonSegments;
 
   try {
-    intersector.Init_1(first.wrapped, second.wrapped, 1e-6);
+    intersector.Init_1(first.wrapped, second.wrapped, 1e-9);
 
     intersections = Array.from(pointsIteration(intersector));
     commonSegments = Array.from(commonSegmentsIteration(intersector));

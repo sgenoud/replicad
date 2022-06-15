@@ -153,6 +153,34 @@ export function drawRoundedRectangle(
 export const drawRectangle = drawRoundedRectangle;
 
 /**
+ * Creates the `Drawing` of a circle as one single curve.
+ *
+ * The circle is centered on [0, 0]
+ *
+ * @category Drawing
+ */
+export function drawSingleCircle(radius: number): Drawing {
+  return new Drawing(new Blueprint([make2dCircle(radius)]));
+}
+
+/**
+ * Creates the `Drawing` of an ellipse as one single curve.
+ *
+ * The ellipse is centered on [0, 0], with axes aligned with the coordinates.
+ *
+ * @category Drawing
+ */
+export function drawSingleEllipse(
+  majorRadius: number,
+  minorRadius: number
+): Drawing {
+  const [minor, major] = [majorRadius, minorRadius].sort((a, b) => a - b);
+  const direction: Point2D = major === majorRadius ? [1, 0] : [0, 1];
+
+  return new Drawing(new Blueprint([make2dEllipse(major, minor, direction)]));
+}
+
+/**
  * Creates the `Drawing` of a circle.
  *
  * The circle is centered on [0, 0]
@@ -160,7 +188,11 @@ export const drawRectangle = drawRoundedRectangle;
  * @category Drawing
  */
 export function drawCircle(radius: number): Drawing {
-  return new Drawing(new Blueprint([make2dCircle(radius)]));
+  return draw()
+    .movePointerTo([-radius, 0])
+    .halfEllipse(2 * radius, 0, radius)
+    .halfEllipse(-2 * radius, 0, radius)
+    .close();
 }
 
 /**
@@ -171,10 +203,11 @@ export function drawCircle(radius: number): Drawing {
  * @category Drawing
  */
 export function drawEllipse(majorRadius: number, minorRadius: number): Drawing {
-  const [minor, major] = [majorRadius, minorRadius].sort((a, b) => a - b);
-  const direction: Point2D = major === majorRadius ? [1, 0] : [0, 1];
-
-  return new Drawing(new Blueprint([make2dEllipse(major, minor, direction)]));
+  return draw()
+    .movePointerTo([-majorRadius, 0])
+    .halfEllipse(2 * majorRadius, 0, minorRadius)
+    .halfEllipse(-2 * majorRadius, 0, minorRadius)
+    .close();
 }
 
 /**

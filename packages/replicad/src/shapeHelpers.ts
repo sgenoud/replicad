@@ -253,6 +253,14 @@ export const makeTangentArc = (
   return edge;
 };
 
+/*
+const assembleEdgesAsWire = (listOfEdges: (Edge)[]): Wire => {
+    const edges
+
+
+}
+*/
+
 export const assembleWire = (listOfEdges: (Edge | Wire)[]): Wire => {
   const oc = getOC();
   const wireBuilder = new oc.BRepBuilderAPI_MakeWire_1();
@@ -266,6 +274,23 @@ export const assembleWire = (listOfEdges: (Edge | Wire)[]): Wire => {
   });
 
   wireBuilder.Build();
+  const res = wireBuilder.Error();
+  if (res !== oc.BRepBuilderAPI_WireError.BRepBuilderAPI_WireDone) {
+    const errorNames = new Map([
+      [oc.BRepBuilderAPI_WireError.BRepBuilderAPI_EmptyWire, "empty wire"],
+      [
+        oc.BRepBuilderAPI_WireError.BRepBuilderAPI_NonManifoldWire,
+        "non manifold wire",
+      ],
+      [
+        oc.BRepBuilderAPI_WireError.BRepBuilderAPI_DisconnectedWire,
+        "disconnected wire",
+      ],
+    ]);
+    throw new Error(
+      `Failed to build the wire, ${errorNames.get(res) || "unknown error"}`
+    );
+  }
 
   const wire = new Wire(wireBuilder.Wire());
   wireBuilder.delete();

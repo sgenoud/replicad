@@ -197,7 +197,7 @@ export default class Blueprint implements DrawingInterface {
     let crossCounts = 0;
 
     this.curves.forEach((c) => {
-      intersector.Init_1(segment.wrapped, c.wrapped, 1e-6);
+      intersector.Init_1(segment.wrapped, c.wrapped, 1e-9);
       crossCounts += intersector.NbPoints();
     });
 
@@ -215,7 +215,7 @@ export default class Blueprint implements DrawingInterface {
     const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
     for (const myCurve of this.curves) {
       for (const otherCurve of other.curves) {
-        intersector.Init_1(myCurve.wrapped, otherCurve.wrapped, 1e-6);
+        intersector.Init_1(myCurve.wrapped, otherCurve.wrapped, 1e-9);
         if (intersector.NbPoints() || intersector.NbSegments()) return true;
       }
     }

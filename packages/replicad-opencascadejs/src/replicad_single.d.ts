@@ -1651,6 +1651,15 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
     constructor(wire: TopoDS_Wire, face: TopoDS_Face, prec: Quantity_AbsorbedDose);
   }
 
+export declare class ShapeFix_EdgeConnect {
+  constructor()
+  Add_1(aFirst: TopoDS_Edge, aSecond: TopoDS_Edge): void;
+  Add_2(aShape: TopoDS_Shape): void;
+  Build(): void;
+  Clear(): void;
+  delete(): void;
+}
+
 export declare type GeomAbs_Shape = {
   GeomAbs_C0: {};
   GeomAbs_G1: {};
@@ -2886,6 +2895,13 @@ export declare class BRepBuilderAPI_MakeVertex extends BRepBuilderAPI_MakeShape 
   constructor(P: gp_Pnt)
   Vertex(): TopoDS_Vertex;
   delete(): void;
+}
+
+export declare type BRepBuilderAPI_WireError = {
+  BRepBuilderAPI_WireDone: {};
+  BRepBuilderAPI_EmptyWire: {};
+  BRepBuilderAPI_DisconnectedWire: {};
+  BRepBuilderAPI_NonManifoldWire: {};
 }
 
 export declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
@@ -5035,6 +5051,52 @@ export declare class TColStd_Array1OfInteger {
     constructor(theBegin: Standard_Integer, theLower: Standard_Integer, theUpper: Standard_Integer);
   }
 
+export declare class TColStd_Array1OfReal {
+  begin(): any;
+  end(): any;
+  cbegin(): any;
+  cend(): any;
+  Init(theValue: Standard_Real): void;
+  Size(): Standard_Integer;
+  Length(): Standard_Integer;
+  IsEmpty(): Standard_Boolean;
+  Lower(): Standard_Integer;
+  Upper(): Standard_Integer;
+  IsDeletable(): Standard_Boolean;
+  IsAllocated(): Standard_Boolean;
+  Assign(theOther: TColStd_Array1OfReal): TColStd_Array1OfReal;
+  Move(theOther: TColStd_Array1OfReal): TColStd_Array1OfReal;
+  First(): Standard_Real;
+  ChangeFirst(): Standard_Real;
+  Last(): Standard_Real;
+  ChangeLast(): Standard_Real;
+  Value(theIndex: Standard_Integer): Standard_Real;
+  ChangeValue(theIndex: Standard_Integer): Standard_Real;
+  SetValue(theIndex: Standard_Integer, theItem: Standard_Real): void;
+  Resize(theLower: Standard_Integer, theUpper: Standard_Integer, theToCopyData: Standard_Boolean): void;
+  delete(): void;
+}
+
+  export declare class TColStd_Array1OfReal_1 extends TColStd_Array1OfReal {
+    constructor();
+  }
+
+  export declare class TColStd_Array1OfReal_2 extends TColStd_Array1OfReal {
+    constructor(theLower: Standard_Integer, theUpper: Standard_Integer);
+  }
+
+  export declare class TColStd_Array1OfReal_3 extends TColStd_Array1OfReal {
+    constructor(theOther: TColStd_Array1OfReal);
+  }
+
+  export declare class TColStd_Array1OfReal_4 extends TColStd_Array1OfReal {
+    constructor(theOther: TColStd_Array1OfReal);
+  }
+
+  export declare class TColStd_Array1OfReal_5 extends TColStd_Array1OfReal {
+    constructor(theBegin: Standard_Real, theLower: Standard_Integer, theUpper: Standard_Integer);
+  }
+
 export declare class TColStd_Array1OfBoolean {
   begin(): any;
   end(): any;
@@ -6538,6 +6600,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   ShapeFix_Wire: typeof ShapeFix_Wire;
   ShapeFix_Wire_1: typeof ShapeFix_Wire_1;
   ShapeFix_Wire_2: typeof ShapeFix_Wire_2;
+  ShapeFix_EdgeConnect: typeof ShapeFix_EdgeConnect;
   GeomAbs_Shape: GeomAbs_Shape;
   GeomAbs_SurfaceType: GeomAbs_SurfaceType;
   GeomAbs_CurveType: GeomAbs_CurveType;
@@ -6677,6 +6740,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepBuilderAPI_Sewing: typeof BRepBuilderAPI_Sewing;
   BRepBuilderAPI_ModifyShape: typeof BRepBuilderAPI_ModifyShape;
   BRepBuilderAPI_MakeVertex: typeof BRepBuilderAPI_MakeVertex;
+  BRepBuilderAPI_WireError: BRepBuilderAPI_WireError;
   BRepBuilderAPI_MakeWire: typeof BRepBuilderAPI_MakeWire;
   BRepBuilderAPI_MakeWire_1: typeof BRepBuilderAPI_MakeWire_1;
   BRepBuilderAPI_MakeWire_2: typeof BRepBuilderAPI_MakeWire_2;
@@ -6902,6 +6966,12 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   TColStd_Array1OfInteger_3: typeof TColStd_Array1OfInteger_3;
   TColStd_Array1OfInteger_4: typeof TColStd_Array1OfInteger_4;
   TColStd_Array1OfInteger_5: typeof TColStd_Array1OfInteger_5;
+  TColStd_Array1OfReal: typeof TColStd_Array1OfReal;
+  TColStd_Array1OfReal_1: typeof TColStd_Array1OfReal_1;
+  TColStd_Array1OfReal_2: typeof TColStd_Array1OfReal_2;
+  TColStd_Array1OfReal_3: typeof TColStd_Array1OfReal_3;
+  TColStd_Array1OfReal_4: typeof TColStd_Array1OfReal_4;
+  TColStd_Array1OfReal_5: typeof TColStd_Array1OfReal_5;
   TColStd_Array1OfBoolean: typeof TColStd_Array1OfBoolean;
   TColStd_Array1OfBoolean_1: typeof TColStd_Array1OfBoolean_1;
   TColStd_Array1OfBoolean_2: typeof TColStd_Array1OfBoolean_2;
