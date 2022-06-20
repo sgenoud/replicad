@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+
+<article lang="en">
+<articleinfo>
+    <title>Replicad Quick Reference</title>
+</articleinfo>
+<section id="_process">
+<title>Process</title>
+<simpara>The process to draw a shape in Replicad looks like this:</simpara>
+<informalfigure>
+<mediaobject>
+  <imageobject>
+  <imagedata fileref="/images/processv2.png"/>
+  </imageobject>
+  <textobject><phrase>/images/processv2.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>Replicad is a library that is based on another library library called opencascade.js (see <ulink url="https://github.com/donalffons/opencascade.js">https://github.com/donalffons/opencascade.js</ulink>). The functions in this library are explained at <ulink url="https://ocjs.org/">https://ocjs.org/</ulink>. There are Replicad functions that are close to the opencascade kernel but also more user friendly functions that shield the user from the complexity of this library. The normal flow to define a shape is to start with a 2-dimensional sketch of the shape, then use a function like extrude or revolve to define a 3 dimensional shape. This 3 dimensional shape can then be modified, for example by rounding edges. In its simplest form this modification is applied to all edges at once. A more advanced approach is to select individual edges or faces to apply the modification. When the shape is complete it can be transformed, for example by translating, rotating et cetera. Finally a shape can be combined with another shape. Combinations can mean fusing the shapes together, subtracting one shape from the other or finding the intersection between two shapes.</simpara>
+<simpara>A beginner can start with the pre-baked shapes to shorten the path to determine a shape. There are 2 dimensional pre-baked shapes like rectangles and circles, and 3 dimensional shapes like spheres or cylinders.</simpara>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+<section id="_visualiser">
+<title>Visualiser</title>
+<simpara>A model in Replicad is built using a javascript input file (see next Section). This file defines a "main" function that should return the shapes that you want to visualise or export. The easiest way to check that the part is generated correctly and to export the result is to use the <emphasis role="strong">Visualiser</emphasis> that is offered on the Replicad site <ulink url="https://studio.replicad.xyz/visualiser">https://studio.replicad.xyz/visualiser</ulink>.</simpara>
+<informalfigure>
+<mediaobject>
+  <imageobject>
+  <imagedata fileref="/images/interface_black.png" contentwidth="800"/>
+  </imageobject>
+  <textobject><phrase>/images/interface_black.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>The Visualiser supports exporting to JSON, STL and STEP format.</simpara>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+<section id="_file_template">
+<title>File template</title>
+<simpara>The template to create and display a 3D part in Replicad looks like this.</simpara>
+<programlisting language="javascript" linenumbering="unnumbered">// next lines allow intellisense help in VS Code
+/** @typedef { typeof import("replicad") } replicadLib */
+/** @type {function(replicadLib, typeof defaultParams): any} */
+
+function main(
+{
+    Sketcher,
+    sketchRectangle,
+    .. functions used in the code below ..
+})
+{
+    // add code to describe the shape
+return  shape   |
+return  {shape: [shape], highlight: [foundFeature]}
+}</programlisting>
+<simpara>Alternatively you can use the arrow notation for the javascript function</simpara>
+<programlisting language="javascript" linenumbering="unnumbered">const main = (
+  { Sketcher, sketchRectangle, ... },
+  {}
+) =&gt; {
+    // add code to describe the shape
+return  shape   |
+return  {shape: [shape], highlight: [foundFeature]}
+}</programlisting>
+</section>
+<section id="_sketch">
+<title>Sketch</title>
+<simpara>To start a sketch, use the <literal>new Sketcher</literal> command</simpara>
+<programlisting language="javascript" linenumbering="unnumbered">let sketch = new Sketcher("XZ",-5)
+".sketchCommands"        (see below)
+.close()                    // ends the sketch with line to starting point
+.done()                     // ends the sketch without closing
+.closeWithMirror()          // closes the sketch with mirror on axis from start to end</programlisting>
+<simpara><?asciidoc-pagebreak?></simpara>
+<simpara>Use the following ".sketchCommands" to describe the sketch:</simpara>
+<section id="_lines">
+<title>Lines</title>
+<informalfigure>
+<mediaobject>
+  <imageobject>
+  <imagedata fileref="/images/lines.png"/>
+  </imageobject>
+  <textobject><phrase>/images/lines.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>Lines can be sketched using the line functions. Be aware that points are generally defined as a tuple or array, i.e. enclosed in square brackets. This array either contains the absolute distance in the x and y direction from the origin, or the distance and angle in case of polar coordinates. Relative distances to the x- and y-axis are defined as two separate values dx and dy.</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>.movePointerTo([x,y])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>move pointer without drawing, can only be used at start</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.lineTo([x,y])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>line to absolute coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.line(dx,dy)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>line to relative coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.vLineTo(y)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>vertical line to absolute y</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.vLine(dy)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>vertical line to relative y</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.hLineTo(x)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>horizontal line to absolute x</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.hLine(dx)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>horizontal line to relative x</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.polarLineTo([radius,theta])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>line to absolute polar coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.polarLine(distance,angle)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>line to relative polar coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.tangentLine(distance)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>tangent extension over distance</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="_arcs_and_ellipses">
+<title>Arcs and ellipses</title>
+<informalfigure>
+<mediaobject>
+  <imageobject>
+  <imagedata fileref="/images/arcs.png"/>
+  </imageobject>
+  <textobject><phrase>/images/arcs.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>The following commands are available to create circular and elliptical arcs in your sketch. Just as with lines be aware that points are generally defined as a tuple or array, i.e. enclosed in square brackets. Relative distances to the x- and y-axis are defined as two separate values dx and dy.
+The elliptic curves can be defined in more detail with three extra parameters. If the values are omitted the default values are used.</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>.threePointsArcTo(point_end,point_mid)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>arc from current to end via mid, absolute coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.threePointsArc(dx,dy,dx_via,dy_via)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>arc from current to end via mid, relative coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.sagittaArcTo(point_end,sagitta)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>arc from current to end with sag , absolute coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.sagittaArc(dx,dy,sagitta)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>arc from current to end with sag, relative coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.vSagittaArc(dy,sagitta)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>vertical line to endpoint with sag, relative y</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.hSagittaArc(dx,sagitta)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>horizontal line to endpoint with sag, relative x</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.tangentArcTo([x,y])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>arc tangent to current line to end, absolute coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.tangentArc(dx,dy)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>arc tangent to current line to end, relative coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.ellipseTo([x,y],r_hor,r_vert)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>ellipse from current to end, absolute coordinates, radii to hor and vert</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.ellipse(dx,dy,r_hor,r_vert)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>ellipse from current to end, relative coordinates, radii to hor and vert</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.ellipse(dx,dy,r_h,r_v,a_start,a_end,true)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>extra parameters ellipse: startangle, endangle, counterclockwise?</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.halfEllipseTo([x,y],r_min)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>half ellipse with r_min as sag, absolute coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.halfEllipse(dx,dy,r_min)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>half ellipse with r_min as sag, relative coordinates</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="_free_form_curves">
+<title>Free form curves</title>
+<informalfigure>
+<mediaobject>
+  <imageobject>
+  <imagedata fileref="/images/curves.png" contentwidth="650"/>
+  </imageobject>
+  <textobject><phrase>/images/curves.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>.bezierCurveTo([x,y],points[])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>Bezier curve to end along points[]</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.quadraticBezierCurveTo([x,y],[x_ctrl,y_ctrl])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>Quadratic bezier curve to end with control point</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.cubicBezierCurveTo([x,y],p_ctrl_start,p_ctrl_end)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>Cubic bezier curve with begin and end control points</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.smoothSplineTo([x,y],splineconfig)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>smooth spline to end, absolute coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.smoothSpline(dx,dy,splineconfig)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>smooth spline to end, absolute coordinates</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal></literal></simpara></entry>
+<entry align="left" valign="top"><simpara><literal></literal></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+</section>
+<section id="_pre_baked_sketches">
+<title>Pre-baked sketches</title>
+<informalfigure>
+<mediaobject>
+  <imageobject>
+  <imagedata fileref="/images/baked-sketch.png" contentwidth="650"/>
+  </imageobject>
+  <textobject><phrase>/images/baked-sketch.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>sketchRectangle(length,width)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>create a sketch of a rectangle with length and width</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal></literal></simpara></entry>
+<entry align="left" valign="top"><simpara>create a sketch of a rounded rectangle</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal></literal></simpara></entry>
+<entry align="left" valign="top"><simpara>create a sketch of a circle</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>sketchFaceOffset(shape,thickness)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>create a sketch by defining an offset from an existing face in the scene</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+<section id="_create_3d_face_wire">
+<title>Create 3D face/wire</title>
+<section id="_create_wires_in_3d">
+<title>Create wires in 3D</title>
+<simpara>In comparison to sketches which create wires or faces in 2D</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeLine([point],[point])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeCircle(radius,[center],[normal])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeEllipse(major,minor,[center],[normal])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeHelix(pitch,height,radius,[center],[dir],lefthand?)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeThreePointArc([point1],[point2],[point3])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeEllipseArc(major,minor,anglestart,angleEnd,[center],[normal],[xDir?])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeBSplineApproximation([points[]])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeBezierCurve([points[]])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeTangentArc([startPoint],[tangentPoint],[endPoint])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="_create_faces_in_3d">
+<title>Create faces in 3D</title>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeFace(wire)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeNewFaceWithinFace(face,wire)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeNonPlanarFace(wire)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makePolygon(points[])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeOffset(face,offset,tolerance)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makePlaneFromFace()</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+</section>
+<section id="_create_shapes">
+<title>Create shapes</title>
+<informalfigure>
+<mediaobject>
+  <imageobject>
+  <imagedata fileref="/images/thickness.png" contentwidth="800"/>
+  </imageobject>
+  <textobject><phrase>/images/thickness.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>shape = sketch."thicknessCommand"</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>.face()</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>Create a face from the sketch. Note that this is not needed in most needed as a closed sketch already is translated into a face that can be used directly for extrusion, revolving or sweeping.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.extrude(distance,extrusionConfig?)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>extrude a face over a distance normal to the face. In the extrusion configuration it is possible to define a different extrusion direction, a certain profile for the extrusion and a twist over the extrusion.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal></literal></simpara></entry>
+<entry align="left" valign="top"><simpara>extrusionConfig</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal></literal></simpara></entry>
+<entry align="left" valign="top"><simpara>extrusionProfile</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.loftWith([otherSketches],loftConfig,returnShell?)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>build a solid through lofting between different wires</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>{   endPoint:[point],
+                                        ruled: boolean,
+                                    startPoint:[point]}</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>loftconfig</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.revolve(revolutionAxis:[point],config?)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>revolve a face around the z-axis to create a solid shape. Adapt the axis of rotation and the origin in the configuration.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>origin:[point]</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>config</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.sweepSketch<indexterm><primary>plane</primary></indexterm>plane;</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara><literal>makeSolid(faces[]/shell)</literal></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="javascript" linenumbering="unnumbered">            function sketchFunction(plane,origin)
+            {let section = new Sketcher(plane,origin)
+                    (add sketch commands)
+                    .close()
+            return section}</programlisting>
+</section>
+<section id="_pre_baked_shapes">
+<title>Pre-baked shapes</title>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeCylinder(radius,height,[location],[direction])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeSphere(radius)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeVertex([point])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+<section id="_modify_shapes">
+<title>Modify shapes</title>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>.fillet(radiusConfig,filter?)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>round an edge of a shape with a fixed radius or a radius that is defined by a function. The filter refers to the selection mechanism defined in the next secion. It has the general shape of (e) &#8658; e.inDirection("X")</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.chamfer(radiusConfig,filter?)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>take of a sharp edge by creating a transitional face, default at 45 degrees to a edge</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal></literal></simpara></entry>
+<entry align="left" valign="top"><simpara>create a thin walled object from a shape, removing the indicated face from the shape to provide access to the hollow inside.</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeOffset(shape,thickness)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>create a shape that is offset from the original shape by the thickness. A positive number results in an increased size of the shape, a negative value will result in a smaller shape</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>addHolesInFace(face,holeWires[])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>create a hole in a shape using the wires that are indicated in the parameters to this function.</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="_find_features">
+<title>Find features</title>
+<section id="_faces">
+<title>Faces</title>
+<programlisting language="javascript" linenumbering="unnumbered">let foundFaces = new FaceFinder().inPlane("XZ",35)</programlisting>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>.inPlane("XZ",35)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.ofSurfaceType("CYLINDRE")</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara></simpara></entry>
+<entry align="left" valign="top"><simpara>surface types : "PLANE" / "CYLINDRE" / "CONE" /"SPHERE"/ "TORUS" / "BEZIER_SURFACE"       /"BSPLINE_SURFACE"/"REVOLUTION_SURFACE"/"EXTRUSION_SURFACE"/ "OFFSET_SURFACE"/"OTHER_SURFACE"</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.containsPoint([0,-15,80])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.atAngleWith(direction,angle)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>atAngleWith("Z",20)</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.atDistance(distance,point)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.inBox(corner1,corner2)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.inList(elementList[])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.inPlane(inputPlane,origin)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>inPlane("XY",30)</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.parallelTo(plane/face/standardplane)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal></literal></simpara></entry>
+<entry align="left" valign="top"><simpara>returns all the elements that fit the filters</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<literallayout class="monospaced">new FaceFinder().inPlane("XZ", 30).find(house)</literallayout>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+<section id="_edges">
+<title>Edges</title>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>.inDirection([x,y,z]/"X"/"Y"/"Z")</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>find all edges that have the direction</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.ofLength(number)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>find all edges with a particular length</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.ofCurveType(  todo?)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>find all edges of a certain curve type</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.parallelTo(plane / StandardPlane e.g. "XY")</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>find all edges parallel to a stanadard plane</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.inPlane(PlaneName / Plane)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>find all edges that are exactly in a defined plane</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.shouldKeep todo?</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>tbd</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+<section id="_combine_filters">
+<title>Combine filters</title>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>and</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>both filters should be applied</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>either</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>only one of the filters may be applied</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>not</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>select all other edges than those selected by this filter</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="javascript" linenumbering="unnumbered">            const houseSides = new FaceFinder().either([
+            (f) =&gt; f.inPlane("YZ", 50),
+            (f) =&gt; f.inPlane("YZ", -50),]);
+
+             const frontWindow = new EdgeFinder()
+            .ofCurveType("CIRCLE")
+            .not((f) =&gt; f.inPlane("XZ"));</programlisting>
+</section>
+</section>
+<section id="_transform_shapes">
+<title>Transform shapes</title>
+<simpara>The transform functions require a shape or face. A sketch cannot be transformed, with the exception of creating an offset.</simpara>
+<simpara>transformedShape = shape."transformCommand"</simpara>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>"transformCommand = "</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.translate([dx,dy,dz])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.translateX(dx)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.translateY(dy)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.translateZ(dz)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.rotate(angleDeg,axisOrigin[x,y,x],axisEnd[x,y,x])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.scale(number)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.mirror("YZ",[-10,0])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.clone()</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+<section id="_combine_shapes">
+<title>Combine shapes</title>
+<informalfigure>
+<mediaobject>
+  <imageobject>
+  <imagedata fileref="/images/booleans-icons.png" contentwidth="500"/>
+  </imageobject>
+  <textobject><phrase>/images/booleans-icons.png</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<informaltable
+frame="all"
+rowsep="1" colsep="1"
+>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><literal>.cut(tool,optimisation?)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.fuse(otherShape,.. )</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>fuse the othershape with the shape. Other applications call this a "union" between to shapes</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>.intersect(tool)</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>find the volume that is common to the two shapes considered in this method, other applications call this function "common"</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>compoundShapes(shapeArray[])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>this function is identical to makeCompound</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara><literal>makeCompound(shapeArray[])</literal></simpara></entry>
+<entry align="left" valign="top"><simpara>allows to combine an array of any type of shape into a single entity that can be displayed.</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+</article>
