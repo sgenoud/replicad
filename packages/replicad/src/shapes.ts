@@ -544,7 +544,7 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   protected abstract _geomAdaptor(): CurveLike;
   get repr(): string {
     const { startPoint, endPoint } = this;
-    const retVal = `start: (${this.startPoint.repr}) end:(${this.endPoint.repr}}`;
+    const retVal = `start: (${this.startPoint.repr}) end:(${this.endPoint.repr})`;
     startPoint.delete();
     endPoint.delete();
     return retVal;
