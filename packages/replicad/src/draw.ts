@@ -242,6 +242,23 @@ export function drawText(
 }
 
 /**
+ * Creates the `Drawing` by interpolating points as a curve
+ *
+ * The drawing will be a spline approximating the points. Note that the
+ * degree should be at maximum 3 if you need to export the drawing as an SVG.
+ *
+ * @category Drawing
+ */
+export const drawPointsInterpolation = (
+  points: Point2D[],
+  approximationConfig: BSplineApproximationConfig = {}
+): Drawing => {
+  return new Drawing(
+    new Blueprint([make2dInerpolatedBSplineCurve(points, approximationConfig)])
+  );
+};
+
+/**
  * Creates the `Drawing` of parametric function
  *
  * The drawing will be a spline approximating the function. Note that the
@@ -259,7 +276,5 @@ export const drawParametricFunction = (
     return func(start + t * stepSize);
   });
 
-  return new Drawing(
-    new Blueprint([make2dInerpolatedBSplineCurve(points, approximationConfig)])
-  );
+  return drawPointsInterpolation(points, approximationConfig);
 };
