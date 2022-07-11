@@ -17,6 +17,7 @@ import {
   BoundingBox2d,
   Curve2D,
   samePoint,
+  isPoint2D,
 } from "../lib2d";
 import { assembleWire } from "../shapeHelpers";
 import { Face } from "../shapes";
@@ -86,8 +87,13 @@ export default class Blueprint implements DrawingInterface {
     return new Blueprint(curves);
   }
 
-  translate(xDist: number, yDist: number): Blueprint {
-    const curves = translationTransform2d([xDist, yDist]).transformCurves(
+  translate(xDist: number, yDist: number): Blueprint;
+  translate(translationVector: Point2D): Blueprint;
+  translate(xDistOrPoint: number | Point2D, yDist = 0): Blueprint {
+    const translationVector = isPoint2D(xDistOrPoint)
+      ? xDistOrPoint
+      : ([xDistOrPoint, yDist] as Point2D);
+    const curves = translationTransform2d(translationVector).transformCurves(
       this.curves
     );
     return new Blueprint(curves);

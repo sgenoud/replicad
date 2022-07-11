@@ -51,9 +51,11 @@ export default class Blueprints implements DrawingInterface {
     );
   }
 
-  translate(xDist: number, yDist: number): Blueprints {
+  translate(xDist: number, yDist: number): Blueprints;
+  translate(translationVector: Point2D): Blueprints;
+  translate(xDistOrPoint: number | Point2D, yDist = 0): Blueprints {
     return new Blueprints(
-      this.blueprints.map((bp) => bp.translate(xDist, yDist))
+      this.blueprints.map((bp) => bp.translate(xDistOrPoint as any, yDist))
     );
   }
 

@@ -55,9 +55,11 @@ export default class CompoundBlueprint implements DrawingInterface {
     );
   }
 
-  translate(xDist: number, yDist: number): CompoundBlueprint {
+  translate(xDist: number, yDist: number): CompoundBlueprint;
+  translate(translationVector: Point2D): CompoundBlueprint;
+  translate(xDistOrPoint: number | Point2D, yDist = 0): CompoundBlueprint {
     return new CompoundBlueprint(
-      this.blueprints.map((bp) => bp.translate(xDist, yDist))
+      this.blueprints.map((bp) => bp.translate(xDistOrPoint as any, yDist))
     );
   }
 

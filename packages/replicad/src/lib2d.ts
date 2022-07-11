@@ -727,3 +727,7 @@ export const adaptedCurveToPathElem = (
   console.warn(`${curveType} not implemented, using a line`);
   return `L ${endpoint}`;
 };
+
+export function isPoint2D(point: unknown): point is Point2D {
+  return Array.isArray(point) && point.length === 2;
+}

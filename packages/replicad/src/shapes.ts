@@ -1,5 +1,13 @@
 import { WrappingObj, GCWithScope } from "./register.js";
-import { Vector, Point, Plane, PlaneName, asPnt, BoundingBox } from "./geom.js";
+import {
+  Vector,
+  Point,
+  Plane,
+  PlaneName,
+  asPnt,
+  BoundingBox,
+  SimplePoint,
+} from "./geom.js";
 import { HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
 
@@ -197,8 +205,14 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    *
    * @category Shape Transformations
    */
-  translate(vector: Point): this {
-    const newShape = cast(translate(this.wrapped, vector));
+  translate(xDist: number, yDist: number, zDist: number): this;
+  translate(vector: Point): this;
+  translate(vectorOrxDist: Point | number, yDist = 0, zDist = 0): this {
+    const translation: Point =
+      typeof vectorOrxDist === "number"
+        ? [vectorOrxDist, yDist, zDist]
+        : vectorOrxDist;
+    const newShape = cast(translate(this.wrapped, translation));
     this.delete();
 
     if (this.constructor !== newShape.constructor)

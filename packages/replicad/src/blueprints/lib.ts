@@ -137,7 +137,9 @@ export interface DrawingInterface {
   stretch(ratio: number, direction: Point2D, origin: Point2D): DrawingInterface;
 
   rotate(angle: number, center: Point2D): DrawingInterface;
+
   translate(xDist: number, yDist: number): DrawingInterface;
+  translate(translationVector: Point2D): DrawingInterface;
 
   /**
    * Returns the mirror image of this drawing made with a single point (in

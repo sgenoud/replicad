@@ -47,9 +47,12 @@ export class Drawing implements DrawingInterface {
     if (!this.innerShape) return new Drawing();
     return new Drawing(this.innerShape.rotate(angle, center));
   }
-  translate(xDist: number, yDist: number): Drawing {
+
+  translate(xDist: number, yDist: number): Drawing;
+  translate(translationVector: Point2D): Drawing;
+  translate(xDistOrPoint: number | Point2D, yDist = 0): Drawing {
     if (!this.innerShape) return new Drawing();
-    return new Drawing(this.innerShape.translate(xDist, yDist));
+    return new Drawing(this.innerShape.translate(xDistOrPoint as any, yDist));
   }
 
   mirror(

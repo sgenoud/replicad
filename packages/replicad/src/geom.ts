@@ -224,10 +224,20 @@ export class Transformation extends WrappingObj<gp_Trsf> {
     super(transform || new oc.gp_Trsf_1());
   }
 
-  translate(vector: Point): Transformation {
-    const localVect = new Vector(vector);
-    this.wrapped.SetTranslation_1(localVect.wrapped);
-    localVect.delete();
+  translate(xDist: number, yDist: number, zDist: number): Transformation;
+  translate(vector: Point): Transformation;
+  translate(
+    xDistOrVector: number | Point,
+    yDist = 0,
+    zDist = 0
+  ): Transformation {
+    const translation = new Vector(
+      typeof xDistOrVector === "number"
+        ? [xDistOrVector, yDist, zDist]
+        : xDistOrVector
+    );
+
+    this.wrapped.SetTranslation_1(translation.wrapped);
 
     return this;
   }
@@ -390,8 +400,16 @@ export class Plane {
     return newPlane;
   }
 
-  translate(xDist: number, yDist = 0, zDist = 0): Plane {
-    return this.translateTo(this.origin.add(new Vector([xDist, yDist, zDist])));
+  translate(xDist: number, yDist: number, zDist: number): Plane;
+  translate(vector: Point): Plane;
+  translate(xDistOrVector: number | Point, yDist = 0, zDist = 0): Plane {
+    const translation = new Vector(
+      typeof xDistOrVector === "number"
+        ? [xDistOrVector, yDist, zDist]
+        : xDistOrVector
+    );
+
+    return this.translateTo(this.origin.add(translation));
   }
 
   translateX(xDist: number): Plane {
