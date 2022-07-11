@@ -1,5 +1,5 @@
 import zip from "../utils/zip";
-import { Point2D, Curve2D, samePoint, intersectCurves } from "../lib2d";
+import { Point2D, Curve2D, samePoint, intersectCurves, removeDuplicatePoints } from "../lib2d";
 
 import Blueprint from "./Blueprint";
 import Blueprints from "./Blueprints";
@@ -81,7 +81,7 @@ function blueprintsIntersectionSegments(
 ): IntersectionSegment[] | null {
   // For each curve of each blueprint we figure out where the intersection
   // points are.
-  const allIntersections: Point2D[] = [];
+  let allIntersections: Point2D[] = [];
   const allCommonSegments: Curve2D[] = [];
 
   const firstCurvePoints: Point2D[][] = new Array(first.curves.length)
@@ -107,7 +107,11 @@ function blueprintsIntersectionSegments(
     });
   });
 
-  if (!allIntersections.length) return null;
+  allIntersections = removeDuplicatePoints(allIntersections);
+
+  // If there is only one interection point we consider that the blueprints
+  // are not intersecting
+  if (!allIntersections.length || allIntersections.length === 1) return null;
 
   // We further split the curves at the intersections
   const cutCurve = ([curve, intersections]: [

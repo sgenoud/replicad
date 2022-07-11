@@ -7,6 +7,7 @@ import {
   cutBlueprints,
   intersectBlueprints,
 } from "./booleanOperations";
+import { intersectCurves, Point2D, removeDuplicatePoints } from "../lib2d";
 
 export type Shape2D = Blueprint | Blueprints | CompoundBlueprint | null;
 
@@ -15,7 +16,21 @@ const genericIntersects = (
   second: Blueprint | CompoundBlueprint
 ): boolean => {
   if (first instanceof Blueprint && second instanceof Blueprint) {
-    return first.intersects(second);
+    let allIntersections: Point2D[] = [];
+
+    first.curves.forEach((thisCurve) => {
+      second.curves.forEach((otherCurve) => {
+        const { intersections, commonSegmentsPoints } = intersectCurves(
+          thisCurve,
+          otherCurve
+        );
+        allIntersections.push(...intersections);
+        allIntersections.push(...commonSegmentsPoints);
+      });
+    });
+
+    allIntersections = removeDuplicatePoints(allIntersections);
+    return allIntersections.length > 1;
   }
   if (first instanceof CompoundBlueprint) {
     return first.blueprints.some((bp) => genericIntersects(bp, second));
