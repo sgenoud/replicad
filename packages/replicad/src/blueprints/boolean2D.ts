@@ -259,7 +259,7 @@ export const cut2D = (
     if (second instanceof Blueprint && !second.intersects(wrapper)) {
       if (!wrapper.isInside(second.firstPoint)) return null;
       const cuts = fuse2D(second, new Blueprints(first.blueprints.slice(1)));
-      return cut2D(wrapper, cuts);
+      return organiseBlueprints([wrapper, ...allBlueprints(cuts)]);
     } else {
       let out = cut2D(first.blueprints[0], second);
       first.blueprints.slice(1).forEach((bp) => {
