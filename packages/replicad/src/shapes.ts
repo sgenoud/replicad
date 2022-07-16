@@ -1,13 +1,5 @@
 import { WrappingObj, GCWithScope } from "./register.js";
-import {
-  Vector,
-  Point,
-  Plane,
-  PlaneName,
-  asPnt,
-  BoundingBox,
-  SimplePoint,
-} from "./geom.js";
+import { Vector, Point, Plane, PlaneName, asPnt, BoundingBox } from "./geom.js";
 import { HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
 

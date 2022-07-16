@@ -221,6 +221,25 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     this.innerCurve.Reverse();
   }
 
+  isOnCurve(point: Point2D): boolean {
+    const oc = getOC();
+    const r = GCWithScope();
+
+    const projector = r(
+      new oc.Geom2dAPI_ProjectPointOnCurve_2(r(pnt(point)), this.wrapped)
+    );
+    try {
+      return projector.LowerDistance() < 1e-9;
+    } catch (e) {
+      // Perhaps it failed because it is on an extremity
+      if (samePoint(point, this.firstPoint)) return true;
+      if (samePoint(point, this.lastPoint)) return true;
+
+      // The point cannot be projected, it is not on the curve
+      return false;
+    }
+  }
+
   parameter(point: Point2D): number {
     const oc = getOC();
     const r = GCWithScope();

@@ -202,6 +202,9 @@ export default class Blueprint implements DrawingInterface {
     const segment = make2dSegmentCurve(point, this.boundingBox.outsidePoint());
     let crossCounts = 0;
 
+    const onCurve = this.curves.find((c) => c.isOnCurve(point));
+    if (onCurve) return false;
+
     this.curves.forEach((c) => {
       intersector.Init_1(segment.wrapped, c.wrapped, 1e-9);
       crossCounts += intersector.NbPoints();

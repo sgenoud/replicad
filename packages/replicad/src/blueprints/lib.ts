@@ -97,6 +97,8 @@ const handleNestedBlueprints = (
 const cleanEdgeCases = (
   groupedBlueprints: ContainedBlueprint[]
 ): ContainedBlueprint[][] => {
+  if (!groupedBlueprints.length) return [];
+
   const outerBlueprints = groupedBlueprints.filter(({ isIn }) => !isIn.length);
   const nestedBlueprints = groupedBlueprints.filter(
     ({ isIn }) => isIn.length > 1

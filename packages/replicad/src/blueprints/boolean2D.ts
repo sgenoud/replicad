@@ -101,14 +101,31 @@ const fuseIntersectingBlueprints = (
       if (blueprint.boundingBox.isOut(otherBlueprint.boundingBox)) return;
       if (!genericIntersects(blueprint, otherBlueprint)) return;
 
-      const newFused = genericFuse(blueprint, otherBlueprint);
+      let newFused = genericFuse(blueprint, otherBlueprint);
       if (
         !(
           newFused instanceof Blueprint || newFused instanceof CompoundBlueprint
         )
       ) {
-        console.error(newFused);
-        throw new Error("Bug in blueprint fusing algorigthm");
+        if (
+          newFused instanceof Blueprints &&
+          newFused.blueprints.length === 2
+        ) {
+          // The generic intersects was wrong here - the intersection
+          // points were only touching and not crossing
+          return;
+        } else if (
+          newFused instanceof Blueprints &&
+          newFused.blueprints.length === 1
+        ) {
+          // The generic intersects was wrong here - the intersection
+          // points were only touching and not crossing
+
+          newFused = newFused.blueprints[0];
+        } else {
+          console.error(newFused);
+          throw new Error("Bug in blueprint fusing algorigthm");
+        }
       }
       savedBlueprint.current = newFused;
       if (otherIsFused) {

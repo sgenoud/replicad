@@ -1,5 +1,11 @@
 import zip from "../utils/zip";
-import { Point2D, Curve2D, samePoint, intersectCurves, removeDuplicatePoints } from "../lib2d";
+import {
+  Point2D,
+  Curve2D,
+  samePoint,
+  intersectCurves,
+  removeDuplicatePoints,
+} from "../lib2d";
 
 import Blueprint from "./Blueprint";
 import Blueprints from "./Blueprints";
@@ -66,6 +72,41 @@ const reverseSegments = (s: Segment[]) => {
   s.forEach(reverseSegment);
   return s;
 };
+
+function removeNonCrossingPoint(
+  allIntersections: Point2D[],
+  segmentedCurve: Curve2D[],
+  blueprintToCheck: Blueprint,
+  commonSegmentsPoints: Point2D[][]
+) {
+  const isInside = (segment: Curve2D): boolean => {
+    return blueprintToCheck.isInside(curveMidPoint(segment));
+  };
+
+  return allIntersections.filter((intersection: Point2D) => {
+    const segmentsOfIntersection = segmentedCurve.filter((s) => {
+      return (
+        samePoint(s.firstPoint, intersection) ||
+        samePoint(s.lastPoint, intersection)
+      );
+    });
+    if (segmentsOfIntersection.length !== 2)
+      throw new Error("Bug in the intersection algo on non crossing point");
+
+    const intersectingSection =
+      isInside(segmentsOfIntersection[0]) !==
+      isInside(segmentsOfIntersection[1]);
+
+    return (
+      intersectingSection ||
+      commonSegmentsPoints.find(
+        ([startPoint, endPoint]) =>
+          samePoint(startPoint, intersection) ||
+          samePoint(endPoint, intersection)
+      )
+    );
+  });
+}
 
 /* When two shape intersect we cut them into segments between the intersection
  * points.
@@ -135,6 +176,17 @@ function blueprintsIntersectionSegments(
     c.firstPoint,
     c.lastPoint,
   ]);
+
+  // We need to remove intersection points that are not crossing into each
+  // other (i.e. the two blueprints are only touching in one point and not
+  // intersecting there.)
+  allIntersections = removeNonCrossingPoint(
+    allIntersections,
+    firstCurveSegments,
+    second,
+    commonSegmentsPoints
+  );
+  if (!allIntersections.length) return null;
 
   const startAt = commonSegmentsPoints.length
     ? commonSegmentsPoints[0][0]
