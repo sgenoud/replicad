@@ -29,9 +29,34 @@ const rotateToStartAt = (curves: Curve2D[], point: Point2D) => {
   return end.concat(start);
 };
 
+const rotateToStartAtSegment = (curves: Curve2D[], segment: Curve2D) => {
+  const onSegment = (curve: Curve2D) => {
+    return (
+      samePoint(segment.firstPoint, curve.firstPoint) &&
+      samePoint(segment.lastPoint, curve.lastPoint)
+    );
+  };
+
+  let startIndex = curves.findIndex(onSegment);
+
+  // it is also possible that the segment is oriented the other way. We still
+  // need to align a start point
+  if (startIndex === -1) {
+    curves = reverseSegment(curves);
+    startIndex = curves.findIndex(onSegment);
+    if (startIndex === -1) throw new Error("Failed to rotate to segment start");
+  }
+
+  const start = curves.slice(0, startIndex);
+  const end = curves.slice(startIndex);
+
+  return end.concat(start);
+};
+
 function* createSegmentOnPoints(
   curves: Curve2D[],
-  allIntersections: Point2D[]
+  allIntersections: Point2D[],
+  allCommonSegments: Curve2D[]
 ) {
   const endsAtIntersection = (curve: Curve2D) => {
     return !!allIntersections.find((intersection) => {
@@ -39,10 +64,21 @@ function* createSegmentOnPoints(
     });
   };
 
+  const isCommonSegment = (curve: Curve2D) => {
+    return !!allCommonSegments.find((segment) => {
+      return (
+        (samePoint(segment.firstPoint, curve.firstPoint) &&
+          samePoint(segment.lastPoint, curve.lastPoint)) ||
+        (samePoint(segment.firstPoint, curve.lastPoint) &&
+          samePoint(segment.lastPoint, curve.firstPoint))
+      );
+    });
+  };
+
   let currentCurves = [];
   for (const curve of curves) {
     currentCurves.push(curve);
-    if (endsAtIntersection(curve)) {
+    if (endsAtIntersection(curve) || isCommonSegment(curve)) {
       yield currentCurves;
       currentCurves = [];
     }
@@ -76,13 +112,8 @@ const reverseSegments = (s: Segment[]) => {
 function removeNonCrossingPoint(
   allIntersections: Point2D[],
   segmentedCurve: Curve2D[],
-  blueprintToCheck: Blueprint,
-  commonSegmentsPoints: Point2D[][]
+  blueprintToCheck: Blueprint
 ) {
-  const isInside = (segment: Curve2D): boolean => {
-    return blueprintToCheck.isInside(curveMidPoint(segment));
-  };
-
   return allIntersections.filter((intersection: Point2D) => {
     const segmentsOfIntersection = segmentedCurve.filter((s) => {
       return (
@@ -90,21 +121,20 @@ function removeNonCrossingPoint(
         samePoint(s.lastPoint, intersection)
       );
     });
-    if (segmentsOfIntersection.length !== 2)
+    if (segmentsOfIntersection.length % 2) {
+      console.error(segmentsOfIntersection);
       throw new Error("Bug in the intersection algo on non crossing point");
+    }
 
-    const intersectingSection =
-      isInside(segmentsOfIntersection[0]) !==
-      isInside(segmentsOfIntersection[1]);
+    const isInside = segmentsOfIntersection.map((segment: Curve2D): boolean => {
+      return blueprintToCheck.isInside(curveMidPoint(segment));
+    });
 
-    return (
-      intersectingSection ||
-      commonSegmentsPoints.find(
-        ([startPoint, endPoint]) =>
-          samePoint(startPoint, intersection) ||
-          samePoint(endPoint, intersection)
-      )
-    );
+    // Either they are all inside or outside
+    const segmentsOnTheSameSide =
+      isInside.every((i) => i) || !isInside.some((i) => i);
+
+    return !segmentsOnTheSameSide;
   });
 }
 
@@ -183,33 +213,44 @@ function blueprintsIntersectionSegments(
   allIntersections = removeNonCrossingPoint(
     allIntersections,
     firstCurveSegments,
-    second,
-    commonSegmentsPoints
+    second
   );
-  if (!allIntersections.length) return null;
 
-  const startAt = commonSegmentsPoints.length
-    ? commonSegmentsPoints[0][0]
-    : allIntersections[0];
+  if (!allIntersections.length && !allCommonSegments.length) return null;
 
   // We align the beginning of the curves
-  firstCurveSegments = rotateToStartAt(firstCurveSegments, startAt);
-  secondCurveSegments = rotateToStartAt(secondCurveSegments, startAt);
+  if (!allCommonSegments.length) {
+    const startAt = allIntersections[0];
+    firstCurveSegments = rotateToStartAt(firstCurveSegments, startAt);
+    secondCurveSegments = rotateToStartAt(secondCurveSegments, startAt);
+  } else {
+    // When there are common segments we always start on one
+    const startSegment = allCommonSegments[0];
+    firstCurveSegments = rotateToStartAtSegment(
+      firstCurveSegments,
+      startSegment
+    );
+    secondCurveSegments = rotateToStartAtSegment(
+      secondCurveSegments,
+      startSegment
+    );
+  }
 
   // We group curves in segments
-  let firstIntersectedSegments = Array.from(
-    createSegmentOnPoints(firstCurveSegments, allIntersections)
+  const firstIntersectedSegments = Array.from(
+    createSegmentOnPoints(
+      firstCurveSegments,
+      allIntersections,
+      allCommonSegments
+    )
   );
   let secondIntersectedSegments = Array.from(
-    createSegmentOnPoints(secondCurveSegments, allIntersections)
+    createSegmentOnPoints(
+      secondCurveSegments,
+      allIntersections,
+      allCommonSegments
+    )
   );
-
-  if (
-    allCommonSegments.length > 0 &&
-    firstIntersectedSegments[0].length !== 1
-  ) {
-    firstIntersectedSegments = reverseSegments(firstIntersectedSegments);
-  }
 
   if (
     !samePoint(
@@ -400,6 +441,7 @@ function booleanOperation(
 
   if (paths.length === 0) return null;
   if (paths.length === 1) return paths[0];
+
   return organiseBlueprints(paths);
 }
 
