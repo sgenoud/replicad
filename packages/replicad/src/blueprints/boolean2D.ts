@@ -79,18 +79,25 @@ const fuseIntersectingBlueprints = (
   const output: { current: Blueprint | CompoundBlueprint }[] = [];
 
   blueprints.forEach((inputBlueprint, i) => {
-    let savedBlueprint = { current: inputBlueprint };
+    let savedBlueprint: {
+      current: Blueprint | CompoundBlueprint;
+      fusedWith: Set<number>;
+    };
 
     if (fused.has(i)) {
       savedBlueprint = fused.get(i);
     } else {
+      savedBlueprint = { current: inputBlueprint, fusedWith: new Set([i]) };
       output.push(savedBlueprint);
     }
 
-    const blueprint = savedBlueprint.current;
-
     blueprints.slice(i + 1).forEach((inputOtherBlueprint, j) => {
+      const blueprint = savedBlueprint.current;
+
       const currentIndex = i + j + 1;
+
+      if (savedBlueprint.fusedWith.has(currentIndex)) return;
+
       let otherBlueprint = inputOtherBlueprint;
       let otherIsFused = false;
 
@@ -98,6 +105,7 @@ const fuseIntersectingBlueprints = (
         otherBlueprint = fused.get(currentIndex).current;
         otherIsFused = true;
       }
+
       if (blueprint.boundingBox.isOut(otherBlueprint.boundingBox)) return;
       if (!genericIntersects(blueprint, otherBlueprint)) return;
 
@@ -127,11 +135,9 @@ const fuseIntersectingBlueprints = (
           throw new Error("Bug in blueprint fusing algorigthm");
         }
       }
+      savedBlueprint.fusedWith.add(currentIndex);
       savedBlueprint.current = newFused;
-      if (otherIsFused) {
-        fused.get(currentIndex).current = false;
-      }
-      fused.set(currentIndex, savedBlueprint);
+      if (!otherIsFused) fused.set(currentIndex, savedBlueprint);
     });
   });
 
