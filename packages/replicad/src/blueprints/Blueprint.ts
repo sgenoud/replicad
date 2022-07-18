@@ -197,6 +197,8 @@ export default class Blueprint implements DrawingInterface {
   }
 
   isInside(point: Point2D): boolean {
+    if (!this.boundingBox.containsPoint(point)) return false;
+
     const oc = getOC();
     const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
     const segment = make2dSegmentCurve(point, this.boundingBox.outsidePoint());
@@ -206,6 +208,7 @@ export default class Blueprint implements DrawingInterface {
     if (onCurve) return false;
 
     this.curves.forEach((c) => {
+      if (c.boundingBox.isOut(segment.boundingBox)) return;
       intersector.Init_1(segment.wrapped, c.wrapped, 1e-9);
       crossCounts += intersector.NbPoints();
     });
@@ -222,8 +225,13 @@ export default class Blueprint implements DrawingInterface {
   intersects(other: Blueprint) {
     const oc = getOC();
     const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
+
+    if (this.boundingBox.isOut(other.boundingBox)) return false;
+
     for (const myCurve of this.curves) {
       for (const otherCurve of other.curves) {
+        if (myCurve.boundingBox.isOut(otherCurve.boundingBox)) continue;
+
         intersector.Init_1(myCurve.wrapped, otherCurve.wrapped, 1e-9);
         if (intersector.NbPoints() || intersector.NbSegments()) return true;
       }

@@ -83,6 +83,12 @@ export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
   isOut(other: BoundingBox2d): boolean {
     return this.wrapped.IsOut_2(other.wrapped);
   }
+
+  containsPoint(other: Point2D): boolean {
+    const r = GCWithScope();
+    const point = r(pnt(other));
+    return !this.wrapped.IsOut_1(point);
+  }
 }
 
 export type Point2D = [number, number];
@@ -175,10 +181,25 @@ function zip<Type>(arrays: Array<Type[]>) {
 }
 
 export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
+  _boundingBox: null | BoundingBox2d;
   constructor(handle: Handle_Geom2d_Curve) {
     const oc = getOC();
     const inner = handle.get();
+
     super(new oc.Handle_Geom2d_Curve_2(inner));
+
+    this._boundingBox = null;
+  }
+
+  get boundingBox() {
+    if (this._boundingBox) return this._boundingBox;
+    const oc = getOC();
+    const boundBox = new oc.Bnd_Box2d();
+
+    oc.BndLib_Add2dCurve.Add_3(this.wrapped, 1e-6, boundBox);
+
+    this._boundingBox = new BoundingBox2d(boundBox);
+    return this._boundingBox;
   }
 
   get repr() {
