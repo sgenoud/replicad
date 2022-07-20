@@ -77,13 +77,23 @@ function* createSegmentOnPoints(
 
   let currentCurves = [];
   for (const curve of curves) {
-    currentCurves.push(curve);
-    if (endsAtIntersection(curve) || isCommonSegment(curve)) {
+    if (endsAtIntersection(curve)) {
+      currentCurves.push(curve);
       yield currentCurves;
       currentCurves = [];
+    } else if (isCommonSegment(curve)) {
+      if (currentCurves.length) {
+        yield currentCurves;
+        currentCurves = [];
+      }
+      yield [curve];
+    } else {
+      currentCurves.push(curve);
     }
   }
-  if (currentCurves.length) yield currentCurves;
+  if (currentCurves.length) {
+    yield currentCurves;
+  }
 }
 
 type Segment = Array<Curve2D>;
@@ -251,7 +261,6 @@ function blueprintsIntersectionSegments(
       allCommonSegments
     )
   );
-
   if (
     !samePoint(
       endOfSegment(secondIntersectedSegments[0]),
