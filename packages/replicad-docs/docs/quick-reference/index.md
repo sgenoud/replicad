@@ -1,8 +1,8 @@
-# Process [_process]
+# Process
 
 The process to draw a shape in Replicad looks like this:
 
-![](/images/processv2.png)
+![](./images/processv2.png)
 
 Replicad is a library that is based on another library library called
 opencascade.js (see <https://github.com/donalffons/opencascade.js>). The
@@ -26,7 +26,7 @@ determine a shape. There are 2 dimensional pre-baked shapes like
 rectangles and circles, and 3 dimensional shapes like spheres or
 cylinders.
 
-# Visualiser [_visualiser]
+# Visualiser
 
 A model in Replicad is built using a javascript input file (see next
 Section). This file defines a "main" function that should return the
@@ -35,16 +35,16 @@ that the part is generated correctly and to export the result is to use
 the **Visualiser** that is offered on the Replicad site
 <https://studio.replicad.xyz/visualiser>.
 
-![](/images/interface_black.png)
+![](./images/interface_black.png)
 
 The Visualiser supports exporting to JSON, STL and STEP format.
 
-# File template [_file_template]
+# File template
 
 The template to create and display a 3D part in Replicad looks like
 this.
 
-``` javascript
+```javascript
 const defaultParams = {                // setting the value of the parameters
   height:       100,
   baseWidth:     20,
@@ -66,7 +66,7 @@ return  {shape: [shape], highlight: [foundFeature]}
 
 Alternatively you can use the arrow notation for the javascript function
 
-``` javascript
+```javascript
 const defaultParams = {                // setting the value of the parameters
   height:       100,
   baseWidth:     20,
@@ -85,32 +85,33 @@ return  {shape: [shape], highlight: [foundFeature]}
 If you want to display multiple shapes, the returned variable should be
 an array of all shapes. In this array it is possible to define
 
--   the variable name of the shape,
+- the variable name of the shape,
 
--   the name of the shape as a "string",
+- the name of the shape as a "string",
 
--   the color of the shape in the Visualiser, using the X11 "color
-    name", see
-    <https://en.wikipedia.org/wiki/X11_color_names#Color_name_chart>
+- the color of the shape in the Visualiser, using the X11 "color
+  name", see
+  <https://en.wikipedia.org/wiki/X11_color_names#Color_name_chart>
 
--   the opacity, where opacity 1 is the default (visible) and 0 is fully
-    transparant.
+- the opacity, where opacity 1 is the default (visible) and 0 is fully
+  transparant.
 
 An example of an array is:
 
-``` javascript
+```javascript
 let shapeArray = [
-{shape: plunge, name: "plunge", color:"steelblue", opacity: 0.5},
-{shape: body, color: "orange",opacity:0.5},
-{shape: filler, color: "red"}]
+  { shape: plunge, name: "plunge", color: "steelblue", opacity: 0.5 },
+  { shape: body, color: "orange", opacity: 0.5 },
+  { shape: filler, color: "red" },
+];
 ```
 
-# Sketch [_sketch]
+# Sketch
 
 To start a sketch, use the `new Sketcher` command. Note the keyword
 `new` that is required to create a new object of the type `Sketcher`.
 
-``` javascript
+```javascript
 let sketch = new Sketcher("XZ",-5)
 ".sketchCommands"        (see below)
 .close()                    // ends the sketch with line to starting point
@@ -120,9 +121,9 @@ let sketch = new Sketcher("XZ",-5)
 
 Use the following ".methods" to describe the sketch:
 
-## Lines [_lines]
+## Lines
 
-![](/images/lines.png)
+![](./images/lines.png)
 
 Lines can be sketched using the line functions. Be aware that points are
 generally defined as a tuple or array, i.e. enclosed in square brackets.
@@ -132,7 +133,7 @@ coordinates. Relative distances to the x- and y-axis are defined as two
 separate values dx and dy.
 
 |                                |                                                                                                                        |
-|------------------------------------|------------------------------------|
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
 | `.movePointerTo([x,y])`        | move pointer without drawing, can only be used at start                                                                |
 | `.lineTo([x,y])`               | line to absolute coordinates                                                                                           |
 | `.line(dx,dy)`                 | line to relative coordinates                                                                                           |
@@ -144,9 +145,9 @@ separate values dx and dy.
 | `.polarLine(distance,angle)`   | line to relative polar coordinates                                                                                     |
 | `.tangentLine(distance)`       | tangent extension over distance                                                                                        |
 
-## Arcs and ellipses [_arcs_and_ellipses]
+## Arcs and ellipses
 
-![](/images/arcs.png)
+![](./images/arcs.png)
 
 The following commands are available to create circular and elliptical
 arcs in your sketch. Just as with lines be aware that points are
@@ -157,7 +158,7 @@ three extra parameters. If the values are omitted the default values are
 used.
 
 |                                              |                                                                          |
-|------------------------------------|------------------------------------|
+| -------------------------------------------- | ------------------------------------------------------------------------ |
 | `.threePointsArcTo(point_end,point_mid)`     | arc from current to end via mid, absolute coordinates                    |
 | `.threePointsArc(dx,dy,dx_via,dy_via)`       | arc from current to end via mid, relative coordinates                    |
 | `.sagittaArcTo(point_end,sagitta)`           | arc from current to end with sag , absolute coordinates                  |
@@ -172,12 +173,12 @@ used.
 | `.halfEllipseTo([x,y],r_min)`                | half ellipse with r_min as sag, absolute coordinates                     |
 | `.halfEllipse(dx,dy,r_min)`                  | half ellipse with r_min as sag, relative coordinates                     |
 
-## Free form curves [_free_form_curves]
+## Free form curves
 
-![](/images/curves.png)
+![](./images/curves.png)
 
 |                                                      |                                                      |
-|------------------------------------|------------------------------------|
+| ---------------------------------------------------- | ---------------------------------------------------- |
 | `.bezierCurveTo([x,y],points[])`                     | Bezier curve to end along points\[\]                 |
 | `.quadraticBezierCurveTo([x,y],[x_ctrl,y_ctrl])`     | Quadratic bezier curve to end with control point     |
 | `.cubicBezierCurveTo([x,y],p_ctrl_start,p_ctrl_end)` | Cubic bezier curve with begin and end control points |
@@ -185,12 +186,12 @@ used.
 | `.smoothSpline(dx,dy,splineconfig)`                  | smooth spline to end, absolute coordinates           |
 | ``                                                   | ``                                                   |
 
-# Pre-baked sketches [_pre_baked_sketches]
+# Pre-baked sketches
 
-![](/images/baked-sketch.png)
+![](./images/baked-sketch.png)
 
 |                                     |                                                                                                                                                                      |
-|------------------------------------|------------------------------------|
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sketchRectangle(length,width)`     | create a sketch of a rectangle with length and width                                                                                                                 |
 | ``                                  | create a sketch of a rounded rectangle                                                                                                                               |
 | ``                                  | create a sketch of a circle                                                                                                                                          |
@@ -200,7 +201,7 @@ used.
 | `sketchFaceOffset(shape,thickness)` | create a sketch by defining an offset from an existing face in the scene                                                                                             |
 | ``                                  | create a sketch of a parametric function                                                                                                                             |
 
-# Create a drawing [_create_a_drawing]
+# Create a drawing
 
 A drawing can be understood as an adapted version of a sketch. A sketch
 starts with identifying the sketching plane first and then defining a
@@ -209,46 +210,46 @@ from its origin. In contrast a drawing is considered a pure 2D shape
 that can be placed on a plane after its creation. Compared to a sketch a
 drawing has the following advantages:
 
--   drawings can be translated, rotated (in 2D space) and scaled;
+- drawings can be translated, rotated (in 2D space) and scaled;
 
--   drawings can be used in 2D boolean operations;
+- drawings can be used in 2D boolean operations;
 
--   drawings can be exported directly in 2D formats;
+- drawings can be exported directly in 2D formats;
 
--   drawings can be placed on other shapes, not only planes
+- drawings can be placed on other shapes, not only planes
 
 The drawing can be defined with the `draw()` function. As this function
 already includes the creation of a new object the `new` keyword is not
 needed.
 
-``` javascript
+```javascript
 const shape1 = draw()
-    .lineTo([20,0])
-    .line(0,5)
-    .hLine(10)
-    .vLine(5)
-    .polarLineTo([22,45])
-    .polarLine(10,150)
-    .halfEllipse(-10, -15, 5)
-    .smoothSpline(2, -5)
-    .close()
+  .lineTo([20, 0])
+  .line(0, 5)
+  .hLine(10)
+  .vLine(5)
+  .polarLineTo([22, 45])
+  .polarLine(10, 150)
+  .halfEllipse(-10, -15, 5)
+  .smoothSpline(2, -5)
+  .close();
 ```
 
-## Methods for drawings [_methods_for_drawings]
+## Methods for drawings
 
 As a drawing is a type of sketch (that is not yet assigned to a plane)
 the methods described earlier to create a sketch such as
 
--   [???](#Lines)
+- [Lines](#lines)
 
--   [???](#Arcs and ellipses)
+- [Arcs and ellipses](#arcs-and-ellipses)
 
--   [???](#Free form curves)
+- [Free form curves](#free-form-curves)
 
 can also be used to define a drawing.
 
 |                                         |                                                                                                                                                               |
-|------------------------------------|------------------------------------|
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.clone()`                              |                                                                                                                                                               |
 | `.mirror([center/dir],[origin],mode? )` | mode? "center" or "plane"                                                                                                                                     |
 | `.translate(xDist,yDist)`               |                                                                                                                                                               |
@@ -262,7 +263,7 @@ can also be used to define a drawing.
 | `.toSVGPaths()`                         | format the drawing as a list of SVG paths                                                                                                                     |
 | `.toSVGViewBox`                         | return the SVG viewbox that corresponds to this drawing                                                                                                       |
 
-## Pre-baked drawings [_pre_baked_drawings]
+## Pre-baked drawings
 
 Similarly as for the sketches, some pre-baked drawings are available to
 speed-up the creation of standard shapes. As the draw() object also
@@ -270,7 +271,7 @@ allows boolean operations the creation of more complex shapes can be
 achieved by combining a number of standard shapes.
 
 |                                                                                     |                                                                                                                                                                                                                             |
-|------------------------------------|------------------------------------|
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `drawRoundedRectangle(length, width, radius)`                                       | Draw a rounded rectangle centered at \[0,0\]                                                                                                                                                                                |
 | `drawSingleCircle(radius)`                                                          | Creates the `Drawing` of a circle as one single curve. The circle is centered on \[0, 0\]                                                                                                                                   |
 | `drawCircle(radius)`                                                                |                                                                                                                                                                                                                             |
@@ -280,14 +281,14 @@ achieved by combining a number of standard shapes.
 | ``                                                                                  | Draw a parametric function with variable t. With the option it is possible to adjust the number of intermediate points that are used { pointsCount = 400, start = 0, stop = 1 } and the type of approximation of the curve. |
 | ``                                                                                  | Draw a bSpline through the array of points                                                                                                                                                                                  |
 
-# Create 3D face/wire [_create_3d_face_wire]
+# Create 3D face/wire
 
-## Create wires in 3D [_create_wires_in_3d]
+## Create wires in 3D
 
 In comparison to sketches which create wires or faces in 2D
 
 |                                                                             |     |
-|------------------------------------|------------------------------------|
+| --------------------------------------------------------------------------- | --- |
 | `makeLine([point],[point])`                                                 |     |
 | `makeCircle(radius,[center],[normal])`                                      |     |
 | `makeEllipse(major,minor,[center],[normal])`                                |     |
@@ -299,10 +300,10 @@ In comparison to sketches which create wires or faces in 2D
 | `makeTangentArc([startPoint],[tangentPoint],[endPoint])`                    |     |
 | `assembleWire([Edges])`                                                     |     |
 
-## Create faces in 3D [_create_faces_in_3d]
+## Create faces in 3D
 
 |                                     |     |
-|-------------------------------------|-----|
+| ----------------------------------- | --- |
 | `makeFace(wire)`                    |     |
 | `makeNewFaceWithinFace(face,wire)`  |     |
 | `makeNonPlanarFace(wire)`           |     |
@@ -310,21 +311,21 @@ In comparison to sketches which create wires or faces in 2D
 | `makeOffset(face,offset,tolerance)` |     |
 | `makePlaneFromFace()`               |     |
 
-# Create shapes [_create_shapes]
+# Create shapes
 
-![](/images/thickness.png)
+![](./images/thickness.png)
 
 The generic command to create a 3D shape from a 2D sketch is:
 
-``` javascript
-let shape = sketch.thicknessMethod
+```javascript
+let shape = sketch.thicknessMethod;
 ```
 
 The following `.thicknessMethods` are available to add thickness or
 volume to a 2D sketch:
 
 |                                                                   |                                                                                                                                                                                                                 |
-|------------------------------------|------------------------------------|
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.face()`                                                         | Create a face from the sketch. Note that this is not needed in most needed as a closed sketch already is translated into a face that can be used directly for extrusion, revolving or sweeping.                 |
 | `.extrude(distance,extrusionConfig?)`                             | extrude a face over a distance normal to the face. In the extrusion configuration it is possible to define a different extrusion direction, a certain profile for the extrusion and a twist over the extrusion. |
 | ``                                                                | extrusionConfig                                                                                                                                                                                                 |
@@ -342,7 +343,7 @@ either a standard sketching function, such as
 closed sketch using a `Sketcher` object. This object should then refer
 to a `(plane, origin)` like this:
 
-``` javascript
+```javascript
             function sketchFunction(plane,origin)
             {let section = new Sketcher(plane,origin)
                     (add sketch commands)
@@ -350,35 +351,35 @@ to a `(plane, origin)` like this:
             return section}
 ```
 
-# Pre-baked shapes [_pre_baked_shapes]
+# Pre-baked shapes
 
 |                                                      |                       |
-|------------------------------------|------------------------------------|
+| ---------------------------------------------------- | --------------------- |
 | `makeCylinder(radius,height,[location],[direction])` | create a cylinder     |
 | `makeBaseBox(xLength,yLength,zLength)`               | create a box          |
 | `makeSphere(radius)`                                 | create a sphere       |
 | `makeVertex([point])`                                | create a vertex/point |
 
-# Modify shapes [_modify_shapes]
+# Modify shapes
 
 |                                    |                                                                                                                                                                                                                       |
-|------------------------------------|------------------------------------|
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.fillet(radiusConfig,filter?)`    | round an edge of a shape with a fixed radius or a radius that is defined by a function. The filter refers to the selection mechanism defined in the next secion. It has the general shape of (e) ⇒ e.inDirection("X") |
 | `.chamfer(radiusConfig,filter?)`   | take of a sharp edge by creating a transitional face, default at 45 degrees to a edge                                                                                                                                 |
 | ``                                 | create a thin walled object from a shape, removing the indicated face from the shape to provide access to the hollow inside.                                                                                          |
 | `makeOffset(shape,thickness)`      | create a shape that is offset from the original shape by the thickness. A positive number results in an increased size of the shape, a negative value will result in a smaller shape                                  |
 | `addHolesInFace(face,holeWires[])` | create a hole in a shape using the wires that are indicated in the parameters to this function.                                                                                                                       |
 
-# Find features [_find_features]
+# Find features
 
-## Faces [_faces]
+## Faces
 
-``` javascript
-let foundFaces = new FaceFinder().inPlane("XZ",35)
+```javascript
+let foundFaces = new FaceFinder().inPlane("XZ", 35);
 ```
 
 |                                         |                                                                                                                                                                                   |
-|------------------------------------|------------------------------------|
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.inPlane("XZ",35)`                     |                                                                                                                                                                                   |
 | `.ofSurfaceType("CYLINDRE")`            |                                                                                                                                                                                   |
 |                                         | surface types : "PLANE" / "CYLINDRE" / "CONE" /"SPHERE"/ "TORUS" / "BEZIER_SURFACE" /"BSPLINE_SURFACE"/"REVOLUTION_SURFACE"/"EXTRUSION_SURFACE"/ "OFFSET_SURFACE"/"OTHER_SURFACE" |
@@ -393,10 +394,10 @@ let foundFaces = new FaceFinder().inPlane("XZ",35)
 
     new FaceFinder().inPlane("XZ", 30).find(house)
 
-## Edges [_edges]
+## Edges
 
 |                                                |                                                    |
-|------------------------------------|------------------------------------|
+| ---------------------------------------------- | -------------------------------------------------- |
 | `.inDirection([x,y,z]/"X"/"Y"/"Z")`            | find all edges that have the direction             |
 | `.ofLength(number)`                            | find all edges with a particular length            |
 | `.ofCurveType( todo?)`                         | find all edges of a certain curve type             |
@@ -404,25 +405,26 @@ let foundFaces = new FaceFinder().inPlane("XZ",35)
 | `.inPlane(PlaneName / Plane)`                  | find all edges that are exactly in a defined plane |
 | `.shouldKeep todo?`                            | tbd                                                |
 
-## Combine filters [_combine_filters]
+## Combine filters
 
 |          |                                                           |
-|----------|-----------------------------------------------------------|
+| -------- | --------------------------------------------------------- |
 | `and`    | both filters should be applied                            |
 | `either` | only one of the filters may be applied                    |
 | `not`    | select all other edges than those selected by this filter |
 
-``` javascript
-            const houseSides = new FaceFinder().either([
-            (f) => f.inPlane("YZ", 50),
-            (f) => f.inPlane("YZ", -50),]);
+```javascript
+const houseSides = new FaceFinder().either([
+  (f) => f.inPlane("YZ", 50),
+  (f) => f.inPlane("YZ", -50),
+]);
 
-             const frontWindow = new EdgeFinder()
-            .ofCurveType("CIRCLE")
-            .not((f) => f.inPlane("XZ"));
+const frontWindow = new EdgeFinder()
+  .ofCurveType("CIRCLE")
+  .not((f) => f.inPlane("XZ"));
 ```
 
-# Transform shapes [_transform_shapes]
+# Transform shapes
 
 The transform functions require a shape or face. A sketch cannot be
 transformed, with the exception of creating an offset.
@@ -430,7 +432,7 @@ transformed, with the exception of creating an offset.
 transformedShape = shape."transformCommand"
 
 |                                                      |     |
-|------------------------------------------------------|-----|
+| ---------------------------------------------------- | --- |
 | `"transformCommand = "`                              |     |
 | `.translate([dx,dy,dz])`                             |     |
 | `.translateX(dx)`                                    |     |
@@ -441,12 +443,12 @@ transformedShape = shape."transformCommand"
 | `.mirror("YZ",[-10,0])`                              |     |
 | `.clone()`                                           |     |
 
-# Combine shapes [_combine_shapes]
+# Combine shapes
 
-![](/images/booleans-icons.png)
+![](./images/booleans-icons.png)
 
 |                                |                                                                                                                            |
-|------------------------------------|------------------------------------|
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | `.cut(tool,optimisation?)`     |                                                                                                                            |
 | `.fuse(otherShape,.. )`        | fuse the othershape with the shape. Other applications call this a "union" between to shapes                               |
 | `.intersect(tool)`             | find the volume that is common to the two shapes considered in this method, other applications call this function "common" |
