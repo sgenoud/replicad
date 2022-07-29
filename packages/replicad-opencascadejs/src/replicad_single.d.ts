@@ -7097,6 +7097,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Extrema_ExtAlgo: Extrema_ExtAlgo;
 };
 
-declare function init(): Promise<OpenCascadeInstance>;
+declare function init(module: any): Promise<OpenCascadeInstance>;
 
 export default init;
