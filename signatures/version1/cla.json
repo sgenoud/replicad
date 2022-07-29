@@ -15,6 +15,14 @@
       "created_at": "2022-06-30T13:04:14Z",
       "repoId": 423510544,
       "pullRequestNo": 40
+    },
+    {
+      "name": "jirihon",
+      "id": 16903172,
+      "comment_id": 1198965600,
+      "created_at": "2022-07-29T07:27:48Z",
+      "repoId": 423510544,
+      "pullRequestNo": 55
     }
   ]
 }
