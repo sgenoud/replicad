@@ -124,7 +124,8 @@ function genericSweep(
   if (!law) sweepBuilder.Add_1(wire.wrapped, !!withContact, withCorrection);
   else sweepBuilder.SetLaw_1(wire.wrapped, law, !!withContact, withCorrection);
 
-  sweepBuilder.Build();
+  const progress = new oc.Message_ProgressRange_1();
+  sweepBuilder.Build(progress);
   if (!shellMode) {
     sweepBuilder.MakeSolid();
   }
@@ -142,6 +143,7 @@ function genericSweep(
   }
 
   sweepBuilder.delete();
+  progress.delete();
   return shape;
 }
 
@@ -154,7 +156,7 @@ export interface ExtrusionProfile {
 
 const buildLawFromProfile = (
   extrusionLength: number,
-  { profile, endFactor }: ExtrusionProfile
+  { profile, endFactor = 1 }: ExtrusionProfile
 ): Handle_Law_Function => {
   let law: Law_S | Law_Linear;
   const oc = getOC();
@@ -310,7 +312,8 @@ export const loft = (
     loftBuilder.AddVertex(r(makeVertex(endPoint)).wrapped);
   }
 
-  loftBuilder.Build();
+  const progress = r(new oc.Message_ProgressRange_1());
+  loftBuilder.Build(progress);
   const shape = cast(loftBuilder.Shape());
   gc();
 

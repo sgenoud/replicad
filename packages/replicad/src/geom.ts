@@ -591,6 +591,7 @@ export class BoundingBox extends WrappingObj<Bnd_Box> {
     const yMax = { current: 0 };
     const zMax = { current: 0 };
 
+    // @ts-ignore missing type in oc
     this.wrapped.Get(xMin, yMin, zMin, xMax, yMax, zMax);
     return [
       [xMin.current, yMin.current, zMin.current],

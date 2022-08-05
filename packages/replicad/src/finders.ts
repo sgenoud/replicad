@@ -3,7 +3,7 @@ import { makePlane } from "./geomHelpers";
 import { DEG2RAD } from "./constants";
 import { Face, Edge, AnyShape, SurfaceType, CurveType } from "./shapes";
 import { getOC } from "./oclib";
-import { GCWithObject } from "./register";
+import { GCWithObject, GCWithScope } from "./register";
 
 type Direction = "X" | "Y" | "Z";
 
@@ -108,8 +108,10 @@ abstract class Finder<Type extends FaceOrEdge> {
     distanceBuilder.LoadS1(vertex);
 
     const checkPoint = ({ element }: { element: Type }) => {
+      const r = GCWithScope();
       distanceBuilder.LoadS2(element.wrapped);
-      distanceBuilder.Perform();
+      const progress = r(new oc.Message_ProgressRange_1());
+      distanceBuilder.Perform(progress);
 
       return Math.abs(distanceBuilder.Value() - distance) < 1e-6;
     };
@@ -149,8 +151,10 @@ abstract class Finder<Type extends FaceOrEdge> {
     distanceBuilder.LoadS1(box);
 
     const checkPoint = ({ element }: { element: Type }) => {
+      const r = GCWithScope();
       distanceBuilder.LoadS2(element.wrapped);
-      distanceBuilder.Perform();
+      const progress = r(new oc.Message_ProgressRange_1());
+      distanceBuilder.Perform(progress);
 
       return distanceBuilder.Value() < 1e-6;
     };

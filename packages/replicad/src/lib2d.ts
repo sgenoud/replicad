@@ -43,6 +43,7 @@ export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
     const xMax = { current: 0 };
     const yMax = { current: 0 };
 
+    // @ts-ignore missing type in oc
     this.wrapped.Get(xMin, yMin, xMax, yMax);
     return [
       [xMin.current, yMin.current],
@@ -81,7 +82,7 @@ export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
   }
 
   isOut(other: BoundingBox2d): boolean {
-    return this.wrapped.IsOut_2(other.wrapped);
+    return this.wrapped.IsOut_4(other.wrapped);
   }
 
   containsPoint(other: Point2D): boolean {

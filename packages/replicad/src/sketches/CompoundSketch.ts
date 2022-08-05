@@ -44,7 +44,9 @@ const guessFaceFromWires = (wires: Wire[]): Face => {
     });
   });
 
-  faceBuilder.Build();
+  const progress = new oc.Message_ProgressRange_1();
+  faceBuilder.Build(progress);
+  progress.delete();
   const newFace = cast(faceBuilder.Shape());
 
   faceBuilder.delete();
