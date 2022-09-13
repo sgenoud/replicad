@@ -155,8 +155,12 @@ export class DrawingPen
  *
  * @category Drawing
  */
-export function draw(): DrawingPen {
-  return new DrawingPen();
+export function draw(initialPoint?: Point2D): DrawingPen {
+  const pen = new DrawingPen();
+  if (initialPoint) {
+    pen.movePointerTo(initialPoint);
+  }
+  return pen;
 }
 
 /**
