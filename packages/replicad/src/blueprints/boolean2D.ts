@@ -311,3 +311,44 @@ export const cut2D = (
   const singleCut = cutBlueprints(first, second);
   return singleCut;
 };
+
+export function intersect2D(
+  first: Shape2D,
+  second: Shape2D
+): Blueprint | Blueprints | CompoundBlueprint | null {
+  if (first === null || second === null) {
+    return null;
+  }
+
+  if (first instanceof Blueprint && second instanceof Blueprint) {
+    return intersectBlueprints(first, second);
+  }
+
+  if (first instanceof Blueprints) {
+    return mergeNonIntersecting(
+      first.blueprints.map((bp) => intersect2D(bp, second))
+    );
+  }
+
+  if (first instanceof CompoundBlueprint) {
+    const wrapper = first.blueprints[0];
+    const cut = first.blueprints[1];
+
+    return cut2D(intersect2D(wrapper, second), cut);
+  }
+
+  if (second instanceof Blueprints) {
+    return mergeNonIntersecting(
+      second.blueprints.map((bp) => intersect2D(first, bp))
+    );
+  }
+
+  if (second instanceof CompoundBlueprint) {
+    const wrapper = second.blueprints[0];
+    const cut = second.blueprints[1];
+
+    return cut2D(intersect2D(wrapper, first), cut);
+  }
+
+  throw new Error("intersct 2D algorithm error");
+}

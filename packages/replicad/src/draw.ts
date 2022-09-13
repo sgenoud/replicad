@@ -8,6 +8,7 @@ import {
 import {
   Blueprint,
   cut2D,
+  intersect2D,
   DrawingInterface,
   fuse2D,
   polysidesBlueprint,
@@ -82,12 +83,31 @@ export class Drawing implements DrawingInterface {
     return this.innerShape.sketchOnFace(face, scaleMode);
   }
 
+  /**
+   * Builds a new drawing by cuting another drawing into this one
+   *
+   * @category Drawing Modifications
+   */
   cut(other: Drawing): Drawing {
     return new Drawing(cut2D(this.innerShape, other.innerShape));
   }
 
+  /**
+   * Builds a new drawing by merging another drawing into this one
+   *
+   * @category Drawing Modifications
+   */
   fuse(other: Drawing): Drawing {
     return new Drawing(fuse2D(this.innerShape, other.innerShape));
+  }
+
+  /**
+   * Builds a new drawing by intersection this drawing with another
+   *
+   * @category Drawing Modifications
+   */
+  intersect(other: Drawing): Drawing {
+    return new Drawing(intersect2D(this.innerShape, other.innerShape));
   }
 
   toSVG(margin: number): string {
