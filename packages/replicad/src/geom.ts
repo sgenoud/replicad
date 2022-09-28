@@ -619,7 +619,7 @@ export class BoundingBox extends WrappingObj<Bnd_Box> {
   }
 
   get depth(): number {
-    const [[, , zmin], [, zmax]] = this.bounds;
+    const [[, , zmin], [, , zmax]] = this.bounds;
     return Math.abs(zmax - zmin);
   }
 
