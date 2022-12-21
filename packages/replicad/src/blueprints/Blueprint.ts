@@ -40,9 +40,14 @@ import { GCWithScope } from "../register";
 export default class Blueprint implements DrawingInterface {
   curves: Curve2D[];
   protected _boundingBox: null | BoundingBox2d;
+  private _orientation: null | "clockwise" | "counterClockwise";
+  private _guessedOrientation: null | "clockwise" | "counterClockwise";
   constructor(curves: Curve2D[]) {
     this.curves = curves;
     this._boundingBox = null;
+
+    this._orientation = null;
+    this._guessedOrientation = null;
   }
 
   delete() {
@@ -59,6 +64,31 @@ export default class Blueprint implements DrawingInterface {
       this._boundingBox = curvesBoundingBox(this.curves);
     }
     return this._boundingBox;
+  }
+
+  get orientation(): "clockwise" | "counterClockwise" {
+    if (this._orientation) return this._orientation;
+    if (this._guessedOrientation) return this._guessedOrientation;
+
+    const vertices = this.curves.flatMap((c) => {
+      if (c.geomType !== "LINE") {
+        // We just go with a simple approximation here, we should use some extrema
+        // points instead, but this is quick (and good enough for now)
+        return [c.firstPoint, c.value(0.5)];
+      }
+      return [c.firstPoint];
+    });
+
+    const approximateArea = vertices
+      .map((v1, i) => {
+        const v2 = vertices[(i + 1) % vertices.length];
+        return (v2[0] - v1[0]) * (v2[1] + v1[1]);
+      })
+      .reduce((a, b) => a + b, 0);
+
+    this._guessedOrientation =
+      approximateArea > 0 ? "clockwise" : "counterClockwise";
+    return this._guessedOrientation;
   }
 
   stretch(
