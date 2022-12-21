@@ -609,6 +609,15 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     curve.delete();
     return type;
   }
+
+  get length(): number {
+    const properties = new this.oc.GProp_GProps_1();
+    this.oc.BRepGProp.LinearProperties(this.wrapped, properties, true, false);
+
+    const length = properties.Mass();
+    properties.delete();
+    return length;
+  }
 }
 
 export class Curve extends WrappingObj<CurveLike> {
@@ -672,15 +681,6 @@ export class Curve extends WrappingObj<CurveLike> {
 export class Edge extends _1DShape<TopoDS_Edge> {
   protected _geomAdaptor(): BRepAdaptor_Curve {
     return new this.oc.BRepAdaptor_Curve_2(this.wrapped);
-  }
-
-  get length(): number {
-    const properties = new this.oc.GProp_GProps_1();
-    this.oc.BRepGProp.LinearProperties(this.wrapped, properties, true, false);
-
-    const length = properties.Mass();
-    properties.delete();
-    return length;
   }
 }
 

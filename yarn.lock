@@ -3956,6 +3956,11 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/flatbush@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@types/flatbush/-/flatbush-3.3.0.tgz#bd0ecc24e202ff095e3344bf48486e272e61e406"
+  integrity sha512-fSPSZ1d5v3DaAmWhuoFSCeaFA7JHdtcvF5F2Pdo0cAdrV4aRl9tCcKl1BuV7/QYWLN/vyefPGrsUHMGGtq6ASQ==
+
 "@types/hast@^2.0.0":
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/@types/hast/-/hast-2.3.4.tgz#8aa5ef92c117d20d974a82bdfb6a648b08c0bafc"
@@ -7256,6 +7261,18 @@ flat-cache@^3.0.4:
   dependencies:
     flatted "^3.1.0"
     rimraf "^3.0.2"
+
+flatbush@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/flatbush/-/flatbush-4.0.0.tgz#4dea9e33f770281d17bd120b54cb08653b9beba0"
+  integrity sha512-8uhCysYGqg9hqyJX8ICqX4PiXcKbdEXGPpVZyGQmPtdWN5uhEF5JtVD3OmVdIL4yuLV6tc+u9D22R+51iKTCDA==
+  dependencies:
+    flatqueue "^2.0.3"
+
+flatqueue@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/flatqueue/-/flatqueue-2.0.3.tgz#dd23673cb478e25d5a9acb9dcbb85c89e9e8e64e"
+  integrity sha512-RZCWZNkmxzUOh8jqEcEGZCycb3B8KAfpPwg3H//cURasunYxsg1eIvE+QDSjX+ZPHTIVfINfK1aLTrVKKO0i4g==
 
 flatted@^3.1.0:
   version "3.2.2"

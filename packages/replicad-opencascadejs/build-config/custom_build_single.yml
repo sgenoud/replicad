@@ -30,6 +30,7 @@ mainBuild:
 
     - symbol: Geom2d_Line
     - symbol: Geom2d_Curve
+    - symbol: Geom2d_OffsetCurve
     - symbol: Geom2d_BoundedCurve
     - symbol: Geom2d_TrimmedCurve
     - symbol: Geom2d_BezierCurve
@@ -51,6 +52,7 @@ mainBuild:
     - symbol: gp_Pnt2d
     - symbol: gp_Dir2d
     - symbol: gp_Ax2d
+    - symbol: gp_Ax22d
     - symbol: gp_Circ2d
     - symbol: gp_Elips2d
     - symbol: GCE2d_Root
@@ -69,6 +71,7 @@ mainBuild:
     - symbol: Geom2dAPI_InterCurveCurve
     - symbol: Geom2dAPI_ProjectPointOnCurve 
     - symbol: Geom2dAPI_PointsToBSpline
+    - symbol: Geom2dAPI_ExtremaCurveCurve 
 
     - symbol: Bnd_Box
     - symbol: Bnd_OBB
@@ -148,8 +151,10 @@ mainBuild:
 
     - symbol: Geom2dAdaptor_Curve
     - symbol: Adaptor2d_Curve2d
+    - symbol: Handle_Adaptor2d_Curve2d
 
     - symbol: Geom2dConvert_BSplineCurveToBezierCurve
+    - symbol: Geom2dConvert_ApproxCurve
     - symbol: Geom2dConvert
     - symbol: Convert_ParameterisationType
 

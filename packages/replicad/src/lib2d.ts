@@ -1,3 +1,5 @@
+import Flatbush from "flatbush";
+
 import { localGC, WrappingObj, GCWithScope } from "./register.js";
 import { getOC } from "./oclib.js";
 import {
@@ -7,6 +9,7 @@ import {
   gp_Vec2d,
   gp_Ax2d,
   Geom2d_Curve,
+  Geom2d_TrimmedCurve,
   Handle_Geom2d_Curve,
   Geom2dAPI_InterCurveCurve,
   Geom2dAdaptor_Curve,
@@ -43,7 +46,7 @@ export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
     const xMax = { current: 0 };
     const yMax = { current: 0 };
 
-    // @ts-ignore missing type in oc
+    // @ts-expect-error missing type in oc
     this.wrapped.Get(xMin, yMin, xMax, yMax);
     return [
       [xMin.current, yMin.current],
@@ -154,6 +157,13 @@ export const samePoint = ([x0, y0]: Point2D, [x1, y1]: Point2D): boolean => {
   return Math.abs(x0 - x1) <= 1e-6 && Math.abs(y0 - y1) <= 1e-6;
 };
 
+export const squareDistance2d = (
+  [x0, y0]: Point2D,
+  [x1, y1]: Point2D = [0, 0]
+): number => {
+  return (x0 - x1) ** 2 + (y0 - y1) ** 2;
+};
+
 export const distance2d = (
   [x0, y0]: Point2D,
   [x1, y1]: Point2D = [0, 0]
@@ -171,6 +181,21 @@ export const angle2d = (
 export const normalize2d = ([x0, y0]: Point2D): Point2D => {
   const l = distance2d([x0, y0]);
   return [x0 / l, y0 / l];
+};
+
+export const add2d = ([x0, y0]: Point2D, [x1, y1]: Point2D): Point2D => {
+  return [x0 + x1, y0 + y1];
+};
+
+export const subtract2d = ([x0, y0]: Point2D, [x1, y1]: Point2D): Point2D => {
+  return [x0 - x1, y0 - y1];
+};
+
+export const scalarMultiply2d = (
+  [x0, y0]: Point2D,
+  scalar: number
+): Point2D => {
+  return [x0 * scalar, y0 * scalar];
 };
 
 function zip<Type>(arrays: Array<Type[]>) {
@@ -204,15 +229,28 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
   }
 
   get repr() {
-    return `${reprPnt(this.firstPoint)} - ${reprPnt(this.lastPoint)}`;
+    return `${this.geomType} ${reprPnt(this.firstPoint)} - ${reprPnt(
+      this.lastPoint
+    )}`;
   }
 
   get innerCurve(): Geom2d_Curve {
     return this.wrapped.get();
   }
 
+  value(parameter: number): Point2D {
+    const pnt = this.innerCurve.Value(parameter);
+    const vec: Point2D = [pnt.X(), pnt.Y()];
+    pnt.delete();
+    return vec;
+  }
+
   get firstPoint(): Point2D {
     return this.value(this.firstParameter);
+  }
+
+  get lastPoint(): Point2D {
+    return this.value(this.lastParameter);
   }
 
   get firstParameter(): number {
@@ -243,23 +281,73 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     this.innerCurve.Reverse();
   }
 
-  isOnCurve(point: Point2D): boolean {
+  private distanceFromPoint(point: Point2D): number {
     const oc = getOC();
     const r = GCWithScope();
 
     const projector = r(
       new oc.Geom2dAPI_ProjectPointOnCurve_2(r(pnt(point)), this.wrapped)
     );
-    try {
-      return projector.LowerDistance() < 1e-9;
-    } catch (e) {
-      // Perhaps it failed because it is on an extremity
-      if (samePoint(point, this.firstPoint)) return true;
-      if (samePoint(point, this.lastPoint)) return true;
 
-      // The point cannot be projected, it is not on the curve
-      return false;
+    let curveToPoint = Infinity;
+
+    try {
+      curveToPoint = projector.LowerDistance();
+      const closestPoint = projector.NearestPoint();
+      const p: Point2D = [closestPoint.X(), closestPoint.Y()];
+    } catch (e) {
+      curveToPoint = Infinity;
     }
+
+    return Math.min(
+      curveToPoint,
+      distance2d(point, this.firstPoint),
+      distance2d(point, this.lastPoint)
+    );
+  }
+
+  private distanceFromCurve(curve: Curve2D): number {
+    const oc = getOC();
+    const r = GCWithScope();
+
+    let curveDistance = Infinity;
+    const projector = r(
+      new oc.Geom2dAPI_ExtremaCurveCurve(
+        this.wrapped,
+        curve.wrapped,
+        this.firstParameter,
+        this.lastParameter,
+        curve.firstParameter,
+        curve.lastParameter
+      )
+    );
+
+    try {
+      curveDistance = projector.LowerDistance();
+    } catch (e) {
+      curveDistance = Infinity;
+    }
+
+    // We need to take the shorter distance between the curves and the extremities
+    return Math.min(
+      curveDistance,
+      this.distanceFromPoint(curve.firstPoint),
+      this.distanceFromPoint(curve.lastPoint),
+      curve.distanceFromPoint(this.firstPoint),
+      curve.distanceFromPoint(this.lastPoint)
+    );
+  }
+
+  distanceFrom(element: Curve2D | Point2D): number {
+    if (isPoint2D(element)) {
+      return this.distanceFromPoint(element);
+    }
+
+    return this.distanceFromCurve(element);
+  }
+
+  isOnCurve(point: Point2D): boolean {
+    return this.distanceFromPoint(point) < 1e-9;
   }
 
   parameter(point: Point2D): number {
@@ -286,17 +374,6 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       throw new Error("Point not on curve");
     }
     return lowerDistanceParameter;
-  }
-
-  value(parameter: number): Point2D {
-    const pnt = this.innerCurve.Value(parameter);
-    const vec: Point2D = [pnt.X(), pnt.Y()];
-    pnt.delete();
-    return vec;
-  }
-
-  get lastPoint(): Point2D {
-    return this.value(this.lastParameter);
   }
 
   tangentAt(index: number): Point2D {
@@ -405,10 +482,14 @@ export const make2dSegmentCurve = (
   const segment = r(
     new oc.GCE2d_MakeSegment_1(r(pnt(startPoint)), r(pnt(endPoint)))
   ).Value();
+  const curve = new Curve2D(segment);
+
+  if (!samePoint(curve.firstPoint, startPoint)) {
+    curve.reverse();
+  }
 
   gc();
-
-  return new Curve2D(segment);
+  return curve;
 };
 
 export const make2dThreePointArc = (
@@ -428,7 +509,16 @@ export const make2dThreePointArc = (
   ).Value();
   gc();
 
-  return new Curve2D(segment);
+  const curve = new Curve2D(segment);
+  if (!samePoint(curve.firstPoint, startPoint)) {
+    (curve.wrapped.get() as Geom2d_TrimmedCurve).SetTrim(
+      curve.lastParameter,
+      curve.firstParameter,
+      true,
+      true
+    );
+  }
+  return curve;
 };
 
 export const make2dTangentArc = (
@@ -448,7 +538,16 @@ export const make2dTangentArc = (
   ).Value();
   gc();
 
-  return new Curve2D(segment);
+  const curve = new Curve2D(segment);
+  if (!samePoint(curve.firstPoint, startPoint)) {
+    (curve.wrapped.get() as Geom2d_TrimmedCurve).SetTrim(
+      curve.lastParameter,
+      curve.firstParameter,
+      true,
+      true
+    );
+  }
+  return curve;
 };
 
 export const make2dCircle = (
@@ -623,7 +722,14 @@ function* commonSegmentsIteration(
   }
 }
 
-export const intersectCurves = (first: Curve2D, second: Curve2D) => {
+export const intersectCurves = (
+  first: Curve2D,
+  second: Curve2D,
+  precision = 1e-9
+) => {
+  if (first.boundingBox.isOut(second.boundingBox))
+    return { intersections: [], commonSegments: [], commonSegmentsPoints: [] };
+
   const oc = getOC();
   const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
 
@@ -631,7 +737,7 @@ export const intersectCurves = (first: Curve2D, second: Curve2D) => {
   let commonSegments;
 
   try {
-    intersector.Init_1(first.wrapped, second.wrapped, 1e-9);
+    intersector.Init_1(first.wrapped, second.wrapped, precision);
 
     intersections = Array.from(pointsIteration(intersector));
     commonSegments = Array.from(commonSegmentsIteration(intersector));
@@ -659,6 +765,25 @@ export const removeDuplicatePoints = (points: Point2D[]): Point2D[] => {
   return Array.from(
     new Set(points.map(([p0, p1]) => `[${asFixed(p0)},${asFixed(p1)}]`))
   ).map((p) => JSON.parse(p));
+};
+
+export const approximateAsBSpline = (
+  adaptor: Geom2dAdaptor_Curve,
+  tolerance = 1e-9
+): Curve2D => {
+  const oc = getOC();
+  const r = GCWithScope();
+
+  const convert = r(
+    new oc.Geom2dConvert_ApproxCurve_2(
+      adaptor.ShallowCopy(),
+      tolerance,
+      oc.GeomAbs_Shape.GeomAbs_C1 as any,
+      20,
+      3
+    )
+  );
+  return new Curve2D(convert.Curve());
 };
 
 export const BSplineToBezier = (adaptor: Geom2dAdaptor_Curve): Curve2D[] => {
@@ -702,6 +827,10 @@ export const adaptedCurveToPathElem = (
   if (curveType === "BEZIER_CURVE") {
     const curve = adaptor.Bezier().get();
     const deg = curve.Degree();
+
+    if (deg === 1) {
+      return `L ${endpoint}`;
+    }
 
     if (deg === 2) {
       return `Q ${fromPnt(curve.Pole(2))} ${endpoint}`;
@@ -765,10 +894,173 @@ export const adaptedCurveToPathElem = (
       .map((c) => adaptedCurveToPathElem(c.adaptor(), c.lastPoint))
       .join(" ");
   }
-  console.warn(`${curveType} not implemented, using a line`);
-  return `L ${endpoint}`;
+
+  const bspline = approximateAsBSpline(adaptor);
+  const bezierCurves = BSplineToBezier(bspline.adaptor());
+  return bezierCurves
+    .map((c) => adaptedCurveToPathElem(c.adaptor(), c.lastPoint))
+    .join(" ");
 };
 
 export function isPoint2D(point: unknown): point is Point2D {
   return Array.isArray(point) && point.length === 2;
 }
+
+export const stitchCurves = (
+  curves: Curve2D[],
+  precision = 1e-7
+): Curve2D[][] => {
+  // We create a spacial index of the startpoints
+  const startPoints = new Flatbush(curves.length);
+  curves.forEach((c) => {
+    const [x, y] = c.firstPoint;
+    startPoints.add(x - precision, y - precision, x + precision, y + precision);
+  });
+  startPoints.finish();
+
+  const stitchedCurves: Curve2D[][] = [];
+  const visited = new Set<number>();
+
+  curves.forEach((curve, index) => {
+    if (visited.has(index)) return;
+
+    const connectedCurves: Curve2D[] = [curve];
+    let currentIndex = index;
+
+    visited.add(index);
+
+    // Once we have started a connected curve segment, we look for the next
+
+    let maxLoops = curves.length;
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if (maxLoops-- < 0) {
+        throw new Error("Infinite loop detected");
+      }
+
+      const lastPoint = connectedCurves[connectedCurves.length - 1].lastPoint;
+
+      const [x, y] = lastPoint;
+      const neighbors = startPoints.search(
+        x - precision,
+        y - precision,
+        x + precision,
+        y + precision
+      );
+
+      const indexDistance = (otherIndex: number) =>
+        Math.abs((currentIndex - otherIndex) % curves.length);
+      const potentialNextCurves = neighbors
+        .filter((neighborIndex) => !visited.has(neighborIndex))
+        .map((neighborIndex): [Curve2D, number, number] => [
+          curves[neighborIndex],
+          neighborIndex,
+          indexDistance(neighborIndex),
+        ])
+        .sort(([, , a], [, , b]) => indexDistance(a) - indexDistance(b));
+
+      if (potentialNextCurves.length === 0) {
+        // No more curves to connect we should have wrapped
+        stitchedCurves.push(connectedCurves);
+        break;
+      }
+
+      const [nextCurve, nextCurveIndex] = potentialNextCurves[0];
+
+      connectedCurves.push(nextCurve);
+      visited.add(nextCurveIndex);
+      currentIndex = nextCurveIndex;
+    }
+  });
+
+  return stitchedCurves;
+};
+
+const offsetEndPoints = (
+  firstPoint: Point2D,
+  lastPoint: Point2D,
+  offset: number
+) => {
+  const tangent = normalize2d(subtract2d(lastPoint, firstPoint));
+  const normal = [tangent[1], -tangent[0]];
+
+  const offsetVec: Point2D = [normal[0] * offset, normal[1] * offset];
+
+  return {
+    firstPoint: add2d(firstPoint, offsetVec),
+    lastPoint: add2d(lastPoint, offsetVec),
+  };
+};
+
+export const make2dOffset = (
+  curve: Curve2D,
+  offset: number
+): Curve2D | { collapsed: true; firstPoint: Point2D; lastPoint: Point2D } => {
+  const r = GCWithScope();
+  const curveType = curve.geomType;
+
+  if (curveType === "CIRCLE") {
+    const circle = r(r(curve.adaptor()).Circle());
+    const radius = circle.Radius();
+
+    const orientationCorrection = circle.IsDirect() ? 1 : -1;
+    const orientedOffset = offset * orientationCorrection;
+
+    const newRadius = radius + orientedOffset;
+
+    if (newRadius < 1e-10) {
+      const centerPos = r(circle.Location());
+      const center: Point2D = [centerPos.X(), centerPos.Y()];
+
+      // We replace collapsed arcs by a segment of line
+      const offsetViaCenter = (point: Point2D): Point2D => {
+        const [x, y] = normalize2d(subtract2d(point, center));
+        return add2d(point, [orientedOffset * x, orientedOffset * y]);
+      };
+
+      return {
+        collapsed: true,
+        firstPoint: offsetViaCenter(curve.firstPoint),
+        lastPoint: offsetViaCenter(curve.lastPoint),
+      };
+    }
+
+    const oc = getOC();
+    const newCircle = new oc.gp_Circ2d_3(circle.Axis(), newRadius);
+    const newInnerCurve = new oc.Geom2d_Circle_1(newCircle);
+    const newCurve = new oc.Geom2d_TrimmedCurve(
+      new oc.Handle_Geom2d_Curve_2(newInnerCurve),
+      curve.firstParameter,
+      curve.lastParameter,
+      true,
+      true
+    );
+
+    return new Curve2D(new oc.Handle_Geom2d_Curve_2(newCurve));
+  }
+
+  if (curveType === "LINE") {
+    const { firstPoint, lastPoint } = offsetEndPoints(
+      curve.firstPoint,
+      curve.lastPoint,
+      offset
+    );
+
+    return make2dSegmentCurve(firstPoint, lastPoint);
+  }
+
+  // We should compute the analytic offset for a curve
+
+  const oc = getOC();
+
+  const offsetCurve = new Curve2D(
+    new oc.Handle_Geom2d_Curve_2(
+      new oc.Geom2d_OffsetCurve(curve.wrapped, offset, true)
+    )
+  );
+
+  // While return the offset curve itself would be the more correct thing to do,
+  // opencascade does some weird stuff with it (for instance after mirroring it)
+  // This approximates it with a continuous bspline
+  return approximateAsBSpline(offsetCurve.adaptor());
+};

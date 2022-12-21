@@ -23,6 +23,7 @@ import { SketchInterface, Sketches } from "./sketches";
 import { GenericSketcher } from "./sketcherlib";
 import { textBlueprints } from "./text";
 import { BSplineApproximationConfig } from ".";
+import offset from "./blueprints/offset";
 
 export class Drawing implements DrawingInterface {
   private innerShape: Shape2D;
@@ -54,6 +55,11 @@ export class Drawing implements DrawingInterface {
   translate(xDistOrPoint: number | Point2D, yDist = 0): Drawing {
     if (!this.innerShape) return new Drawing();
     return new Drawing(this.innerShape.translate(xDistOrPoint as any, yDist));
+  }
+
+  scale(scaleFactor: number, center?: Point2D): Drawing {
+    if (!this.innerShape) return new Drawing();
+    return new Drawing(this.innerShape.scale(scaleFactor, center));
   }
 
   mirror(
@@ -120,6 +126,10 @@ export class Drawing implements DrawingInterface {
 
   toSVGPaths(): string[] | string[][] {
     return this.innerShape?.toSVGPaths() || [];
+  }
+
+  offset(distance: number): Drawing {
+    return new Drawing(offset(this.innerShape, distance));
   }
 }
 

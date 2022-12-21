@@ -21,6 +21,23 @@ export declare class Precision {
   delete(): void;
 }
 
+export declare class Geom2dConvert_ApproxCurve {
+  Curve(): Handle_Geom2d_BSplineCurve;
+  IsDone(): Standard_Boolean;
+  HasResult(): Standard_Boolean;
+  MaxError(): Standard_Real;
+  Dump(o: Standard_OStream): void;
+  delete(): void;
+}
+
+  export declare class Geom2dConvert_ApproxCurve_1 extends Geom2dConvert_ApproxCurve {
+    constructor(Curve: Handle_Geom2d_Curve, Tol2d: Standard_Real, Order: GeomAbs_Shape, MaxSegments: Graphic3d_ZLayerId, MaxDegree: Graphic3d_ZLayerId);
+  }
+
+  export declare class Geom2dConvert_ApproxCurve_2 extends Geom2dConvert_ApproxCurve {
+    constructor(Curve: Handle_Adaptor2d_Curve2d, Tol2d: Standard_Real, Order: GeomAbs_Shape, MaxSegments: Graphic3d_ZLayerId, MaxDegree: Graphic3d_ZLayerId);
+  }
+
 export declare class Geom2dConvert_BSplineCurveToBezierCurve {
   Arc(Index: Graphic3d_ZLayerId): Handle_Geom2d_BezierCurve;
   Arcs(Curves: TColGeom2d_Array1OfBezierCurve): void;
@@ -945,6 +962,38 @@ export declare class Handle_Geom2d_Line {
   export declare class Handle_Geom2d_Line_4 extends Handle_Geom2d_Line {
     constructor(theHandle: Handle_Geom2d_Line);
   }
+
+export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
+  constructor(C: Handle_Geom2d_Curve, Offset: Standard_Real, isNotCheckC0: Standard_Boolean)
+  Reverse(): void;
+  ReversedParameter(U: Standard_Real): Standard_Real;
+  SetBasisCurve(C: Handle_Geom2d_Curve, isNotCheckC0: Standard_Boolean): void;
+  SetOffsetValue(D: Standard_Real): void;
+  BasisCurve(): Handle_Geom2d_Curve;
+  Continuity(): GeomAbs_Shape;
+  D0(U: Standard_Real, P: gp_Pnt2d): void;
+  D1(U: Standard_Real, P: gp_Pnt2d, V1: gp_Vec2d): void;
+  D2(U: Standard_Real, P: gp_Pnt2d, V1: gp_Vec2d, V2: gp_Vec2d): void;
+  D3(U: Standard_Real, P: gp_Pnt2d, V1: gp_Vec2d, V2: gp_Vec2d, V3: gp_Vec2d): void;
+  DN(U: Standard_Real, N: Graphic3d_ZLayerId): gp_Vec2d;
+  FirstParameter(): Standard_Real;
+  LastParameter(): Standard_Real;
+  Offset(): Standard_Real;
+  IsClosed(): Standard_Boolean;
+  IsCN(N: Graphic3d_ZLayerId): Standard_Boolean;
+  IsPeriodic(): Standard_Boolean;
+  Period(): Standard_Real;
+  Transform(T: gp_Trsf2d): void;
+  TransformedParameter(U: Standard_Real, T: gp_Trsf2d): Standard_Real;
+  ParametricTransformation(T: gp_Trsf2d): Standard_Real;
+  Copy(): Handle_Geom2d_Geometry;
+  GetBasisCurveContinuity(): GeomAbs_Shape;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
 
 export declare class Geom2d_Ellipse extends Geom2d_Conic {
   SetElips2d(E: gp_Elips2d): void;
@@ -4193,6 +4242,52 @@ export declare class gp_Elips {
     constructor(theA2: gp_Ax2, theMajorRadius: Standard_Real, theMinorRadius: Standard_Real);
   }
 
+export declare class gp_Ax22d {
+  SetAxis(theA1: gp_Ax22d): void;
+  SetXAxis(theA1: gp_Ax2d): void;
+  SetYAxis(theA1: gp_Ax2d): void;
+  SetLocation(theP: gp_Pnt2d): void;
+  SetXDirection(theVx: gp_Dir2d): void;
+  SetYDirection(theVy: gp_Dir2d): void;
+  XAxis(): gp_Ax2d;
+  YAxis(): gp_Ax2d;
+  Location(): gp_Pnt2d;
+  XDirection(): gp_Dir2d;
+  YDirection(): gp_Dir2d;
+  Mirror_1(theP: gp_Pnt2d): void;
+  Mirrored_1(theP: gp_Pnt2d): gp_Ax22d;
+  Mirror_2(theA: gp_Ax2d): void;
+  Mirrored_2(theA: gp_Ax2d): gp_Ax22d;
+  Rotate(theP: gp_Pnt2d, theAng: Standard_Real): void;
+  Rotated(theP: gp_Pnt2d, theAng: Standard_Real): gp_Ax22d;
+  Scale(theP: gp_Pnt2d, theS: Standard_Real): void;
+  Scaled(theP: gp_Pnt2d, theS: Standard_Real): gp_Ax22d;
+  Transform(theT: gp_Trsf2d): void;
+  Transformed(theT: gp_Trsf2d): gp_Ax22d;
+  Translate_1(theV: gp_Vec2d): void;
+  Translated_1(theV: gp_Vec2d): gp_Ax22d;
+  Translate_2(theP1: gp_Pnt2d, theP2: gp_Pnt2d): void;
+  Translated_2(theP1: gp_Pnt2d, theP2: gp_Pnt2d): gp_Ax22d;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  delete(): void;
+}
+
+  export declare class gp_Ax22d_1 extends gp_Ax22d {
+    constructor();
+  }
+
+  export declare class gp_Ax22d_2 extends gp_Ax22d {
+    constructor(theP: gp_Pnt2d, theVx: gp_Dir2d, theVy: gp_Dir2d);
+  }
+
+  export declare class gp_Ax22d_3 extends gp_Ax22d {
+    constructor(theP: gp_Pnt2d, theV: gp_Dir2d, theIsSense: Standard_Boolean);
+  }
+
+  export declare class gp_Ax22d_4 extends gp_Ax22d {
+    constructor(theA: gp_Ax2d, theIsSense: Standard_Boolean);
+  }
+
 export declare class gp_Ax2 {
   SetAxis(A1: gp_Ax1): void;
   SetDirection(V: gp_Dir): void;
@@ -5801,6 +5896,19 @@ export declare class Bnd_OBB {
     constructor(theBox: Bnd_Box);
   }
 
+export declare class Geom2dAPI_ExtremaCurveCurve {
+  constructor(C1: Handle_Geom2d_Curve, C2: Handle_Geom2d_Curve, U1min: Standard_Real, U1max: Standard_Real, U2min: Standard_Real, U2max: Standard_Real)
+  NbExtrema(): Graphic3d_ZLayerId;
+  Points(Index: Graphic3d_ZLayerId, P1: gp_Pnt2d, P2: gp_Pnt2d): void;
+  Parameters(Index: Graphic3d_ZLayerId, U1: Standard_Real, U2: Standard_Real): void;
+  Distance(Index: Graphic3d_ZLayerId): Standard_Real;
+  NearestPoints(P1: gp_Pnt2d, P2: gp_Pnt2d): void;
+  LowerDistanceParameters(U1: Standard_Real, U2: Standard_Real): void;
+  LowerDistance(): Standard_Real;
+  Extrema(): Extrema_ExtCC2d;
+  delete(): void;
+}
+
 export declare class Geom2dAPI_ProjectPointOnCurve {
   Init_1(P: gp_Pnt2d, Curve: Handle_Geom2d_Curve): void;
   Init_2(P: gp_Pnt2d, Curve: Handle_Geom2d_Curve, Umin: Standard_Real, Usup: Standard_Real): void;
@@ -6231,6 +6339,30 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
   delete(): void;
 }
 
+export declare class Handle_Adaptor2d_Curve2d {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Adaptor2d_Curve2d): void;
+  get(): Adaptor2d_Curve2d;
+  delete(): void;
+}
+
+  export declare class Handle_Adaptor2d_Curve2d_1 extends Handle_Adaptor2d_Curve2d {
+    constructor();
+  }
+
+  export declare class Handle_Adaptor2d_Curve2d_2 extends Handle_Adaptor2d_Curve2d {
+    constructor(thePtr: Adaptor2d_Curve2d);
+  }
+
+  export declare class Handle_Adaptor2d_Curve2d_3 extends Handle_Adaptor2d_Curve2d {
+    constructor(theHandle: Handle_Adaptor2d_Curve2d);
+  }
+
+  export declare class Handle_Adaptor2d_Curve2d_4 extends Handle_Adaptor2d_Curve2d {
+    constructor(theHandle: Handle_Adaptor2d_Curve2d);
+  }
+
 export declare class Standard_Transient {
   Delete(): void;
   static get_type_name(): Standard_Character;
@@ -6466,6 +6598,9 @@ declare namespace FS {
 
 export type OpenCascadeInstance = {FS: typeof FS} & {
   Precision: typeof Precision;
+  Geom2dConvert_ApproxCurve: typeof Geom2dConvert_ApproxCurve;
+  Geom2dConvert_ApproxCurve_1: typeof Geom2dConvert_ApproxCurve_1;
+  Geom2dConvert_ApproxCurve_2: typeof Geom2dConvert_ApproxCurve_2;
   Geom2dConvert_BSplineCurveToBezierCurve: typeof Geom2dConvert_BSplineCurveToBezierCurve;
   Geom2dConvert_BSplineCurveToBezierCurve_1: typeof Geom2dConvert_BSplineCurveToBezierCurve_1;
   Geom2dConvert_BSplineCurveToBezierCurve_2: typeof Geom2dConvert_BSplineCurveToBezierCurve_2;
@@ -6591,6 +6726,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Handle_Geom2d_Line_2: typeof Handle_Geom2d_Line_2;
   Handle_Geom2d_Line_3: typeof Handle_Geom2d_Line_3;
   Handle_Geom2d_Line_4: typeof Handle_Geom2d_Line_4;
+  Geom2d_OffsetCurve: typeof Geom2d_OffsetCurve;
   Geom2d_Ellipse: typeof Geom2d_Ellipse;
   Geom2d_Ellipse_1: typeof Geom2d_Ellipse_1;
   Geom2d_Ellipse_2: typeof Geom2d_Ellipse_2;
@@ -6959,6 +7095,11 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   gp_Elips: typeof gp_Elips;
   gp_Elips_1: typeof gp_Elips_1;
   gp_Elips_2: typeof gp_Elips_2;
+  gp_Ax22d: typeof gp_Ax22d;
+  gp_Ax22d_1: typeof gp_Ax22d_1;
+  gp_Ax22d_2: typeof gp_Ax22d_2;
+  gp_Ax22d_3: typeof gp_Ax22d_3;
+  gp_Ax22d_4: typeof gp_Ax22d_4;
   gp_Ax2: typeof gp_Ax2;
   gp_Ax2_1: typeof gp_Ax2_1;
   gp_Ax2_2: typeof gp_Ax2_2;
@@ -7115,6 +7256,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Bnd_OBB_1: typeof Bnd_OBB_1;
   Bnd_OBB_2: typeof Bnd_OBB_2;
   Bnd_OBB_3: typeof Bnd_OBB_3;
+  Geom2dAPI_ExtremaCurveCurve: typeof Geom2dAPI_ExtremaCurveCurve;
   Geom2dAPI_ProjectPointOnCurve: typeof Geom2dAPI_ProjectPointOnCurve;
   Geom2dAPI_ProjectPointOnCurve_1: typeof Geom2dAPI_ProjectPointOnCurve_1;
   Geom2dAPI_ProjectPointOnCurve_2: typeof Geom2dAPI_ProjectPointOnCurve_2;
@@ -7148,6 +7290,11 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepAdaptor_CompCurve_2: typeof BRepAdaptor_CompCurve_2;
   BRepAdaptor_CompCurve_3: typeof BRepAdaptor_CompCurve_3;
   Adaptor2d_Curve2d: typeof Adaptor2d_Curve2d;
+  Handle_Adaptor2d_Curve2d: typeof Handle_Adaptor2d_Curve2d;
+  Handle_Adaptor2d_Curve2d_1: typeof Handle_Adaptor2d_Curve2d_1;
+  Handle_Adaptor2d_Curve2d_2: typeof Handle_Adaptor2d_Curve2d_2;
+  Handle_Adaptor2d_Curve2d_3: typeof Handle_Adaptor2d_Curve2d_3;
+  Handle_Adaptor2d_Curve2d_4: typeof Handle_Adaptor2d_Curve2d_4;
   Standard_Transient: typeof Standard_Transient;
   Standard_Transient_1: typeof Standard_Transient_1;
   Standard_Transient_2: typeof Standard_Transient_2;
