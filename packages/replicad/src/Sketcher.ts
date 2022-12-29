@@ -205,6 +205,28 @@ export default class Sketcher implements GenericSketcher<Sketch> {
     return this.sagittaArc(distance, 0, sagitta);
   }
 
+  bulgeArcTo(end: Point2D, bulge: number): this {
+    if (!bulge) return this.lineTo(end);
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    const halfChord = distance2d([pointer.x, pointer.y], end) / 2;
+    const bulgeAsSagitta = -bulge * halfChord;
+
+    return this.sagittaArcTo(end, bulgeAsSagitta);
+  }
+
+  bulgeArc(xDist: number, yDist: number, bulge: number): this {
+    const pointer = this.plane.toLocalCoords(this.pointer);
+    return this.bulgeArcTo([xDist + pointer.x, yDist + this.pointer.y], bulge);
+  }
+
+  vBulgeArc(distance: number, bulge: number): this {
+    return this.bulgeArc(0, distance, bulge);
+  }
+
+  hBulgeArc(distance: number, bulge: number): this {
+    return this.bulgeArc(distance, 0, bulge);
+  }
+
   ellipseTo(
     end: Point2D,
     horizontalRadius: number,

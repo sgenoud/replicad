@@ -140,17 +140,15 @@ export interface GenericSketcher<ReturnType> {
    */
   tangentLine(distance: number): this;
 
-  /**
-   * Draws an arc of circle by defining its end point and a third point through
-   * which the arc will pass.
+  /** Draws an arc of circle by defining its end point and a third point
+   * through which the arc will pass.
    *
    * @category Arc Segment
    */
   threePointsArcTo(end: Point2D, innerPoint: Point2D): this;
-  /**
-   * Draws an arc of circle by defining its end point and a third point through
-   * which the arc will pass. Both poinats are defined in horizontal (x) and
-   * vertical (y) distances from the start point.
+  /** Draws an arc of circle by defining its end point and a third point
+   * through which the arc will pass. Both poinats are defined in horizontal
+   * (x) and vertical (y) distances from the start point.
    *
    * @category Arc Segment
    */
@@ -160,41 +158,69 @@ export interface GenericSketcher<ReturnType> {
     viaXDist: number,
     viaYDist: number
   ): this;
-  /**
-   * Draws an arc of circle by defining its end point and the sagitta - the
-   * maximum distance between the arc and the straight line going from start
-   * to end point.
+  /** Draws an arc of circle by defining its end point and the sagitta - the
+   * maximum distance between the arc and the straight line going from start to
+   * end point.
    *
    * @category Arc Segment
    */
   sagittaArcTo(end: Point2D, sagitta: number): this;
-  /**
-   * Draws an arc of circle by defining its end point and the sagitta - the
-   * maximum distance between the arc and the straight line going from start
-   * to end point.The end point is defined by its horizontal and vertical
+  /** Draws an arc of circle by defining its end point and the sagitta - the
+   * maximum distance between the arc and the straight line going from start to
+   * end point.The end point is defined by its horizontal and vertical
    * distances from the start point.
    *
    * @category Arc Segment
    */
   sagittaArc(xDist: number, yDist: number, sagitta: number): this;
-  /**
-   * Draws a vertical arc of circle by defining its end point and the sagitta
+  /** Draws a vertical arc of circle by defining its end point and the sagitta
    * - the maximum distance between the arc and the straight line going from
-   * start to end point.The end point is defined by its  vertical distance
-   * from the start point.
+   * start to end point.The end point is defined by its  vertical distance from
+   * the start point.
    *
    * @category Arc Segment
    */
   vSagittaArc(distance: number, sagitta: number): this;
-  /**
-   * Draws an horizontal arc of circle by defining its end point and the
-   * sagitta - the maximum distance between the arc and the straight line
-   * going from start to end point.The end point is defined by its horizontal
+  /** Draws an horizontal arc of circle by defining its end point and the
+   * sagitta - the maximum distance between the arc and the straight line going
+   * from start to end point.The end point is defined by its horizontal
    * distance from the start point.
    *
    * @category Arc Segment
    */
   hSagittaArc(distance: number, sagitta: number): this;
+  /** Draws an arc of circle by defining its end point and the bulge - the
+   * maximum distance between the arc and the straight line going from start to
+   * end point.
+   *
+   * @category Arc Segment
+   */
+  bulgeArcTo(end: Point2D, bulge: number): this;
+  /** Draws an arc of circle by defining its end point and the bulge - the
+   * maximum distance between the arc and the straight line going from start to
+   * end point in units of half the chord. The end point is defined by its horizontal and vertical distances
+   * from the start point.
+   *
+   * @category Arc Segment
+   */
+  bulgeArc(xDist: number, yDist: number, bulge: number): this;
+  /** Draws a vertical arc of circle by defining its end point and the bulge
+   * - the maximum distance between the arc and the straight line going from
+   * start to end point in units of half the chord. The end point is defined by its  vertical distance from
+   * the start point.
+   *
+   * @category Arc Segment
+   */
+  vBulgeArc(distance: number, bulge: number): this;
+  /** Draws an horizontal arc of circle by defining its end point and the bulge
+   * - the maximum distance between the arc and the straight line going from
+   * start to end point in units of half the chord. The end point is defined by
+   * its horizontal distance from the start point.
+   *
+   * @category Arc Segment
+   */
+  hBulgeArc(distance: number, bulge: number): this;
+
   /**
    * Draws an arc of circle from the current point as a tangent to the previous
    * part of curve drawn.

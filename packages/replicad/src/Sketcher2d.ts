@@ -195,6 +195,29 @@ export class BaseSketcher2d {
     return this.sagittaArc(distance, 0, sagitta);
   }
 
+  bulgeArcTo(end: Point2D, bulge: number): this {
+    if (!bulge) return this.lineTo(end);
+    const halfChord = distance2d(this.pointer, end) / 2;
+    const bulgeAsSagitta = -bulge * halfChord;
+
+    return this.sagittaArcTo(end, bulgeAsSagitta);
+  }
+
+  bulgeArc(xDist: number, yDist: number, bulge: number): this {
+    return this.bulgeArcTo(
+      [xDist + this.pointer[0], yDist + this.pointer[1]],
+      bulge
+    );
+  }
+
+  vBulgeArc(distance: number, bulge: number): this {
+    return this.bulgeArc(0, distance, bulge);
+  }
+
+  hBulgeArc(distance: number, bulge: number): this {
+    return this.bulgeArc(distance, 0, bulge);
+  }
+
   tangentArcTo(end: Point2D): this {
     const previousCurve = this.pendingCurves.length
       ? this.pendingCurves[this.pendingCurves.length - 1]
