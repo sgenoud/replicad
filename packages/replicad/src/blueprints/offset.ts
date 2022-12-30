@@ -7,12 +7,7 @@ import {
   Point2D,
   make2dSegmentCurve,
   squareDistance2d,
-  distance2d,
-  normalize2d,
-  subtract2d,
-  scalarMultiply2d,
-  add2d,
-  make2dThreePointArc,
+  make2dArcFromCenter,
 } from "../lib2d";
 import {
   Blueprint,
@@ -22,25 +17,6 @@ import {
   Shape2D,
   cut2D,
 } from ".";
-
-// This assumes that both start and end points are at radius distance from the
-// center
-const make2dArcFromCenter = (
-  startPoint: Point2D,
-  endPoint: Point2D,
-  center: Point2D
-) => {
-  const midChord = scalarMultiply2d(add2d(startPoint, endPoint), 0.5);
-  const orientedRadius = distance2d(center, startPoint);
-
-  const midChordDir = normalize2d(subtract2d(midChord, center));
-
-  return make2dThreePointArc(
-    startPoint,
-    add2d(scalarMultiply2d(midChordDir, orientedRadius), center),
-    endPoint
-  );
-};
 
 export function rawOffsets(blueprint: Blueprint, offset: number): Curve2D[] {
   const correctedOffset =

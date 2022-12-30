@@ -164,6 +164,10 @@ export const squareDistance2d = (
   return (x0 - x1) ** 2 + (y0 - y1) ** 2;
 };
 
+export function crossProduct2d([x0, y0]: Point2D, [x1, y1]: Point2D): number {
+  return x0 * y1 - y0 * x1;
+}
+
 export const distance2d = (
   [x0, y0]: Point2D,
   [x1, y1]: Point2D = [0, 0]
@@ -293,8 +297,6 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
 
     try {
       curveToPoint = projector.LowerDistance();
-      const closestPoint = projector.NearestPoint();
-      const p: Point2D = [closestPoint.X(), closestPoint.Y()];
     } catch (e) {
       curveToPoint = Infinity;
     }
@@ -376,13 +378,19 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     return lowerDistanceParameter;
   }
 
-  tangentAt(index: number): Point2D {
+  tangentAt(index: number | Point2D): Point2D {
     const oc = getOC();
     const [r, gc] = localGC();
 
-    const paramLength =
-      this.innerCurve.LastParameter() - this.innerCurve.FirstParameter();
-    const param = paramLength * index + this.innerCurve.FirstParameter();
+    let param;
+
+    if (Array.isArray(index)) {
+      param = this.parameter(index);
+    } else {
+      const paramLength =
+        this.innerCurve.LastParameter() - this.innerCurve.FirstParameter();
+      param = paramLength * index + this.innerCurve.FirstParameter();
+    }
 
     const point = r(new oc.gp_Pnt2d_1());
     const dir = r(new oc.gp_Vec2d_1());
@@ -1064,3 +1072,113 @@ export const make2dOffset = (
   // This approximates it with a continuous bspline
   return approximateAsBSpline(offsetCurve.adaptor());
 };
+
+// This assumes that both start and end points are at radius distance from the
+// center
+export const make2dArcFromCenter = (
+  startPoint: Point2D,
+  endPoint: Point2D,
+  center: Point2D
+) => {
+  const midChord = scalarMultiply2d(add2d(startPoint, endPoint), 0.5);
+  const orientedRadius = distance2d(center, startPoint);
+
+  const midChordDir = normalize2d(subtract2d(midChord, center));
+
+  return make2dThreePointArc(
+    startPoint,
+    add2d(scalarMultiply2d(midChordDir, orientedRadius), center),
+    endPoint
+  );
+};
+
+function removeCorner(
+  firstCurve: Curve2D,
+  secondCurve: Curve2D,
+  radius: number
+) {
+  const cosAngle = crossProduct2d(
+    firstCurve.tangentAt(1),
+    secondCurve.tangentAt(0)
+  );
+
+  // This cover the case when the curves are colinear
+  if (!cosAngle) return null;
+
+  const orientationCorrection = cosAngle > 0 ? -1 : 1;
+  const offset = Math.abs(radius) * orientationCorrection;
+
+  const firstOffset = make2dOffset(firstCurve, offset);
+  const secondOffset = make2dOffset(secondCurve, offset);
+
+  if (!(firstOffset instanceof Curve2D) || !(secondOffset instanceof Curve2D)) {
+    return null;
+  }
+
+  const { intersections } = intersectCurves(firstOffset, secondOffset, 1e-10);
+
+  // We need to work on the case where there are more than one intersections
+  const center = intersections.at(-1);
+
+  if (!center) return null;
+
+  const splitForFillet = (curve: Curve2D, offsetCurve: Curve2D) => {
+    const [x, y] = offsetCurve.tangentAt(center);
+    const normal = normalize2d([-y, x]);
+    const splitPoint = add2d(center, scalarMultiply2d(normal, offset));
+    return curve.splitAt([splitPoint]);
+  };
+
+  const [first] = splitForFillet(firstCurve, firstOffset);
+  const [, second] = splitForFillet(secondCurve, secondOffset);
+
+  return { first, second, center };
+}
+
+export function filletCurves(
+  firstCurve: Curve2D,
+  secondCurve: Curve2D,
+  radius: number
+) {
+  const cornerRemoved = removeCorner(firstCurve, secondCurve, radius);
+  if (!cornerRemoved) {
+    console.warn(
+      "Cannot fillet between curves",
+      firstCurve.repr,
+      secondCurve.repr
+    );
+    return [firstCurve, secondCurve];
+  }
+
+  const { first, second, center } = cornerRemoved;
+
+  return [
+    first,
+    make2dArcFromCenter(first.lastPoint, second.firstPoint, center),
+    second,
+  ];
+}
+
+export function chamferCurves(
+  firstCurve: Curve2D,
+  secondCurve: Curve2D,
+  radius: number
+) {
+  const cornerRemoved = removeCorner(firstCurve, secondCurve, radius);
+  if (!cornerRemoved) {
+    console.warn(
+      "Cannot chamfer between curves",
+      firstCurve.repr,
+      secondCurve.repr
+    );
+    return [firstCurve, secondCurve];
+  }
+
+  const { first, second } = cornerRemoved;
+
+  return [
+    first,
+    make2dSegmentCurve(first.lastPoint, second.firstPoint),
+    second,
+  ];
+}
