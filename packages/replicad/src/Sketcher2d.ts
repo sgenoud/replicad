@@ -14,7 +14,7 @@ import {
   Handle_Geom2d_Curve,
   Handle_Geom_Surface,
 } from "replicad-opencascadejs";
-import { Curve2D } from "./lib2d";
+import { chamferCurves, Curve2D, filletCurves } from "./lib2d";
 
 import {
   normalize2d,
@@ -45,10 +45,12 @@ export class BaseSketcher2d {
   protected pointer: Point2D;
   protected firstPoint: Point2D;
   protected pendingCurves: Curve2D[];
+  protected _nextCorner: { radius: number; mode: "fillet" | "chamfer" } | null;
 
   constructor(origin: Point2D = [0, 0]) {
     this.pointer = origin;
     this.firstPoint = origin;
+    this._nextCorner = null;
 
     this.pendingCurves = [];
   }
@@ -72,13 +74,31 @@ export class BaseSketcher2d {
     return this;
   }
 
+  protected saveCurve(curve: Curve2D) {
+    if (!this._nextCorner) {
+      this.pendingCurves.push(curve);
+      return;
+    }
+
+    const previousCurve = this.pendingCurves.pop();
+    if (!previousCurve) throw new Error("bug in the custom corner algorithm");
+
+    const makeCorner =
+      this._nextCorner.mode === "chamfer" ? chamferCurves : filletCurves;
+
+    this.pendingCurves.push(
+      ...makeCorner(previousCurve, curve, this._nextCorner.radius)
+    );
+    this._nextCorner = null;
+  }
+
   lineTo(point: Point2D): this {
     const curve = make2dSegmentCurve(
       this._convertToUV(this.pointer),
       this._convertToUV(point)
     );
     this.pointer = point;
-    this.pendingCurves.push(curve);
+    this.saveCurve(curve);
     return this;
   }
 
@@ -129,7 +149,7 @@ export class BaseSketcher2d {
   }
 
   threePointsArcTo(end: Point2D, midPoint: Point2D): this {
-    this.pendingCurves.push(
+    this.saveCurve(
       make2dThreePointArc(
         this._convertToUV(this.pointer),
         this._convertToUV(midPoint),
@@ -168,7 +188,7 @@ export class BaseSketcher2d {
       midPoint[1] + (sagDir[1] / sagDirLen) * sagitta,
     ];
 
-    this.pendingCurves.push(
+    this.saveCurve(
       make2dThreePointArc(
         this._convertToUV(this.pointer),
         this._convertToUV(sagPoint),
@@ -226,7 +246,7 @@ export class BaseSketcher2d {
     if (!previousCurve)
       throw new Error("You need a previous curve to sketch a tangent arc");
 
-    this.pendingCurves.push(
+    this.saveCurve(
       make2dTangentArc(
         this._convertToUV(this.pointer),
         previousCurve.tangentAt(1),
@@ -306,7 +326,7 @@ export class BaseSketcher2d {
       arc.reverse();
     }
 
-    this.pendingCurves.push(arc);
+    this.saveCurve(arc);
     this.pointer = end;
     return this;
   }
@@ -363,7 +383,7 @@ export class BaseSketcher2d {
       cp = controlPoints as Point2D[];
     }
 
-    this.pendingCurves.push(
+    this.saveCurve(
       make2dBezierCurve(
         this._convertToUV(this.pointer),
         cp.map((point) => this._convertToUV(point)),
@@ -437,6 +457,34 @@ export class BaseSketcher2d {
       [xDist + this.pointer[0], yDist + this.pointer[1]],
       splineConfig
     );
+  }
+
+  /**
+   * Changes the corner between the previous and next segments.
+   */
+  customCorner(radius: number, mode: "fillet" | "chamfer" = "fillet") {
+    if (!this.pendingCurves.length)
+      throw new Error("You need a curve defined to fillet the angle");
+
+    this._nextCorner = { mode, radius };
+    return this;
+  }
+
+  protected _customCornerLastWithFirst(
+    radius: number,
+    mode: "fillet" | "chamfer" = "fillet"
+  ) {
+    if (!radius) return;
+
+    const previousCurve = this.pendingCurves.pop();
+    const curve = this.pendingCurves.shift();
+
+    if (!previousCurve || !curve)
+      throw new Error("Not enough curves to close and fillet");
+
+    const makeCorner = mode === "chamfer" ? chamferCurves : filletCurves;
+
+    this.pendingCurves.push(...makeCorner(previousCurve, curve, radius));
   }
 
   protected _closeSketch(): void {
@@ -564,6 +612,21 @@ export default class FaceSketcher
     this._closeWithMirror();
     return this.close();
   }
+
+  /**
+   * Stop drawing, make sure the sketch is closed (by adding a straight line to
+   * from the last point to the first), add a fillet between the last and the
+   * first segments and returns the sketch.
+   */
+  closeWithCustomCorner(
+    radius: number,
+    mode: "fillet" | "chamfer" = "fillet"
+  ): Sketch {
+    this._closeSketch();
+    this._customCornerLastWithFirst(radius, mode);
+
+    return this.done();
+  }
 }
 
 export class BlueprintSketcher
@@ -590,5 +653,21 @@ export class BlueprintSketcher
   closeWithMirror(): Blueprint {
     this._closeWithMirror();
     return this.close();
+  }
+
+  /**
+   * Stop drawing, make sure the sketch is closed (by adding a straight line to
+   * from the last point to the first), add a fillet between the last and the
+   * first segments and returns the sketch.
+   */
+
+  closeWithCustomCorner(
+    radius: number,
+    mode: "fillet" | "chamfer" = "fillet"
+  ): Blueprint {
+    this._closeSketch();
+    this._customCornerLastWithFirst(radius, mode);
+
+    return this.done();
   }
 }
