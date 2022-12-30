@@ -15,6 +15,7 @@ import {
   roundedRectangleBlueprint,
   ScaleMode,
   Shape2D,
+  Blueprints,
 } from "./blueprints";
 import { Plane, PlaneName, Point } from "./geom";
 import { Face } from "./shapes";
@@ -24,6 +25,8 @@ import { GenericSketcher } from "./sketcherlib";
 import { textBlueprints } from "./text";
 import { BSplineApproximationConfig } from ".";
 import offset from "./blueprints/offset";
+import { CornerFinder } from "./finders/cornerFinder";
+import { fillet2D, chamfer2D } from "./blueprints/customCorners";
 
 export class Drawing implements DrawingInterface {
   private innerShape: Shape2D;
@@ -71,24 +74,6 @@ export class Drawing implements DrawingInterface {
     return new Drawing(this.innerShape.mirror(centerOrDirection, origin, mode));
   }
 
-  sketchOnPlane(inputPlane: Plane): SketchInterface | Sketches;
-  sketchOnPlane(
-    inputPlane?: PlaneName,
-    origin?: Point | number
-  ): SketchInterface | Sketches;
-  sketchOnPlane(
-    inputPlane?: PlaneName | Plane,
-    origin?: Point | number
-  ): SketchInterface | Sketches {
-    if (!this.innerShape) throw new Error("Trying to sketch an empty drawing");
-    return this.innerShape.sketchOnPlane(inputPlane, origin);
-  }
-
-  sketchOnFace(face: Face, scaleMode: ScaleMode): SketchInterface | Sketches {
-    if (!this.innerShape) throw new Error("Trying to sketch an empty drawing");
-    return this.innerShape.sketchOnFace(face, scaleMode);
-  }
-
   /**
    * Builds a new drawing by cuting another drawing into this one
    *
@@ -114,6 +99,46 @@ export class Drawing implements DrawingInterface {
    */
   intersect(other: Drawing): Drawing {
     return new Drawing(intersect2D(this.innerShape, other.innerShape));
+  }
+
+  /**
+   * Creates a new drawing with some corners filletted, as specified by the
+   * radius and the corner finder function
+   *
+   * @category Drawing Modifications
+   */
+  fillet(radius: number, filter?: (c: CornerFinder) => CornerFinder): Drawing {
+    const finder = filter && filter(new CornerFinder());
+    return new Drawing(fillet2D(this.innerShape, radius, finder));
+  }
+
+  /**
+   * Creates a new drawing with some corners filletted, as specified by the
+   * radius and the corner finder function
+   *
+   * @category Drawing Modifications
+   */
+  chamfer(radius: number, filter?: (c: CornerFinder) => CornerFinder): Drawing {
+    const finder = filter && filter(new CornerFinder());
+    return new Drawing(chamfer2D(this.innerShape, radius, finder));
+  }
+
+  sketchOnPlane(inputPlane: Plane): SketchInterface | Sketches;
+  sketchOnPlane(
+    inputPlane?: PlaneName,
+    origin?: Point | number
+  ): SketchInterface | Sketches;
+  sketchOnPlane(
+    inputPlane?: PlaneName | Plane,
+    origin?: Point | number
+  ): SketchInterface | Sketches {
+    if (!this.innerShape) throw new Error("Trying to sketch an empty drawing");
+    return this.innerShape.sketchOnPlane(inputPlane, origin);
+  }
+
+  sketchOnFace(face: Face, scaleMode: ScaleMode): SketchInterface | Sketches {
+    if (!this.innerShape) throw new Error("Trying to sketch an empty drawing");
+    return this.innerShape.sketchOnFace(face, scaleMode);
   }
 
   toSVG(margin: number): string {
@@ -157,6 +182,21 @@ export class DrawingPen
   closeWithMirror(): Drawing {
     this._closeWithMirror();
     return this.close();
+  }
+
+  /**
+   * Stop drawing, make sure the sketch is closed (by adding a straight line to
+   * from the last point to the first), change the corner between the last and the
+   * first segments and returns the sketch.
+   */
+  closeWithCustomCorner(
+    radius: number,
+    mode: "fillet" | "chamfer" = "fillet"
+  ): Drawing {
+    this._closeSketch();
+    this._customCornerLastWithFirst(radius, mode);
+
+    return this.done();
   }
 }
 
