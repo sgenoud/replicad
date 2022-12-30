@@ -22,7 +22,7 @@ import {
   BRepAdaptor_CompCurve,
   BRepAdaptor_Surface,
 } from "replicad-opencascadejs";
-import { EdgeFinder, FaceFinder } from "./finders.js";
+import { EdgeFinder, FaceFinder } from "./finders/index.js";
 import { rotate, translate, mirror, scale as scaleShape } from "./geomHelpers";
 import { CurveType, findCurveType } from "./definitionMaps";
 
