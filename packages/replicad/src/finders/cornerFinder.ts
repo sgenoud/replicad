@@ -110,9 +110,10 @@ export class CornerFinder extends Finder<Corner, Blueprint> {
       const tgt2 = element.secondCurve.tangentAt(0);
 
       return (
-        positiveHalfAngle(angle2d(tgt1, tgt2)) -
-          positiveHalfAngle(DEG2RAD * angle) <
-        1e-9
+        Math.abs(
+          positiveHalfAngle(angle2d(tgt1, tgt2)) -
+            positiveHalfAngle(DEG2RAD * angle)
+        ) < 1e-9
       );
     }
 
