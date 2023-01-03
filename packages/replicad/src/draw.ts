@@ -15,7 +15,6 @@ import {
   roundedRectangleBlueprint,
   ScaleMode,
   Shape2D,
-  Blueprints,
 } from "./blueprints";
 import { Plane, PlaneName, Point } from "./geom";
 import { Face } from "./shapes";
@@ -267,8 +266,8 @@ export function drawSingleEllipse(
 export function drawCircle(radius: number): Drawing {
   return draw()
     .movePointerTo([-radius, 0])
-    .halfEllipse(2 * radius, 0, radius)
-    .halfEllipse(-2 * radius, 0, radius)
+    .sagittaArc(2 * radius, 0, radius)
+    .sagittaArc(-2 * radius, 0, radius)
     .close();
 }
 
