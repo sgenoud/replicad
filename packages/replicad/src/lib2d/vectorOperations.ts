@@ -82,7 +82,7 @@ export const polarToCartesian = (r: number, theta: number): Point2D => {
   return [x, y];
 };
 
-export const cartesiantToPolar = ([x, y]: Point2D): [number, number] => {
+export const cartesianToPolar = ([x, y]: Point2D): [number, number] => {
   const r = distance2d([x, y]);
   const theta = Math.atan2(y, x);
 

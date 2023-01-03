@@ -24,7 +24,7 @@ import {
   axis2d,
   rotate2d,
   polarToCartesian,
-  cartesiantToPolar,
+  cartesianToPolar,
   make2dSegmentCurve,
   make2dTangentArc,
   make2dThreePointArc,
@@ -300,7 +300,7 @@ export class BaseSketcher2d {
     const xDir = normalize2d(
       this._convertToUV(rotate2d([1, 0], radRotationAngle))
     );
-    const [, newRotationAngle] = cartesiantToPolar(xDir);
+    const [, newRotationAngle] = cartesianToPolar(xDir);
 
     const { cx, cy, startAngle, endAngle, clockwise, rx, ry } =
       convertSvgEllipseParams(
