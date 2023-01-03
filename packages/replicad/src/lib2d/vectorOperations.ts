@@ -44,6 +44,13 @@ export const angle2d = (
   return Math.atan2(y1 * x0 - y0 * x1, x0 * x1 + y0 * y1);
 };
 
+export const polarAngle2d = (
+  [x0, y0]: Point2D,
+  [x1, y1]: Point2D = [0, 0]
+): number => {
+  return Math.atan2(y1 - y0, x1 - x0);
+};
+
 export const normalize2d = ([x0, y0]: Point2D): Point2D => {
   const l = distance2d([x0, y0]);
   return [x0 / l, y0 / l];

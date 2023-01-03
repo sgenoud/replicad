@@ -18,7 +18,7 @@ import { chamferCurves, Curve2D, filletCurves } from "./lib2d";
 
 import {
   normalize2d,
-  angle2d,
+  polarAngle2d,
   samePoint,
   distance2d,
   axis2d,
@@ -352,7 +352,7 @@ export class BaseSketcher2d {
   }
 
   halfEllipseTo(end: Point2D, minorRadius: number, sweep = false): this {
-    const angle = angle2d(end, this.pointer);
+    const angle = polarAngle2d(end, this.pointer);
     const distance = distance2d(end, this.pointer);
 
     return this.ellipseTo(
