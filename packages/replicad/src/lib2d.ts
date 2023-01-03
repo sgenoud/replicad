@@ -352,7 +352,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     return this.distanceFromPoint(point) < 1e-9;
   }
 
-  parameter(point: Point2D): number {
+  parameter(point: Point2D, precision = 1e-9): number {
     const oc = getOC();
     const r = GCWithScope();
 
@@ -372,8 +372,12 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       throw new Error("Failed to find parameter");
     }
 
-    if (lowerDistance > 1e-9) {
-      throw new Error("Point not on curve");
+    if (lowerDistance > precision) {
+      throw new Error(
+        `Point ${reprPnt(point)} not on curve ${
+          this.repr
+        }, ${lowerDistance.toFixed(9)}`
+      );
     }
     return lowerDistanceParameter;
   }
@@ -403,12 +407,13 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     return tgtVec;
   }
 
-  splitAt(points: Point2D[]): Curve2D[] {
+  splitAt(points: Point2D[] | number[]): Curve2D[] {
     const oc = getOC();
     const r = GCWithScope();
 
-    let parameters = points.map((point) => {
-      return this.parameter(point);
+    let parameters = points.map((point: Point2D | number) => {
+      if (isPoint2D(point)) return this.parameter(point);
+      return point;
     });
 
     // We only split on each point once
@@ -1097,15 +1102,15 @@ function removeCorner(
   secondCurve: Curve2D,
   radius: number
 ) {
-  const cosAngle = crossProduct2d(
+  const sinAngle = crossProduct2d(
     firstCurve.tangentAt(1),
     secondCurve.tangentAt(0)
   );
 
   // This cover the case when the curves are colinear
-  if (!cosAngle) return null;
+  if (Math.abs(sinAngle) < 1e-10) return null;
 
-  const orientationCorrection = cosAngle > 0 ? -1 : 1;
+  const orientationCorrection = sinAngle > 0 ? -1 : 1;
   const offset = Math.abs(radius) * orientationCorrection;
 
   const firstOffset = make2dOffset(firstCurve, offset);
@@ -1115,18 +1120,27 @@ function removeCorner(
     return null;
   }
 
-  const { intersections } = intersectCurves(firstOffset, secondOffset, 1e-10);
+  let potentialCenter: Point2D | undefined;
+  try {
+    const { intersections } = intersectCurves(firstOffset, secondOffset, 1e-9);
 
-  // We need to work on the case where there are more than one intersections
-  const center = intersections.at(-1);
+    // We need to work on the case where there are more than one intersections
+    potentialCenter = intersections.at(-1);
+  } catch (e) {
+    return null;
+  }
 
-  if (!center) return null;
+  if (!isPoint2D(potentialCenter)) {
+    return null;
+  }
+  const center = potentialCenter;
 
   const splitForFillet = (curve: Curve2D, offsetCurve: Curve2D) => {
     const [x, y] = offsetCurve.tangentAt(center);
     const normal = normalize2d([-y, x]);
     const splitPoint = add2d(center, scalarMultiply2d(normal, offset));
-    return curve.splitAt([splitPoint]);
+    const splitParam = curve.parameter(splitPoint, 1e-6);
+    return curve.splitAt([splitParam]);
   };
 
   const [first] = splitForFillet(firstCurve, firstOffset);
