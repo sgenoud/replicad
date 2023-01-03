@@ -179,7 +179,7 @@ export const angle2d = (
   [x0, y0]: Point2D,
   [x1, y1]: Point2D = [0, 0]
 ): number => {
-  return Math.atan2(y1 - y0, x1 - x0);
+  return Math.atan2(y1 * x0 - y0 * x1, x0 * x1 + y0 * y1);
 };
 
 export const normalize2d = ([x0, y0]: Point2D): Point2D => {
