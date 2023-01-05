@@ -64,3 +64,22 @@ export const intersectCurves = (
 
   return { intersections, commonSegments, commonSegmentsPoints };
 };
+
+export const selfIntersections = (curve: Curve2D, precision = 1e-9) => {
+  const oc = getOC();
+  const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
+
+  let intersections;
+
+  try {
+    intersector.Init_1(curve.wrapped, curve.wrapped, precision);
+
+    intersections = Array.from(pointsIteration(intersector));
+  } catch (e) {
+    throw new Error("Self intersection failed");
+  } finally {
+    intersector.delete();
+  }
+
+  return intersections;
+};

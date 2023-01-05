@@ -3,6 +3,7 @@ import { GCWithScope } from "../register";
 import { approximateAsBSpline } from "./approximations";
 import { Curve2D } from "./Curve2D";
 import { Point2D } from "./definitions";
+import { selfIntersections } from "./intersections";
 import { make2dSegmentCurve } from "./makeCurves";
 import { add2d, normalize2d, subtract2d } from "./vectorOperations";
 
@@ -92,5 +93,17 @@ export const make2dOffset = (
   // While return the offset curve itself would be the more correct thing to do,
   // opencascade does some weird stuff with it (for instance after mirroring it)
   // This approximates it with a continuous bspline
-  return approximateAsBSpline(offsetCurve.adaptor());
+  const approximation = approximateAsBSpline(offsetCurve.adaptor());
+
+  // We need a better way to handle curves that self intersect, for now we
+  // replace them with a line
+  if (selfIntersections(approximation).length) {
+    return {
+      collapsed: true,
+      firstPoint: approximation.firstPoint,
+      lastPoint: approximation.lastPoint,
+    };
+  }
+
+  return approximation;
 };
