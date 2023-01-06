@@ -152,6 +152,7 @@ mainBuild:
     - symbol: Geom2dAdaptor_Curve
     - symbol: Adaptor2d_Curve2d
     - symbol: Handle_Adaptor2d_Curve2d
+    - symbol: BRepAdaptor_Curve2d
 
     - symbol: Geom2dConvert_BSplineCurveToBezierCurve
     - symbol: Geom2dConvert_ApproxCurve

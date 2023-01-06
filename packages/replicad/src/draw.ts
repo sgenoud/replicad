@@ -1,9 +1,11 @@
 import {
   BoundingBox2d,
+  Curve2D,
   make2dCircle,
   make2dEllipse,
   make2dInerpolatedBSplineCurve,
   Point2D,
+  stitchCurves,
 } from "./lib2d";
 import {
   Blueprint,
@@ -15,6 +17,7 @@ import {
   roundedRectangleBlueprint,
   ScaleMode,
   Shape2D,
+  Blueprints,
 } from "./blueprints";
 import { Plane, PlaneName, Point } from "./geom";
 import { Face } from "./shapes";
@@ -26,6 +29,7 @@ import { BSplineApproximationConfig } from ".";
 import offset from "./blueprints/offset";
 import { CornerFinder } from "./finders/cornerFinder";
 import { fillet2D, chamfer2D } from "./blueprints/customCorners";
+import { edgeToCurve } from "./curves";
 
 export class Drawing implements DrawingInterface {
   private innerShape: Shape2D;
@@ -359,3 +363,15 @@ export const drawParametricFunction = (
 
   return drawPointsInterpolation(points, approximationConfig);
 };
+
+export function drawFaceOutline(face: Face): Drawing {
+  const outerWire = face.clone().outerWire();
+  const curves = outerWire.edges.map((e) => edgeToCurve(e, face));
+
+  const stitchedCurves = stitchCurves(curves).map((s) => new Blueprint(s));
+  console.log(stitchedCurves);
+  if (stitchedCurves.length === 0) return new Drawing();
+  if (stitchedCurves.length === 1) return new Drawing(stitchedCurves[0]);
+
+  return new Drawing(new Blueprints(stitchedCurves));
+}

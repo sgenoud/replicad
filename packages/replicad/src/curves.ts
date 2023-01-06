@@ -4,7 +4,7 @@ import {
   Handle_Geom_Surface,
 } from "replicad-opencascadejs";
 
-import { localGC, WrappingObj } from "./register";
+import { GCWithScope, localGC, WrappingObj } from "./register";
 import { getOC } from "./oclib.js";
 
 import { Edge, Face } from "./shapes";
@@ -177,6 +177,7 @@ export function curvesAsEdgesOnFace(
 
   const oc = getOC();
   let geomSurf = r(oc.BRep_Tool.Surface_2(face.wrapped));
+
   const bounds = face.UVBounds;
 
   let transformation: null | gp_GTrsf2d = null;
@@ -224,4 +225,25 @@ export function curvesAsEdgesOnFace(
 
   gc();
   return edges;
+}
+
+export function edgeToCurve(e: Edge, face: Face): Curve2D {
+  const oc = getOC();
+  const r = GCWithScope();
+
+  const adaptor = r(new oc.BRepAdaptor_Curve2d_2(e.wrapped, face.wrapped));
+
+  const trimmed = new oc.Geom2d_TrimmedCurve(
+    adaptor.Curve(),
+    adaptor.FirstParameter(),
+    adaptor.LastParameter(),
+    true,
+    true
+  );
+
+  if (e.orientation === "backward") {
+    trimmed.Reverse();
+  }
+
+  return new Curve2D(new oc.Handle_Geom2d_Curve_2(trimmed));
 }

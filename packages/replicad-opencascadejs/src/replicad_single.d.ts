@@ -6121,6 +6121,25 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
   delete(): void;
 }
 
+export declare class BRepAdaptor_Curve2d extends Geom2dAdaptor_Curve {
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  ShallowCopy(): Handle_Adaptor2d_Curve2d;
+  Initialize(E: TopoDS_Edge, F: TopoDS_Face): void;
+  Edge(): TopoDS_Edge;
+  Face(): TopoDS_Face;
+  delete(): void;
+}
+
+  export declare class BRepAdaptor_Curve2d_1 extends BRepAdaptor_Curve2d {
+    constructor();
+  }
+
+  export declare class BRepAdaptor_Curve2d_2 extends BRepAdaptor_Curve2d {
+    constructor(E: TopoDS_Edge, F: TopoDS_Face);
+  }
+
 export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
   static get_type_name(): Standard_Character;
   static get_type_descriptor(): Handle_Standard_Type;
@@ -7278,6 +7297,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   TopTools_ListOfShape_3: typeof TopTools_ListOfShape_3;
   Adaptor3d_Surface: typeof Adaptor3d_Surface;
   Adaptor3d_Curve: typeof Adaptor3d_Curve;
+  BRepAdaptor_Curve2d: typeof BRepAdaptor_Curve2d;
+  BRepAdaptor_Curve2d_1: typeof BRepAdaptor_Curve2d_1;
+  BRepAdaptor_Curve2d_2: typeof BRepAdaptor_Curve2d_2;
   BRepAdaptor_Curve: typeof BRepAdaptor_Curve;
   BRepAdaptor_Curve_1: typeof BRepAdaptor_Curve_1;
   BRepAdaptor_Curve_2: typeof BRepAdaptor_Curve_2;

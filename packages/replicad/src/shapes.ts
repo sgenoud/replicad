@@ -618,6 +618,12 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     properties.delete();
     return length;
   }
+
+  get orientation(): "forward" | "backward" {
+    const orient = this.wrapped.Orientation_1();
+    if (orient === this.oc.TopAbs_Orientation.TopAbs_FORWARD) return "forward";
+    return "backward";
+  }
 }
 
 export class Curve extends WrappingObj<CurveLike> {
@@ -779,7 +785,7 @@ export class Face extends Shape<TopoDS_Face> {
     const vMin = { current: 0 };
     const vMax = { current: 0 };
 
-    // @ts-ignore missing type in oc
+    // @ts-expect-error missing type in oc
     this.oc.BRepTools.UVBounds_1(this.wrapped, uMin, uMax, vMin, vMax);
 
     return {
@@ -830,7 +836,7 @@ export class Face extends Shape<TopoDS_Face> {
       const uPtr = { current: 0 };
       const vPtr = { current: 0 };
 
-      // @ts-ignore missing type in oc
+      // @ts-expect-error missing type in oc
       projectedPoint.LowerDistanceParameters(uPtr, vPtr);
       u = uPtr.current;
       v = vPtr.current;
