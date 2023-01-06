@@ -59,6 +59,10 @@ export default class Blueprint implements DrawingInterface {
     return new Blueprint(this.curves);
   }
 
+  get repr() {
+    return ["Blueprint", ...this.curves.map((c) => c.repr)].join("\n");
+  }
+
   get boundingBox(): BoundingBox2d {
     if (!this._boundingBox) {
       this._boundingBox = curvesBoundingBox(this.curves);
@@ -178,6 +182,9 @@ export default class Blueprint implements DrawingInterface {
       const baseFace = sketch.clone().face();
       sketch.defaultOrigin = baseFace.pointOnSurface(0.5, 0.5);
       sketch.defaultDirection = baseFace.normalAt();
+      if (baseFace.orientation !== face.orientation) {
+        sketch.defaultDirection = sketch.defaultDirection.multiply(-1);
+      }
       sketch.baseFace = face;
     } else {
       const startPoint = wire.startPoint;

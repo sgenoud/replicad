@@ -19,6 +19,10 @@ export default class Blueprints implements DrawingInterface {
     this._boundingBox = null;
   }
 
+  get repr() {
+    return ["Blueprints", ...this.blueprints.map((b) => b.repr)].join("\n");
+  }
+
   clone() {
     return new Blueprints(this.blueprints);
   }

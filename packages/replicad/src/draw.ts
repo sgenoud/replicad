@@ -47,6 +47,11 @@ export class Drawing implements DrawingInterface {
     return new Drawing(this.innerShape.stretch(ratio, direction, origin));
   }
 
+  get repr(): string {
+    if (this.innerShape === null) return "=== empty shape";
+    return this.innerShape.repr;
+  }
+
   rotate(angle: number, center: Point2D): Drawing {
     if (!this.innerShape) return new Drawing();
     return new Drawing(this.innerShape.rotate(angle, center));

@@ -32,6 +32,16 @@ export default class CompoundBlueprint implements DrawingInterface {
     return this._boundingBox;
   }
 
+  get repr() {
+    return [
+      "Compound Blueprints",
+      "-- Outline",
+      this.blueprints[0].repr,
+      "-- Holes",
+      ...this.blueprints.slice(1).map((b) => b.repr),
+    ].join("\n");
+  }
+
   stretch(
     ratio: number,
     direction: Point2D,
