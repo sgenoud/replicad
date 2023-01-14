@@ -24,7 +24,7 @@
     "url": "https://github.com/sgenoud/replicad/issues"
   },
   "peerDependencies": {
-    "three": "^0.134.0"
+    "three": ">=0.134.0"
   },
   "files": [
     "dist"
