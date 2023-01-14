@@ -369,7 +369,6 @@ export function drawFaceOutline(face: Face): Drawing {
   const curves = outerWire.edges.map((e) => edgeToCurve(e, face));
 
   const stitchedCurves = stitchCurves(curves).map((s) => new Blueprint(s));
-  console.log(stitchedCurves);
   if (stitchedCurves.length === 0) return new Drawing();
   if (stitchedCurves.length === 1) return new Drawing(stitchedCurves[0]);
 
