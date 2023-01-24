@@ -12,8 +12,8 @@ import { intersectCurves, Point2D, removeDuplicatePoints } from "../lib2d";
 export type Shape2D = Blueprint | Blueprints | CompoundBlueprint | null;
 
 const genericIntersects = (
-  first: Blueprint | CompoundBlueprint,
-  second: Blueprint | CompoundBlueprint
+  first: Blueprint | CompoundBlueprint | Blueprints,
+  second: Blueprint | CompoundBlueprint | Blueprints
 ): boolean => {
   if (first instanceof Blueprint && second instanceof Blueprint) {
     let allIntersections: Point2D[] = [];
@@ -32,10 +32,10 @@ const genericIntersects = (
     allIntersections = removeDuplicatePoints(allIntersections);
     return allIntersections.length > 1;
   }
-  if (first instanceof CompoundBlueprint) {
+  if (first instanceof CompoundBlueprint || first instanceof Blueprints) {
     return first.blueprints.some((bp) => genericIntersects(bp, second));
   }
-  if (second instanceof CompoundBlueprint) {
+  if (second instanceof CompoundBlueprint || second instanceof Blueprints) {
     return second.blueprints.some((bp) => genericIntersects(first, bp));
   }
 
@@ -76,11 +76,11 @@ const fuseIntersectingBlueprints = (
 ) => {
   const fused = new Map();
 
-  const output: { current: Blueprint | CompoundBlueprint }[] = [];
+  const output: { current: Blueprint | CompoundBlueprint | Blueprints }[] = [];
 
   blueprints.forEach((inputBlueprint, i) => {
     let savedBlueprint: {
-      current: Blueprint | CompoundBlueprint;
+      current: Blueprint | CompoundBlueprint | Blueprints;
       fusedWith: Set<number>;
     };
 
@@ -109,7 +109,15 @@ const fuseIntersectingBlueprints = (
       if (blueprint.boundingBox.isOut(otherBlueprint.boundingBox)) return;
       if (!genericIntersects(blueprint, otherBlueprint)) return;
 
-      let newFused = genericFuse(blueprint, otherBlueprint);
+      let newFused;
+      if (
+        blueprint instanceof Blueprints ||
+        otherBlueprint instanceof Blueprints
+      ) {
+        newFused = fuse2D(blueprint, otherBlueprint);
+      } else {
+        newFused = genericFuse(blueprint, otherBlueprint);
+      }
       if (
         !(
           newFused instanceof Blueprint || newFused instanceof CompoundBlueprint
@@ -130,7 +138,7 @@ const fuseIntersectingBlueprints = (
           // points were only touching and not crossing
 
           newFused = newFused.blueprints[0];
-        } else {
+        } else if (!(newFused instanceof Blueprints)) {
           console.error(newFused);
           throw new Error("Bug in blueprint fusing algorigthm");
         }
@@ -172,6 +180,18 @@ const fuseBlueprintWithCompound = (
   ]);
 };
 
+function allPairs<S, T>(list1: T[], list2: S[]): [T, S][] {
+  const result: [T, S][] = [];
+
+  for (const l1 of list1) {
+    for (const l2 of list2) {
+      result.push([l1, l2]);
+    }
+  }
+
+  return result;
+}
+
 const fuseCompoundWithCompound = (
   first: CompoundBlueprint,
   second: CompoundBlueprint
@@ -186,10 +206,18 @@ const fuseCompoundWithCompound = (
     .slice(1)
     .map((c) => cutBlueprints(c, second.blueprints[0]));
 
+  const innerIntersections = allPairs(
+    first.blueprints.slice(1),
+    second.blueprints.slice(1)
+  ).flatMap(([first, second]) => {
+    return allBlueprints(intersectBlueprints(first, second));
+  });
+
   return organiseBlueprints([
     ...allBlueprints(outerFused),
     ...inner1Fused.flatMap((fused) => allBlueprints(fused)),
     ...inner2Fused.flatMap((fused) => allBlueprints(fused)),
+    ...innerIntersections,
   ]);
 };
 

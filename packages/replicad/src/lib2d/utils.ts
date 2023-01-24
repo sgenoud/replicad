@@ -5,13 +5,21 @@ export const reprPnt = ([x, y]: Point2D): string => {
   return `(${round2(x)},${round2(y)})`;
 };
 
-const asFixed = (p: number): string => {
+const asFixed = (p: number, precision = 1e-9): string => {
   let num = p;
-  if (Math.abs(p) < 1e-9) num = 0;
-  return num.toFixed(10);
+  if (Math.abs(p) < precision) num = 0;
+  return num.toFixed(-Math.log10(precision));
 };
-export const removeDuplicatePoints = (points: Point2D[]): Point2D[] => {
+export const removeDuplicatePoints = (
+  points: Point2D[],
+  precision = 1e-9
+): Point2D[] => {
   return Array.from(
-    new Set(points.map(([p0, p1]) => `[${asFixed(p0)},${asFixed(p1)}]`))
-  ).map((p) => JSON.parse(p));
+    new Map(
+      points.map(([p0, p1]) => [
+        `[${asFixed(p0, precision)},${asFixed(p1, precision)}]`,
+        [p0, p1] as Point2D,
+      ])
+    ).values()
+  );
 };

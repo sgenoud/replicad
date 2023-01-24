@@ -1,7 +1,11 @@
 import { Point2D } from "./definitions";
 
-export const samePoint = ([x0, y0]: Point2D, [x1, y1]: Point2D): boolean => {
-  return Math.abs(x0 - x1) <= 1e-6 && Math.abs(y0 - y1) <= 1e-6;
+export const samePoint = (
+  [x0, y0]: Point2D,
+  [x1, y1]: Point2D,
+  precision = 1e-6
+): boolean => {
+  return Math.abs(x0 - x1) <= precision && Math.abs(y0 - y1) <= precision;
 };
 
 export const add2d = ([x0, y0]: Point2D, [x1, y1]: Point2D): Point2D => {

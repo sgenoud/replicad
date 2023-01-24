@@ -2,6 +2,7 @@ import { Geom2dAPI_InterCurveCurve } from "replicad-opencascadejs";
 import { getOC } from "../oclib";
 import { Curve2D } from "./Curve2D";
 import { Point2D } from "./definitions";
+import { samePoint } from "./vectorOperations";
 
 function* pointsIteration(
   intersector: Geom2dAPI_InterCurveCurve
@@ -26,7 +27,14 @@ function* commonSegmentsIteration(
   for (let i = 1; i <= nSegments; i++) {
     const h1 = new oc.Handle_Geom2d_Curve_1();
     const h2 = new oc.Handle_Geom2d_Curve_1();
-    intersector.Segment(i, h1, h2);
+    try {
+      // There seem to be a bug in occt where it returns segments but fails to
+      // fetch them.
+      intersector.Segment(i, h1, h2);
+    } catch (e) {
+      continue;
+    }
+
     yield new Curve2D(h1);
     h2.delete();
   }
@@ -52,9 +60,21 @@ export const intersectCurves = (
     intersections = Array.from(pointsIteration(intersector));
     commonSegments = Array.from(commonSegmentsIteration(intersector));
   } catch (e) {
+    console.error(first, second, e);
     throw new Error("Intersections failed between curves");
   } finally {
     intersector.delete();
+  }
+
+  const segmentsAsPoints = commonSegments
+    .filter((c) => samePoint(c.firstPoint, c.lastPoint, precision))
+    .map((c) => c.firstPoint);
+
+  if (segmentsAsPoints.length) {
+    intersections.push(...segmentsAsPoints);
+    commonSegments = commonSegments.filter(
+      (c) => !samePoint(c.firstPoint, c.lastPoint, precision)
+    );
   }
 
   const commonSegmentsPoints = commonSegments.flatMap((c) => [

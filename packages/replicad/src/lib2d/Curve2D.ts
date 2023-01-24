@@ -83,7 +83,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
   }
 
   clone(): Curve2D {
-    return new Curve2D(this.wrapped);
+    return new Curve2D(this.innerCurve.Copy() as Handle_Geom2d_Curve);
   }
 
   reverse(): void {
@@ -171,8 +171,10 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       lowerDistanceParameter = projector.LowerDistanceParameter();
     } catch (e) {
       // Perhaps it failed because it is on an extremity
-      if (samePoint(point, this.firstPoint)) return this.firstParameter;
-      if (samePoint(point, this.lastPoint)) return this.lastParameter;
+      if (samePoint(point, this.firstPoint, precision))
+        return this.firstParameter;
+      if (samePoint(point, this.lastPoint, precision))
+        return this.lastParameter;
 
       throw new Error("Failed to find parameter");
     }
@@ -212,12 +214,12 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     return tgtVec;
   }
 
-  splitAt(points: Point2D[] | number[]): Curve2D[] {
+  splitAt(points: Point2D[] | number[], precision = 1e-9): Curve2D[] {
     const oc = getOC();
     const r = GCWithScope();
 
     let parameters = points.map((point: Point2D | number) => {
-      if (isPoint2D(point)) return this.parameter(point);
+      if (isPoint2D(point)) return this.parameter(point, precision);
       return point;
     });
 
@@ -226,8 +228,8 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       new Set(
         parameters.map((p) => {
           let num = p;
-          if (Math.abs(p) < 1e-9) num = 0;
-          return num.toFixed(10);
+          if (Math.abs(p) < precision) num = 0;
+          return num.toFixed(1 - Math.log10(precision));
         })
       )
     )
@@ -241,11 +243,14 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     }
 
     // We do not split again on the start and end
-    if (Math.abs(parameters[0] - firstParam) < 1e-9)
+    if (Math.abs(parameters[0] - firstParam) < precision * 10)
       parameters = parameters.slice(1);
     if (!parameters.length) return [this];
 
-    if (Math.abs(parameters[parameters.length - 1] - lastParam) < 1e-9)
+    if (
+      Math.abs(parameters[parameters.length - 1] - lastParam) <
+      precision * 10
+    )
       parameters = parameters.slice(0, -1);
     if (!parameters.length) return [this];
 
@@ -271,7 +276,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
             adapted.Degree(),
             adapted.IsPeriodic()
           );
-          curveCopy.Segment(first, last, 1e-9);
+          curveCopy.Segment(first, last, precision);
           return new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy));
         }
 

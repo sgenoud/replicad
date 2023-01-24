@@ -3,7 +3,7 @@ import {
   stitchCurves,
   make2dOffset,
   Curve2D,
-  samePoint,
+  samePoint as defaultSamePoint,
   Point2D,
   make2dSegmentCurve,
   squareDistance2d,
@@ -17,6 +17,11 @@ import {
   Shape2D,
   cut2D,
 } from ".";
+
+const PRECISION = 1e-8;
+
+const samePoint = (x: Point2D, y: Point2D) =>
+  defaultSamePoint(x, y, PRECISION * 10);
 
 export function rawOffsets(blueprint: Blueprint, offset: number): Curve2D[] {
   const correctedOffset =
@@ -79,7 +84,7 @@ export function rawOffsets(blueprint: Blueprint, offset: number): Curve2D[] {
     ) {
       // When the offset curves intersect we cut them and save them at
       const { intersections: pointIntersections, commonSegmentsPoints } =
-        intersectCurves(previousCurve.offset, curve.offset, 1e-10);
+        intersectCurves(previousCurve.offset, curve.offset, PRECISION / 100);
       intersections = [...pointIntersections, ...commonSegmentsPoints];
     }
 
@@ -100,11 +105,12 @@ export function rawOffsets(blueprint: Blueprint, offset: number): Curve2D[] {
       // We need to be a lot more careful here with multiple intersections
       // as well as cases where curves overlap
 
-      const splitPreviousCurve = (previousCurve.offset as Curve2D).splitAt([
-        intersection,
-      ])[0];
+      const splitPreviousCurve = (previousCurve.offset as Curve2D).splitAt(
+        [intersection],
+        PRECISION
+      )[0];
       const splitCurve = (curve.offset as Curve2D)
-        .splitAt([intersection])
+        .splitAt([intersection], PRECISION)
         .at(-1);
 
       if (!splitCurve) throw new Error("Bug in the splitting algo in offset");
@@ -158,7 +164,7 @@ export function offsetBlueprint(blueprint: Blueprint, offset: number): Shape2D {
   offsettedArray.forEach((firstCurve, firstIndex) => {
     offsettedArray.slice(firstIndex + 1).forEach((secondCurve, secondIndex) => {
       const { intersections: rawIntersections, commonSegmentsPoints } =
-        intersectCurves(firstCurve, secondCurve, 1e-10);
+        intersectCurves(firstCurve, secondCurve, PRECISION);
 
       const intersections = [
         ...rawIntersections,
@@ -192,14 +198,14 @@ export function offsetBlueprint(blueprint: Blueprint, offset: number): Shape2D {
     if (!allIntersections.has(index)) return curve;
 
     const intersections = allIntersections.get(index) || [];
-    const splitCurves = curve.splitAt(intersections);
+    const splitCurves = curve.splitAt(intersections, PRECISION);
     return splitCurves;
   });
 
   // We remove all the segments that are closer to the original curve than the offset
   const prunedCurves = splitCurves.filter((curve) => {
     const closeCurve = blueprint.curves.find(
-      (c) => c.distanceFrom(curve) < Math.abs(offset) - 1e-6
+      (c) => c.distanceFrom(curve) < Math.abs(offset) - PRECISION
     );
     return !closeCurve;
   });
