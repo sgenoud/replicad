@@ -26,7 +26,7 @@ import { EdgeFinder, FaceFinder } from "./finders/index.js";
 import { rotate, translate, mirror, scale as scaleShape } from "./geomHelpers";
 import { CurveType, findCurveType } from "./definitionMaps";
 
-export { CurveType };
+export type { CurveType };
 
 export type AnyShape =
   | Vertex

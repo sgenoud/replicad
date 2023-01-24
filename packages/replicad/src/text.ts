@@ -16,7 +16,9 @@ const FONT_REGISTER: Record<string, opentype.Font> = {};
  */
 export const loadFont = async (fontPath: string, fontFamily = "default") => {
   // @ts-expect-error missing info in the types
-  const font = await opentype.load(fontPath, null, { isUrl: true });
+  const font: opentype.Font = await opentype.load(fontPath, null, {
+    isUrl: true,
+  });
   FONT_REGISTER[fontFamily] = font;
   if (!FONT_REGISTER.default) FONT_REGISTER.default = font;
 
