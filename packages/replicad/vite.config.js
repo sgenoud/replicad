@@ -13,5 +13,11 @@ export default defineConfig({
     sourcemap: true,
     minify: false,
   },
-  plugins: [dts({ outputDir: resolve(__dirname, "dist/types/") })],
+  plugins: [
+    process.env.NO_TYPES?.toLowerCase() === "true"
+      ? null
+      : dts({
+          rollupTypes: true,
+        }),
+  ].filter((a) => !!a),
 });

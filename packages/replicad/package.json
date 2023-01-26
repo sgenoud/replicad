@@ -15,6 +15,7 @@
   "type": "module",
   "main": "./dist/replicad.cjs",
   "module": "./dist/replicad.js",
+  "types": "./dist/replicad.d.ts",
   "exports": {
     ".": {
       "import": "./dist/replicad.js",
@@ -30,7 +31,7 @@
   ],
   "scripts": {
     "build": "vite build",
-    "start": "vite build --watch",
+    "start": "NO_TYPES=true vite build --watch",
     "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme default src",
     "build-docss": "typedoc --help",
     "test": "echo \"Error: run tests from root\" && exit 1"
