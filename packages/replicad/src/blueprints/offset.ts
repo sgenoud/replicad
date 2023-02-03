@@ -198,7 +198,7 @@ export function offsetBlueprint(blueprint: Blueprint, offset: number): Shape2D {
     if (!allIntersections.has(index)) return curve;
 
     const intersections = allIntersections.get(index) || [];
-    const splitCurves = curve.splitAt(intersections, PRECISION);
+    const splitCurves = curve.splitAt(intersections, PRECISION * 100);
     return splitCurves;
   });
 

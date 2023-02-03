@@ -12,7 +12,7 @@ import Blueprints from "./Blueprints";
 import CompoundBlueprint from "./CompoundBlueprint";
 import { organiseBlueprints } from "./lib";
 
-const PRECISION = 1e-8;
+const PRECISION = 1e-9;
 
 const samePoint = (x: Point2D, y: Point2D) => defaultSamePoint(x, y, PRECISION);
 
@@ -189,7 +189,7 @@ function blueprintsIntersectionSegments(
       // The algorithm used here seems to fail for smaller precisions (it
       // detects overlaps in circle that do not exist
       const { intersections, commonSegments, commonSegmentsPoints } =
-        intersectCurves(thisCurve, otherCurve, PRECISION);
+        intersectCurves(thisCurve, otherCurve, PRECISION / 100);
 
       allIntersections.push(...intersections);
       firstCurvePoints[firstIndex].push(...intersections);
@@ -214,7 +214,7 @@ function blueprintsIntersectionSegments(
     Point2D[]
   ]): Curve2D[] => {
     if (!intersections.length) return [curve];
-    return curve.splitAt(intersections, PRECISION);
+    return curve.splitAt(intersections, PRECISION / 100);
   };
   let firstCurveSegments = zip([first.curves, firstCurvePoints] as [
     Curve2D[],
@@ -433,14 +433,15 @@ function booleanOperation(
       (secondInside === "keep" && secondSegmentInFirstShape) ||
       (secondInside === "remove" && !secondSegmentInFirstShape)
     ) {
+      let segmentsToAdd = secondSegment;
+
       // When there are only two segments we cannot know if we are in the
       // same until here - so it is possible that they are mismatched.
       if (segmentsOut === 1) {
-        secondSegment.reverse();
-        secondSegment.forEach((s) => s.reverse());
+        segmentsToAdd = reverseSegment(secondSegment);
       }
       segmentsOut += 1;
-      segments.push(...secondSegment);
+      segments.push(...segmentsToAdd);
     }
 
     // This is the case where the information about the segments entering the

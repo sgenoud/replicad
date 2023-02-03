@@ -20,4 +20,7 @@ export default defineConfig({
           rollupTypes: true,
         }),
   ].filter((a) => !!a),
+  test: {
+    setupFiles: ["./__tests__/setup.ts"],
+  },
 });

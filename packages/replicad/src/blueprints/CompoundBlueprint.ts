@@ -52,7 +52,7 @@ export default class CompoundBlueprint implements DrawingInterface {
     );
   }
 
-  rotate(angle: number, center: Point2D): CompoundBlueprint {
+  rotate(angle: number, center?: Point2D): CompoundBlueprint {
     return new CompoundBlueprint(
       this.blueprints.map((bp) => bp.rotate(angle, center))
     );
@@ -111,7 +111,7 @@ export default class CompoundBlueprint implements DrawingInterface {
   }
 
   toSVGGroup() {
-    return `<g>${this.blueprints.map((b) => b.toSVGPath())}</g>`;
+    return `<g>${this.blueprints.map((b) => b.toSVGPath()).join("")}</g>`;
   }
 
   toSVG(margin = 1) {

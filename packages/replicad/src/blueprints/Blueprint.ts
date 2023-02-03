@@ -114,7 +114,7 @@ export default class Blueprint implements DrawingInterface {
     return new Blueprint(curves);
   }
 
-  rotate(angle: number, center: Point2D): Blueprint {
+  rotate(angle: number, center?: Point2D): Blueprint {
     const curves = rotateTransform2d(angle * DEG2RAD, center).transformCurves(
       this.curves
     );

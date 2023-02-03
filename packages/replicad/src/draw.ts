@@ -56,7 +56,7 @@ export class Drawing implements DrawingInterface {
     return this.innerShape.repr;
   }
 
-  rotate(angle: number, center: Point2D): Drawing {
+  rotate(angle: number, center?: Point2D): Drawing {
     if (!this.innerShape) return new Drawing();
     return new Drawing(this.innerShape.rotate(angle, center));
   }
@@ -149,7 +149,7 @@ export class Drawing implements DrawingInterface {
     return this.innerShape.sketchOnFace(face, scaleMode);
   }
 
-  toSVG(margin: number): string {
+  toSVG(margin?: number): string {
     return this.innerShape?.toSVG(margin) || "";
   }
 

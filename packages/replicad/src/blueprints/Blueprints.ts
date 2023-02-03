@@ -42,7 +42,7 @@ export default class Blueprints implements DrawingInterface {
     );
   }
 
-  rotate(angle: number, center: Point2D): Blueprints {
+  rotate(angle: number, center?: Point2D): Blueprints {
     return new Blueprints(
       this.blueprints.map((bp) => bp.rotate(angle, center))
     );

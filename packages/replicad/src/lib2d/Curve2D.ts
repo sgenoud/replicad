@@ -5,6 +5,7 @@ import {
 } from "replicad-opencascadejs";
 
 import { CurveType, findCurveType } from "../definitionMaps";
+import precisionRound from "../utils/precisionRound";
 import { getOC } from "../oclib.js";
 import { GCWithScope, localGC, WrappingObj } from "../register.js";
 import zip from "../utils/zip.js";
@@ -225,16 +226,10 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
 
     // We only split on each point once
     parameters = Array.from(
-      new Set(
-        parameters.map((p) => {
-          let num = p;
-          if (Math.abs(p) < precision) num = 0;
-          return num.toFixed(1 - Math.log10(precision));
-        })
-      )
-    )
-      .map((p) => Number.parseFloat(p))
-      .sort((a, b) => a - b);
+      new Map(
+        parameters.map((p) => [precisionRound(p, -Math.log10(precision)), p])
+      ).values()
+    ).sort((a, b) => a - b);
     const firstParam = this.firstParameter;
     const lastParam = this.lastParameter;
 
@@ -243,13 +238,13 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     }
 
     // We do not split again on the start and end
-    if (Math.abs(parameters[0] - firstParam) < precision * 10)
+    if (Math.abs(parameters[0] - firstParam) < precision * 100)
       parameters = parameters.slice(1);
     if (!parameters.length) return [this];
 
     if (
       Math.abs(parameters[parameters.length - 1] - lastParam) <
-      precision * 10
+      precision * 100
     )
       parameters = parameters.slice(0, -1);
     if (!parameters.length) return [this];
