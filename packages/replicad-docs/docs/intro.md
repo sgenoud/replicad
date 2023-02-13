@@ -19,11 +19,11 @@ So there are two ways you might be interested in this library:
 
 ## Building a 3D model
 
-As of now, there is only a simple online visualiser to play with the replicad
+As of now, there is only a simple online workbench to play with the replicad
 API and draw a 3D model.
 
-You can use [the visualiser](https://studio.replicad.xyz/visualiser) to follow [the
-tutorial](/docs/tutorial-basics/using-the-visualiser)
+You can use [the workbench](https://studio.replicad.xyz/workbench) to follow [the
+tutorial](/docs/tutorial-basics/using-the-workbench)
 
 ## Integrating replicad in your web application
 

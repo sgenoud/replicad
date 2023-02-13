@@ -13,9 +13,10 @@ Adding fillet (rounded edges) and chamfers (beveled edges) is a very common
 operation when modelling in 3D. These operations are mainly configured by their
 radius.
 
-```js
-const main = ({ sketchRectangle }) => {
-  return sketchRectangle(30, 50).extrude(20).fillet(2);
+```js withWorkbench
+const { drawRoundedRectangle } = replicad;
+const main = () => {
+  return drawRoundedRectangle(30, 50).sketchOnPlane().extrude(20).fillet(2);
 };
 ```
 
@@ -25,9 +26,11 @@ filletted.
 If you want to target specific edges you will need to configure a finder within
 a filter configuration. For instance to fillet only the top edges:
 
-```js
-const main = ({ sketchRectangle }) => {
-  return sketchRectangle(30, 50)
+```js withWorkbench
+const { drawRoundedRectangle } = replicad;
+const main = () => {
+  return drawRoundedRectangle(30, 50)
+    .sketchOnPlane()
     .extrude(20)
     .fillet(2, (e) => e.inPlane("XY", 20));
 };
@@ -43,8 +46,9 @@ a small one at the top. You might have been able to do this with two different
 fillet operations, but in some cases the kernel has more diffulties finding
 a good solution with multiple operations.
 
-```js
-const main = ({ sketchRectangle, EdgeFinder, combineFinderFilters }) => {
+```js withWorkbench
+const { drawRoundedRectangle, EdgeFinder, combineFinderFilters } = replicad;
+const main = () => {
   const [filters] = combineFinderFilters([
     {
       filter: new EdgeFinder().inPlane("XY", 20),
@@ -56,7 +60,10 @@ const main = ({ sketchRectangle, EdgeFinder, combineFinderFilters }) => {
     },
   ]);
 
-  return sketchRectangle(30, 50).extrude(20).fillet(filters);
+  return drawRoundedRectangle(30, 50)
+    .sketchOnPlane()
+    .extrude(20)
+    .fillet(filters);
 };
 ```
 
@@ -66,10 +73,12 @@ With a shell you can hollow out a full shape (keeping a wall of a certain
 thickness). You need to specify a face that will be hollow, and you configure
 a finder for this.
 
-```js
-const main = ({ sketchRectangle }) => {
-  return sketchRectangle(30, 50)
+```js withWorkbench
+const { drawRoundedRectangle } = replicad;
+const main = () => {
+  return drawRoundedRectangle(30, 50)
+    .sketchOnPlane()
     .extrude(20)
-    .shell(5, (f) => f.inPlane("XY", 20)));
+    .shell(5, (f) => f.inPlane("XY", 20));
 };
 ```

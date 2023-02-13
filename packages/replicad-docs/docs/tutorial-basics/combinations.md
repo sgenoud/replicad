@@ -12,10 +12,11 @@ We will play with two shapes, a box and a cylinder.
 
 This is what we call the fuse operation:
 
-```js
-const main = ({ sketchCircle, sketchRectangle }) => {
-  const cylinder = sketchCircle(20).extrude(50);
-  const box = sketchRectangle(60, 90).extrude(25);
+```js withWorkbench
+const { drawRoundedRectangle, drawCircle } = replicad;
+const main = () => {
+  const cylinder = drawCircle(20).sketchOnPlane().extrude(50);
+  const box = drawRoundedRectangle(60, 90).sketchOnPlane().extrude(25);
 
   return box.fuse(cylinder);
 };
@@ -27,10 +28,11 @@ const main = ({ sketchCircle, sketchRectangle }) => {
 
 This is what we call the cut operation:
 
-```js
-const main = ({ sketchCircle, sketchRectangle }) => {
-  const cylinder = sketchCircle(20).extrude(50);
-  const box = sketchRectangle(60, 90).extrude(25);
+```js withWorkbench
+const { drawRoundedRectangle, drawCircle } = replicad;
+const main = () => {
+  const cylinder = drawCircle(20).sketchOnPlane().extrude(50);
+  const box = drawRoundedRectangle(60, 90).sketchOnPlane().extrude(25);
 
   return box.cut(cylinder);
 };
@@ -43,9 +45,10 @@ const main = ({ sketchCircle, sketchRectangle }) => {
 For the intersection we will intersect the cylinder with itself you create
 a fun shape:
 
-```js
-const main = ({ sketchCircle }) => {
-  const cylinder = sketchCircle(20).extrude(40);
+```js withWorkbench
+const { drawRoundedRectangle, drawCircle } = replicad;
+const main = () => {
+  const cylinder = drawCircle(20).sketchOnPlane().extrude(50);
   const sideCylinder = cylinder.clone().rotate(90, [0, 0, 20], [1, 0, 0]);
 
   return sideCylinder.intersect(cylinder);

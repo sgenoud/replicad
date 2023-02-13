@@ -51,4 +51,6 @@ function main(
 When sharing with the share application, a simple form will be offered to the
 user to change the parameters and customise the shape.
 
-If you play with it, share it with me ([@stevegenoud](https://twitter.com/stevegenoud))!
+If you play with it, share it with me
+([@stevegenoud@toot.cafe](https://toot.cafe/@stevegenoud) or
+[@stevegenoud](https://twitter.com/stevegenoud))!

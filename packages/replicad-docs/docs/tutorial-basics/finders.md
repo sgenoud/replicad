@@ -11,20 +11,24 @@ theses feature. This is what finders are for.
 
 For this tutorial we will use this relatively complex shape (a simple house):
 
-```js
-const main = ({ sketchCircle, sketchRectangle, Sketcher }) => {
-  let house = new Sketcher("XZ")
+```js withWorkbench
+const { draw, drawCircle, drawRoundedRectangle } = replicad;
+const main = () => {
+  let house = draw()
     .hLine(50)
     .vLine(60)
     .line(-50, 20)
     .closeWithMirror()
+    .sketchOnPlane("XZ")
     .extrude(30);
 
-  const window = sketchCircle(10, { plane: "XZ" })
+  const window = drawCircle(10)
+    .sketchOnPlane("XZ")
     .extrude(30)
     .translate([10, 0, 50]);
 
-  const door = sketchRectangle(20, 30, { plane: "XZ" })
+  const door = drawRoundedRectangle(20, 30)
+    .sketchOnPlane("XZ")
     .extrude(30)
     .translate([-20, -5, 15]);
 
@@ -46,15 +50,13 @@ In order to find faces, we create a face finder object. Let's say we want to
 find the face of the door
 
 ```js
-const main = ({ FaceFinder /*...*/ }) => {
-  let house = new Sketcher();
+const main = () => {
+  let house = draw();
   //...
-
-  const findDoor = new FaceFinder().inPlane("XZ", 35);
 
   return {
     shape: house,
-    highlight: findDoor,
+    highlightFace: (f) => f.inPlane("XZ", 35),
   };
 };
 ```
@@ -66,9 +68,9 @@ There are many different types of filters like `inPlane` that allow you to
 specify precisely which face you are interested in. For instance you can look
 for faces that:
 
-- have a certain type of surface `finder.ofSurfaceType("CYLINDRE")` will return the
+- have a certain type of surface `f.ofSurfaceType("CYLINDRE")` will return the
   inside of the window.
-- contain a certain point `finder.containsPoint([0, -15, 80])` will return both
+- contain a certain point `f.containsPoint([0, -15, 80])` will return both
   sides of the roof
 
 and other methods you can find in the [API
@@ -76,21 +78,20 @@ documentation](/docs/api/classes/FaceFinder#filter-methods)
 
 ### Finding edges
 
-To find edges, it works in the same way, you just create and `EdgeFinder`
+To find edges, it works in the same way, you just work with an `EdgeFinder`
 instead of a face finder and use the methods that are [documented here](/docs/api/classes/EdgeFinder#filter-methods).
 
 For instance, to find the top of the roof
 
 ```js
-const main = ({ EdgeFinder /*...*/ }) => {
-  let house = new Sketcher();
+  let house = draw()
   //...
 
-  const findRooftop = new EdgeFinder().containsPoint([0, -15, 80]);
+  const findRooftop = new EdgeFinder()
 
   return {
     shape: house,
-    highlight: findRooftop,
+    highlightEdge: e => e.containsPoint([0, -15, 80])
   };
 };
 ```
@@ -102,15 +103,12 @@ follow all the conditions will be found. For instance, to find the window of
 the back of the house:
 
 ```js
-const main = ({ EdgeFinder /*...*/ }) => {
-  let house = new Sketcher();
+  let house = draw()
   //...
-
-  const backWindow = new EdgeFinder().ofCurveType("CIRCLE").inPlane("XZ");
 
   return {
     shape: house,
-    highlight: backWindow,
+    highlightEdge: e => e.ofCurveType("CIRCLE").inPlane("XZ")
   };
 };
 ```
@@ -124,10 +122,7 @@ faces that fit either one condition or the other. For instance if we want to
 find both side faces:
 
 ```js
-const houseSides = new FaceFinder().either([
-  (f) => f.inPlane("YZ", 50),
-  (f) => f.inPlane("YZ", -50),
-]);
+(f) => f.either([(f) => f.inPlane("YZ", 50), (f) => f.inPlane("YZ", -50)]);
 ```
 
 ### Negating a condition
@@ -137,9 +132,7 @@ for. For instance, we can select the front window by just adding a `not` to the
 finder we created earlier
 
 ```js
-const frontWindow = new EdgeFinder()
-  .ofCurveType("CIRCLE")
-  .not((f) => f.inPlane("XZ"));
+const frontWindow = (e) => e.ofCurveType("CIRCLE").not((f) => f.inPlane("XZ"));
 ```
 
 Note that it works because there are only two edges that are circles in the
@@ -155,22 +148,28 @@ This will be mostly clear in the next chapter with modifications that can make
 a lot of use of finders.
 
 But you can also need to find a specific face. For instance, we might want to
-have only the front face of the house
+have only the front face of the house. For this you will need to use the
+`FaceFinder` and `EdgeFinder` objects directly (instead of within a function
+that already declared it).
 
-```js
-const main = ({ sketchCircle, sketchRectangle, Sketcher, FaceFinder }) => {
-  let house = new Sketcher("XZ")
+```js withWorkbench
+const { draw, drawCircle, drawRoundedRectangle, FaceFinder } = replicad;
+const main = () => {
+  let house = draw()
     .hLine(50)
     .vLine(60)
     .line(-50, 20)
     .closeWithMirror()
+    .sketchOnPlane("XZ")
     .extrude(30);
 
-  const window = sketchCircle(10, { plane: "XZ" })
+  const window = drawCircle(10)
+    .sketchOnPlane("XZ")
     .extrude(30)
     .translate([10, 0, 50]);
 
-  const door = sketchRectangle(20, 30, { plane: "XZ" })
+  const door = drawRoundedRectangle(20, 30)
+    .sketchOnPlane("XZ")
     .extrude(30)
     .translate([-20, -5, 15]);
 
