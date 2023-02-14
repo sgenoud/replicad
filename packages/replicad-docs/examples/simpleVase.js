@@ -1,3 +1,5 @@
+const { draw } = replicad;
+
 const defaultParams = {
   height: 100,
   baseWidth: 20,
@@ -11,10 +13,8 @@ const defaultParams = {
   bottomHeavy: true,
 };
 
-/** @typedef { typeof import("replicad") } replicadLib */
-/** @type {function(replicadLib, typeof defaultParams): any} */
 const main = (
-  { Sketcher },
+  r,
   {
     height,
     baseWidth,
@@ -38,7 +38,7 @@ const main = (
     { position: 1, radius: topRadius, startFactor: bottomHeavy ? 3 : 1 },
   ];
 
-  const sketchVaseProfile = new Sketcher("XZ").hLine(baseWidth);
+  const sketchVaseProfile = draw().hLine(baseWidth);
 
   splinesConfig.forEach(({ position, radius, startFactor, endFactor }) => {
     sketchVaseProfile.smoothSplineTo([baseWidth * radius, height * position], {
@@ -48,7 +48,11 @@ const main = (
     });
   });
 
-  let vase = sketchVaseProfile.lineTo([0, height]).close().revolve();
+  let vase = sketchVaseProfile
+    .lineTo([0, height])
+    .close()
+    .sketchOnPlane("XZ")
+    .revolve();
 
   if (wallThickness) {
     vase = vase.shell(wallThickness, (f) => f.containsPoint([0, 0, height]));

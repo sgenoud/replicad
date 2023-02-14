@@ -4,18 +4,18 @@ const defaultParams = {
   thickness: 30,
 };
 
-/** @typedef { typeof import("replicad") } replicadLib */
-/** @type {function(replicadLib, typeof defaultParams): any} */
+const { draw, makeCylinder, makeOffset, FaceFinder } = replicad;
+
 const main = (
-  { Sketcher, FaceSketcher, makeCylinder, makeOffset, FaceFinder },
+  r,
   { width: myWidth, height: myHeight, thickness: myThickness }
 ) => {
-  let shape = new Sketcher()
-    .movePointerTo([-myWidth / 2, 0])
+  let shape = draw([-myWidth / 2, 0])
     .vLine(-myThickness / 4)
     .threePointsArc(myWidth, 0, myWidth / 2, -myThickness / 4)
     .vLine(myThickness / 4)
     .closeWithMirror()
+    .sketchOnPlane()
     .extrude(myHeight)
     .fillet(myThickness / 12);
 
@@ -40,16 +40,16 @@ const main = (
     .find(shape.clone(), { unique: true });
 
   const bottomThreadFace = makeOffset(neckFace, -0.01 * myNeckRadius).faces[0];
-  const baseThreadSketch = new FaceSketcher(bottomThreadFace)
-    .movePointerTo([0.75, 0.25])
+  const baseThreadSketch = draw([0.75, 0.25])
     .halfEllipse(2, 0.5, 0.1)
-    .close();
+    .close()
+    .sketchOnFace(bottomThreadFace, "bounds");
 
   const topThreadFace = makeOffset(neckFace, 0.05 * myNeckRadius).faces[0];
-  const topThreadSketch = new FaceSketcher(topThreadFace)
-    .movePointerTo([0.75, 0.25])
+  const topThreadSketch = draw([0.75, 0.25])
     .halfEllipse(2, 0.5, 0.05)
-    .close();
+    .close()
+    .sketchOnFace(topThreadFace, "bounds");
 
   const thread = baseThreadSketch.loftWith(topThreadSketch);
 

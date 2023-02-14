@@ -1,3 +1,5 @@
+const { drawCircle, drawPolysides, polysideInnerRadius } = replicad;
+
 const defaultParams = {
   height: 150,
   radius: 40,
@@ -12,10 +14,8 @@ const defaultParams = {
   wallThickness: 2,
 };
 
-/** @typedef { typeof import("replicad") } replicadLib */
-/** @type {function(replicadLib, typeof defaultParams): any} */
 const main = (
-  { sketchCircle, sketchPolysides, polysideInnerRadius },
+  r,
   {
     height,
     radius,
@@ -34,10 +34,12 @@ const main = (
     : undefined;
   const twistAngle = (360 / sidesCount) * sideTwist;
 
-  let shape = sketchPolysides(radius, sidesCount, sideRadius).extrude(height, {
-    twistAngle,
-    extrusionProfile,
-  });
+  let shape = drawPolysides(radius, sidesCount, -sideRadius)
+    .sketchOnPlane()
+    .extrude(height, {
+      twistAngle,
+      extrusionProfile,
+    });
 
   if (bottomFillet) {
     shape = shape.fillet(bottomFillet, (e) => e.inPlane("XY"));
@@ -51,7 +53,7 @@ const main = (
       const insideRadius =
         polysideInnerRadius(radius, sidesCount, sideRadius) - wallThickness;
 
-      hole = sketchCircle(insideRadius).extrude(holeHeight, {
+      hole = drawCircle(insideRadius).sketchOnPlane().extrude(holeHeight, {
         extrusionProfile,
       });
 

@@ -1,3 +1,5 @@
+const { drawCircle, drawParametricFunction } = replicad;
+
 const hypocycloid = (t, r1, r2) => {
   return [
     (r1 - r2) * Math.cos(t) + r2 * Math.cos((r1 / r2) * t - t),
@@ -22,14 +24,12 @@ const defaultParams = {
   height: 15,
 };
 
-/** @typedef { typeof import("replicad") } replicadLib */
-/** @type {function(replicadLib, typeof defaultParams): any} */
-const main = ({ sketchCircle, sketchParametricFunction }, { height }) => {
-  const base = sketchParametricFunction((t) =>
-    gear(2 * Math.PI * t, 6, 1)
-  ).extrude(height, { twistAngle: 90 });
+const main = (r, { height }) => {
+  const base = drawParametricFunction((t) => gear(2 * Math.PI * t, 6, 1))
+    .sketchOnPlane()
+    .extrude(height, { twistAngle: 90 });
 
-  const hole = sketchCircle(2).extrude(height);
+  const hole = drawCircle(2).sketchOnPlane().extrude(height);
 
   return base.cut(hole);
 };

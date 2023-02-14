@@ -6,20 +6,20 @@ const defaultParams = {
   hookHeight: 10.0,
 };
 
-/** @typedef { typeof import("replicad") } replicadLib */
-/** @type {function(replicadLib, typeof defaultParams): any} */
+const { drawCircle, draw, makePlane } = replicad;
+
 function main(
-  { Sketcher, sketchCircle },
+  r,
   { width: inputWidth, height, thickness, holeDia, hookHeight }
 ) {
   const length = inputWidth;
   const width = inputWidth * 0.9;
 
-  const tobleroneShape = new Sketcher("XZ", -length / 2)
-    .movePointerTo([-width / 2, 0])
+  const tobleroneShape = draw([-width / 2, 0])
     .lineTo([0, height])
     .lineTo([width / 2, 0])
     .close()
+    .sketchOnPlane("XZ", -length / 2)
     .extrude(length)
     .shell(thickness, (f) => f.parallelTo("XZ"))
     .fillet(thickness / 2, (e) =>
@@ -28,17 +28,15 @@ function main(
         .either([(f) => f.inPlane("XY"), (f) => f.inPlane("XY", height)])
     );
 
-  const hole = sketchCircle(holeDia / 2, {
-    plane: "YZ",
-    origin: [-length / 2, 0, height / 3],
-  }).extrude(length);
+  const hole = drawCircle(holeDia / 2)
+    .sketchOnPlane(makePlane("YZ").translate([-length / 2, 0, height / 3]))
+    .extrude(length);
 
   const base = tobleroneShape.cut(hole);
   const body = base.clone().fuse(base.rotate(90));
 
   const hookWidth = length / 2;
-  const hook = new Sketcher("XZ")
-    .movePointerTo([0, hookHeight / 2])
+  const hook = draw([0, hookHeight / 2])
     .smoothSplineTo([hookHeight / 2, 0], -45)
     .lineTo([hookWidth / 2, 0])
     .line(-hookWidth / 4, hookHeight / 2)
@@ -47,6 +45,7 @@ function main(
       endFactor: 0.6,
     })
     .closeWithMirror()
+    .sketchOnPlane("XZ")
     .extrude(thickness)
     .translate([0, thickness / 2, height - thickness / 2]);
 
