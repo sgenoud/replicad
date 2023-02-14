@@ -83,8 +83,6 @@ const sketchFontCommands = function* (commands: opentype.PathCommand[]) {
 /**
  * Creates the `Blueprints` of a text, in a defined font size and a font familiy
  * (which will be the default).
- *
- * @category Blueprints
  */
 export function textBlueprints(
   text: string,
@@ -99,8 +97,6 @@ export function textBlueprints(
 /**
  * Creates the `Sketches` of a text, in a defined font size and a font familiy
  * (which will be the default).
- *
- * @category Sketching
  */
 export function sketchText(
   text: string,

@@ -2,20 +2,44 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "target": "es6",
-    "module":"es2015",
+    "module": "es2015",
     "strict": true,
     "sourceMap": true,
     "skipLibCheck": true,
     "declaration": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
   "typedocOptions": {
-      "watch": true,
-      "readme": "none",
-      "excludeProtected": true
+    "watch": true,
+    "readme": "none",
+    "categoryOrder": ["Drawing", "Import", "*"],
+    "kindSortOrder": [
+      "Function",
+      "Reference",
+      "Project",
+      "Module",
+      "Namespace",
+      "Enum",
+      "EnumMember",
+      "Class",
+      "Interface",
+      "TypeAlias",
+      "Constructor",
+      "Property",
+      "Variable",
+      "Accessor",
+      "Method",
+      "ObjectLiteral",
+      "Parameter",
+      "TypeParameter",
+      "TypeLiteral",
+      "CallSignature",
+      "ConstructorSignature",
+      "IndexSignature",
+      "GetSignature",
+      "SetSignature"
+    ],
+    "excludeProtected": true
   }
 }
-

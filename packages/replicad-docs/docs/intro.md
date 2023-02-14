@@ -23,7 +23,7 @@ As of now, there is only a simple online workbench to play with the replicad
 API and draw a 3D model.
 
 You can use [the workbench](https://studio.replicad.xyz/workbench) to follow [the
-tutorial](/docs/tutorial-basics/using-the-workbench)
+tutorial](/docs/tutorial-overview/using-the-workbench)
 
 ## Integrating replicad in your web application
 

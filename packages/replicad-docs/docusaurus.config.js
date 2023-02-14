@@ -104,6 +104,7 @@ const config = {
         entryPoints: ["../replicad/src/index.ts"],
         tsconfig: "../replicad/tsconfig.json",
         watch: process.env.TYPEDOC_WATCH,
+        sidebar: { position: 100 },
       },
     ],
   ],
