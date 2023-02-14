@@ -5,7 +5,7 @@ const defaultParams = {
   baseWidth: 20,
   wallThickness: 5,
   lowerCircleRadius: 1.5,
-  lowerCirclPosition: 0.25,
+  lowerCirclePosition: 0.25,
   higherCircleRadius: 0.75,
   higherCirclePosition: 0.75,
   topRadius: 0.9,
@@ -19,7 +19,7 @@ const main = (
     height,
     baseWidth,
     wallThickness,
-    lowerCirclPosition,
+    lowerCirclePosition,
     lowerCircleRadius,
     higherCircleRadius,
     higherCirclePosition,
@@ -29,7 +29,7 @@ const main = (
   }
 ) => {
   const splinesConfig = [
-    { position: lowerCirclPosition, radius: lowerCircleRadius },
+    { position: lowerCirclePosition, radius: lowerCircleRadius },
     {
       position: higherCirclePosition,
       radius: higherCircleRadius,
