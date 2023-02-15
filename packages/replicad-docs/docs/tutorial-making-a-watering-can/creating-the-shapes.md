@@ -3,6 +3,25 @@ sidebar_position: 4
 title: Creating the 3D shapes
 ---
 
+:::tip
+
+<div style={{display: "flex", flexDirection: "row", justifyContent:
+"space-between"}}>
+
+<div style={{maxWidth: "calc(100% - 120px)"}}>
+
+You can click on the `Open in workbench` button in most code samples to see (and
+edit them) within the workbench.
+
+</div>
+
+<div style={{width: "100px"}}>
+<img src="/img/tutorial/workbench.png" alt="The workbench button" />
+</div>
+</div>
+
+:::
+
 We now have the basic drawing to create our 3D shapes:
 
 - the can body for which we have a profile drawing
@@ -31,7 +50,7 @@ const main = () => {
 ```
 
 We have seen the first step in the previous page. We draw a circle and sketch
-it in the 3D space on a plane (here the default `"XY"` plane).
+it in the 3D space on a plane (here the default `XY` plane).
 
 We extrude it, making a copy of itself in a certain direction and filling the
 sides.
@@ -78,8 +97,8 @@ translate (with a different origin).
 
 ## The can body
 
-To create the can body we will use the profile we drew, sketch it on the `"XZ"`
-plane and rotate it around the `"Z"` axis:
+To create the can body we will use the profile we drew, sketch it on the `XZ`
+plane and rotate it around the `Z` axis:
 
 ```js withWorkbench
 const { draw } = replicad;

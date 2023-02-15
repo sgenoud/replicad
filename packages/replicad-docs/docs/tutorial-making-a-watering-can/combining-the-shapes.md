@@ -3,6 +3,25 @@ sidebar_position: 5
 title: Combining the shapes
 ---
 
+:::tip
+
+<div style={{display: "flex", flexDirection: "row", justifyContent:
+"space-between"}}>
+
+<div style={{maxWidth: "calc(100% - 120px)"}}>
+
+You can click on the `Open in workbench` button in most code samples to see (and
+edit them) within the workbench.
+
+</div>
+
+<div style={{width: "100px"}}>
+<img src="/img/tutorial/workbench.png" alt="The workbench button" />
+</div>
+</div>
+
+:::
+
 Now that we have our three bodies we want to put them together (and smooth the
 corners it creates).
 
@@ -166,7 +185,7 @@ const main = () => {
 };
 ```
 
-## Creating an hollow shape {39-50}
+## Creating an hollow shape
 
 For now, we still have a full shape. We need to make it hollow - to be able to
 put water in it. Remember we are building a watering can.
@@ -177,7 +196,7 @@ faces that will be hollowed out, and give the thickness of the walls.
 We need to do a little bit of maths to find the coordinates of the end of the
 spout.
 
-```js withWorkbench
+```js {39-50} withWorkbench
 const { makePlane, makeCylinder, draw, drawCircle } = replicad;
 
 const main = () => {

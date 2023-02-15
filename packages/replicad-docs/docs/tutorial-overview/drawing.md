@@ -3,6 +3,25 @@ sidebar_position: 2
 title: Drawing
 ---
 
+:::tip
+
+<div style={{display: "flex", flexDirection: "row", justifyContent:
+"space-between"}}>
+
+<div style={{maxWidth: "calc(100% - 120px)"}}>
+
+You can click on the `Open in workbench` button in most code samples to see (and
+edit them) within the workbench.
+
+</div>
+
+<div style={{width: "100px"}}>
+<img src="/img/tutorial/workbench.png" alt="The workbench button" />
+</div>
+</div>
+
+:::
+
 Let's start in two dimensions only, we will add the third one soon enough.
 replicad provides some classes and functions to draw in the plane.
 

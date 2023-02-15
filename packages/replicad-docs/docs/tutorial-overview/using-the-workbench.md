@@ -26,6 +26,25 @@ You should see something like that:
 
 Congratulation you have built your first model with replicad!
 
+:::tip
+
+<div style={{display: "flex", flexDirection: "row", justifyContent:
+"space-between"}}>
+
+<div style={{maxWidth: "calc(100% - 120px)"}}>
+
+You can click on the `Open in workbench` button in most code samples to see (and
+edit them) within the workbench.
+
+</div>
+
+<div style={{width: "100px"}}>
+<img src="/img/tutorial/workbench.png" alt="The workbench button" />
+</div>
+</div>
+
+:::
+
 ## Direct links
 
 You can even open a model directly in the workbench if you click on the `Open in workbench` button next to the copy button!

@@ -18,7 +18,7 @@ const main = () => {
 };
 ```
 
-By default this sketches on the "XY" plane.
+By default this sketches on the `XY` plane.
 
 ## Planes
 

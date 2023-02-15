@@ -3,6 +3,25 @@ sidebar_position: 2
 title: Drawing the body profile
 ---
 
+:::tip
+
+<div style={{display: "flex", flexDirection: "row", justifyContent:
+"space-between"}}>
+
+<div style={{maxWidth: "calc(100% - 120px)"}}>
+
+You can click on the `Open in workbench` button in most code samples to see (and
+edit them) within the workbench.
+
+</div>
+
+<div style={{width: "100px"}}>
+<img src="/img/tutorial/workbench.png" alt="The workbench button" />
+</div>
+</div>
+
+:::
+
 So let's start by the body of our can. We will take the general approach of
 drawing a profile that will then be revolved.
 

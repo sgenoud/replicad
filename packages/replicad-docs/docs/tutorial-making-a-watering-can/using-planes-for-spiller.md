@@ -3,11 +3,30 @@ sidebar_position: 3
 title: Using planes for the filler
 ---
 
+:::tip
+
+<div style={{display: "flex", flexDirection: "row", justifyContent:
+"space-between"}}>
+
+<div style={{maxWidth: "calc(100% - 120px)"}}>
+
+You can click on the `Open in workbench` button in most code samples to see (and
+edit them) within the workbench.
+
+</div>
+
+<div style={{width: "100px"}}>
+<img src="/img/tutorial/workbench.png" alt="The workbench button" />
+</div>
+</div>
+
+:::
+
 In order to build the filler we will need to place three circles (that will be
 lofted later on).
 
 We will approach this by drawing on three different planes. The first one is
-simple, it corresponds to the plane parallel to the "XY" plane, but at
+simple, it corresponds to the plane parallel to the `XY` plane, but at
 a certain distance from the origin.
 
 ```js withWorkbench
@@ -18,8 +37,8 @@ const main = () => {
 };
 ```
 
-Note that sketching on a plane parallel to a standard one (`"XY"`, `"XZ"` or
-`"YZ"` is a common operation and you can use the shortcut
+Note that sketching on a plane parallel to a standard one (`XY`, `XZ` or
+`YZ` is a common operation and you can use the shortcut
 
 ```js withWorkbench
 const { drawCircle } = replicad;
