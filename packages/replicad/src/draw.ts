@@ -1,6 +1,5 @@
 import {
   BoundingBox2d,
-  Curve2D,
   make2dCircle,
   make2dEllipse,
   make2dInerpolatedBSplineCurve,
@@ -163,6 +162,20 @@ export class Drawing implements DrawingInterface {
 
   offset(distance: number): Drawing {
     return new Drawing(offset(this.innerShape, distance));
+  }
+
+  get blueprint(): Blueprint {
+    if (!(this.innerShape instanceof Blueprint)) {
+      if (
+        this.innerShape instanceof Blueprints &&
+        this.innerShape.blueprints.length === 1 &&
+        this.innerShape.blueprints[0] instanceof Blueprint
+      ) {
+        return this.innerShape.blueprints[0];
+      }
+      throw new Error("This drawing is not a blueprint");
+    }
+    return this.innerShape;
   }
 }
 
