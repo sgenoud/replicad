@@ -62,6 +62,13 @@ const config = {
           },
         ],
       },
+      algolia: {
+        appId: "O4BGYDV04E",
+        apiKey: "24a6b1fd7a8eaec7b47cb861eddbd84f",
+        indexName: "replicad",
+        contextualSearch: true,
+      },
+
       footer: {
         style: "dark",
         links: [
