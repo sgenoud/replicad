@@ -12,6 +12,7 @@
   "license": "AGPL-3.0-or-later",
   "main": "dist/umd/replicad-threejs-helper.js",
   "module": "dist/es/replicad-threejs-helper.js",
+  "type": "module",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -30,8 +31,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.ts",
-    "start": "rollup -w -c rollup.config.ts",
+    "build": "rollup -c rollup.config.js",
+    "start": "rollup -w -c rollup.config.js",
     "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme minimal src",
     "build-docss": "typedoc --help",
     "test": "echo \"Error: run tests from root\" && exit 1"
@@ -44,10 +45,10 @@
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.1.0",
     "prettier": "^2.4.1",
-    "rollup": "^2.58.0",
+    "rollup": "3.10.1",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-ts": "^1.4.7",
-    "typescript": "^4.4.4"
+    "rollup-plugin-ts": "3.1.1",
+    "typescript": "^4.9.5"
   }
 }
