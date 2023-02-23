@@ -14,6 +14,11 @@ mainBuild:
     - symbol: Standard_Transient
     - symbol: Precision
 
+    - symbol: Interface_Static
+    - symbol: Interface_TypedValue
+    - symbol: MoniTool_TypedValue
+    - symbol: Handle_StepData_StepModel
+
     - symbol: gp_XYZ
     - symbol: gp_XY
     - symbol: gp_Vec

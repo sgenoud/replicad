@@ -1243,6 +1243,55 @@ export declare class GC_Root {
   delete(): void;
 }
 
+export declare class Interface_Static extends Interface_TypedValue {
+  PrintStatic(S: Standard_OStream): void;
+  Family(): Standard_CString;
+  SetWild(wildcard: Handle_Interface_Static): void;
+  Wild(): Handle_Interface_Static;
+  SetUptodate(): void;
+  UpdatedStatus(): Standard_Boolean;
+  static Init_1(family: Standard_CString, name: Standard_CString, type: Interface_ParamType, init: Standard_CString): Standard_Boolean;
+  static Init_2(family: Standard_CString, name: Standard_CString, type: Standard_Character, init: Standard_CString): Standard_Boolean;
+  static Static(name: Standard_CString): Handle_Interface_Static;
+  static IsPresent(name: Standard_CString): Standard_Boolean;
+  static CDef(name: Standard_CString, part: Standard_CString): Standard_CString;
+  static IDef(name: Standard_CString, part: Standard_CString): Graphic3d_ZLayerId;
+  static IsSet(name: Standard_CString, proper: Standard_Boolean): Standard_Boolean;
+  static CVal(name: Standard_CString): Standard_CString;
+  static IVal(name: Standard_CString): Graphic3d_ZLayerId;
+  static RVal(name: Standard_CString): Standard_Real;
+  static SetCVal(name: Standard_CString, val: Standard_CString): Standard_Boolean;
+  static SetIVal(name: Standard_CString, val: Graphic3d_ZLayerId): Standard_Boolean;
+  static SetRVal(name: Standard_CString, val: Standard_Real): Standard_Boolean;
+  static Update(name: Standard_CString): Standard_Boolean;
+  static IsUpdated(name: Standard_CString): Standard_Boolean;
+  static Items(mode: Graphic3d_ZLayerId, criter: Standard_CString): Handle_TColStd_HSequenceOfHAsciiString;
+  static Standards(): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Interface_Static_1 extends Interface_Static {
+    constructor(family: Standard_CString, name: Standard_CString, type: Interface_ParamType, init: Standard_CString);
+  }
+
+  export declare class Interface_Static_2 extends Interface_Static {
+    constructor(family: Standard_CString, name: Standard_CString, other: Handle_Interface_Static);
+  }
+
+export declare class Interface_TypedValue extends MoniTool_TypedValue {
+  constructor(name: Standard_CString, type: Interface_ParamType, init: Standard_CString)
+  Type(): Interface_ParamType;
+  static ParamTypeToValueType(typ: Interface_ParamType): MoniTool_ValueType;
+  static ValueTypeToParamType(typ: MoniTool_ValueType): Interface_ParamType;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
 export declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeShape {
   constructor()
   PerformBySimple(theS: TopoDS_Shape, theOffsetValue: Standard_Real): void;
@@ -1505,6 +1554,71 @@ export declare class GeomAPI_PointsToBSpline {
 
   export declare class GeomAPI_PointsToBSpline_5 extends GeomAPI_PointsToBSpline {
     constructor(Points: TColgp_Array1OfPnt, Weight1: Standard_Real, Weight2: Standard_Real, Weight3: Standard_Real, DegMax: Graphic3d_ZLayerId, Continuity: GeomAbs_Shape, Tol3D: Standard_Real);
+  }
+
+export declare class MoniTool_TypedValue extends Standard_Transient {
+  Name(): Standard_CString;
+  ValueType(): MoniTool_ValueType;
+  Definition(): XCAFDoc_PartId;
+  SetDefinition(deftext: Standard_CString): void;
+  Print(S: Standard_OStream): void;
+  PrintValue(S: Standard_OStream): void;
+  AddDef(initext: Standard_CString): Standard_Boolean;
+  SetLabel(label: Standard_CString): void;
+  Label(): Standard_CString;
+  SetMaxLength(max: Graphic3d_ZLayerId): void;
+  MaxLength(): Graphic3d_ZLayerId;
+  SetIntegerLimit(max: Standard_Boolean, val: Graphic3d_ZLayerId): void;
+  IntegerLimit(max: Standard_Boolean, val: Graphic3d_ZLayerId): Standard_Boolean;
+  SetRealLimit(max: Standard_Boolean, val: Standard_Real): void;
+  RealLimit(max: Standard_Boolean, val: Standard_Real): Standard_Boolean;
+  SetUnitDef(def: Standard_CString): void;
+  UnitDef(): Standard_CString;
+  StartEnum(start: Graphic3d_ZLayerId, match: Standard_Boolean): void;
+  AddEnum(v1: Standard_CString, v2: Standard_CString, v3: Standard_CString, v4: Standard_CString, v5: Standard_CString, v6: Standard_CString, v7: Standard_CString, v8: Standard_CString, v9: Standard_CString, v10: Standard_CString): void;
+  AddEnumValue(val: Standard_CString, num: Graphic3d_ZLayerId): void;
+  EnumDef(startcase: Graphic3d_ZLayerId, endcase: Graphic3d_ZLayerId, match: Standard_Boolean): Standard_Boolean;
+  EnumVal(num: Graphic3d_ZLayerId): Standard_CString;
+  EnumCase(val: Standard_CString): Graphic3d_ZLayerId;
+  SetObjectType(typ: Handle_Standard_Type): void;
+  ObjectType(): Handle_Standard_Type;
+  SetInterpret(func: MoniTool_ValueInterpret): void;
+  HasInterpret(): Standard_Boolean;
+  SetSatisfies(func: MoniTool_ValueSatisfies, name: Standard_CString): void;
+  SatisfiesName(): Standard_CString;
+  IsSetValue(): Standard_Boolean;
+  CStringValue(): Standard_CString;
+  HStringValue(): Handle_TCollection_HAsciiString;
+  Interpret(hval: Handle_TCollection_HAsciiString, native: Standard_Boolean): Handle_TCollection_HAsciiString;
+  Satisfies(hval: Handle_TCollection_HAsciiString): Standard_Boolean;
+  ClearValue(): void;
+  SetCStringValue(val: Standard_CString): Standard_Boolean;
+  SetHStringValue(hval: Handle_TCollection_HAsciiString): Standard_Boolean;
+  IntegerValue(): Graphic3d_ZLayerId;
+  SetIntegerValue(ival: Graphic3d_ZLayerId): Standard_Boolean;
+  RealValue(): Standard_Real;
+  SetRealValue(rval: Standard_Real): Standard_Boolean;
+  ObjectValue(): Handle_Standard_Transient;
+  GetObjectValue(val: Handle_Standard_Transient): void;
+  SetObjectValue(obj: Handle_Standard_Transient): Standard_Boolean;
+  ObjectTypeName(): Standard_CString;
+  static AddLib(tv: Handle_MoniTool_TypedValue, def: Standard_CString): Standard_Boolean;
+  static Lib(def: Standard_CString): Handle_MoniTool_TypedValue;
+  static FromLib(def: Standard_CString): Handle_MoniTool_TypedValue;
+  static LibList(): Handle_TColStd_HSequenceOfAsciiString;
+  static StaticValue(name: Standard_CString): Handle_MoniTool_TypedValue;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class MoniTool_TypedValue_1 extends MoniTool_TypedValue {
+    constructor(name: Standard_CString, type: MoniTool_ValueType, init: Standard_CString);
+  }
+
+  export declare class MoniTool_TypedValue_2 extends MoniTool_TypedValue {
+    constructor(other: Handle_MoniTool_TypedValue);
   }
 
 export declare class BRepCheck_Analyzer {
@@ -6320,6 +6434,30 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
     constructor(W: TopoDS_Wire, KnotByCurvilinearAbcissa: Standard_Boolean, First: Standard_Real, Last: Standard_Real, Tol: Standard_Real);
   }
 
+export declare class Handle_StepData_StepModel {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: StepData_StepModel): void;
+  get(): StepData_StepModel;
+  delete(): void;
+}
+
+  export declare class Handle_StepData_StepModel_1 extends Handle_StepData_StepModel {
+    constructor();
+  }
+
+  export declare class Handle_StepData_StepModel_2 extends Handle_StepData_StepModel {
+    constructor(thePtr: StepData_StepModel);
+  }
+
+  export declare class Handle_StepData_StepModel_3 extends Handle_StepData_StepModel {
+    constructor(theHandle: Handle_StepData_StepModel);
+  }
+
+  export declare class Handle_StepData_StepModel_4 extends Handle_StepData_StepModel {
+    constructor(theHandle: Handle_StepData_StepModel);
+  }
+
 export declare class Adaptor2d_Curve2d extends Standard_Transient {
   constructor();
   static get_type_name(): Standard_Character;
@@ -6776,6 +6914,10 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GC_MakeArcOfEllipse_2: typeof GC_MakeArcOfEllipse_2;
   GC_MakeArcOfEllipse_3: typeof GC_MakeArcOfEllipse_3;
   GC_Root: typeof GC_Root;
+  Interface_Static: typeof Interface_Static;
+  Interface_Static_1: typeof Interface_Static_1;
+  Interface_Static_2: typeof Interface_Static_2;
+  Interface_TypedValue: typeof Interface_TypedValue;
   BRepOffsetAPI_MakeOffsetShape: typeof BRepOffsetAPI_MakeOffsetShape;
   BRepOffsetAPI_MakeFilling: typeof BRepOffsetAPI_MakeFilling;
   BRepOffsetAPI_MakePipeShell: typeof BRepOffsetAPI_MakePipeShell;
@@ -6809,6 +6951,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GeomAPI_PointsToBSpline_3: typeof GeomAPI_PointsToBSpline_3;
   GeomAPI_PointsToBSpline_4: typeof GeomAPI_PointsToBSpline_4;
   GeomAPI_PointsToBSpline_5: typeof GeomAPI_PointsToBSpline_5;
+  MoniTool_TypedValue: typeof MoniTool_TypedValue;
+  MoniTool_TypedValue_1: typeof MoniTool_TypedValue_1;
+  MoniTool_TypedValue_2: typeof MoniTool_TypedValue_2;
   BRepCheck_Analyzer: typeof BRepCheck_Analyzer;
   ShapeFix_Face: typeof ShapeFix_Face;
   ShapeFix_Face_1: typeof ShapeFix_Face_1;
@@ -7311,6 +7456,11 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepAdaptor_CompCurve_1: typeof BRepAdaptor_CompCurve_1;
   BRepAdaptor_CompCurve_2: typeof BRepAdaptor_CompCurve_2;
   BRepAdaptor_CompCurve_3: typeof BRepAdaptor_CompCurve_3;
+  Handle_StepData_StepModel: typeof Handle_StepData_StepModel;
+  Handle_StepData_StepModel_1: typeof Handle_StepData_StepModel_1;
+  Handle_StepData_StepModel_2: typeof Handle_StepData_StepModel_2;
+  Handle_StepData_StepModel_3: typeof Handle_StepData_StepModel_3;
+  Handle_StepData_StepModel_4: typeof Handle_StepData_StepModel_4;
   Adaptor2d_Curve2d: typeof Adaptor2d_Curve2d;
   Handle_Adaptor2d_Curve2d: typeof Handle_Adaptor2d_Curve2d;
   Handle_Adaptor2d_Curve2d_1: typeof Handle_Adaptor2d_Curve2d_1;

@@ -485,6 +485,9 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   blobSTEP(): Blob {
     const filename = "blob.step";
     const writer = new this.oc.STEPControl_Writer_1();
+
+    this.oc.Interface_Static.SetIVal("write.step.schema", 5);
+    writer.Model(true).delete();
     const progress = new this.oc.Message_ProgressRange_1();
 
     writer.Transfer(
