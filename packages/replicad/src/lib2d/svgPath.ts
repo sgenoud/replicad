@@ -38,9 +38,6 @@ export const adaptedCurveToPathElem = (
       const p2 = fromPnt(curve.Pole(3));
       return `C ${p1} ${p2} ${endpoint}`;
     }
-
-    console.warn(`bezier of degree ${deg} not implemented, using a line`);
-    return `L ${endpoint}`;
   }
   if (curveType === "CIRCLE") {
     const curve = adaptor.Circle();
@@ -86,10 +83,13 @@ export const adaptedCurveToPathElem = (
   }
 
   if (curveType === "BSPLINE_CURVE") {
-    const bezierCurves = BSplineToBezier(adaptor);
-    return bezierCurves
-      .map((c) => adaptedCurveToPathElem(c.adaptor(), c.lastPoint))
-      .join(" ");
+    const deg = adaptor.BSpline().get().Degree();
+    if (deg < 4) {
+      const bezierCurves = BSplineToBezier(adaptor);
+      return bezierCurves
+        .map((c) => adaptedCurveToPathElem(c.adaptor(), c.lastPoint))
+        .join(" ");
+    }
   }
 
   const bspline = approximateAsBSpline(adaptor);
