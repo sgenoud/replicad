@@ -1,0 +1,61 @@
+---
+sidebar_position: 8
+title: Orthographic Projections
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import MyComponentSource from "!!raw-loader!../../examples/projections.js";
+
+Historically technical drawing consisted in a lot of orthographic projections.
+In some cases it still is a great method of communication for 3D models.
+
+Replicad support projetions into a drawing (and therefore a projection as
+a SVG). This code follow the [first angle
+convention](https://en.wikipedia.org/wiki/Multiview_orthographic_projection#First-angle_projection).
+
+And here is what the code looks like.
+
+<CodeBlock workbench className="language-jsx">
+  {MyComponentSource}
+</CodeBlock>
+
+## Custom perspectives
+
+You can also have nice looking perspectives on your shapes.
+
+```js withWorkbench
+const { drawProjection, ProjectionCamera, draw } = replicad;
+
+const prettyProjection = (shape) => {
+  const bbox = shape.boundingBox;
+  const center = bbox.center;
+  const corner = [
+    bbox.center[0] + bbox.width,
+    bbox.center[1] - bbox.height,
+    bbox.center[2] + bbox.depth,
+  ];
+  const camera = new ProjectionCamera(corner).lookAt(center);
+  const { visible, hidden } = drawProjection(shape, camera);
+
+  return [
+    { shape: hidden, strokeType: "dots", name: "Hidden Lines" },
+    { shape: visible, name: "Visible Lines" },
+  ];
+};
+
+const main = () => {
+  const shape = draw()
+    .vLine(-10)
+    .hLine(-5)
+    .vLine(15)
+    .customCorner(2)
+    .hLine(15)
+    .vLine(-5)
+    .close()
+    .sketchOnPlane()
+    .extrude(10)
+    .chamfer(5, (e) => e.inPlane("XY", 10).containsPoint([10, 1, 10]));
+
+  return prettyProjection(shape);
+};
+```

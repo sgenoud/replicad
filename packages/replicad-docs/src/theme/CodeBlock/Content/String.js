@@ -22,6 +22,7 @@ export default function CodeBlockString({
   title: titleProp,
   showLineNumbers: showLineNumbersProp,
   language: languageProp,
+  workbench,
 }) {
   const {
     prism: { defaultLanguage, magicComments },
@@ -41,7 +42,7 @@ export default function CodeBlockString({
   });
   const showLineNumbers =
     showLineNumbersProp ?? containsLineNumbers(metastring);
-  const withWorkbench = metastring?.includes("withWorkbench");
+  const withWorkbench = workbench || metastring?.includes("withWorkbench");
   return (
     <Container
       as="div"
