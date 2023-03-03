@@ -6,7 +6,7 @@ import { Curve2D } from "./Curve2D";
 
 export const approximateAsBSpline = (
   adaptor: Geom2dAdaptor_Curve,
-  tolerance = 1e-9
+  tolerance = 1e-5
 ): Curve2D => {
   const oc = getOC();
   const r = GCWithScope();
@@ -15,8 +15,8 @@ export const approximateAsBSpline = (
     new oc.Geom2dConvert_ApproxCurve_2(
       adaptor.ShallowCopy(),
       tolerance,
-      oc.GeomAbs_Shape.GeomAbs_C1 as any,
-      20,
+      oc.GeomAbs_Shape.GeomAbs_C0 as any,
+      30,
       3
     )
   );
