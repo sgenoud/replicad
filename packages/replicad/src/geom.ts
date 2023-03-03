@@ -25,6 +25,13 @@ export type Point =
   | [number, number]
   | { XYZ: () => gp_XYZ; delete: () => void };
 
+export function isPoint(p: unknown): p is Point {
+  if (Array.isArray(p)) return p.length === 3 || p.length === 2;
+  else if (p instanceof Vector) return true;
+  else if (p && typeof (p as any)?.XYZ === "function") return true;
+  return false;
+}
+
 export const makeAx3 = (center: Point, dir: Point, xDir?: Point): gp_Ax3 => {
   const oc = getOC();
   const origin = asPnt(center);

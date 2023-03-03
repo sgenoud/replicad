@@ -19,16 +19,20 @@ import {
   Blueprints,
 } from "./blueprints";
 import { Plane, PlaneName, Point } from "./geom";
-import { Face } from "./shapes";
+import type { AnyShape, Edge, Face } from "./shapes";
 import { BaseSketcher2d } from "./Sketcher2d";
-import { SketchInterface, Sketches } from "./sketches";
-import { GenericSketcher } from "./sketcherlib";
+import type { SketchInterface, Sketches, Sketch } from "./sketches";
+import type { GenericSketcher } from "./sketcherlib";
 import { textBlueprints } from "./text";
-import { BSplineApproximationConfig } from ".";
+import { lookFromPlane, ProjectionCamera } from "./projection/ProjectionCamera";
+import type { ProjectionPlane } from "./projection/ProjectionCamera";
+import { makeProjectedEdges } from "./projection/makeProjectedEdges";
+
 import offset from "./blueprints/offset";
 import { CornerFinder } from "./finders/cornerFinder";
 import { fillet2D, chamfer2D } from "./blueprints/customCorners";
 import { edgeToCurve } from "./curves";
+import { BSplineApproximationConfig } from "./shapeHelpers";
 
 export class Drawing implements DrawingInterface {
   private innerShape: Shape2D;
@@ -386,4 +390,36 @@ export function drawFaceOutline(face: Face): Drawing {
   if (stitchedCurves.length === 1) return new Drawing(stitchedCurves[0]);
 
   return new Drawing(new Blueprints(stitchedCurves));
+}
+
+const edgesToDrawing = (edges: Edge[]): Drawing => {
+  const planeFace = (
+    drawRectangle(1000, 1000).sketchOnPlane() as Sketch
+  ).face();
+
+  const curves = edges.map((e) => edgeToCurve(e, planeFace));
+  const stitchedCurves = stitchCurves(curves).map((s) => new Blueprint(s));
+  if (stitchedCurves.length === 0) return new Drawing();
+  if (stitchedCurves.length === 1) return new Drawing(stitchedCurves[0]);
+
+  return new Drawing(new Blueprints(stitchedCurves));
+};
+
+export function drawProjection(
+  shape: AnyShape,
+  projectionCamera: ProjectionPlane | ProjectionCamera = "front"
+): { visible: Drawing; hidden: Drawing } {
+  let camera: ProjectionCamera;
+  if (projectionCamera instanceof ProjectionCamera) {
+    camera = projectionCamera;
+  } else {
+    camera = lookFromPlane(projectionCamera);
+  }
+
+  const { visible, hidden } = makeProjectedEdges(shape, camera);
+
+  return {
+    visible: edgesToDrawing(visible),
+    hidden: edgesToDrawing(hidden),
+  };
 }

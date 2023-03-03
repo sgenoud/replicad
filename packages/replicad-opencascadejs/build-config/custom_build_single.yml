@@ -244,6 +244,12 @@ mainBuild:
 
     - symbol: StlAPI
 
+    - symbol: HLRBRep_Algo
+    - symbol: Handle_HLRBRep_Algo
+    - symbol: HLRBRep_InternalAlgo
+    - symbol: HLRAlgo_Projector
+    - symbol: HLRBRep_HLRToShape
+
   emccFlags:
     - -sEXPORT_ES6=1
     - -sUSE_ES6_IMPORT_META=0

@@ -21,6 +21,119 @@ export declare class Precision {
   delete(): void;
 }
 
+export declare class Handle_HLRBRep_Algo {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: HLRBRep_Algo): void;
+  get(): HLRBRep_Algo;
+  delete(): void;
+}
+
+  export declare class Handle_HLRBRep_Algo_1 extends Handle_HLRBRep_Algo {
+    constructor();
+  }
+
+  export declare class Handle_HLRBRep_Algo_2 extends Handle_HLRBRep_Algo {
+    constructor(thePtr: HLRBRep_Algo);
+  }
+
+  export declare class Handle_HLRBRep_Algo_3 extends Handle_HLRBRep_Algo {
+    constructor(theHandle: Handle_HLRBRep_Algo);
+  }
+
+  export declare class Handle_HLRBRep_Algo_4 extends Handle_HLRBRep_Algo {
+    constructor(theHandle: Handle_HLRBRep_Algo);
+  }
+
+export declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
+  Add_1(S: TopoDS_Shape, SData: Handle_Standard_Transient, nbIso: Graphic3d_ZLayerId): void;
+  Add_2(S: TopoDS_Shape, nbIso: Graphic3d_ZLayerId): void;
+  Index(S: TopoDS_Shape): Graphic3d_ZLayerId;
+  OutLinedShapeNullify(): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class HLRBRep_Algo_1 extends HLRBRep_Algo {
+    constructor();
+  }
+
+  export declare class HLRBRep_Algo_2 extends HLRBRep_Algo {
+    constructor(A: Handle_HLRBRep_Algo);
+  }
+
+export declare class HLRBRep_InternalAlgo extends Standard_Transient {
+  Projector_1(P: HLRAlgo_Projector): void;
+  Projector_2(): HLRAlgo_Projector;
+  Update(): void;
+  Load_1(S: Handle_HLRTopoBRep_OutLiner, SData: Handle_Standard_Transient, nbIso: Graphic3d_ZLayerId): void;
+  Load_2(S: Handle_HLRTopoBRep_OutLiner, nbIso: Graphic3d_ZLayerId): void;
+  Index(S: Handle_HLRTopoBRep_OutLiner): Graphic3d_ZLayerId;
+  Remove(I: Graphic3d_ZLayerId): void;
+  ShapeData(I: Graphic3d_ZLayerId, SData: Handle_Standard_Transient): void;
+  SeqOfShapeBounds(): HLRBRep_SeqOfShapeBounds;
+  NbShapes(): Graphic3d_ZLayerId;
+  ShapeBounds(I: Graphic3d_ZLayerId): HLRBRep_ShapeBounds;
+  InitEdgeStatus(): void;
+  Select_1(): void;
+  Select_2(I: Graphic3d_ZLayerId): void;
+  SelectEdge(I: Graphic3d_ZLayerId): void;
+  SelectFace(I: Graphic3d_ZLayerId): void;
+  ShowAll_1(): void;
+  ShowAll_2(I: Graphic3d_ZLayerId): void;
+  HideAll_1(): void;
+  HideAll_2(I: Graphic3d_ZLayerId): void;
+  PartialHide(): void;
+  Hide_1(): void;
+  Hide_2(I: Graphic3d_ZLayerId): void;
+  Hide_3(I: Graphic3d_ZLayerId, J: Graphic3d_ZLayerId): void;
+  Debug_1(deb: Standard_Boolean): void;
+  Debug_2(): Standard_Boolean;
+  DataStructure(): Handle_HLRBRep_Data;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class HLRBRep_InternalAlgo_1 extends HLRBRep_InternalAlgo {
+    constructor();
+  }
+
+  export declare class HLRBRep_InternalAlgo_2 extends HLRBRep_InternalAlgo {
+    constructor(A: Handle_HLRBRep_InternalAlgo);
+  }
+
+export declare class HLRBRep_HLRToShape {
+  constructor(A: Handle_HLRBRep_Algo)
+  VCompound_1(): TopoDS_Shape;
+  VCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  Rg1LineVCompound_1(): TopoDS_Shape;
+  Rg1LineVCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  RgNLineVCompound_1(): TopoDS_Shape;
+  RgNLineVCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  OutLineVCompound_1(): TopoDS_Shape;
+  OutLineVCompound3d(): TopoDS_Shape;
+  OutLineVCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  IsoLineVCompound_1(): TopoDS_Shape;
+  IsoLineVCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  HCompound_1(): TopoDS_Shape;
+  HCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  Rg1LineHCompound_1(): TopoDS_Shape;
+  Rg1LineHCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  RgNLineHCompound_1(): TopoDS_Shape;
+  RgNLineHCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  OutLineHCompound_1(): TopoDS_Shape;
+  OutLineHCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  IsoLineHCompound_1(): TopoDS_Shape;
+  IsoLineHCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  CompoundOfEdges_1(type: HLRBRep_TypeOfResultingEdge, visible: Standard_Boolean, In3d: Standard_Boolean): TopoDS_Shape;
+  CompoundOfEdges_2(S: TopoDS_Shape, type: HLRBRep_TypeOfResultingEdge, visible: Standard_Boolean, In3d: Standard_Boolean): TopoDS_Shape;
+  delete(): void;
+}
+
 export declare class Geom2dConvert_ApproxCurve {
   Curve(): Handle_Geom2d_BSplineCurve;
   IsDone(): Standard_Boolean;
@@ -2445,6 +2558,44 @@ export declare class BOPAlgo_Options {
 
   export declare class BOPAlgo_Options_2 extends BOPAlgo_Options {
     constructor(theAllocator: Handle_NCollection_BaseAllocator);
+  }
+
+export declare class HLRAlgo_Projector {
+  Set(T: gp_Trsf, Persp: Standard_Boolean, Focus: Standard_Real): void;
+  Directions(D1: gp_Vec2d, D2: gp_Vec2d, D3: gp_Vec2d): void;
+  Scaled(On: Standard_Boolean): void;
+  Perspective(): Standard_Boolean;
+  Transformation(): gp_Trsf;
+  InvertedTransformation(): gp_Trsf;
+  FullTransformation(): gp_Trsf;
+  Focus(): Standard_Real;
+  Transform_1(D: gp_Vec): void;
+  Transform_2(Pnt: gp_Pnt): void;
+  Project_1(P: gp_Pnt, Pout: gp_Pnt2d): void;
+  Project_2(P: gp_Pnt, X: Standard_Real, Y: Standard_Real, Z: Standard_Real): void;
+  Project_3(P: gp_Pnt, D1: gp_Vec, Pout: gp_Pnt2d, D1out: gp_Vec2d): void;
+  Shoot(X: Standard_Real, Y: Standard_Real): gp_Lin;
+  delete(): void;
+}
+
+  export declare class HLRAlgo_Projector_1 extends HLRAlgo_Projector {
+    constructor();
+  }
+
+  export declare class HLRAlgo_Projector_2 extends HLRAlgo_Projector {
+    constructor(CS: gp_Ax2);
+  }
+
+  export declare class HLRAlgo_Projector_3 extends HLRAlgo_Projector {
+    constructor(CS: gp_Ax2, Focus: Standard_Real);
+  }
+
+  export declare class HLRAlgo_Projector_4 extends HLRAlgo_Projector {
+    constructor(T: gp_Trsf, Persp: Standard_Boolean, Focus: Standard_Real);
+  }
+
+  export declare class HLRAlgo_Projector_5 extends HLRAlgo_Projector {
+    constructor(T: gp_Trsf, Persp: Standard_Boolean, Focus: Standard_Real, v1: gp_Vec2d, v2: gp_Vec2d, v3: gp_Vec2d);
   }
 
 export declare class StlAPI {
@@ -6755,6 +6906,18 @@ declare namespace FS {
 
 export type OpenCascadeInstance = {FS: typeof FS} & {
   Precision: typeof Precision;
+  Handle_HLRBRep_Algo: typeof Handle_HLRBRep_Algo;
+  Handle_HLRBRep_Algo_1: typeof Handle_HLRBRep_Algo_1;
+  Handle_HLRBRep_Algo_2: typeof Handle_HLRBRep_Algo_2;
+  Handle_HLRBRep_Algo_3: typeof Handle_HLRBRep_Algo_3;
+  Handle_HLRBRep_Algo_4: typeof Handle_HLRBRep_Algo_4;
+  HLRBRep_Algo: typeof HLRBRep_Algo;
+  HLRBRep_Algo_1: typeof HLRBRep_Algo_1;
+  HLRBRep_Algo_2: typeof HLRBRep_Algo_2;
+  HLRBRep_InternalAlgo: typeof HLRBRep_InternalAlgo;
+  HLRBRep_InternalAlgo_1: typeof HLRBRep_InternalAlgo_1;
+  HLRBRep_InternalAlgo_2: typeof HLRBRep_InternalAlgo_2;
+  HLRBRep_HLRToShape: typeof HLRBRep_HLRToShape;
   Geom2dConvert_ApproxCurve: typeof Geom2dConvert_ApproxCurve;
   Geom2dConvert_ApproxCurve_1: typeof Geom2dConvert_ApproxCurve_1;
   Geom2dConvert_ApproxCurve_2: typeof Geom2dConvert_ApproxCurve_2;
@@ -7041,6 +7204,12 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BOPAlgo_Options: typeof BOPAlgo_Options;
   BOPAlgo_Options_1: typeof BOPAlgo_Options_1;
   BOPAlgo_Options_2: typeof BOPAlgo_Options_2;
+  HLRAlgo_Projector: typeof HLRAlgo_Projector;
+  HLRAlgo_Projector_1: typeof HLRAlgo_Projector_1;
+  HLRAlgo_Projector_2: typeof HLRAlgo_Projector_2;
+  HLRAlgo_Projector_3: typeof HLRAlgo_Projector_3;
+  HLRAlgo_Projector_4: typeof HLRAlgo_Projector_4;
+  HLRAlgo_Projector_5: typeof HLRAlgo_Projector_5;
   StlAPI: typeof StlAPI;
   StlAPI_Writer: typeof StlAPI_Writer;
   StlAPI_Reader: typeof StlAPI_Reader;
