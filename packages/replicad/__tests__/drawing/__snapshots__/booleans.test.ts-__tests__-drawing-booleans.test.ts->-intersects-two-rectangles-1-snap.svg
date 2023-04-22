@@ -1,3 +1,1 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="-6.000001 -41.000001 12.000002 82.000002" fill="none" stroke="black" stroke-width="0.6%" vector-effect="non-scaling-stroke">
-    <path d="M 5 40 L 5 -40 L -5 -40 L -5 40 L 5 40 Z" />
-</svg>
+<svg fill="none" stroke="#000" stroke-width=".6%" viewBox="-6.000001 -41.000001 12.000002 82.000002" xmlns="http://www.w3.org/2000/svg"><path d="m5 40v-80h-10v80z"/></svg>
