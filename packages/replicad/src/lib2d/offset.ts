@@ -97,7 +97,8 @@ export const make2dOffset = (
 
   // We need a better way to handle curves that self intersect, for now we
   // replace them with a line
-  if (selfIntersections(approximation).length) {
+  const selfIntersects = selfIntersections(approximation);
+  if (selfIntersects.length) {
     return {
       collapsed: true,
       firstPoint: approximation.firstPoint,
