@@ -58,11 +58,11 @@ What have we done?
 
 - We start drawing (at the origin, for instance `draw([10, 10])` would start at
   another point.
-- We then draw an horizontal line of 25 milimeters of length.
+- We then draw an horizontal line of 25 millimeters of length.
 - Then, we then draw an half ellipse, from the last point of the line, moving,
   by `0` horizontally and by `40` vertically - but drawing an arc of ellipse of
   `5` of axis length.
-- We go back of 25 horizonally
+- We go back of 25 horizontally
 - We finally close the drawing, going from the current last point to the first
   point with a straight line.
 

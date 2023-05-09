@@ -55,4 +55,4 @@ const main = () => {
 };
 ```
 
-![the cylinder intersecting iself](/img/tutorial/combinations-3.png)
+![the cylinder intersecting itself](/img/tutorial/combinations-3.png)

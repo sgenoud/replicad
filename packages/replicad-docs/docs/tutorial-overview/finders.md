@@ -62,7 +62,7 @@ const main = () => {
 ```
 
 This was fairly easy, the door is the face parallel to the plane `XZ`, at
-the coordiante `35`.
+the coordinate `35`.
 
 There are many different types of filters like `inPlane` that allow you to
 specify precisely which face you are interested in. For instance you can look
@@ -140,7 +140,7 @@ house.
 
 ## Finding faces and edges
 
-We have created finders so far and used them to hightlight faces and edges
+We have created finders so far and used them to highlight faces and edges
 
 - but what are they really useful for.
 
