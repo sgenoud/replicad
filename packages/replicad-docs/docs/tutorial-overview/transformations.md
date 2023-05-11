@@ -4,7 +4,7 @@ title: Transformations
 ---
 
 Now that we have a 3D shape it is time to move it around. Note that usually you
-will transform a shape in order to align it with another shape for instance, or
+will transform a shape in order to align it with another shape, for instance, or
 to have different versions of a same basic shape.
 
 For this part of the tutorial we will create a weird, non symmetrical shape:
@@ -44,7 +44,7 @@ You can see the 2cm between the base of the shape and the grid
 return shape.rotate(45, [0, 0, 0], [1, 0, 0]);
 ```
 
-The shape is moved of 45 degrees by an axis going through the origin and in the
+The shape is rotated 45 degrees around an axis going through the origin and in the
 X direction. Try to move these points around to see what is going on.
 
 ## Finally mirroring

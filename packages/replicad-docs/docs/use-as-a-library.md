@@ -12,11 +12,11 @@ app here: <https://sample-app.replicad.xyz>.
 
 ## Display of the model
 
-With replicad you can easily export a STL (or STEP) file to be opened in
+With replicad you can easily export an STL (or STEP) file to be opened in
 another application. Nevertheless displaying a model in your page tends to be
 nicer.
 
-For this you will need to use a 3D library. For instance replicad has
+For this you will need to use a 3D library. For instance, replicad has
 [helpers](https://www.npmjs.com/package/replicad-threejs-helper) to integrate
 with [threejs](https://threejs.org/).
 

@@ -29,7 +29,7 @@ Let's start with the powerful `draw` API.
 
 ## The `draw` function and the Drawing API
 
-With the drawing API you can draw a set of segment of curve. It currently supports:
+With the drawing API you can draw straight lines and several types of curves. It currently supports:
 
 - straight lines
 - arcs of circles
@@ -59,10 +59,10 @@ What have we done?
 - We start drawing (at the origin, for instance `draw([10, 10])` would start at
   another point.
 - We then draw an horizontal line of 25 millimeters of length.
-- Then, we then draw an half ellipse, from the last point of the line, moving,
-  by `0` horizontally and by `40` vertically - but drawing an arc of ellipse of
-  `5` of axis length.
-- We go back of 25 horizontally
+- Then, we draw an half ellipse, from the last point of the line, moving,
+  by `0` horizontally and by `40` vertically - but drawing an arc of an ellipse with
+  an axis length of `5`.
+- We then go back of 25 horizontally
 - We finally close the drawing, going from the current last point to the first
   point with a straight line.
 
@@ -72,7 +72,7 @@ To understand what the different parameters do, let's play with them:
 
 - close with a mirror instead of a straight line with `.closeWithMirror`
   instead of `close`
-- replace the second horizontal line by a sagitta line (an arc or circle) as
+- replace the second horizontal line by a sagitta line (an arc or circle)
   `.hSagittaArc(-25, 10)`
 - change the origin to another point (with `draw([10, 10])` for instance).
 

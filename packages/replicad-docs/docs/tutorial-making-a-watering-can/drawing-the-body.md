@@ -41,7 +41,7 @@ const main = () => {
 };
 ```
 
-We drew a simple shape following the profile, by using only straight lines. We
+We drew a simple shape following the profile using only straight lines. We
 generally went for **relative** positioning. For instance with `hLine(20)` which
 draws an horizontal line of 20mm of length). An `line(10, 5)` which draws
 a line by going `10` horizontally and `5` vertically. But we also used
@@ -72,7 +72,7 @@ const main = () => {
 
 ## Arcs of circles
 
-We can also draw arcs of circle directly.
+We can also draw arcs of a circle directly.
 
 ```js withWorkbench
 const { draw } = replicad;
@@ -102,7 +102,7 @@ const main = () => {
 };
 ```
 
-We reoriented the drawing to start from the top (and not have to compute the
+We reoriented the drawing to start from the top (and to not have to compute the
 direction of the end tangent ourselves). By varying the `startFactor` we can
 reach a shape that we like.
 

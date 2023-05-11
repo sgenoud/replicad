@@ -14,7 +14,7 @@ You can find the detailed API documentation
 ![The sketch extruded](/img/tutorial/adding-depth-1.png)
 
 The simplest way to "add depth" is to take the face that we have and add
-thickness, to extrude it in other ways.
+thickness, to extrude it in other words.
 
 ```js withWorkbench
 const { draw } = replicad;
@@ -65,7 +65,7 @@ const main = () => {
 ![A loft between two sketches](/img/tutorial/adding-depth-3.png)
 
 With a loft we make a smooth transition between two sketches (simple ones,
-different from the one we had before.
+different from the one we had before).
 
 ```js withWorkbench
 const { drawRoundedRectangle, drawCircle } = replicad;

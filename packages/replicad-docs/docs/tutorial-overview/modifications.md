@@ -4,7 +4,7 @@ title: Modifications
 ---
 
 In addition to the shape transformations and shape combinations, it is also
-possible to apply some advances modifications to shapes. These modifications
+possible to apply some advanced modifications to shapes. These modifications
 use finders to filter out which face or edges they need.
 
 ## Fillet and chamfer
