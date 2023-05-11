@@ -32,14 +32,14 @@ We now have the basic drawing to create our 3D shapes:
 
 ### Creation of a cylinder
 
-We have two different approach we could take to create a cylinder:
+We have two different approaches we could take to create a cylinder:
 
 - draw a circle and extrude it
 - creating the cylinder with a direct function
 
 #### Extrusion
 
-To create a cylinder we can draw a circle, sketch in 3D space and then
+To create a cylinder we can draw a circle, sketch it in 3D space, and then
 a extrude it.
 
 ```js withWorkbench
@@ -66,13 +66,13 @@ const main = () => {
 
 ### Positioning the shape
 
-In the case of a circle that we extrude we could place the plane to sketch on
+In the case of a circle that we extrude, we could place the plane to sketch on
 and then position it.
 
-We have seen how to position a plane in 3D space. But we might want to position
+We have seen how to position a plane in 3D space, but we might want to position
 a 3D shape.
 
-The operations are similar for a shape than for a plane. First, translations
+The operations are similar for a shape as for a plane. First, translations
 are identical.
 
 ```js withWorkbench
@@ -83,7 +83,7 @@ const main = () => {
 ```
 
 Rotations are similar to pivots for planes - but as shapes do not have an
-origin point by default we need to specify it.
+origin point by default, we need to specify it.
 
 ```js withWorkbench
 const { makeCylinder } = replicad;
@@ -92,7 +92,7 @@ const main = () => {
 };
 ```
 
-In order to make things more readable we might want to rotate before we
+In order to make things more readable, we might want to rotate before we
 translate (with a different origin).
 
 ## The can body
@@ -122,7 +122,7 @@ After extrusion and revolution, the filler uses a third method of 3D shape
 creation: lofting. We can create shapes by defining sections through which an
 object will pass trough.
 
-We have defined our three circles and create a shape that pass through them
+We have defined our three circles and now we create a shape that passes through them
 all.
 
 ```js withWorkbench

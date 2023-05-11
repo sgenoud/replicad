@@ -3,7 +3,7 @@ sidebar_position: 10
 title: Fuse All
 ---
 
-You might find yourself in a situation where you have an array of shape (2D or
+You might find yourself in a situation where you have an array of shapes (2D or
 3D) and you just want to fuse (or intersect) them all together. The following
 snippet just does this
 

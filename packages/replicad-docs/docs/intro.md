@@ -27,5 +27,5 @@ tutorial](/docs/tutorial-overview/using-the-workbench)
 
 ## Integrating replicad in your web application
 
-If you want to use replicad to build your own application, an editor
+If you want to use replicad to build your own application, an editor,
 a generative 3D design, you can have a look at the [sample app](https://sample-app.replicad.xyz) and read the [documentation that is related to it](/docs/use-as-a-library)

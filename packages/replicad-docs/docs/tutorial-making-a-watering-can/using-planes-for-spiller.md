@@ -64,7 +64,7 @@ A translation changes the origin point of a plane (not its orientation).
 ## Plane pivots
 
 What if you want a plane that is not parallel to one of the standard ones? You
-can pivot it on it origin following a direction.
+can pivot it on it's origin following a direction.
 
 ```js withWorkbench
 const { drawCircle, makePlane } = replicad;
@@ -74,11 +74,11 @@ const main = () => {
 };
 ```
 
-The circle is not drawn with an angle of 20 degrees along the Y axis.
+The circle is drawn with an angle of 20 degrees along the Y axis.
 
 ## Putting it all together to build the filler
 
-With the filler we want 3 circles some of the pivoted, we put it all together
+With the filler we want 3 circles, some of them pivoted. We put it all together
 like this:
 
 ```js withWorkbench
@@ -101,4 +101,4 @@ const main = () => {
 };
 ```
 
-We will want to rely all this circles with a "loft" operation later on.
+We will want to use all these circles with a "loft" operation later on.

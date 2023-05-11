@@ -10,7 +10,7 @@ So let's use [the workbench](https://studio.replicad.xyz/workbench)!
 Let's draw using a basic replicad script. Do not worry about the details for
 now.
 
-Open the [the workbench](https://studio.replicad.xyz/workbench) in a new tab
+Open [the workbench](https://studio.replicad.xyz/workbench) in a new tab
 and copy this:
 
 ```js withWorkbench
@@ -24,7 +24,7 @@ You should see something like that:
 
 ![Your first 3D model](/img/tutorial/first-model.png)
 
-Congratulation you have built your first model with replicad!
+Congratulations, you have built your first model with replicad!
 
 :::tip
 
@@ -51,7 +51,7 @@ You can even open a model directly in the workbench if you click on the `Open in
 
 ## Working with local files
 
-If you prefer using your editor of choice it is also possible.
+If you prefer to use your editor of choice it is also possible.
 
 Create a file (`model1.js` for instance) somewhere on your disk, and then you
 can point the worbench to that file using the reload menu (left of the menu bar

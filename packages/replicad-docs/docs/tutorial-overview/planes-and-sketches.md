@@ -22,7 +22,7 @@ By default this sketches on the `XY` plane.
 
 ## Planes
 
-Now that we know what sketching is we can see the way to create planes.
+Now that we know what sketching is, we can see the way to create planes.
 
 ### Standard planes
 
@@ -84,8 +84,8 @@ const main = () => {
 #### Opposite standard planes
 
 In addition to the standard planes there are their opposite (`YX` is the
-opposite of `XY`). These are the same planes, but with their axis inversed
-– which also means top and bottom are inversed.
+opposite of `XY`). These are the same planes, but with their axis inverted
+– which also means top and bottom are inverted.
 
 An example will make it more concrete
 
@@ -143,7 +143,7 @@ const main = () => {
 
 #### Axes rotation
 
-There a last operation that can be done on a plane - it is the rotation of its
+There is a last operation that can be done on a plane - it is the rotation of its
 axes around the origin.
 
 ```js withWorkbench

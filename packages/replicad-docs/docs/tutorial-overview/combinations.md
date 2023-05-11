@@ -38,11 +38,11 @@ const main = () => {
 };
 ```
 
-![the cylinder cut in the box](/img/tutorial/combinations-2.png)
+![the cylinder cut into the box](/img/tutorial/combinations-2.png)
 
 ## Intersecting two shapes
 
-For the intersection we will intersect the cylinder with itself you create
+For the intersection we will intersect the cylinder with itself. This creates
 a fun shape:
 
 ```js withWorkbench
@@ -55,4 +55,4 @@ const main = () => {
 };
 ```
 
-![the cylinder intersecting iself](/img/tutorial/combinations-3.png)
+![the cylinder intersecting itself](/img/tutorial/combinations-3.png)

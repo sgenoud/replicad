@@ -104,7 +104,7 @@ const main = () => {
 };
 ```
 
-Once we have found the edge we are concerned about using the finder API, we can
+Once we have found the edges we are concerned about using the finder API, we can
 fillet them like this:
 
 ```js {28} withWorkbench

@@ -4,7 +4,7 @@ title: Sweeped profile box
 ---
 
 Let's say you want to start designing with a box. Simple extrusion is good if
-you do not have a complex profile. A way to work with more more complex shape
+you do not have a complex profile. A way to work with a more complex shape
 is to draw the profile in 2D, and then sweep it along a base sketch.
 
 ```js
@@ -44,8 +44,7 @@ This code assumes some things about its input:
 
 - the input profile is a single open line
 - the base is a single closed line
-
-* there is only one profile point at the coordinate of the end of the profile
+- there is only one profile point at the coordinate of the end of the profile
 
 The box will have its base in the `XY` plane.
 

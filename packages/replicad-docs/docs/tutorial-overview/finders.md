@@ -7,7 +7,7 @@ When using a visual interface to draw in 3D, selecting a face or an edge is
 trivial - the user just needs to click it.
 
 In the case of code CAD, this is a more complicated operation - we need to find
-theses feature. This is what finders are for.
+these as features. This is what finders are for.
 
 For this tutorial we will use this relatively complex shape (a simple house):
 
@@ -115,7 +115,7 @@ the back of the house:
 
 If you only use one of the filters you will see more edges highlighted.
 
-### Combinating with an `either` conditions
+### Combinating with an `either` condition
 
 In some cases you might want to combine elements with an OR condition, to find
 faces that fit either one condition or the other. For instance if we want to
@@ -147,7 +147,7 @@ We have created finders so far and used them to hightlight faces and edges
 This will be mostly clear in the next chapter with modifications that can make
 a lot of use of finders.
 
-But you can also need to find a specific face. For instance, we might want to
+You can also find a specific face. For instance, we might want to
 have only the front face of the house. For this you will need to use the
 `FaceFinder` and `EdgeFinder` objects directly (instead of within a function
 that already declared it).

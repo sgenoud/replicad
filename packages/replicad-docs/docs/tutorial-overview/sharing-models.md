@@ -4,7 +4,7 @@ title: Sharing models
 ---
 
 Once you have created your models you might want to share them without having
-to build a full web app your self.
+to build a full web app yourself.
 
 You can use the [replicad share application](https://studio.replicad.xyz/share)
 for this.
