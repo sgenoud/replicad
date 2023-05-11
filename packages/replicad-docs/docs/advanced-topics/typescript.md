@@ -6,7 +6,7 @@ title: Typescript autocompletion
 replicad is build with Typescript. The main advantage to the user is that it
 offers nice autocompletion and inline documentation.
 
-How can one benefit from these while using the visulaliser?
+How can one benefit from these while using the visualiser?
 
 Initialise a node package somewhere on your disk
 

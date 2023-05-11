@@ -21,7 +21,7 @@ const main = () => {
 ```
 
 When configuring a fillet with a number, all the edges of the shape will be
-filletted.
+filleted.
 
 If you want to target specific edges you will need to configure a finder within
 a filter configuration. For instance to fillet only the top edges:
@@ -43,7 +43,7 @@ a function that will combine filter configurations.
 
 In this case we want to have a bigger fillet on the sides of the box and
 a small one at the top. You might have been able to do this with two different
-fillet operations, but in some cases the kernel has more diffulties finding
+fillet operations, but in some cases the kernel has more difficulties finding
 a good solution with multiple operations.
 
 ```js withWorkbench

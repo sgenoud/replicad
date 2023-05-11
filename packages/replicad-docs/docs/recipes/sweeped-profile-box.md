@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-title: Sweeped profile box
+title: Swept profile box
 ---
 
 Let's say you want to start designing with a box. Simple extrusion is good if

@@ -54,7 +54,7 @@ You can even open a model directly in the workbench if you click on the `Open in
 If you prefer to use your editor of choice it is also possible.
 
 Create a file (`model1.js` for instance) somewhere on your disk, and then you
-can point the worbench to that file using the reload menu (left of the menu bar
+can point the workbench to that file using the reload menu (left of the menu bar
 of the editor).
 
 Unfortunately, in order to have all the file reloading abilities you will need
