@@ -9,7 +9,7 @@ This is a basic integration that aims to show how the different pieces can
 stick together:
 
 - The replicad code can be just a javascript function
-- It should live, with the opencascade loading in a webworker (indeally with
+- It should live, with the opencascade loading in a webworker (ideally with
   functions exposed via comlink).
 - Your main app can be just a react app (with react-three-fiber for instance)
 - The `replicad-three-helper` helps you synchronise the data out of a meshed

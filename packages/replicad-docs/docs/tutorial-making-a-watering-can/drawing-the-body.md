@@ -48,7 +48,7 @@ a line by going `10` horizontally and `5` vertically. But we also used
 `lineTo([8, 100])` which moves us to the point `[8, 100]` - this is using
 **absolute** coordinates.
 
-## Filletings angles
+## Filleting angles
 
 The bottom of the can is rounded. We could use different methods for that.
 First, we will use round the corners of the previous shape (using filleting)

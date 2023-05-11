@@ -33,7 +33,7 @@ This is exactly what we have done, but added a depth of 10mm.
 
 ### Variations on the extrusion
 
-We can play a bit with the extrusion as well, in addition to the extruction
+We can play a bit with the extrusion as well, in addition to the extrusion
 length we can change:
 
 - the direction of the extrusion (by default normal to the sketching plane),
