@@ -9,7 +9,7 @@
   ],
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "https://replicad.xyz",
-  "license": "AGPL-3.0-or-later",
+  "license": "MIT",
   "main": "dist/umd/replicad-threejs-helper.js",
   "module": "dist/es/replicad-threejs-helper.js",
   "type": "module",

@@ -11,7 +11,7 @@
   ],
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "https://replicad.xyz",
-  "license": "AGPL-3.0-or-later",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/replicad.cjs",
   "module": "./dist/replicad.js",

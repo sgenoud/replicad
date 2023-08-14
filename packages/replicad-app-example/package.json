@@ -3,6 +3,7 @@
   "version": "0.15.1",
   "description": "A simple React app based on replicad.",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "start": "vite",
     "build": "vite build",

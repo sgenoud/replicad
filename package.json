@@ -5,6 +5,7 @@
   "workspaces": [
     "packages/*"
   ],
+  "license": "MIT",
   "scripts": {
     "prepare-packages": "lerna exec pnpm build --no-private --no-bail",
     "publish-packages": "lerna publish"
