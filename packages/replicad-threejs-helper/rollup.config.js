@@ -1,6 +1,5 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import sourceMaps from "rollup-plugin-sourcemaps";
 import typescript from "rollup-plugin-ts";
 
 export default {
@@ -24,17 +23,9 @@ export default {
       sourcemap: true,
     },
   ],
-  external: [],
   watch: {
     include: "lib/**",
   },
-  plugins: [
-    typescript(),
-    commonjs(),
-    nodeResolve(),
-
-    // Resolve source maps to the original source
-    sourceMaps(),
-  ],
+  plugins: [typescript(), commonjs(), nodeResolve()],
   external: ["three"],
 };

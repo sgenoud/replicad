@@ -1,16 +1,17 @@
 {
   "name": "root",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-      "prepare-packages": "lerna exec yarn build --no-private --no-bail",
-      "publish-packages": "lerna publish"
+    "prepare-packages": "lerna exec pnpm build --no-private --no-bail",
+    "publish-packages": "lerna publish"
   },
   "devDependencies": {
     "eslint": "^8.1.0",
-    "lerna": "^4.0.0",
+    "lerna": "7.1.5",
     "prettier": "^2.4.1"
   }
 }
