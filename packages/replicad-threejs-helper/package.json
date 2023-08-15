@@ -9,7 +9,7 @@
   ],
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "https://replicad.xyz",
-  "license": "AGPL-3.0-or-later",
+  "license": "MIT",
   "main": "dist/umd/replicad-threejs-helper.js",
   "module": "dist/es/replicad-threejs-helper.js",
   "type": "module",
@@ -25,7 +25,7 @@
     "url": "https://github.com/sgenoud/replicad/issues"
   },
   "peerDependencies": {
-    "three": ">=0.134.0"
+    "three": ">=0.155.0"
   },
   "files": [
     "dist"
@@ -38,16 +38,16 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "@rollup/plugin-node-resolve": "^13.0.6",
-    "@types/three": "^0.134.0",
+    "@rollup/plugin-commonjs": "^25.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@types/three": "^0.155.0",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.1.0",
     "prettier": "^2.4.1",
     "rollup": "3.10.1",
     "rollup-plugin-sourcemaps": "^0.6.3",
-    "rollup-plugin-terser": "^7.0.2",
+    "@rollup/plugin-terser": "^0.4.3",
     "rollup-plugin-ts": "3.1.1",
     "typescript": "^4.9.5"
   }

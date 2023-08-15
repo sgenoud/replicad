@@ -43,7 +43,7 @@ export default function ReplicadApp() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          on GitHub
+          on the GitHub repository
         </a>
       </p>
       <section

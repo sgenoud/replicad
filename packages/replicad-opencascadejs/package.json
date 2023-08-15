@@ -4,7 +4,7 @@
   "description": "OpencascadeJS custom build for replicad",
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "",
-  "license": "ISC",
+  "license": "MIT",
   "main": "src/replicad_single.js",
   "directories": {
     "lib": "src",
@@ -14,6 +14,7 @@
     "src"
   ],
   "scripts": {
+    "build": "echo 'No build step required'",
     "updateDocker": "docker pull donalffons/opencascade.js",
     "buildWasm": "cd build-config; docker run -it --rm -v $(pwd):/src -u $(id -u):$(id -g) donalffons/opencascade.js custom_build_single.yml && mv replicad_single* ../src; cd -"
   }

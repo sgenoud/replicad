@@ -1,0 +1,72 @@
+name: "Publish pages"
+
+on: 
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  publish-studio:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build packages
+        run: pnpm prepare-packages
+
+      - name: Build the studio
+        run: cd packages/studio && pnpm build
+
+      - name: Build the example app
+        run: cd packages/replicad-app-example && pnpm build
+
+      - name: Publish the studio
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_ACCESS }}
+          accountId: d0e0387dd16b671a301d1ce6e7b73609
+          projectName: replicad-studio
+          directory: packages/studio/dist
+          wranglerVersion: '3'
+
+      - name: Publish the example app
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_ACCESS }}
+          accountId: d0e0387dd16b671a301d1ce6e7b73609
+          projectName: replicad-example-app
+          directory: packages/replicad-app-example/build
+          wranglerVersion: '3'
