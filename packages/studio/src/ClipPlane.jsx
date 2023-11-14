@@ -95,7 +95,7 @@ export default function ClipPlane({ clippingPlane, sideColor, children }) {
       node.material = backFaceStencilMat;
     });
 
-    const planeGeom = new THREE.PlaneBufferGeometry();
+    const planeGeom = new THREE.PlaneGeometry();
     const planeMesh = new THREE.Mesh(planeGeom, planeStencilMat);
 
     planeMesh.quaternion.setFromUnitVectors(
