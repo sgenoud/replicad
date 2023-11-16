@@ -1043,6 +1043,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * @category Shape Modifications
    */
+  shell(thickness: number): Shape3D;
   shell(
     config: { filter: FaceFinder; thickness: number },
     tolerance?: number
@@ -1081,28 +1082,32 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
 
     const r = GCWithScope();
 
-    const filteredFaces = filter.find(this);
-    const facesToRemove = r(new this.oc.TopTools_ListOfShape_1());
-
-    filteredFaces.forEach((face: Face) => {
-      facesToRemove.Append_1(face.wrapped);
-    });
-
     const progress = r(new this.oc.Message_ProgressRange_1());
     const shellBuilder = r(new this.oc.BRepOffsetAPI_MakeThickSolid());
 
-    shellBuilder.MakeThickSolidByJoin(
-      this.wrapped,
-      facesToRemove,
-      -Math.abs(thickness),
-      tol,
-      this.oc.BRepOffset_Mode.BRepOffset_Skin as any,
-      false,
-      false,
-      this.oc.GeomAbs_JoinType.GeomAbs_Arc as any,
-      false,
-      progress
-    );
+    // use MakeThickSolidBySimple if there is no filter or finderFcn
+    if (!toleranceOrFinderFcn && typeof thicknessOrConfig === "number") {
+      shellBuilder.MakeThickSolidBySimple(this.wrapped, -Math.abs(thickness));
+    } else {
+      const filteredFaces = filter.find(this);
+      const facesToRemove = r(new this.oc.TopTools_ListOfShape_1());
+
+      filteredFaces.forEach((face: Face) => {
+        facesToRemove.Append_1(face.wrapped);
+      });
+      shellBuilder.MakeThickSolidByJoin(
+        this.wrapped,
+        facesToRemove,
+        -Math.abs(thickness),
+        tol,
+        this.oc.BRepOffset_Mode.BRepOffset_Skin as any,
+        false,
+        false,
+        this.oc.GeomAbs_JoinType.GeomAbs_Arc as any,
+        false,
+        progress
+      );
+    }
     const newShape = cast(shellBuilder.Shape());
     if (!isShape3D(newShape)) throw new Error("Could not shell as a 3d shape");
 
