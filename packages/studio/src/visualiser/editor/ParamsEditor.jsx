@@ -46,7 +46,6 @@ export default observer(function ParamsEditor({
       fill
       flat
       hideCopyButton
-      oneLineLabels
       titleBar={false}
       hidden={hidden}
       theme={{
@@ -65,6 +64,9 @@ export default observer(function ParamsEditor({
 
           vivid1: "red",
         },
+        sizes: {
+          controlWidth: "80px"
+        }
       }}
     />
   );
