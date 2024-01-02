@@ -9,7 +9,8 @@ export const InfoTopRight = styled.div`
   max-width: 300px;
   padding: 10px;
   border-radius: 10px;
-  height: auto;
+  max-height: calc(100% - 5em);
+  overflow-y: auto;
 
   ${(props) =>
     props.noBg ? "" : `background-color: white; border: 1px solid lightgrey;`}
