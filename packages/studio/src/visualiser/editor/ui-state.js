@@ -44,7 +44,7 @@ export default types.optional(
       highlightedEdgeIndex: types.maybe(types.maybeNull(types.number)),
       clip: ClipConfig,
       showDownload: types.optional(types.boolean, false),
-      enableParams: types.optional(types.boolean, false),
+      enableParams: types.optional(types.boolean, true),
     })
     .views((self) => ({
       get singleShape() {
