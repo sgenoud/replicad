@@ -44,7 +44,7 @@ export const VisualizerButtons = observer(() => {
         </>
       ) : null}
 
-      <HeaderButton onClick={() => store.ui.changeDownload(true)}>
+      <HeaderButton onClick={() => store.ui.changeDownload(true)} title="Download">
         <Download />
       </HeaderButton>
       {!store.ui.currentIsSVG && (
@@ -52,6 +52,7 @@ export const VisualizerButtons = observer(() => {
           solid={!store.ui.clip.disabled}
           small
           onClick={() => store.ui.clip.toggle()}
+          title="Clipping plane"
         >
           <Clipping />
         </HeaderButton>
@@ -61,6 +62,7 @@ export const VisualizerButtons = observer(() => {
           solid={store.ui.enableParams}
           small
           onClick={() => store.ui.changeEnableParams(!store.ui.enableParams)}
+          title="Parameters"
         >
           <Configure />
         </HeaderButton>

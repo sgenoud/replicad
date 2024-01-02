@@ -174,17 +174,17 @@ export const EditorButtons = observer(() => {
     <>
       {filePickerSupported && (
         <>
-          <HeaderButton onClick={toggleAutoload}>
+          <HeaderButton onClick={toggleAutoload} title="Toggle autoreload">
             <Reload />
           </HeaderButton>
           <Spacer />
         </>
       )}
 
-      <HeaderButton onClick={() => setShare(true)}>
+      <HeaderButton onClick={() => setShare(true)} title="Share">
         <Share />
       </HeaderButton>
-      <HeaderButton onClick={download}>
+      <HeaderButton onClick={download} title="Download">
         <Download />
       </HeaderButton>
       {share && <ShareDialog onClose={() => setShare(false)} />}

@@ -99,6 +99,7 @@ export const Pane = ({ children, buttons, aboveOthers }) => {
         <HeaderButton
           solid={fullscreen}
           onClick={() => setFullscreen(!fullscreen)}
+          title="Fullscreen"
         >
           <Fullscreen />
         </HeaderButton>
