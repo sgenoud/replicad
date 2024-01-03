@@ -4,6 +4,7 @@ import {
   makeBSplineApproximation,
   makeCircle,
   makeEllipse,
+  makeHelix,
 } from "../shapeHelpers";
 import { Plane, PlaneName, Point, Vector } from "../geom";
 import Sketcher from "../Sketcher";
@@ -227,4 +228,17 @@ export const sketchParametricFunction = (
   });
   gc();
   return sketch;
+};
+
+export const sketchHelix = (
+  pitch: number,
+  height: number,
+  radius: number,
+  center: Point = [0, 0, 0],
+  dir: Point = [0, 0, 1],
+  lefthand = false
+): Sketch => {
+  return new Sketch(
+    assembleWire(makeHelix(pitch, height, radius, center, dir, lefthand).wires)
+  );
 };
