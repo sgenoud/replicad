@@ -6,9 +6,10 @@ export default async function saveShapes(shapeId, fileType = "stl") {
   const shapes = await builderAPI.exportShape(fileType, shapeId);
   if (shapes.length === 1) {
     const { blob, name } = shapes[0];
+    const ext = fileType === "stl-binary" ? "stl" : fileType;
     await fileSave(blob, {
-      fileName: `${name || "shape"}.${fileType}`,
-      extensions: [`.${fileType}`],
+      fileName: `${name || "shape"}.${ext}`,
+      extensions: [`.${ext}`],
       description: `Save ${name || "shape"} as ${fileType}`,
     });
     return;

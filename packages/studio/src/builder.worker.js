@@ -192,6 +192,8 @@ const buildBlob = (
   }
 ) => {
   if (fileType === "stl") return shape.blobSTL(meshConfig);
+  if (fileType === "stl-binary")
+    return shape.blobSTL({ ...meshConfig, binary: true });
   if (fileType === "step") return shape.blobSTEP();
   throw new Error(`Filetype "${fileType}" unknown for export.`);
 };

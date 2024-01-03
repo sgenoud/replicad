@@ -122,6 +122,14 @@ export default function DownloadDialog({ onClose }) {
                 />
                 <span>STL</span>
               </label>
+              <label>
+                <input
+                  checked={saveMode === "stl-binary"}
+                  type="radio"
+                  onClick={() => setSaveMode("stl-binary")}
+                />
+                <span>STL (binary)</span>
+              </label>
             </>
           )}
           <label>
