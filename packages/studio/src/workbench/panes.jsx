@@ -69,7 +69,7 @@ export const PaneHeader = styled.div`
   box-shadow: rgb(0 0 0 / 35%) 0px -6px 12px 3px inset;
 
   & * {
-    font-size: calc(var(--pane-header-height) * 0.5);
+    font-size: calc(var(--pane-header-height) * 0.6);
   }
 
   &:after {
