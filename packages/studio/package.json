@@ -31,7 +31,7 @@
   "dependencies": {
     "@devbookhq/splitter": "^1.4.0",
     "@monaco-editor/react": "^4.4.6",
-    "@react-three/drei": "9.80.3",
+    "@react-three/drei": "9.92.7",
     "@react-three/fiber": "8.13.6",
     "axios": "^0.24.0",
     "browser-fs-access": "^0.20.3",

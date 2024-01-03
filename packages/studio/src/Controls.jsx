@@ -9,18 +9,13 @@ const Controls = React.memo(
   ) {
     return (
       <>
-        <OrbitControls ref={controlsRef} enableDamping={enableDamping} />
+        <OrbitControls
+          makeDefault
+          ref={controlsRef}
+          enableDamping={enableDamping}
+        />
         {!hideGizmo && (
-          <GizmoHelper
-            alignment={"bottom-right"}
-            margin={[80, 80]}
-            onTarget={() => {
-              return controlsRef?.current?.target;
-            }}
-            onUpdate={() => {
-              controlsRef.current?.update();
-            }}
-          >
+          <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
             <GizmoViewport font="18px Inter var, HKGrotesk, sans-serif" />
           </GizmoHelper>
         )}
