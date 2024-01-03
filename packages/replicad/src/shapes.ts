@@ -524,15 +524,14 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    *
    * @category Shape Export
    */
-  blobSTL({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): Blob {
+  blobSTL({
+    tolerance = 1e-3,
+    angularTolerance = 0.1,
+    binary = false,
+  } = {}): Blob {
     this._mesh({ tolerance, angularTolerance });
     const filename = "blob.stl";
-    const writer = new this.oc.StlAPI_Writer();
-    // Convert to a .STEP File
-    const progress = new this.oc.Message_ProgressRange_1();
-    const done = writer.Write(this.wrapped, filename, progress);
-    writer.delete();
-    progress.delete();
+    const done = this.oc.StlAPI.Write(this.wrapped, filename, !binary);
 
     if (done) {
       // Read the STEP File from the filesystem and clean up
