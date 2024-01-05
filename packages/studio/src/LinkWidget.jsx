@@ -220,6 +220,7 @@ export function MakeLink() {
   const [disableAutoPosition, setDisableAutoPosition] = useState(false);
   const [disableDamping, setDisableDamping] = useState(false);
   const [hideGrid, setHideGrid] = useState(false);
+  const [expandParametersPanel, setExpandParametersPanel] = useState(false);
 
   let link = null;
   if (inputVal) {
@@ -229,6 +230,7 @@ export function MakeLink() {
       url.searchParams.set("disable-auto-position", "true");
     disableDamping && url.searchParams.set("disable-damping", "true");
     hideGrid && url.searchParams.set("hide-grid", "true");
+    expandParametersPanel && url.searchParams.set("params", "true");
     link = url.toString();
   }
 
@@ -275,6 +277,15 @@ export function MakeLink() {
               onChange={(e) => setHideGrid(!e.target.checked)}
             />
             <label htmlFor="hide-grid">Grid</label>
+          </span>
+          <span>
+            <input
+              id="expand-params"
+              type="checkbox"
+              checked={expandParametersPanel}
+              onChange={(e) => setExpandParametersPanel(e.target.checked)}
+            />
+            <label htmlFor="expand-params">Parameters panel open</label>
           </span>
         </Options>
 
