@@ -53,9 +53,13 @@ const AutoConfig = ({ updateParams, defaultParams, hidden }) => {
           elevation3: "var(--color-primary)", // bg color of the inputs
 
           highlight1: "white",
-          highlight2: "var(--color-primary-light)",
+          highlight2: "var(--color-secondary-light)",
           highlight3: "lightgrey",
         },
+        sizes: {
+          rootWidth: "250px",
+          controlWidth: "80px"
+        }
       }}
     />
   );
