@@ -1,4 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
+import JSZip from 'jszip'
+
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -35,10 +37,17 @@ const AdditionalInfo = styled.div`
 const TEST_URL =
   "https%3A%2F%2Fraw.githubusercontent.com%2Fsgenoud%2Freplicad%2Fmain%2Fpackages%2Freplicad-docs%2Fexamples%2FsimpleVase.js";
 
+const loadCode = async (rawCode) => {
+  const content = decodeURIComponent(rawCode);
+  const zip = await new JSZip().loadAsync(content, { base64: true });
+  return await zip?.file("code.js")?.async("string");
+};
+
 export default function LinkWidget() {
   const { shapeURL } = useParams();
+
   const [computedShapes, updateComputedShapes] = useState([]);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [code, setCode] = useState(null);
@@ -53,6 +62,8 @@ export default function LinkWidget() {
   );
 
   useEffect(() => {
+    if (!shapeURL) return;
+
     axios
       .get(codeUrl)
       .then((response) => {
@@ -61,8 +72,30 @@ export default function LinkWidget() {
       })
       .catch((e) => {
         console.error(e);
-        setError(true);
+        setError({ type: 'url' });
       });
+  }, [shapeURL]);
+
+  useEffect(() => {
+
+    const loadCodeFromParam = async () => {
+      const hash = window.location.hash.substring(1);
+      const hashParams = new URLSearchParams(hash);
+      if (!hashParams.has('code')) {
+        setError({ type: 'code' })
+        return;
+      }
+      try {
+        const urlCode = await loadCode(hashParams.get('code'));
+        setCode(urlCode);
+        readyToBuild.current = true;
+      } catch(e) {
+        setError({ type: 'code' })
+      }
+    }
+
+    if (shapeURL) return;
+    loadCodeFromParam()
   }, [shapeURL]);
 
   useEffect(() => {
@@ -73,7 +106,7 @@ export default function LinkWidget() {
       .then((defaultParams) => {
         setDefaultParams(defaultParams);
       })
-      .catch(() => setError(true));
+      .catch(() => setError({ type: 'url' }));
 
     return () => {
       paramsToCompute.current = null;
@@ -116,11 +149,22 @@ export default function LinkWidget() {
     return (
       <CenterInfo>
         <h4>Error</h4>
-        <p>
-          We could not find a shape to render{" "}
-          <a href={decodeURIComponent(shapeURL)}>here</a>.
-        </p>
-        <p>Are you sure that the link is pointing to a raw javascript file?</p>
+        { error.type === 'url' &&
+          <>
+            <p>
+              We could not find a shape to render{" "}
+              <a href={decodeURIComponent(shapeURL)}>here</a>.
+            </p>
+            <p>Are you sure that the link is pointing to a raw javascript file?</p>
+          </>
+        }
+        { error.type === 'code' &&
+          <>
+            <p>
+              <code>#code</code> parameter is missing or could not be rendered.
+            </p>
+          </>
+        }
       </CenterInfo>
     );
 
