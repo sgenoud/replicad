@@ -97,7 +97,7 @@ export default function StandardUI({
 
   return (
     <>
-      {computedShapes.length ? (
+      {computedShapes?.length ? (
         <Viewer
           shapes={computedShapes}
           hideGrid={hideGrid}
@@ -147,7 +147,7 @@ export default function StandardUI({
           </ContextButton>
         )}
       </InfoMenu>
-      {isLoading && !!computedShapes.length && (
+      {isLoading && !!computedShapes?.length && (
         <LoadingInfo noBg hide={niceViewer}>
           <Loading size="3em" />
         </LoadingInfo>
