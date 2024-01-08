@@ -12,6 +12,7 @@ import saveShape from "./utils/saveShape";
 
 import { Button } from "./components/Button.jsx";
 import StandardUI from "./components/StandardUI.jsx";
+import downloadCode from './utils/downloadCode.js'
 
 const CenterInfo = styled.div`
   background-color: var(--bg-color);
@@ -46,6 +47,7 @@ export default function LinkWidget() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [code, setCode] = useState(null);
+  const [rawCode, setRawCode] = useState(null);
 
   const [geometryHasBeenComputed, setGeometryHasBeenComputed] = useState(false);
   const [defaultParams, setDefaultParams] = useState(null);
@@ -72,7 +74,6 @@ export default function LinkWidget() {
   }, [shapeURL]);
 
   useEffect(() => {
-
     const loadCodeFromParam = async () => {
       const hash = window.location.hash.substring(1);
       const hashParams = new URLSearchParams(hash);
@@ -81,8 +82,9 @@ export default function LinkWidget() {
         return;
       }
       try {
-        const urlCode = await loadCode(hashParams.get('code'));
-        setCode(urlCode);
+        const rawCode = hashParams.get('code');
+        setCode(await loadCode(rawCode))
+        setRawCode(rawCode);
         readyToBuild.current = true;
       } catch(e) {
         setError({ type: 'code' })
@@ -163,13 +165,38 @@ export default function LinkWidget() {
       </CenterInfo>
     );
 
+  const downloadPrompt = (e) => {
+    e.preventDefault()
+    const shapeName = computedShapes?.length === 1 ? `${computedShapes[0].name}` : null
+    return downloadCode(code, shapeName)
+  }
+
   const url = new URL(window.location.href);
   url.pathname = "/workbench";
-  url.searchParams.set("from-url", shapeURL);
-
+  url.hash = ''
+  if (shapeURL) {
+    url.searchParams.set("from-url", shapeURL);
+  } else {
+    url.searchParams.set("code", rawCode)
+  }
   const workbenchUrl = url.toString();
 
   const searchParams = new URLSearchParams(window.location.search);
+
+
+  const DownloadLink = () => {
+    if (shapeURL) {
+      return <a href={shapeURL} target="_blank" rel="noopener noreferrer">
+        {" "}
+        source{" "}
+      </a>;
+    } else {
+      return <FooterButton onClick={downloadPrompt}>
+        {" "}
+        source{" "}
+      </FooterButton>
+    }
+  }
 
   return (
     <>
@@ -203,10 +230,7 @@ export default function LinkWidget() {
           edit{" "}
         </a>
         |
-        <a href={codeUrl} target="_blank" rel="noopener noreferrer">
-          {" "}
-          source{" "}
-        </a>
+        <DownloadLink />
       </AdditionalInfo>
     </>
   );
@@ -251,6 +275,13 @@ const Options = styled.div`
   & label {
     margin-left: 0.3em;
   }
+`;
+const FooterButton = styled.button`
+  cursor: pointer;
+  border: none;
+  font-weight: 300;
+  color: var(--color-primary);
+  background-color: transparent;
 `;
 
 export function MakeLink() {
