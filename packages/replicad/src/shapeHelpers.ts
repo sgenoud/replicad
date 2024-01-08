@@ -299,9 +299,12 @@ export const assembleWire = (listOfEdges: (Edge | Wire)[]): Wire => {
   return wire;
 };
 
-export const makeFace = (wire: Wire): Face => {
+export const makeFace = (wire: Wire, holes?: Wire[]): Face => {
   const oc = getOC();
   const faceBuilder = new oc.BRepBuilderAPI_MakeFace_15(wire.wrapped, false);
+  holes?.forEach((hole) => {
+    faceBuilder.Add(hole.wrapped);
+  });
   if (!faceBuilder.IsDone()) {
     faceBuilder.delete();
     throw new Error("Failed to build the face. Your wire might be non planar.");
