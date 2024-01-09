@@ -1,5 +1,6 @@
 import axios from "axios";
 import JSZip from "jszip";
+import loadCode from "../../utils/loadCode"
 
 const DEFAULT_SCRIPT = `
 const { draw } = replicad;
@@ -40,12 +41,6 @@ const loadFromUrl = async (url) => {
 
   const response = await axios.get(codeUrl);
   return response.data;
-};
-
-const loadCode = async (rawCode) => {
-  const content = decodeURIComponent(rawCode);
-  const zip = await new JSZip().loadAsync(content, { base64: true });
-  return await zip?.file("code.js")?.async("string");
 };
 
 export const exportCode = async (rawCode) => {

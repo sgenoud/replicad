@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
 import Editor from "@monaco-editor/react";
-import { fileSave } from "browser-fs-access";
 
 import replicadTypes from "../../node_modules/replicad/dist/replicad.d.ts?raw";
 
 import Splitter, { GutterTheme, SplitDirection } from "@devbookhq/splitter";
 
 import useEditorStore from "../visualiser/editor/useEditorStore";
+import downloadCode from '../utils/downloadCode'
 import { HeaderButton } from "./panes";
 import Download from "../icons/Download";
 import Share from "../icons/Share";
@@ -156,21 +156,8 @@ export const EditorButtons = observer(() => {
   const toggleAutoload = useAutoload();
 
   const download = () => {
-    return fileSave(
-      new Blob([store.code.current], {
-        type: "application/javascript",
-      }),
-      {
-        id: "save-js",
-        fileName: `${
-          store.currentMesh.length === 1
-            ? store.currentMesh[0]?.name
-            : "replicad-script"
-        }.js`,
-        description: "JS replicad script of the current geometry",
-        extensions: [".js"],
-      }
-    );
+    const shapeName = store.currentMesh.length === 1 ? store.currentMesh[0]?.name : null
+    return downloadCode(store.code.current, shapeName)
   };
 
   const filePickerSupported = window.showOpenFilePicker !== undefined;

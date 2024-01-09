@@ -31,6 +31,9 @@ export default function App() {
         <Route exact path="/share">
           <MakeLink />
         </Route>
+        <Route path="/share/code">
+          <LinkWidget />
+        </Route>
         <Route path="/share/:shapeURL">
           <LinkWidget />
         </Route>

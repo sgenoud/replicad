@@ -21,7 +21,7 @@ const LoadingInfo = styled(InfoBottomLeft)`
   color: var(--color-primary-light);
 `;
 
-const AutoConfig = ({ updateParams, defaultParams, hidden }) => {
+const AutoConfig = ({ updateParams, defaultParams, hidden, collapsed}) => {
   const [params] = useControls(() => defaultParams);
   const paramsUpdater = useRef(updateParams);
 
@@ -43,8 +43,7 @@ const AutoConfig = ({ updateParams, defaultParams, hidden }) => {
   return (
     <Leva
       hideCopyButton
-      oneLineLabels
-      collapsed
+      collapsed={collapsed}
       hidden={hidden}
       theme={{
         colors: {
@@ -53,9 +52,13 @@ const AutoConfig = ({ updateParams, defaultParams, hidden }) => {
           elevation3: "var(--color-primary)", // bg color of the inputs
 
           highlight1: "white",
-          highlight2: "var(--color-primary-light)",
+          highlight2: "var(--color-secondary-light)",
           highlight3: "lightgrey",
         },
+        sizes: {
+          rootWidth: "250px",
+          controlWidth: "80px"
+        }
       }}
     />
   );
@@ -82,6 +85,7 @@ export default function StandardUI({
   updateParams,
   disableAutoPosition,
   disableDamping,
+  showParams,
   hideGrid,
   onSave,
   canSave,
@@ -93,7 +97,7 @@ export default function StandardUI({
 
   return (
     <>
-      {computedShapes.length ? (
+      {computedShapes?.length ? (
         <Viewer
           shapes={computedShapes}
           hideGrid={hideGrid}
@@ -107,6 +111,7 @@ export default function StandardUI({
       {defaultParams && (
         <AutoConfig
           hidden={niceViewer}
+          collapsed={!showParams}
           defaultParams={defaultParams}
           updateParams={updateParams}
         />
@@ -142,7 +147,7 @@ export default function StandardUI({
           </ContextButton>
         )}
       </InfoMenu>
-      {isLoading && !!computedShapes.length && (
+      {isLoading && !!computedShapes?.length && (
         <LoadingInfo noBg hide={niceViewer}>
           <Loading size="3em" />
         </LoadingInfo>

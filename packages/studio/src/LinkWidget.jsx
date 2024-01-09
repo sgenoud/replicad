@@ -1,14 +1,18 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
+
+
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ellipsis } from "polished";
 
 import builderAPI from "./utils/builderAPI";
+import loadCode from "./utils/loadCode"
 import saveShape from "./utils/saveShape";
 
 import { Button } from "./components/Button.jsx";
 import StandardUI from "./components/StandardUI.jsx";
+import downloadCode from './utils/downloadCode.js'
 
 const CenterInfo = styled.div`
   background-color: var(--bg-color);
@@ -37,11 +41,13 @@ const TEST_URL =
 
 export default function LinkWidget() {
   const { shapeURL } = useParams();
+
   const [computedShapes, updateComputedShapes] = useState([]);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [code, setCode] = useState(null);
+  const [rawCode, setRawCode] = useState(null);
 
   const [geometryHasBeenComputed, setGeometryHasBeenComputed] = useState(false);
   const [defaultParams, setDefaultParams] = useState(null);
@@ -53,6 +59,8 @@ export default function LinkWidget() {
   );
 
   useEffect(() => {
+    if (!shapeURL) return;
+
     axios
       .get(codeUrl)
       .then((response) => {
@@ -61,8 +69,30 @@ export default function LinkWidget() {
       })
       .catch((e) => {
         console.error(e);
-        setError(true);
+        setError({ type: 'url' });
       });
+  }, [shapeURL]);
+
+  useEffect(() => {
+    const loadCodeFromParam = async () => {
+      const hash = window.location.hash.substring(1);
+      const hashParams = new URLSearchParams(hash);
+      if (!hashParams.has('code')) {
+        setError({ type: 'code' })
+        return;
+      }
+      try {
+        const rawCode = hashParams.get('code');
+        setCode(await loadCode(rawCode))
+        setRawCode(rawCode);
+        readyToBuild.current = true;
+      } catch(e) {
+        setError({ type: 'code' })
+      }
+    }
+
+    if (shapeURL) return;
+    loadCodeFromParam()
   }, [shapeURL]);
 
   useEffect(() => {
@@ -73,7 +103,7 @@ export default function LinkWidget() {
       .then((defaultParams) => {
         setDefaultParams(defaultParams);
       })
-      .catch(() => setError(true));
+      .catch(() => setError({ type: 'url' }));
 
     return () => {
       paramsToCompute.current = null;
@@ -116,21 +146,57 @@ export default function LinkWidget() {
     return (
       <CenterInfo>
         <h4>Error</h4>
-        <p>
-          We could not find a shape to render{" "}
-          <a href={decodeURIComponent(shapeURL)}>here</a>.
-        </p>
-        <p>Are you sure that the link is pointing to a raw javascript file?</p>
+        { error.type === 'url' &&
+          <>
+            <p>
+              We could not find a shape to render{" "}
+              <a href={decodeURIComponent(shapeURL)}>here</a>.
+            </p>
+            <p>Are you sure that the link is pointing to a raw javascript file?</p>
+          </>
+        }
+        { error.type === 'code' &&
+          <>
+            <p>
+              <code>#code</code> parameter is missing or could not be rendered.
+            </p>
+          </>
+        }
       </CenterInfo>
     );
 
+  const downloadPrompt = (e) => {
+    e.preventDefault()
+    const shapeName = computedShapes?.length === 1 ? `${computedShapes[0].name}` : null
+    return downloadCode(code, shapeName)
+  }
+
   const url = new URL(window.location.href);
   url.pathname = "/workbench";
-  url.searchParams.set("from-url", shapeURL);
-
+  url.hash = ''
+  if (shapeURL) {
+    url.searchParams.set("from-url", shapeURL);
+  } else {
+    url.searchParams.set("code", rawCode)
+  }
   const workbenchUrl = url.toString();
 
   const searchParams = new URLSearchParams(window.location.search);
+
+
+  const DownloadLink = () => {
+    if (shapeURL) {
+      return <a href={shapeURL} target="_blank" rel="noopener noreferrer">
+        {" "}
+        source{" "}
+      </a>;
+    } else {
+      return <FooterButton onClick={downloadPrompt}>
+        {" "}
+        source{" "}
+      </FooterButton>
+    }
+  }
 
   return (
     <>
@@ -146,6 +212,7 @@ export default function LinkWidget() {
         disableDamping={
           searchParams.get("disable-damping")?.toLowerCase() === "true"
         }
+        showParams={searchParams.get("params")?.toLowerCase() === "true"}
         onSave={(format) => saveShape("defaultShape", format)}
         canSave={geometryHasBeenComputed}
       />
@@ -164,10 +231,7 @@ export default function LinkWidget() {
           edit{" "}
         </a>
         |
-        <a href={codeUrl} target="_blank" rel="noopener noreferrer">
-          {" "}
-          source{" "}
-        </a>
+        <DownloadLink />
       </AdditionalInfo>
     </>
   );
@@ -213,12 +277,20 @@ const Options = styled.div`
     margin-left: 0.3em;
   }
 `;
+const FooterButton = styled.button`
+  cursor: pointer;
+  border: none;
+  font-weight: 300;
+  color: var(--color-primary);
+  background-color: transparent;
+`;
 
 export function MakeLink() {
   const [inputVal, setInputVal] = useState("");
   const [disableAutoPosition, setDisableAutoPosition] = useState(false);
   const [disableDamping, setDisableDamping] = useState(false);
   const [hideGrid, setHideGrid] = useState(false);
+  const [expandParametersPanel, setExpandParametersPanel] = useState(false);
 
   let link = null;
   if (inputVal) {
@@ -228,6 +300,7 @@ export function MakeLink() {
       url.searchParams.set("disable-auto-position", "true");
     disableDamping && url.searchParams.set("disable-damping", "true");
     hideGrid && url.searchParams.set("hide-grid", "true");
+    expandParametersPanel && url.searchParams.set("params", "true");
     link = url.toString();
   }
 
@@ -274,6 +347,15 @@ export function MakeLink() {
               onChange={(e) => setHideGrid(!e.target.checked)}
             />
             <label htmlFor="hide-grid">Grid</label>
+          </span>
+          <span>
+            <input
+              id="expand-params"
+              type="checkbox"
+              checked={expandParametersPanel}
+              onChange={(e) => setExpandParametersPanel(e.target.checked)}
+            />
+            <label htmlFor="expand-params">Parameters panel open</label>
           </span>
         </Options>
 
