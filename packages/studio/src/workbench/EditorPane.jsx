@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
 import Editor from "@monaco-editor/react";
@@ -8,20 +8,14 @@ import replicadTypes from "../../node_modules/replicad/dist/replicad.d.ts?raw";
 import Splitter, { GutterTheme, SplitDirection } from "@devbookhq/splitter";
 
 import useEditorStore from "../visualiser/editor/useEditorStore";
-import downloadCode from '../utils/downloadCode'
+import downloadCode from "../utils/downloadCode";
 import { HeaderButton } from "./panes";
 import Download from "../icons/Download";
 import Share from "../icons/Share";
 import LoadingScreen from "../components/LoadingScreen";
+import { LinkEditor } from "../components/LinkEditor";
 
-import { ellipsis } from "polished";
-import { Button, ButtonBar } from "../components/Button";
-import {
-  Dialog,
-  DialogTitle,
-  DialogBody,
-  DialogButtons,
-} from "../components/Dialog.jsx";
+import { Dialog, DialogTitle, DialogBody } from "../components/Dialog.jsx";
 import { useAutoload } from "./Autoload";
 import Reload from "../icons/Reload";
 
@@ -52,7 +46,7 @@ export const ErrorOverlay = styled.div`
 export default observer(function EditorPane() {
   const store = useEditorStore();
 
-  const handleEditorDidMount = (editor, monaco) => {
+  const handleEditorDidMount = (_, monaco) => {
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
     monaco.languages.typescript.javascriptDefaults.setExtraLibs([
       {
@@ -103,39 +97,17 @@ export default observer(function EditorPane() {
   );
 });
 
-const Url = styled.a`
-  ${ellipsis("300px")};
-`;
-
 const ShareDialog = observer(({ onClose }) => {
   const store = useEditorStore();
-  const [link, setLink] = React.useState("");
-  useEffect(() => {
-    store.code.export().then((link) => setLink(link));
-  }, [store]);
 
   return (
     <Dialog onClose={onClose}>
-      <DialogTitle onClose={onClose}>Your shareable link</DialogTitle>
+      <DialogTitle onClose={onClose}>Your shareable links</DialogTitle>
       <DialogBody>
-        <Url href={link} rel="noopener noreferrer" target="_blank">
-          {link}
-        </Url>
+        <div style={{ maxWidth: "60vw" }}>
+          <LinkEditor fromCode={store.code.current} />
+        </div>
       </DialogBody>
-      <DialogButtons>
-        <ButtonBar>
-          <Button onClick={onClose}>Close</Button>
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(link);
-              onClose();
-            }}
-            solid
-          >
-            Copy
-          </Button>
-        </ButtonBar>
-      </DialogButtons>
     </Dialog>
   );
 });
@@ -151,8 +123,9 @@ export const EditorButtons = observer(() => {
   const toggleAutoload = useAutoload();
 
   const download = () => {
-    const shapeName = store.currentMesh.length === 1 ? store.currentMesh[0]?.name : null
-    return downloadCode(store.code.current, shapeName)
+    const shapeName =
+      store.currentMesh.length === 1 ? store.currentMesh[0]?.name : null;
+    return downloadCode(store.code.current, shapeName);
   };
 
   const filePickerSupported = window.showOpenFilePicker !== undefined;

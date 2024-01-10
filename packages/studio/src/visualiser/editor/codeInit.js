@@ -1,6 +1,6 @@
 import axios from "axios";
 import JSZip from "jszip";
-import loadCode from "../../utils/loadCode"
+import loadCode from "../../utils/loadCode";
 
 const DEFAULT_SCRIPT = `
 const { draw } = replicad;
@@ -77,6 +77,23 @@ const getUrlParam = (paramName) => {
   return param;
 };
 
+const getHashParam = (paramName) => {
+  var url = new URL(window.location);
+  const urlParams = new URLSearchParams(url.hash.substring(1));
+
+  const param = urlParams.get(paramName);
+
+  if (!param) return;
+
+  if (!urlParams.has("keep")) {
+    urlParams.delete(paramName);
+    url.hash = urlParams.toString();
+    window.history.pushState({}, "", url);
+  }
+
+  return param;
+};
+
 export default async function codeInit() {
   const fromUrl = getUrlParam("from-url");
   if (fromUrl) {
@@ -87,7 +104,7 @@ export default async function codeInit() {
     }
   }
 
-  const code = getUrlParam("code");
+  const code = getHashParam("code") || getUrlParam("code");
   if (code) {
     try {
       return await loadCode(code);
