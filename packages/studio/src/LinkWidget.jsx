@@ -10,7 +10,6 @@ import saveShape from "./utils/saveShape";
 
 import StandardUI from "./components/StandardUI.jsx";
 import { LinkEditor } from "./components/LinkEditor.jsx";
-import downloadCode from "./utils/downloadCode.js";
 
 const CenterInfo = styled.div`
   background-color: var(--bg-color);
@@ -99,7 +98,7 @@ export default function LinkWidget() {
     builderAPI
       .extractDefaultParamsFromCode(code)
       .then((defaultParams) => {
-        setDefaultParams(defaultParams);
+        setDefaultParams(defaultParams || {});
       })
       .catch(() => setError({ type: "url" }));
 
@@ -164,13 +163,6 @@ export default function LinkWidget() {
         )}
       </CenterInfo>
     );
-
-  const downloadPrompt = (e) => {
-    e.preventDefault();
-    const shapeName =
-      computedShapes?.length === 1 ? `${computedShapes[0].name}` : null;
-    return downloadCode(code, shapeName);
-  };
 
   const url = new URL(window.location.href);
   url.pathname = "/workbench";
