@@ -1548,6 +1548,44 @@ export declare class BRepOffsetAPI_MakePipe extends BRepPrimAPI_MakeSweep {
     constructor(Spine: TopoDS_Wire, Profile: TopoDS_Shape, aMode: GeomFill_Trihedron, ForceApproxC1: Standard_Boolean);
   }
 
+export declare class STEPCAFControl_Writer {
+  Init(WS: Handle_XSControl_WorkSession, scratch: Standard_Boolean): void;
+  Write(filename: Standard_CString): IFSelect_ReturnStatus;
+  Transfer_1(doc: Handle_TDocStd_Document, mode: STEPControl_StepModelType, multi: Standard_CString, theProgress: Message_ProgressRange): Standard_Boolean;
+  Transfer_2(L: TDF_Label, mode: STEPControl_StepModelType, multi: Standard_CString, theProgress: Message_ProgressRange): Standard_Boolean;
+  Transfer_3(L: TDF_LabelSequence, mode: STEPControl_StepModelType, multi: Standard_CString, theProgress: Message_ProgressRange): Standard_Boolean;
+  Perform_1(doc: Handle_TDocStd_Document, filename: XCAFDoc_PartId, theProgress: Message_ProgressRange): Standard_Boolean;
+  Perform_2(doc: Handle_TDocStd_Document, filename: Standard_CString, theProgress: Message_ProgressRange): Standard_Boolean;
+  ExternFiles(): any;
+  ExternFile_1(L: TDF_Label, ef: Handle_STEPCAFControl_ExternFile): Standard_Boolean;
+  ExternFile_2(name: Standard_CString, ef: Handle_STEPCAFControl_ExternFile): Standard_Boolean;
+  ChangeWriter(): STEPControl_Writer;
+  Writer(): STEPControl_Writer;
+  SetColorMode(colormode: Standard_Boolean): void;
+  GetColorMode(): Standard_Boolean;
+  SetNameMode(namemode: Standard_Boolean): void;
+  GetNameMode(): Standard_Boolean;
+  SetLayerMode(layermode: Standard_Boolean): void;
+  GetLayerMode(): Standard_Boolean;
+  SetPropsMode(propsmode: Standard_Boolean): void;
+  GetPropsMode(): Standard_Boolean;
+  SetSHUOMode(shuomode: Standard_Boolean): void;
+  GetSHUOMode(): Standard_Boolean;
+  SetDimTolMode(dimtolmode: Standard_Boolean): void;
+  GetDimTolMode(): Standard_Boolean;
+  SetMaterialMode(matmode: Standard_Boolean): void;
+  GetMaterialMode(): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class STEPCAFControl_Writer_1 extends STEPCAFControl_Writer {
+    constructor();
+  }
+
+  export declare class STEPCAFControl_Writer_2 extends STEPCAFControl_Writer {
+    constructor(WS: Handle_XSControl_WorkSession, scratch: Standard_Boolean);
+  }
+
 export declare class GeomAPI_Interpolate {
   Load_1(InitialTangent: gp_Vec, FinalTangent: gp_Vec, Scale: Standard_Boolean): void;
   Load_2(Tangents: TColgp_Array1OfVec, TangentFlags: Handle_TColStd_HArray1OfBoolean, Scale: Standard_Boolean): void;
@@ -2223,6 +2261,192 @@ export declare class GeomLib {
   delete(): void;
 }
 
+export declare class CDM_Document extends Standard_Transient {
+  Update_1(aToDocument: Handle_CDM_Document, aReferenceIdentifier: Graphic3d_ZLayerId, aModifContext: Standard_Address): void;
+  Update_2(ErrorString: TCollection_ExtendedString): Standard_Boolean;
+  StorageFormat(): TCollection_ExtendedString;
+  Extensions(Extensions: TColStd_SequenceOfExtendedString): void;
+  GetAlternativeDocument(aFormat: TCollection_ExtendedString, anAlternativeDocument: Handle_CDM_Document): Standard_Boolean;
+  CreateReference_1(anOtherDocument: Handle_CDM_Document): Graphic3d_ZLayerId;
+  RemoveReference(aReferenceIdentifier: Graphic3d_ZLayerId): void;
+  RemoveAllReferences(): void;
+  Document(aReferenceIdentifier: Graphic3d_ZLayerId): Handle_CDM_Document;
+  IsInSession(aReferenceIdentifier: Graphic3d_ZLayerId): Standard_Boolean;
+  IsStored_1(aReferenceIdentifier: Graphic3d_ZLayerId): Standard_Boolean;
+  Name(aReferenceIdentifier: Graphic3d_ZLayerId): TCollection_ExtendedString;
+  UpdateFromDocuments(aModifContext: Standard_Address): void;
+  ToReferencesNumber(): Graphic3d_ZLayerId;
+  FromReferencesNumber(): Graphic3d_ZLayerId;
+  ShallowReferences(aDocument: Handle_CDM_Document): Standard_Boolean;
+  DeepReferences(aDocument: Handle_CDM_Document): Standard_Boolean;
+  CopyReference(aFromDocument: Handle_CDM_Document, aReferenceIdentifier: Graphic3d_ZLayerId): Graphic3d_ZLayerId;
+  IsReadOnly_1(): Standard_Boolean;
+  IsReadOnly_2(aReferenceIdentifier: Graphic3d_ZLayerId): Standard_Boolean;
+  SetIsReadOnly(): void;
+  UnsetIsReadOnly(): void;
+  Modify(): void;
+  Modifications(): Graphic3d_ZLayerId;
+  UnModify(): void;
+  IsUpToDate(aReferenceIdentifier: Graphic3d_ZLayerId): Standard_Boolean;
+  SetIsUpToDate(aReferenceIdentifier: Graphic3d_ZLayerId): void;
+  SetComment(aComment: TCollection_ExtendedString): void;
+  AddComment(aComment: TCollection_ExtendedString): void;
+  SetComments(aComments: TColStd_SequenceOfExtendedString): void;
+  Comments(aComments: TColStd_SequenceOfExtendedString): void;
+  Comment(): Standard_ExtString;
+  IsStored_2(): Standard_Boolean;
+  StorageVersion(): Graphic3d_ZLayerId;
+  SetMetaData(aMetaData: Handle_CDM_MetaData): void;
+  UnsetIsStored(): void;
+  MetaData(): Handle_CDM_MetaData;
+  Folder(): TCollection_ExtendedString;
+  SetRequestedFolder(aFolder: TCollection_ExtendedString): void;
+  RequestedFolder(): TCollection_ExtendedString;
+  HasRequestedFolder(): Standard_Boolean;
+  SetRequestedName(aName: TCollection_ExtendedString): void;
+  RequestedName(): TCollection_ExtendedString;
+  SetRequestedPreviousVersion(aPreviousVersion: TCollection_ExtendedString): void;
+  UnsetRequestedPreviousVersion(): void;
+  HasRequestedPreviousVersion(): Standard_Boolean;
+  RequestedPreviousVersion(): TCollection_ExtendedString;
+  SetRequestedComment(aComment: TCollection_ExtendedString): void;
+  RequestedComment(): TCollection_ExtendedString;
+  LoadResources(): void;
+  FindFileExtension(): Standard_Boolean;
+  FileExtension(): TCollection_ExtendedString;
+  FindDescription(): Standard_Boolean;
+  Description(): TCollection_ExtendedString;
+  IsModified(): Standard_Boolean;
+  IsOpened_1(): Standard_Boolean;
+  Open(anApplication: Handle_CDM_Application): void;
+  CanClose(): CDM_CanCloseStatus;
+  Close(): void;
+  Application(): Handle_CDM_Application;
+  CanCloseReference(aDocument: Handle_CDM_Document, aReferenceIdentifier: Graphic3d_ZLayerId): Standard_Boolean;
+  CloseReference(aDocument: Handle_CDM_Document, aReferenceIdentifier: Graphic3d_ZLayerId): void;
+  IsOpened_2(aReferenceIdentifier: Graphic3d_ZLayerId): Standard_Boolean;
+  CreateReference_2(aMetaData: Handle_CDM_MetaData, aReferenceIdentifier: Graphic3d_ZLayerId, anApplication: Handle_CDM_Application, aToDocumentVersion: Graphic3d_ZLayerId, UseStorageConfiguration: Standard_Boolean): void;
+  CreateReference_3(aMetaData: Handle_CDM_MetaData, anApplication: Handle_CDM_Application, aDocumentVersion: Graphic3d_ZLayerId, UseStorageConfiguration: Standard_Boolean): Graphic3d_ZLayerId;
+  ReferenceCounter(): Graphic3d_ZLayerId;
+  Update_3(): void;
+  Reference(aReferenceIdentifier: Graphic3d_ZLayerId): Handle_CDM_Reference;
+  SetModifications(Modifications: Graphic3d_ZLayerId): void;
+  SetReferenceCounter(aReferenceCounter: Graphic3d_ZLayerId): void;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Quantity_Color {
+  Name_1(): Quantity_NameOfColor;
+  SetValues_1(theName: Quantity_NameOfColor): void;
+  Rgb(): any;
+  Values(theC1: Standard_Real, theC2: Standard_Real, theC3: Standard_Real, theType: Quantity_TypeOfColor): void;
+  SetValues_2(theC1: Standard_Real, theC2: Standard_Real, theC3: Standard_Real, theType: Quantity_TypeOfColor): void;
+  Red(): Standard_Real;
+  Green(): Standard_Real;
+  Blue(): Standard_Real;
+  Hue(): Standard_Real;
+  Light(): Standard_Real;
+  ChangeIntensity(theDelta: Standard_Real): void;
+  Saturation(): Standard_Real;
+  ChangeContrast(theDelta: Standard_Real): void;
+  IsDifferent(theOther: Quantity_Color): Standard_Boolean;
+  IsEqual(theOther: Quantity_Color): Standard_Boolean;
+  Distance(theColor: Quantity_Color): Standard_Real;
+  SquareDistance(theColor: Quantity_Color): Standard_Real;
+  Delta(theColor: Quantity_Color, DC: Standard_Real, DI: Standard_Real): void;
+  DeltaE2000(theOther: Quantity_Color): Standard_Real;
+  static Name_2(theR: Standard_Real, theG: Standard_Real, theB: Standard_Real): Quantity_NameOfColor;
+  static StringName(theColor: Quantity_NameOfColor): Standard_CString;
+  static ColorFromName_1(theName: Standard_CString, theColor: Quantity_NameOfColor): Standard_Boolean;
+  static ColorFromName_2(theColorNameString: Standard_CString, theColor: Quantity_Color): Standard_Boolean;
+  static ColorFromHex(theHexColorString: Standard_CString, theColor: Quantity_Color): Standard_Boolean;
+  static ColorToHex(theColor: Quantity_Color, theToPrefixHash: Standard_Boolean): XCAFDoc_PartId;
+  static Convert_sRGB_To_HLS(theRgb: NCollection_Vec3<float>): any;
+  static Convert_HLS_To_sRGB(theHls: NCollection_Vec3<float>): any;
+  static Convert_LinearRGB_To_HLS(theRgb: NCollection_Vec3<float>): any;
+  static Convert_HLS_To_LinearRGB(theHls: NCollection_Vec3<float>): any;
+  static Convert_LinearRGB_To_Lab(theRgb: NCollection_Vec3<float>): any;
+  static Convert_Lab_To_Lch(theLab: NCollection_Vec3<float>): any;
+  static Convert_Lab_To_LinearRGB(theLab: NCollection_Vec3<float>): any;
+  static Convert_Lch_To_Lab(theLch: NCollection_Vec3<float>): any;
+  static Color2argb(theColor: Quantity_Color, theARGB: Graphic3d_ZLayerId): void;
+  static Argb2color(theARGB: Graphic3d_ZLayerId, theColor: Quantity_Color): void;
+  static Convert_LinearRGB_To_sRGB_1(theLinearValue: Standard_Real): Standard_Real;
+  static Convert_LinearRGB_To_sRGB_2(theLinearValue: Standard_ShortReal): Standard_ShortReal;
+  static Convert_sRGB_To_LinearRGB_1(thesRGBValue: Standard_Real): Standard_Real;
+  static Convert_sRGB_To_LinearRGB_2(thesRGBValue: Standard_ShortReal): Standard_ShortReal;
+  static Convert_LinearRGB_To_sRGB_approx22_1(theLinearValue: Standard_ShortReal): Standard_ShortReal;
+  static Convert_sRGB_To_LinearRGB_approx22_1(thesRGBValue: Standard_ShortReal): Standard_ShortReal;
+  static Convert_LinearRGB_To_sRGB_approx22_2(theRGB: NCollection_Vec3<float>): any;
+  static Convert_sRGB_To_LinearRGB_approx22_2(theRGB: NCollection_Vec3<float>): any;
+  static HlsRgb(theH: Standard_Real, theL: Standard_Real, theS: Standard_Real, theR: Standard_Real, theG: Standard_Real, theB: Standard_Real): void;
+  static RgbHls(theR: Standard_Real, theG: Standard_Real, theB: Standard_Real, theH: Standard_Real, theL: Standard_Real, theS: Standard_Real): void;
+  static Epsilon(): Standard_Real;
+  static SetEpsilon(theEpsilon: Standard_Real): void;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  InitFromJson(theSStream: Standard_SStream, theStreamPos: Graphic3d_ZLayerId): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class Quantity_Color_1 extends Quantity_Color {
+    constructor();
+  }
+
+  export declare class Quantity_Color_2 extends Quantity_Color {
+    constructor(theName: Quantity_NameOfColor);
+  }
+
+  export declare class Quantity_Color_3 extends Quantity_Color {
+    constructor(theC1: Standard_Real, theC2: Standard_Real, theC3: Standard_Real, theType: Quantity_TypeOfColor);
+  }
+
+  export declare class Quantity_Color_4 extends Quantity_Color {
+    constructor(theRgb: NCollection_Vec3<float>);
+  }
+
+export declare class Quantity_ColorRGBA {
+  SetValues(theRed: Standard_ShortReal, theGreen: Standard_ShortReal, theBlue: Standard_ShortReal, theAlpha: Standard_ShortReal): void;
+  GetRGB(): Quantity_Color;
+  ChangeRGB(): Quantity_Color;
+  SetRGB(theRgb: Quantity_Color): void;
+  Alpha(): Standard_ShortReal;
+  SetAlpha(theAlpha: Standard_ShortReal): void;
+  IsDifferent(theOther: Quantity_ColorRGBA): Standard_Boolean;
+  IsEqual(theOther: Quantity_ColorRGBA): Standard_Boolean;
+  static ColorFromName(theColorNameString: Standard_CString, theColor: Quantity_ColorRGBA): Standard_Boolean;
+  static ColorFromHex(theHexColorString: Standard_Character, theColor: Quantity_ColorRGBA, theAlphaComponentIsOff: Standard_Boolean): Standard_Boolean;
+  static ColorToHex(theColor: Quantity_ColorRGBA, theToPrefixHash: Standard_Boolean): XCAFDoc_PartId;
+  static Convert_LinearRGB_To_sRGB(theRGB: NCollection_Vec4<float>): any;
+  static Convert_sRGB_To_LinearRGB(theRGB: NCollection_Vec4<float>): any;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  InitFromJson(theSStream: Standard_SStream, theStreamPos: Graphic3d_ZLayerId): Standard_Boolean;
+  delete(): void;
+}
+
+  export declare class Quantity_ColorRGBA_1 extends Quantity_ColorRGBA {
+    constructor();
+  }
+
+  export declare class Quantity_ColorRGBA_2 extends Quantity_ColorRGBA {
+    constructor(theRgb: Quantity_Color);
+  }
+
+  export declare class Quantity_ColorRGBA_3 extends Quantity_ColorRGBA {
+    constructor(theRgb: Quantity_Color, theAlpha: Standard_ShortReal);
+  }
+
+  export declare class Quantity_ColorRGBA_4 extends Quantity_ColorRGBA {
+    constructor(theRgba: NCollection_Vec4<float>);
+  }
+
+  export declare class Quantity_ColorRGBA_5 extends Quantity_ColorRGBA {
+    constructor(theRed: Standard_ShortReal, theGreen: Standard_ShortReal, theBlue: Standard_ShortReal, theAlpha: Standard_ShortReal);
+  }
+
 export declare class BRepExtrema_DistShapeShape {
   SetDeflection(theDeflection: Standard_Real): void;
   LoadS1(Shape1: TopoDS_Shape): void;
@@ -2560,6 +2784,88 @@ export declare class BOPAlgo_Options {
     constructor(theAllocator: Handle_NCollection_BaseAllocator);
   }
 
+export declare class Handle_TDocStd_Document {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: TDocStd_Document): void;
+  get(): TDocStd_Document;
+  delete(): void;
+}
+
+  export declare class Handle_TDocStd_Document_1 extends Handle_TDocStd_Document {
+    constructor();
+  }
+
+  export declare class Handle_TDocStd_Document_2 extends Handle_TDocStd_Document {
+    constructor(thePtr: TDocStd_Document);
+  }
+
+  export declare class Handle_TDocStd_Document_3 extends Handle_TDocStd_Document {
+    constructor(theHandle: Handle_TDocStd_Document);
+  }
+
+  export declare class Handle_TDocStd_Document_4 extends Handle_TDocStd_Document {
+    constructor(theHandle: Handle_TDocStd_Document);
+  }
+
+export declare class TDocStd_Document extends CDM_Document {
+  constructor(astorageformat: TCollection_ExtendedString)
+  static Get(L: TDF_Label): Handle_TDocStd_Document;
+  IsSaved(): Standard_Boolean;
+  IsChanged(): Standard_Boolean;
+  SetSaved(): void;
+  SetSavedTime(theTime: Graphic3d_ZLayerId): void;
+  GetSavedTime(): Graphic3d_ZLayerId;
+  GetName(): TCollection_ExtendedString;
+  GetPath(): TCollection_ExtendedString;
+  SetData(data: Handle_TDF_Data): void;
+  GetData(): Handle_TDF_Data;
+  Main(): TDF_Label;
+  IsEmpty(): Standard_Boolean;
+  IsValid(): Standard_Boolean;
+  SetModified(L: TDF_Label): void;
+  PurgeModified(): void;
+  GetModified(): TDF_LabelMap;
+  NewCommand(): void;
+  HasOpenCommand(): Standard_Boolean;
+  OpenCommand(): void;
+  CommitCommand(): Standard_Boolean;
+  AbortCommand(): void;
+  GetUndoLimit(): Graphic3d_ZLayerId;
+  SetUndoLimit(L: Graphic3d_ZLayerId): void;
+  ClearUndos(): void;
+  ClearRedos(): void;
+  GetAvailableUndos(): Graphic3d_ZLayerId;
+  Undo(): Standard_Boolean;
+  GetAvailableRedos(): Graphic3d_ZLayerId;
+  Redo(): Standard_Boolean;
+  GetUndos(): TDF_DeltaList;
+  GetRedos(): TDF_DeltaList;
+  RemoveFirstUndo(): void;
+  InitDeltaCompaction(): Standard_Boolean;
+  PerformDeltaCompaction(): Standard_Boolean;
+  UpdateReferences(aDocEntry: XCAFDoc_PartId): void;
+  Recompute(): void;
+  Update(aToDocument: Handle_CDM_Document, aReferenceIdentifier: Graphic3d_ZLayerId, aModifContext: Standard_Address): void;
+  StorageFormat(): TCollection_ExtendedString;
+  SetEmptyLabelsSavingMode(isAllowed: Standard_Boolean): void;
+  EmptyLabelsSavingMode(): Standard_Boolean;
+  ChangeStorageFormat(newStorageFormat: TCollection_ExtendedString): void;
+  SetNestedTransactionMode(isAllowed: Standard_Boolean): void;
+  IsNestedTransactionMode(): Standard_Boolean;
+  SetModificationMode(theTransactionOnly: Standard_Boolean): void;
+  ModificationMode(): Standard_Boolean;
+  BeforeClose(): void;
+  StorageFormatVersion(): TDocStd_FormatVersion;
+  ChangeStorageFormatVersion(theVersion: TDocStd_FormatVersion): void;
+  static CurrentStorageFormatVersion(): TDocStd_FormatVersion;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
 export declare class HLRAlgo_Projector {
   Set(T: gp_Trsf, Persp: Standard_Boolean, Focus: Standard_Real): void;
   Directions(D1: gp_Vec2d, D2: gp_Vec2d, D3: gp_Vec2d): void;
@@ -2666,6 +2972,178 @@ export declare class BRepGProp {
   delete(): void;
 }
 
+export declare class IFSelect_WorkSession extends Standard_Transient {
+  constructor()
+  SetErrorHandle(toHandle: Standard_Boolean): void;
+  ErrorHandle(): Standard_Boolean;
+  ShareOut(): Handle_IFSelect_ShareOut;
+  SetShareOut(shareout: Handle_IFSelect_ShareOut): void;
+  SetModeStat(theMode: Standard_Boolean): void;
+  GetModeStat(): Standard_Boolean;
+  SetLibrary(theLib: Handle_IFSelect_WorkLibrary): void;
+  WorkLibrary(): Handle_IFSelect_WorkLibrary;
+  SetProtocol(protocol: Handle_Interface_Protocol): void;
+  Protocol(): Handle_Interface_Protocol;
+  SetSignType(signtype: Handle_IFSelect_Signature): void;
+  SignType(): Handle_IFSelect_Signature;
+  HasModel(): Standard_Boolean;
+  SetModel(model: Handle_Interface_InterfaceModel, clearpointed: Standard_Boolean): void;
+  Model(): Handle_Interface_InterfaceModel;
+  SetLoadedFile(theFileName: Standard_CString): void;
+  LoadedFile(): Standard_CString;
+  ReadFile(filename: Standard_CString): IFSelect_ReturnStatus;
+  ReadStream(theName: Standard_CString, theIStream: Standard_IStream): IFSelect_ReturnStatus;
+  NbStartingEntities(): Graphic3d_ZLayerId;
+  StartingEntity(num: Graphic3d_ZLayerId): Handle_Standard_Transient;
+  StartingNumber(ent: Handle_Standard_Transient): Graphic3d_ZLayerId;
+  NumberFromLabel(val: Standard_CString, afternum: Graphic3d_ZLayerId): Graphic3d_ZLayerId;
+  EntityLabel(ent: Handle_Standard_Transient): Handle_TCollection_HAsciiString;
+  EntityName(ent: Handle_Standard_Transient): Handle_TCollection_HAsciiString;
+  CategoryNumber(ent: Handle_Standard_Transient): Graphic3d_ZLayerId;
+  CategoryName(ent: Handle_Standard_Transient): Standard_CString;
+  ValidityName(ent: Handle_Standard_Transient): Standard_CString;
+  ClearData(mode: Graphic3d_ZLayerId): void;
+  ComputeGraph(enforce: Standard_Boolean): Standard_Boolean;
+  HGraph(): Handle_Interface_HGraph;
+  Graph(): Interface_Graph;
+  Shareds(ent: Handle_Standard_Transient): Handle_TColStd_HSequenceOfTransient;
+  Sharings(ent: Handle_Standard_Transient): Handle_TColStd_HSequenceOfTransient;
+  IsLoaded(): Standard_Boolean;
+  ComputeCheck(enforce: Standard_Boolean): Standard_Boolean;
+  ModelCheckList(complete: Standard_Boolean): Interface_CheckIterator;
+  CheckOne(ent: Handle_Standard_Transient, complete: Standard_Boolean): Interface_CheckIterator;
+  LastRunCheckList(): Interface_CheckIterator;
+  MaxIdent(): Graphic3d_ZLayerId;
+  Item(id: Graphic3d_ZLayerId): Handle_Standard_Transient;
+  ItemIdent(item: Handle_Standard_Transient): Graphic3d_ZLayerId;
+  NamedItem_1(name: Standard_CString): Handle_Standard_Transient;
+  NamedItem_2(name: Handle_TCollection_HAsciiString): Handle_Standard_Transient;
+  NameIdent(name: Standard_CString): Graphic3d_ZLayerId;
+  HasName(item: Handle_Standard_Transient): Standard_Boolean;
+  Name(item: Handle_Standard_Transient): Handle_TCollection_HAsciiString;
+  AddItem(item: Handle_Standard_Transient, active: Standard_Boolean): Graphic3d_ZLayerId;
+  AddNamedItem(name: Standard_CString, item: Handle_Standard_Transient, active: Standard_Boolean): Graphic3d_ZLayerId;
+  SetActive(item: Handle_Standard_Transient, mode: Standard_Boolean): Standard_Boolean;
+  RemoveNamedItem(name: Standard_CString): Standard_Boolean;
+  RemoveName(name: Standard_CString): Standard_Boolean;
+  RemoveItem(item: Handle_Standard_Transient): Standard_Boolean;
+  ClearItems(): void;
+  ItemLabel(id: Graphic3d_ZLayerId): Handle_TCollection_HAsciiString;
+  ItemIdents(type: Handle_Standard_Type): Handle_TColStd_HSequenceOfInteger;
+  ItemNames(type: Handle_Standard_Type): Handle_TColStd_HSequenceOfHAsciiString;
+  ItemNamesForLabel(label: Standard_CString): Handle_TColStd_HSequenceOfHAsciiString;
+  NextIdentForLabel(label: Standard_CString, id: Graphic3d_ZLayerId, mode: Graphic3d_ZLayerId): Graphic3d_ZLayerId;
+  NewParamFromStatic(statname: Standard_CString, name: Standard_CString): Handle_Standard_Transient;
+  IntParam(id: Graphic3d_ZLayerId): Handle_IFSelect_IntParam;
+  IntValue(it: Handle_IFSelect_IntParam): Graphic3d_ZLayerId;
+  NewIntParam(name: Standard_CString): Handle_IFSelect_IntParam;
+  SetIntValue(it: Handle_IFSelect_IntParam, val: Graphic3d_ZLayerId): Standard_Boolean;
+  TextParam(id: Graphic3d_ZLayerId): Handle_TCollection_HAsciiString;
+  TextValue(par: Handle_TCollection_HAsciiString): XCAFDoc_PartId;
+  NewTextParam(name: Standard_CString): Handle_TCollection_HAsciiString;
+  SetTextValue(par: Handle_TCollection_HAsciiString, val: Standard_CString): Standard_Boolean;
+  Signature(id: Graphic3d_ZLayerId): Handle_IFSelect_Signature;
+  SignValue(sign: Handle_IFSelect_Signature, ent: Handle_Standard_Transient): Standard_CString;
+  Selection(id: Graphic3d_ZLayerId): Handle_IFSelect_Selection;
+  EvalSelection(sel: Handle_IFSelect_Selection): Interface_EntityIterator;
+  Sources(sel: Handle_IFSelect_Selection): IFSelect_SelectionIterator;
+  SelectionResult(sel: Handle_IFSelect_Selection): Handle_TColStd_HSequenceOfTransient;
+  SelectionResultFromList(sel: Handle_IFSelect_Selection, list: Handle_TColStd_HSequenceOfTransient): Handle_TColStd_HSequenceOfTransient;
+  SetItemSelection(item: Handle_Standard_Transient, sel: Handle_IFSelect_Selection): Standard_Boolean;
+  ResetItemSelection(item: Handle_Standard_Transient): Standard_Boolean;
+  ItemSelection(item: Handle_Standard_Transient): Handle_IFSelect_Selection;
+  SignCounter(id: Graphic3d_ZLayerId): Handle_IFSelect_SignCounter;
+  ComputeCounter(counter: Handle_IFSelect_SignCounter, forced: Standard_Boolean): Standard_Boolean;
+  ComputeCounterFromList(counter: Handle_IFSelect_SignCounter, list: Handle_TColStd_HSequenceOfTransient, clear: Standard_Boolean): Standard_Boolean;
+  AppliedDispatches(): Handle_TColStd_HSequenceOfInteger;
+  ClearShareOut(onlydisp: Standard_Boolean): void;
+  Dispatch(id: Graphic3d_ZLayerId): Handle_IFSelect_Dispatch;
+  DispatchRank(disp: Handle_IFSelect_Dispatch): Graphic3d_ZLayerId;
+  ModelCopier(): Handle_IFSelect_ModelCopier;
+  SetModelCopier(copier: Handle_IFSelect_ModelCopier): void;
+  NbFinalModifiers(formodel: Standard_Boolean): Graphic3d_ZLayerId;
+  FinalModifierIdents(formodel: Standard_Boolean): Handle_TColStd_HSequenceOfInteger;
+  GeneralModifier(id: Graphic3d_ZLayerId): Handle_IFSelect_GeneralModifier;
+  ModelModifier(id: Graphic3d_ZLayerId): Handle_IFSelect_Modifier;
+  ModifierRank(item: Handle_IFSelect_GeneralModifier): Graphic3d_ZLayerId;
+  ChangeModifierRank(formodel: Standard_Boolean, before: Graphic3d_ZLayerId, after: Graphic3d_ZLayerId): Standard_Boolean;
+  ClearFinalModifiers(): void;
+  SetAppliedModifier(modif: Handle_IFSelect_GeneralModifier, item: Handle_Standard_Transient): Standard_Boolean;
+  ResetAppliedModifier(modif: Handle_IFSelect_GeneralModifier): Standard_Boolean;
+  UsesAppliedModifier(modif: Handle_IFSelect_GeneralModifier): Handle_Standard_Transient;
+  Transformer(id: Graphic3d_ZLayerId): Handle_IFSelect_Transformer;
+  RunTransformer(transf: Handle_IFSelect_Transformer): Graphic3d_ZLayerId;
+  RunModifier(modif: Handle_IFSelect_Modifier, copy: Standard_Boolean): Graphic3d_ZLayerId;
+  RunModifierSelected(modif: Handle_IFSelect_Modifier, sel: Handle_IFSelect_Selection, copy: Standard_Boolean): Graphic3d_ZLayerId;
+  NewTransformStandard(copy: Standard_Boolean, name: Standard_CString): Handle_IFSelect_Transformer;
+  SetModelContent(sel: Handle_IFSelect_Selection, keep: Standard_Boolean): Standard_Boolean;
+  FilePrefix(): Handle_TCollection_HAsciiString;
+  DefaultFileRoot(): Handle_TCollection_HAsciiString;
+  FileExtension(): Handle_TCollection_HAsciiString;
+  FileRoot(disp: Handle_IFSelect_Dispatch): Handle_TCollection_HAsciiString;
+  SetFilePrefix(name: Standard_CString): void;
+  SetDefaultFileRoot(name: Standard_CString): Standard_Boolean;
+  SetFileExtension(name: Standard_CString): void;
+  SetFileRoot(disp: Handle_IFSelect_Dispatch, name: Standard_CString): Standard_Boolean;
+  GiveFileRoot(file: Standard_CString): Standard_CString;
+  GiveFileComplete(file: Standard_CString): Standard_CString;
+  ClearFile(): void;
+  EvaluateFile(): void;
+  NbFiles(): Graphic3d_ZLayerId;
+  FileModel(num: Graphic3d_ZLayerId): Handle_Interface_InterfaceModel;
+  FileName(num: Graphic3d_ZLayerId): XCAFDoc_PartId;
+  BeginSentFiles(record: Standard_Boolean): void;
+  SentFiles(): Handle_TColStd_HSequenceOfHAsciiString;
+  SendSplit(): Standard_Boolean;
+  EvalSplit(): Handle_IFSelect_PacketList;
+  SentList(count: Graphic3d_ZLayerId): Interface_EntityIterator;
+  MaxSendingCount(): Graphic3d_ZLayerId;
+  SetRemaining(mode: IFSelect_RemainMode): Standard_Boolean;
+  SendAll(filename: Standard_CString, computegraph: Standard_Boolean): IFSelect_ReturnStatus;
+  SendSelected(filename: Standard_CString, sel: Handle_IFSelect_Selection, computegraph: Standard_Boolean): IFSelect_ReturnStatus;
+  WriteFile_1(filename: Standard_CString): IFSelect_ReturnStatus;
+  WriteFile_2(filename: Standard_CString, sel: Handle_IFSelect_Selection): IFSelect_ReturnStatus;
+  NbSources(sel: Handle_IFSelect_Selection): Graphic3d_ZLayerId;
+  Source(sel: Handle_IFSelect_Selection, num: Graphic3d_ZLayerId): Handle_IFSelect_Selection;
+  IsReversedSelectExtract(sel: Handle_IFSelect_Selection): Standard_Boolean;
+  ToggleSelectExtract(sel: Handle_IFSelect_Selection): Standard_Boolean;
+  SetInputSelection(sel: Handle_IFSelect_Selection, input: Handle_IFSelect_Selection): Standard_Boolean;
+  SetControl(sel: Handle_IFSelect_Selection, sc: Handle_IFSelect_Selection, formain: Standard_Boolean): Standard_Boolean;
+  CombineAdd(selcomb: Handle_IFSelect_Selection, seladd: Handle_IFSelect_Selection, atnum: Graphic3d_ZLayerId): Graphic3d_ZLayerId;
+  CombineRemove(selcomb: Handle_IFSelect_Selection, selrem: Handle_IFSelect_Selection): Standard_Boolean;
+  NewSelectPointed(list: Handle_TColStd_HSequenceOfTransient, name: Standard_CString): Handle_IFSelect_Selection;
+  SetSelectPointed(sel: Handle_IFSelect_Selection, list: Handle_TColStd_HSequenceOfTransient, mode: Graphic3d_ZLayerId): Standard_Boolean;
+  GiveSelection(selname: Standard_CString): Handle_IFSelect_Selection;
+  GiveList_1(obj: Handle_Standard_Transient): Handle_TColStd_HSequenceOfTransient;
+  GiveList_2(first: Standard_CString, second: Standard_CString): Handle_TColStd_HSequenceOfTransient;
+  GiveListFromList(selname: Standard_CString, ent: Handle_Standard_Transient): Handle_TColStd_HSequenceOfTransient;
+  GiveListCombined(l1: Handle_TColStd_HSequenceOfTransient, l2: Handle_TColStd_HSequenceOfTransient, mode: Graphic3d_ZLayerId): Handle_TColStd_HSequenceOfTransient;
+  QueryCheckList(chl: Interface_CheckIterator): void;
+  QueryCheckStatus(ent: Handle_Standard_Transient): Graphic3d_ZLayerId;
+  QueryParent(entdad: Handle_Standard_Transient, entson: Handle_Standard_Transient): Graphic3d_ZLayerId;
+  SetParams(params: any, uselist: OpenGl_ColorFormats): void;
+  TraceStatics(use: Graphic3d_ZLayerId, mode: Graphic3d_ZLayerId): void;
+  DumpShare(): void;
+  ListItems(label: Standard_CString): void;
+  ListFinalModifiers(formodel: Standard_Boolean): void;
+  DumpSelection(sel: Handle_IFSelect_Selection): void;
+  DumpModel(level: Graphic3d_ZLayerId, S: Standard_OStream): void;
+  TraceDumpModel(mode: Graphic3d_ZLayerId): void;
+  DumpEntity(ent: Handle_Standard_Transient, level: Graphic3d_ZLayerId, S: Standard_OStream): void;
+  PrintEntityStatus(ent: Handle_Standard_Transient, S: Standard_OStream): void;
+  TraceDumpEntity(ent: Handle_Standard_Transient, level: Graphic3d_ZLayerId): void;
+  PrintCheckList(S: Standard_OStream, checklist: Interface_CheckIterator, failsonly: Standard_Boolean, mode: IFSelect_PrintCount): void;
+  PrintSignatureList(S: Standard_OStream, signlist: Handle_IFSelect_SignatureList, mode: IFSelect_PrintCount): void;
+  EvaluateSelection(sel: Handle_IFSelect_Selection): void;
+  EvaluateDispatch(disp: Handle_IFSelect_Dispatch, mode: Graphic3d_ZLayerId): void;
+  EvaluateComplete(mode: Graphic3d_ZLayerId): void;
+  ListEntities(iter: Interface_EntityIterator, mode: Graphic3d_ZLayerId, S: Standard_OStream): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
 export declare type IFSelect_ReturnStatus = {
   IFSelect_RetVoid: {};
   IFSelect_RetDone: {};
@@ -2673,6 +3151,62 @@ export declare type IFSelect_ReturnStatus = {
   IFSelect_RetFail: {};
   IFSelect_RetStop: {};
 }
+
+export declare class XSControl_WorkSession extends IFSelect_WorkSession {
+  constructor()
+  ClearData(theMode: Graphic3d_ZLayerId): void;
+  SelectNorm(theNormName: Standard_CString): Standard_Boolean;
+  SetController(theCtl: Handle_XSControl_Controller): void;
+  SelectedNorm(theRsc: Standard_Boolean): Standard_CString;
+  NormAdaptor(): Handle_XSControl_Controller;
+  Context(): any;
+  SetAllContext(theContext: any): void;
+  ClearContext(): void;
+  PrintTransferStatus(theNum: Graphic3d_ZLayerId, theWri: Standard_Boolean, theS: Standard_OStream): Standard_Boolean;
+  InitTransferReader(theMode: Graphic3d_ZLayerId): void;
+  SetTransferReader(theTR: Handle_XSControl_TransferReader): void;
+  TransferReader(): Handle_XSControl_TransferReader;
+  MapReader(): Handle_Transfer_TransientProcess;
+  SetMapReader(theTP: Handle_Transfer_TransientProcess): Standard_Boolean;
+  Result(theEnt: Handle_Standard_Transient, theMode: Graphic3d_ZLayerId): Handle_Standard_Transient;
+  TransferReadOne(theEnts: Handle_Standard_Transient, theProgress: Message_ProgressRange): Graphic3d_ZLayerId;
+  TransferReadRoots(theProgress: Message_ProgressRange): Graphic3d_ZLayerId;
+  NewModel(): Handle_Interface_InterfaceModel;
+  TransferWriter(): Handle_XSControl_TransferWriter;
+  SetMapWriter(theFP: Handle_Transfer_FinderProcess): Standard_Boolean;
+  TransferWriteShape(theShape: TopoDS_Shape, theCompGraph: Standard_Boolean, theProgress: Message_ProgressRange): IFSelect_ReturnStatus;
+  TransferWriteCheckList(): Interface_CheckIterator;
+  Vars(): Handle_XSControl_Vars;
+  SetVars(theVars: Handle_XSControl_Vars): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Handle_XSControl_WorkSession {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: XSControl_WorkSession): void;
+  get(): XSControl_WorkSession;
+  delete(): void;
+}
+
+  export declare class Handle_XSControl_WorkSession_1 extends Handle_XSControl_WorkSession {
+    constructor();
+  }
+
+  export declare class Handle_XSControl_WorkSession_2 extends Handle_XSControl_WorkSession {
+    constructor(thePtr: XSControl_WorkSession);
+  }
+
+  export declare class Handle_XSControl_WorkSession_3 extends Handle_XSControl_WorkSession {
+    constructor(theHandle: Handle_XSControl_WorkSession);
+  }
+
+  export declare class Handle_XSControl_WorkSession_4 extends Handle_XSControl_WorkSession {
+    constructor(theHandle: Handle_XSControl_WorkSession);
+  }
 
 export declare class XSControl_Reader {
   SetNorm(norm: Standard_CString): Standard_Boolean;
@@ -3136,6 +3670,90 @@ export declare class TColgp_Array1OfPnt2d {
   export declare class TColgp_Array1OfPnt2d_5 extends TColgp_Array1OfPnt2d {
     constructor(theBegin: gp_Pnt2d, theLower: Standard_Integer, theUpper: Standard_Integer);
   }
+
+export declare class TDF_Label {
+  constructor()
+  Nullify(): void;
+  Data(): Handle_TDF_Data;
+  Tag(): Graphic3d_ZLayerId;
+  Father(): TDF_Label;
+  IsNull(): Standard_Boolean;
+  Imported(aStatus: Standard_Boolean): void;
+  IsImported(): Standard_Boolean;
+  IsEqual(aLabel: TDF_Label): Standard_Boolean;
+  IsDifferent(aLabel: TDF_Label): Standard_Boolean;
+  IsRoot(): Standard_Boolean;
+  IsAttribute(anID: Standard_GUID): Standard_Boolean;
+  AddAttribute(anAttribute: Handle_TDF_Attribute, append: Standard_Boolean): void;
+  ForgetAttribute_1(anAttribute: Handle_TDF_Attribute): void;
+  ForgetAttribute_2(aguid: Standard_GUID): Standard_Boolean;
+  ForgetAllAttributes(clearChildren: Standard_Boolean): void;
+  ResumeAttribute(anAttribute: Handle_TDF_Attribute): void;
+  FindAttribute_1(anID: Standard_GUID, anAttribute: Handle_TDF_Attribute): Standard_Boolean;
+  FindAttribute_3(anID: Standard_GUID, aTransaction: Graphic3d_ZLayerId, anAttribute: Handle_TDF_Attribute): Standard_Boolean;
+  MayBeModified(): Standard_Boolean;
+  AttributesModified(): Standard_Boolean;
+  HasAttribute(): Standard_Boolean;
+  NbAttributes(): Graphic3d_ZLayerId;
+  Depth(): Graphic3d_ZLayerId;
+  IsDescendant(aLabel: TDF_Label): Standard_Boolean;
+  Root(): TDF_Label;
+  HasChild(): Standard_Boolean;
+  NbChildren(): Graphic3d_ZLayerId;
+  FindChild(aTag: Graphic3d_ZLayerId, create: Standard_Boolean): TDF_Label;
+  NewChild(): TDF_Label;
+  Transaction(): Graphic3d_ZLayerId;
+  HasLowerNode(otherLabel: TDF_Label): Standard_Boolean;
+  HasGreaterNode(otherLabel: TDF_Label): Standard_Boolean;
+  ExtendedDump(anOS: Standard_OStream, aFilter: TDF_IDFilter, aMap: TDF_AttributeIndexedMap): void;
+  EntryDump(anOS: Standard_OStream): void;
+  delete(): void;
+}
+
+export declare class TDF_Attribute extends Standard_Transient {
+  ID(): Standard_GUID;
+  SetID_1(a0: Standard_GUID): void;
+  SetID_2(): void;
+  Label(): TDF_Label;
+  Transaction(): Graphic3d_ZLayerId;
+  UntilTransaction(): Graphic3d_ZLayerId;
+  IsValid(): Standard_Boolean;
+  IsNew(): Standard_Boolean;
+  IsForgotten(): Standard_Boolean;
+  IsAttribute(anID: Standard_GUID): Standard_Boolean;
+  FindAttribute_1(anID: Standard_GUID, anAttribute: Handle_TDF_Attribute): Standard_Boolean;
+  AddAttribute(other: Handle_TDF_Attribute): void;
+  ForgetAttribute(aguid: Standard_GUID): Standard_Boolean;
+  ForgetAllAttributes(clearChildren: Standard_Boolean): void;
+  AfterAddition(): void;
+  BeforeRemoval(): void;
+  BeforeForget(): void;
+  AfterResume(): void;
+  AfterRetrieval(forceIt: Standard_Boolean): Standard_Boolean;
+  BeforeUndo(anAttDelta: Handle_TDF_AttributeDelta, forceIt: Standard_Boolean): Standard_Boolean;
+  AfterUndo(anAttDelta: Handle_TDF_AttributeDelta, forceIt: Standard_Boolean): Standard_Boolean;
+  BeforeCommitTransaction(): void;
+  Backup_1(): void;
+  IsBackuped(): Standard_Boolean;
+  BackupCopy(): Handle_TDF_Attribute;
+  Restore(anAttribute: Handle_TDF_Attribute): void;
+  DeltaOnAddition(): Handle_TDF_DeltaOnAddition;
+  DeltaOnForget(): Handle_TDF_DeltaOnForget;
+  DeltaOnResume(): Handle_TDF_DeltaOnResume;
+  DeltaOnModification_1(anOldAttribute: Handle_TDF_Attribute): Handle_TDF_DeltaOnModification;
+  DeltaOnModification_2(aDelta: Handle_TDF_DeltaOnModification): void;
+  DeltaOnRemoval(): Handle_TDF_DeltaOnRemoval;
+  NewEmpty(): Handle_TDF_Attribute;
+  Paste(intoAttribute: Handle_TDF_Attribute, aRelocationTable: Handle_TDF_RelocationTable): void;
+  References(aDataSet: Handle_TDF_DataSet): void;
+  ExtendedDump(anOS: Standard_OStream, aFilter: TDF_IDFilter, aMap: TDF_AttributeIndexedMap): void;
+  Forget(aTransaction: Graphic3d_ZLayerId): void;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
 
 export declare class BRepTools {
   constructor();
@@ -4269,6 +4887,257 @@ export declare class Geom_ConicalSurface extends Geom_ElementarySurface {
   export declare class Geom_ConicalSurface_2 extends Geom_ConicalSurface {
     constructor(C: gp_Cone);
   }
+
+export declare class Handle_XCAFDoc_ColorTool {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: XCAFDoc_ColorTool): void;
+  get(): XCAFDoc_ColorTool;
+  delete(): void;
+}
+
+  export declare class Handle_XCAFDoc_ColorTool_1 extends Handle_XCAFDoc_ColorTool {
+    constructor();
+  }
+
+  export declare class Handle_XCAFDoc_ColorTool_2 extends Handle_XCAFDoc_ColorTool {
+    constructor(thePtr: XCAFDoc_ColorTool);
+  }
+
+  export declare class Handle_XCAFDoc_ColorTool_3 extends Handle_XCAFDoc_ColorTool {
+    constructor(theHandle: Handle_XCAFDoc_ColorTool);
+  }
+
+  export declare class Handle_XCAFDoc_ColorTool_4 extends Handle_XCAFDoc_ColorTool {
+    constructor(theHandle: Handle_XCAFDoc_ColorTool);
+  }
+
+export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
+  constructor()
+  static AutoNaming(): Standard_Boolean;
+  static SetAutoNaming(theIsAutoNaming: Standard_Boolean): void;
+  static Set(L: TDF_Label): Handle_XCAFDoc_ColorTool;
+  static GetID(): Standard_GUID;
+  BaseLabel(): TDF_Label;
+  ShapeTool(): Handle_XCAFDoc_ShapeTool;
+  IsColor(lab: TDF_Label): Standard_Boolean;
+  GetColor_1(lab: TDF_Label, col: Quantity_Color): Standard_Boolean;
+  GetColor_2(lab: TDF_Label, col: Quantity_ColorRGBA): Standard_Boolean;
+  FindColor_1(col: Quantity_Color, lab: TDF_Label): Standard_Boolean;
+  FindColor_2(col: Quantity_ColorRGBA, lab: TDF_Label): Standard_Boolean;
+  FindColor_3(col: Quantity_Color): TDF_Label;
+  FindColor_4(col: Quantity_ColorRGBA): TDF_Label;
+  AddColor_1(col: Quantity_Color): TDF_Label;
+  AddColor_2(col: Quantity_ColorRGBA): TDF_Label;
+  RemoveColor(lab: TDF_Label): void;
+  GetColors(Labels: TDF_LabelSequence): void;
+  SetColor_1(L: TDF_Label, colorL: TDF_Label, type: XCAFDoc_ColorType): void;
+  SetColor_2(L: TDF_Label, Color: Quantity_Color, type: XCAFDoc_ColorType): void;
+  SetColor_3(L: TDF_Label, Color: Quantity_ColorRGBA, type: XCAFDoc_ColorType): void;
+  UnSetColor_1(L: TDF_Label, type: XCAFDoc_ColorType): void;
+  IsSet_1(L: TDF_Label, type: XCAFDoc_ColorType): Standard_Boolean;
+  static GetColor_3(L: TDF_Label, type: XCAFDoc_ColorType, colorL: TDF_Label): Standard_Boolean;
+  GetColor_4(L: TDF_Label, type: XCAFDoc_ColorType, color: Quantity_Color): Standard_Boolean;
+  GetColor_5(L: TDF_Label, type: XCAFDoc_ColorType, color: Quantity_ColorRGBA): Standard_Boolean;
+  SetColor_4(S: TopoDS_Shape, colorL: TDF_Label, type: XCAFDoc_ColorType): Standard_Boolean;
+  SetColor_5(S: TopoDS_Shape, Color: Quantity_Color, type: XCAFDoc_ColorType): Standard_Boolean;
+  SetColor_6(S: TopoDS_Shape, Color: Quantity_ColorRGBA, type: XCAFDoc_ColorType): Standard_Boolean;
+  UnSetColor_2(S: TopoDS_Shape, type: XCAFDoc_ColorType): Standard_Boolean;
+  IsSet_2(S: TopoDS_Shape, type: XCAFDoc_ColorType): Standard_Boolean;
+  GetColor_6(S: TopoDS_Shape, type: XCAFDoc_ColorType, colorL: TDF_Label): Standard_Boolean;
+  GetColor_7(S: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_Color): Standard_Boolean;
+  GetColor_8(S: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_ColorRGBA): Standard_Boolean;
+  IsVisible(L: TDF_Label): Standard_Boolean;
+  SetVisibility(shapeLabel: TDF_Label, isvisible: Standard_Boolean): void;
+  IsColorByLayer(L: TDF_Label): Standard_Boolean;
+  SetColorByLayer(shapeLabel: TDF_Label, isColorByLayer: Standard_Boolean): void;
+  SetInstanceColor_1(theShape: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_Color, isCreateSHUO: Standard_Boolean): Standard_Boolean;
+  SetInstanceColor_2(theShape: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_ColorRGBA, isCreateSHUO: Standard_Boolean): Standard_Boolean;
+  GetInstanceColor_1(theShape: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_Color): Standard_Boolean;
+  GetInstanceColor_2(theShape: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_ColorRGBA): Standard_Boolean;
+  IsInstanceVisible(theShape: TopoDS_Shape): Standard_Boolean;
+  ReverseChainsOfTreeNodes(): Standard_Boolean;
+  ID(): Standard_GUID;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  NewEmpty(): Handle_TDF_Attribute;
+  delete(): void;
+}
+
+export declare type XCAFDoc_ColorType = {
+  XCAFDoc_ColorGen: {};
+  XCAFDoc_ColorSurf: {};
+  XCAFDoc_ColorCurv: {};
+}
+
+export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
+  constructor()
+  static GetID(): Standard_GUID;
+  static Set(L: TDF_Label, IsAcces: Standard_Boolean): Handle_XCAFDoc_DocumentTool;
+  static IsXCAFDocument(Doc: Handle_TDocStd_Document): Standard_Boolean;
+  static DocLabel(acces: TDF_Label): TDF_Label;
+  static ShapesLabel(acces: TDF_Label): TDF_Label;
+  static ColorsLabel(acces: TDF_Label): TDF_Label;
+  static LayersLabel(acces: TDF_Label): TDF_Label;
+  static DGTsLabel(acces: TDF_Label): TDF_Label;
+  static MaterialsLabel(acces: TDF_Label): TDF_Label;
+  static ViewsLabel(acces: TDF_Label): TDF_Label;
+  static ClippingPlanesLabel(acces: TDF_Label): TDF_Label;
+  static NotesLabel(acces: TDF_Label): TDF_Label;
+  static VisMaterialLabel(theLabel: TDF_Label): TDF_Label;
+  static ShapeTool(acces: TDF_Label): Handle_XCAFDoc_ShapeTool;
+  static CheckShapeTool(theAcces: TDF_Label): Standard_Boolean;
+  static ColorTool(acces: TDF_Label): Handle_XCAFDoc_ColorTool;
+  static CheckColorTool(theAcces: TDF_Label): Standard_Boolean;
+  static VisMaterialTool(theLabel: TDF_Label): Handle_XCAFDoc_VisMaterialTool;
+  static CheckVisMaterialTool(theAcces: TDF_Label): Standard_Boolean;
+  static LayerTool(acces: TDF_Label): Handle_XCAFDoc_LayerTool;
+  static CheckLayerTool(theAcces: TDF_Label): Standard_Boolean;
+  static DimTolTool(acces: TDF_Label): Handle_XCAFDoc_DimTolTool;
+  static CheckDimTolTool(theAcces: TDF_Label): Standard_Boolean;
+  static MaterialTool(acces: TDF_Label): Handle_XCAFDoc_MaterialTool;
+  static CheckMaterialTool(theAcces: TDF_Label): Standard_Boolean;
+  static ViewTool(acces: TDF_Label): Handle_XCAFDoc_ViewTool;
+  static CheckViewTool(theAcces: TDF_Label): Standard_Boolean;
+  static ClippingPlaneTool(acces: TDF_Label): Handle_XCAFDoc_ClippingPlaneTool;
+  static CheckClippingPlaneTool(theAcces: TDF_Label): Standard_Boolean;
+  static NotesTool(acces: TDF_Label): Handle_XCAFDoc_NotesTool;
+  static CheckNotesTool(theAcces: TDF_Label): Standard_Boolean;
+  static GetLengthUnit_1(theDoc: Handle_TDocStd_Document, theResut: Standard_Real, theBaseUnit: UnitsMethods_LengthUnit): Standard_Boolean;
+  static GetLengthUnit_2(theDoc: Handle_TDocStd_Document, theResut: Standard_Real): Standard_Boolean;
+  static SetLengthUnit_1(theDoc: Handle_TDocStd_Document, theUnitValue: Standard_Real): void;
+  static SetLengthUnit_2(theDoc: Handle_TDocStd_Document, theUnitValue: Standard_Real, theBaseUnit: UnitsMethods_LengthUnit): void;
+  Init(): void;
+  ID(): Standard_GUID;
+  AfterRetrieval(forceIt: Standard_Boolean): Standard_Boolean;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  NewEmpty(): Handle_TDF_Attribute;
+  delete(): void;
+}
+
+export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
+  constructor()
+  static GetID(): Standard_GUID;
+  static Set(L: TDF_Label): Handle_XCAFDoc_ShapeTool;
+  IsTopLevel(L: TDF_Label): Standard_Boolean;
+  static IsFree(L: TDF_Label): Standard_Boolean;
+  static IsShape(L: TDF_Label): Standard_Boolean;
+  static IsSimpleShape(L: TDF_Label): Standard_Boolean;
+  static IsReference(L: TDF_Label): Standard_Boolean;
+  static IsAssembly(L: TDF_Label): Standard_Boolean;
+  static IsComponent(L: TDF_Label): Standard_Boolean;
+  static IsCompound(L: TDF_Label): Standard_Boolean;
+  static IsSubShape_1(L: TDF_Label): Standard_Boolean;
+  IsSubShape_2(shapeL: TDF_Label, sub: TopoDS_Shape): Standard_Boolean;
+  SearchUsingMap(S: TopoDS_Shape, L: TDF_Label, findWithoutLoc: Standard_Boolean, findSubshape: Standard_Boolean): Standard_Boolean;
+  Search(S: TopoDS_Shape, L: TDF_Label, findInstance: Standard_Boolean, findComponent: Standard_Boolean, findSubshape: Standard_Boolean): Standard_Boolean;
+  FindShape_1(S: TopoDS_Shape, L: TDF_Label, findInstance: Standard_Boolean): Standard_Boolean;
+  FindShape_2(S: TopoDS_Shape, findInstance: Standard_Boolean): TDF_Label;
+  static GetShape_1(L: TDF_Label, S: TopoDS_Shape): Standard_Boolean;
+  static GetShape_2(L: TDF_Label): TopoDS_Shape;
+  NewShape(): TDF_Label;
+  SetShape(L: TDF_Label, S: TopoDS_Shape): void;
+  AddShape(S: TopoDS_Shape, makeAssembly: Standard_Boolean, makePrepare: Standard_Boolean): TDF_Label;
+  RemoveShape(L: TDF_Label, removeCompletely: Standard_Boolean): Standard_Boolean;
+  Init(): void;
+  static SetAutoNaming(V: Standard_Boolean): void;
+  static AutoNaming(): Standard_Boolean;
+  ComputeShapes(L: TDF_Label): void;
+  ComputeSimpleShapes(): void;
+  GetShapes(Labels: TDF_LabelSequence): void;
+  GetFreeShapes(FreeLabels: TDF_LabelSequence): void;
+  static GetUsers(L: TDF_Label, Labels: TDF_LabelSequence, getsubchilds: Standard_Boolean): Graphic3d_ZLayerId;
+  static GetLocation(L: TDF_Label): TopLoc_Location;
+  static GetReferredShape(L: TDF_Label, Label: TDF_Label): Standard_Boolean;
+  static NbComponents(L: TDF_Label, getsubchilds: Standard_Boolean): Graphic3d_ZLayerId;
+  static GetComponents(L: TDF_Label, Labels: TDF_LabelSequence, getsubchilds: Standard_Boolean): Standard_Boolean;
+  AddComponent_1(assembly: TDF_Label, comp: TDF_Label, Loc: TopLoc_Location): TDF_Label;
+  AddComponent_2(assembly: TDF_Label, comp: TopoDS_Shape, expand: Standard_Boolean): TDF_Label;
+  RemoveComponent(comp: TDF_Label): void;
+  UpdateAssemblies(): void;
+  FindSubShape(shapeL: TDF_Label, sub: TopoDS_Shape, L: TDF_Label): Standard_Boolean;
+  AddSubShape_1(shapeL: TDF_Label, sub: TopoDS_Shape): TDF_Label;
+  AddSubShape_2(shapeL: TDF_Label, sub: TopoDS_Shape, addedSubShapeL: TDF_Label): Standard_Boolean;
+  FindMainShapeUsingMap(sub: TopoDS_Shape): TDF_Label;
+  FindMainShape(sub: TopoDS_Shape): TDF_Label;
+  static GetSubShapes(L: TDF_Label, Labels: TDF_LabelSequence): Standard_Boolean;
+  BaseLabel(): TDF_Label;
+  static DumpShape(theDumpLog: Standard_OStream, L: TDF_Label, level: Graphic3d_ZLayerId, deep: Standard_Boolean): void;
+  ID(): Standard_GUID;
+  static IsExternRef(L: TDF_Label): Standard_Boolean;
+  SetExternRefs_1(SHAS: TColStd_SequenceOfHAsciiString): TDF_Label;
+  SetExternRefs_2(L: TDF_Label, SHAS: TColStd_SequenceOfHAsciiString): void;
+  static GetExternRefs(L: TDF_Label, SHAS: TColStd_SequenceOfHAsciiString): void;
+  SetSHUO(Labels: TDF_LabelSequence, MainSHUOAttr: Handle_XCAFDoc_GraphNode): Standard_Boolean;
+  static GetSHUO(SHUOLabel: TDF_Label, aSHUOAttr: Handle_XCAFDoc_GraphNode): Standard_Boolean;
+  static GetAllComponentSHUO(CompLabel: TDF_Label, SHUOAttrs: TDF_AttributeSequence): Standard_Boolean;
+  static GetSHUOUpperUsage(NextUsageL: TDF_Label, Labels: TDF_LabelSequence): Standard_Boolean;
+  static GetSHUONextUsage(UpperUsageL: TDF_Label, Labels: TDF_LabelSequence): Standard_Boolean;
+  RemoveSHUO(SHUOLabel: TDF_Label): Standard_Boolean;
+  FindComponent(theShape: TopoDS_Shape, Labels: TDF_LabelSequence): Standard_Boolean;
+  GetSHUOInstance(theSHUO: Handle_XCAFDoc_GraphNode): TopoDS_Shape;
+  SetInstanceSHUO(theShape: TopoDS_Shape): Handle_XCAFDoc_GraphNode;
+  GetAllSHUOInstances(theSHUO: Handle_XCAFDoc_GraphNode, theSHUOShapeSeq: TopTools_SequenceOfShape): Standard_Boolean;
+  static FindSHUO(Labels: TDF_LabelSequence, theSHUOAttr: Handle_XCAFDoc_GraphNode): Standard_Boolean;
+  Expand(Shape: TDF_Label): Standard_Boolean;
+  GetNamedProperties_1(theLabel: TDF_Label, theToCreate: Standard_Boolean): Handle_TDataStd_NamedData;
+  GetNamedProperties_2(theShape: TopoDS_Shape, theToCreate: Standard_Boolean): Handle_TDataStd_NamedData;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  NewEmpty(): Handle_TDF_Attribute;
+  delete(): void;
+}
+
+export declare class Handle_XCAFDoc_ShapeTool {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: XCAFDoc_ShapeTool): void;
+  get(): XCAFDoc_ShapeTool;
+  delete(): void;
+}
+
+  export declare class Handle_XCAFDoc_ShapeTool_1 extends Handle_XCAFDoc_ShapeTool {
+    constructor();
+  }
+
+  export declare class Handle_XCAFDoc_ShapeTool_2 extends Handle_XCAFDoc_ShapeTool {
+    constructor(thePtr: XCAFDoc_ShapeTool);
+  }
+
+  export declare class Handle_XCAFDoc_ShapeTool_3 extends Handle_XCAFDoc_ShapeTool {
+    constructor(theHandle: Handle_XCAFDoc_ShapeTool);
+  }
+
+  export declare class Handle_XCAFDoc_ShapeTool_4 extends Handle_XCAFDoc_ShapeTool {
+    constructor(theHandle: Handle_XCAFDoc_ShapeTool);
+  }
+
+export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
+  constructor()
+  static GetID(): Standard_GUID;
+  static Set_1(theLabel: TDF_Label, theUnitName: XCAFDoc_PartId, theUnitValue: Standard_Real): Handle_XCAFDoc_LengthUnit;
+  static Set_2(theLabel: TDF_Label, theUnitValue: Standard_Real): Handle_XCAFDoc_LengthUnit;
+  static Set_3(theLabel: TDF_Label, theGUID: Standard_GUID, theUnitName: XCAFDoc_PartId, theUnitValue: Standard_Real): Handle_XCAFDoc_LengthUnit;
+  Set_4(theUnitName: XCAFDoc_PartId, theUnitValue: Standard_Real): void;
+  GetUnitName(): XCAFDoc_PartId;
+  GetUnitValue(): Standard_Real;
+  IsEmpty(): Standard_Boolean;
+  ID(): Standard_GUID;
+  Restore(theWith: Handle_TDF_Attribute): void;
+  Paste(theInto: Handle_TDF_Attribute, theRT: Handle_TDF_RelocationTable): void;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  NewEmpty(): Handle_TDF_Attribute;
+  delete(): void;
+}
 
 export declare class TopLoc_Location {
   IsIdentity(): Standard_Boolean;
@@ -6161,6 +7030,69 @@ export declare class Bnd_OBB {
     constructor(theBox: Bnd_Box);
   }
 
+export declare class TDataStd_GenericExtString extends TDF_Attribute {
+  Set(S: TCollection_ExtendedString): void;
+  SetID(guid: Standard_GUID): void;
+  Get(): TCollection_ExtendedString;
+  ID(): Standard_GUID;
+  Restore(with_: Handle_TDF_Attribute): void;
+  Paste(into: Handle_TDF_Attribute, RT: Handle_TDF_RelocationTable): void;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+export declare class Handle_TDataStd_Name {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: TDataStd_Name): void;
+  get(): TDataStd_Name;
+  delete(): void;
+}
+
+  export declare class Handle_TDataStd_Name_1 extends Handle_TDataStd_Name {
+    constructor();
+  }
+
+  export declare class Handle_TDataStd_Name_2 extends Handle_TDataStd_Name {
+    constructor(thePtr: TDataStd_Name);
+  }
+
+  export declare class Handle_TDataStd_Name_3 extends Handle_TDataStd_Name {
+    constructor(theHandle: Handle_TDataStd_Name);
+  }
+
+  export declare class Handle_TDataStd_Name_4 extends Handle_TDataStd_Name {
+    constructor(theHandle: Handle_TDataStd_Name);
+  }
+
+export declare class TDataStd_Name extends TDataStd_GenericExtString {
+  constructor()
+  static GetID(): Standard_GUID;
+  static Set_1(label: TDF_Label, string: TCollection_ExtendedString): Handle_TDataStd_Name;
+  static Set_2(label: TDF_Label, guid: Standard_GUID, string: TCollection_ExtendedString): Handle_TDataStd_Name;
+  Set_3(S: TCollection_ExtendedString): void;
+  SetID_1(guid: Standard_GUID): void;
+  SetID_2(): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  NewEmpty(): Handle_TDF_Attribute;
+  delete(): void;
+}
+
+export declare class TDataStd_GenericEmpty extends TDF_Attribute {
+  Restore(a0: Handle_TDF_Attribute): void;
+  Paste(a0: Handle_TDF_Attribute, a1: Handle_TDF_RelocationTable): void;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
 export declare class Geom2dAPI_ExtremaCurveCurve {
   constructor(C1: Handle_Geom2d_Curve, C2: Handle_Geom2d_Curve, U1min: Standard_Real, U1max: Standard_Real, U2min: Standard_Real, U2max: Standard_Real)
   NbExtrema(): Graphic3d_ZLayerId;
@@ -6607,6 +7539,95 @@ export declare class Handle_StepData_StepModel {
 
   export declare class Handle_StepData_StepModel_4 extends Handle_StepData_StepModel {
     constructor(theHandle: Handle_StepData_StepModel);
+  }
+
+export declare class TCollection_ExtendedString {
+  AssignCat_1(other: TCollection_ExtendedString): void;
+  AssignCat_2(theChar: Standard_Utf16Char): void;
+  Cat(other: TCollection_ExtendedString): TCollection_ExtendedString;
+  ChangeAll(aChar: Standard_ExtCharacter, NewChar: Standard_ExtCharacter): void;
+  Clear(): void;
+  Copy(fromwhere: TCollection_ExtendedString): void;
+  Swap(theOther: TCollection_ExtendedString): void;
+  Insert_1(where: Graphic3d_ZLayerId, what: Standard_ExtCharacter): void;
+  Insert_2(where: Graphic3d_ZLayerId, what: TCollection_ExtendedString): void;
+  IsEmpty(): Standard_Boolean;
+  IsEqual_1(other: Standard_ExtString): Standard_Boolean;
+  IsEqual_2(other: TCollection_ExtendedString): Standard_Boolean;
+  IsDifferent_1(other: Standard_ExtString): Standard_Boolean;
+  IsDifferent_2(other: TCollection_ExtendedString): Standard_Boolean;
+  IsLess_1(other: Standard_ExtString): Standard_Boolean;
+  IsLess_2(other: TCollection_ExtendedString): Standard_Boolean;
+  IsGreater_1(other: Standard_ExtString): Standard_Boolean;
+  IsGreater_2(other: TCollection_ExtendedString): Standard_Boolean;
+  StartsWith(theStartString: TCollection_ExtendedString): Standard_Boolean;
+  EndsWith(theEndString: TCollection_ExtendedString): Standard_Boolean;
+  IsAscii(): Standard_Boolean;
+  Length(): Graphic3d_ZLayerId;
+  Print(astream: Standard_OStream): void;
+  RemoveAll(what: Standard_ExtCharacter): void;
+  Remove(where: Graphic3d_ZLayerId, ahowmany: Graphic3d_ZLayerId): void;
+  Search(what: TCollection_ExtendedString): Graphic3d_ZLayerId;
+  SearchFromEnd(what: TCollection_ExtendedString): Graphic3d_ZLayerId;
+  SetValue_1(where: Graphic3d_ZLayerId, what: Standard_ExtCharacter): void;
+  SetValue_2(where: Graphic3d_ZLayerId, what: TCollection_ExtendedString): void;
+  Split(where: Graphic3d_ZLayerId): TCollection_ExtendedString;
+  Token(separators: Standard_ExtString, whichone: Graphic3d_ZLayerId): TCollection_ExtendedString;
+  ToExtString(): Standard_ExtString;
+  Trunc(ahowmany: Graphic3d_ZLayerId): void;
+  Value(where: Graphic3d_ZLayerId): Standard_ExtCharacter;
+  static HashCode(theString: TCollection_ExtendedString, theUpperBound: Graphic3d_ZLayerId): Graphic3d_ZLayerId;
+  static IsEqual_3(theString1: TCollection_ExtendedString, theString2: TCollection_ExtendedString): Standard_Boolean;
+  LengthOfCString(): Graphic3d_ZLayerId;
+  delete(): void;
+}
+
+  export declare class TCollection_ExtendedString_1 extends TCollection_ExtendedString {
+    constructor();
+  }
+
+  export declare class TCollection_ExtendedString_2 extends TCollection_ExtendedString {
+    constructor(astring: Standard_CString, isMultiByte: Standard_Boolean);
+  }
+
+  export declare class TCollection_ExtendedString_3 extends TCollection_ExtendedString {
+    constructor(astring: Standard_ExtString);
+  }
+
+  export declare class TCollection_ExtendedString_4 extends TCollection_ExtendedString {
+    constructor(theStringUtf: Standard_WideChar);
+  }
+
+  export declare class TCollection_ExtendedString_5 extends TCollection_ExtendedString {
+    constructor(aChar: Standard_Character);
+  }
+
+  export declare class TCollection_ExtendedString_6 extends TCollection_ExtendedString {
+    constructor(aChar: Standard_ExtCharacter);
+  }
+
+  export declare class TCollection_ExtendedString_7 extends TCollection_ExtendedString {
+    constructor(length: Graphic3d_ZLayerId, filler: Standard_ExtCharacter);
+  }
+
+  export declare class TCollection_ExtendedString_8 extends TCollection_ExtendedString {
+    constructor(value: Graphic3d_ZLayerId);
+  }
+
+  export declare class TCollection_ExtendedString_9 extends TCollection_ExtendedString {
+    constructor(value: Standard_Real);
+  }
+
+  export declare class TCollection_ExtendedString_10 extends TCollection_ExtendedString {
+    constructor(astring: TCollection_ExtendedString);
+  }
+
+  export declare class TCollection_ExtendedString_11 extends TCollection_ExtendedString {
+    constructor(theOther: TCollection_ExtendedString);
+  }
+
+  export declare class TCollection_ExtendedString_12 extends TCollection_ExtendedString {
+    constructor(astring: XCAFDoc_PartId, isMultiByte: Standard_Boolean);
   }
 
 export declare class Adaptor2d_Curve2d extends Standard_Transient {
@@ -7093,6 +8114,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepOffsetAPI_MakePipe: typeof BRepOffsetAPI_MakePipe;
   BRepOffsetAPI_MakePipe_1: typeof BRepOffsetAPI_MakePipe_1;
   BRepOffsetAPI_MakePipe_2: typeof BRepOffsetAPI_MakePipe_2;
+  STEPCAFControl_Writer: typeof STEPCAFControl_Writer;
+  STEPCAFControl_Writer_1: typeof STEPCAFControl_Writer_1;
+  STEPCAFControl_Writer_2: typeof STEPCAFControl_Writer_2;
   GeomAPI_Interpolate: typeof GeomAPI_Interpolate;
   GeomAPI_Interpolate_1: typeof GeomAPI_Interpolate_1;
   GeomAPI_Interpolate_2: typeof GeomAPI_Interpolate_2;
@@ -7174,6 +8198,18 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GCE2d_MakeCircle_7: typeof GCE2d_MakeCircle_7;
   GCE2d_MakeCircle_8: typeof GCE2d_MakeCircle_8;
   GeomLib: typeof GeomLib;
+  CDM_Document: typeof CDM_Document;
+  Quantity_Color: typeof Quantity_Color;
+  Quantity_Color_1: typeof Quantity_Color_1;
+  Quantity_Color_2: typeof Quantity_Color_2;
+  Quantity_Color_3: typeof Quantity_Color_3;
+  Quantity_Color_4: typeof Quantity_Color_4;
+  Quantity_ColorRGBA: typeof Quantity_ColorRGBA;
+  Quantity_ColorRGBA_1: typeof Quantity_ColorRGBA_1;
+  Quantity_ColorRGBA_2: typeof Quantity_ColorRGBA_2;
+  Quantity_ColorRGBA_3: typeof Quantity_ColorRGBA_3;
+  Quantity_ColorRGBA_4: typeof Quantity_ColorRGBA_4;
+  Quantity_ColorRGBA_5: typeof Quantity_ColorRGBA_5;
   BRepExtrema_DistShapeShape: typeof BRepExtrema_DistShapeShape;
   BRepExtrema_DistShapeShape_1: typeof BRepExtrema_DistShapeShape_1;
   BRepExtrema_DistShapeShape_2: typeof BRepExtrema_DistShapeShape_2;
@@ -7204,6 +8240,12 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BOPAlgo_Options: typeof BOPAlgo_Options;
   BOPAlgo_Options_1: typeof BOPAlgo_Options_1;
   BOPAlgo_Options_2: typeof BOPAlgo_Options_2;
+  Handle_TDocStd_Document: typeof Handle_TDocStd_Document;
+  Handle_TDocStd_Document_1: typeof Handle_TDocStd_Document_1;
+  Handle_TDocStd_Document_2: typeof Handle_TDocStd_Document_2;
+  Handle_TDocStd_Document_3: typeof Handle_TDocStd_Document_3;
+  Handle_TDocStd_Document_4: typeof Handle_TDocStd_Document_4;
+  TDocStd_Document: typeof TDocStd_Document;
   HLRAlgo_Projector: typeof HLRAlgo_Projector;
   HLRAlgo_Projector_1: typeof HLRAlgo_Projector_1;
   HLRAlgo_Projector_2: typeof HLRAlgo_Projector_2;
@@ -7217,7 +8259,14 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepGProp_Face_1: typeof BRepGProp_Face_1;
   BRepGProp_Face_2: typeof BRepGProp_Face_2;
   BRepGProp: typeof BRepGProp;
+  IFSelect_WorkSession: typeof IFSelect_WorkSession;
   IFSelect_ReturnStatus: IFSelect_ReturnStatus;
+  XSControl_WorkSession: typeof XSControl_WorkSession;
+  Handle_XSControl_WorkSession: typeof Handle_XSControl_WorkSession;
+  Handle_XSControl_WorkSession_1: typeof Handle_XSControl_WorkSession_1;
+  Handle_XSControl_WorkSession_2: typeof Handle_XSControl_WorkSession_2;
+  Handle_XSControl_WorkSession_3: typeof Handle_XSControl_WorkSession_3;
+  Handle_XSControl_WorkSession_4: typeof Handle_XSControl_WorkSession_4;
   XSControl_Reader: typeof XSControl_Reader;
   XSControl_Reader_1: typeof XSControl_Reader_1;
   XSControl_Reader_2: typeof XSControl_Reader_2;
@@ -7270,6 +8319,8 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   TColgp_Array1OfPnt2d_3: typeof TColgp_Array1OfPnt2d_3;
   TColgp_Array1OfPnt2d_4: typeof TColgp_Array1OfPnt2d_4;
   TColgp_Array1OfPnt2d_5: typeof TColgp_Array1OfPnt2d_5;
+  TDF_Label: typeof TDF_Label;
+  TDF_Attribute: typeof TDF_Attribute;
   BRepTools: typeof BRepTools;
   BRepBuilderAPI_Sewing: typeof BRepBuilderAPI_Sewing;
   BRepBuilderAPI_ModifyShape: typeof BRepBuilderAPI_ModifyShape;
@@ -7408,6 +8459,21 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Geom_ConicalSurface: typeof Geom_ConicalSurface;
   Geom_ConicalSurface_1: typeof Geom_ConicalSurface_1;
   Geom_ConicalSurface_2: typeof Geom_ConicalSurface_2;
+  Handle_XCAFDoc_ColorTool: typeof Handle_XCAFDoc_ColorTool;
+  Handle_XCAFDoc_ColorTool_1: typeof Handle_XCAFDoc_ColorTool_1;
+  Handle_XCAFDoc_ColorTool_2: typeof Handle_XCAFDoc_ColorTool_2;
+  Handle_XCAFDoc_ColorTool_3: typeof Handle_XCAFDoc_ColorTool_3;
+  Handle_XCAFDoc_ColorTool_4: typeof Handle_XCAFDoc_ColorTool_4;
+  XCAFDoc_ColorTool: typeof XCAFDoc_ColorTool;
+  XCAFDoc_ColorType: XCAFDoc_ColorType;
+  XCAFDoc_DocumentTool: typeof XCAFDoc_DocumentTool;
+  XCAFDoc_ShapeTool: typeof XCAFDoc_ShapeTool;
+  Handle_XCAFDoc_ShapeTool: typeof Handle_XCAFDoc_ShapeTool;
+  Handle_XCAFDoc_ShapeTool_1: typeof Handle_XCAFDoc_ShapeTool_1;
+  Handle_XCAFDoc_ShapeTool_2: typeof Handle_XCAFDoc_ShapeTool_2;
+  Handle_XCAFDoc_ShapeTool_3: typeof Handle_XCAFDoc_ShapeTool_3;
+  Handle_XCAFDoc_ShapeTool_4: typeof Handle_XCAFDoc_ShapeTool_4;
+  XCAFDoc_LengthUnit: typeof XCAFDoc_LengthUnit;
   TopLoc_Location: typeof TopLoc_Location;
   TopLoc_Location_1: typeof TopLoc_Location_1;
   TopLoc_Location_2: typeof TopLoc_Location_2;
@@ -7589,6 +8655,14 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Bnd_OBB_1: typeof Bnd_OBB_1;
   Bnd_OBB_2: typeof Bnd_OBB_2;
   Bnd_OBB_3: typeof Bnd_OBB_3;
+  TDataStd_GenericExtString: typeof TDataStd_GenericExtString;
+  Handle_TDataStd_Name: typeof Handle_TDataStd_Name;
+  Handle_TDataStd_Name_1: typeof Handle_TDataStd_Name_1;
+  Handle_TDataStd_Name_2: typeof Handle_TDataStd_Name_2;
+  Handle_TDataStd_Name_3: typeof Handle_TDataStd_Name_3;
+  Handle_TDataStd_Name_4: typeof Handle_TDataStd_Name_4;
+  TDataStd_Name: typeof TDataStd_Name;
+  TDataStd_GenericEmpty: typeof TDataStd_GenericEmpty;
   Geom2dAPI_ExtremaCurveCurve: typeof Geom2dAPI_ExtremaCurveCurve;
   Geom2dAPI_ProjectPointOnCurve: typeof Geom2dAPI_ProjectPointOnCurve;
   Geom2dAPI_ProjectPointOnCurve_1: typeof Geom2dAPI_ProjectPointOnCurve_1;
@@ -7630,6 +8704,19 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Handle_StepData_StepModel_2: typeof Handle_StepData_StepModel_2;
   Handle_StepData_StepModel_3: typeof Handle_StepData_StepModel_3;
   Handle_StepData_StepModel_4: typeof Handle_StepData_StepModel_4;
+  TCollection_ExtendedString: typeof TCollection_ExtendedString;
+  TCollection_ExtendedString_1: typeof TCollection_ExtendedString_1;
+  TCollection_ExtendedString_2: typeof TCollection_ExtendedString_2;
+  TCollection_ExtendedString_3: typeof TCollection_ExtendedString_3;
+  TCollection_ExtendedString_4: typeof TCollection_ExtendedString_4;
+  TCollection_ExtendedString_5: typeof TCollection_ExtendedString_5;
+  TCollection_ExtendedString_6: typeof TCollection_ExtendedString_6;
+  TCollection_ExtendedString_7: typeof TCollection_ExtendedString_7;
+  TCollection_ExtendedString_8: typeof TCollection_ExtendedString_8;
+  TCollection_ExtendedString_9: typeof TCollection_ExtendedString_9;
+  TCollection_ExtendedString_10: typeof TCollection_ExtendedString_10;
+  TCollection_ExtendedString_11: typeof TCollection_ExtendedString_11;
+  TCollection_ExtendedString_12: typeof TCollection_ExtendedString_12;
   Adaptor2d_Curve2d: typeof Adaptor2d_Curve2d;
   Handle_Adaptor2d_Curve2d: typeof Handle_Adaptor2d_Curve2d;
   Handle_Adaptor2d_Curve2d_1: typeof Handle_Adaptor2d_Curve2d_1;

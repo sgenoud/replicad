@@ -32,3 +32,4 @@ export * from "./text";
 export * from "./importers";
 export * from "./draw";
 export * from "./projection";
+export * from "./export/assemblyExporter";

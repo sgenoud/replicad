@@ -250,6 +250,33 @@ mainBuild:
     - symbol: HLRAlgo_Projector
     - symbol: HLRBRep_HLRToShape
 
+    - symbol: CDM_Document
+    - symbol: TDF_Attribute
+    - symbol: TDataStd_GenericEmpty
+    - symbol: TDocStd_Document
+    - symbol: TDataStd_GenericExtString
+    - symbol: XCAFDoc_LengthUnit
+    - symbol: Handle_TDocStd_Document
+    - symbol: TCollection_ExtendedString
+    - symbol: XCAFDoc_DocumentTool
+    - symbol: XCAFDoc_ShapeTool
+    - symbol: Handle_XCAFDoc_ShapeTool
+    - symbol: XCAFDoc_ColorTool
+    - symbol: Handle_XCAFDoc_ColorTool
+    - symbol: TDF_Label
+    - symbol: TDataStd_Name
+    - symbol: Handle_TDataStd_Name
+    - symbol: Quantity_ColorRGBA
+    - symbol: Quantity_Color
+    - symbol: XCAFDoc_ColorType
+
+    - symbol: XSControl_WorkSession
+    - symbol: Handle_XSControl_WorkSession
+    - symbol: STEPCAFControl_Writer
+    - symbol: STEPControl_StepModelType
+    - symbol: IFSelect_ReturnStatus
+    - symbol: IFSelect_WorkSession
+
   emccFlags:
     - -sEXPORT_ES6=1
     - -sUSE_ES6_IMPORT_META=0
