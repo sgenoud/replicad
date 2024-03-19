@@ -1093,7 +1093,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     shellBuilder.MakeThickSolidByJoin(
       this.wrapped,
       facesToRemove,
-      -Math.abs(thickness),
+      -thickness,
       tol,
       this.oc.BRepOffset_Mode.BRepOffset_Skin as any,
       false,
