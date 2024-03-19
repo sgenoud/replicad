@@ -44,6 +44,8 @@ export const ErrorOverlay = styled.div`
 `;
 
 export default observer(function EditorPane() {
+
+  let debounceReference = null;
   const store = useEditorStore();
 
   const handleEditorDidMount = (_, monaco) => {
@@ -78,7 +80,10 @@ export default observer(function EditorPane() {
         theme="vs-dark"
         height="100%"
         onChange={(e) => {
-          store.code.update(e, true);
+          if (debounceReference) clearTimeout(debounceReference);
+          debounceReference = setTimeout( () => {
+            store.code.update(e, true);
+          }, 400 )
         }}
         onMount={handleEditorDidMount}
         options={{
