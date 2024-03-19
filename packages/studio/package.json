@@ -43,6 +43,7 @@
     "mobx": "^6.10.0",
     "mobx-react": "^9.0.0",
     "mobx-state-tree": "^5.1.8",
+    "parse-css-color": "^0.2.1",
     "polished": "^4.1.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

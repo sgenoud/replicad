@@ -20,9 +20,10 @@ const Choices = styled.div`
   display: flex;
 
   flex-direction: row;
-  & > :not(:first-child) {
-    margin-left: 2em;
-  }
+  gap: 2em;
+  row-gap: 1em;
+
+  flex-wrap: wrap;
 
   & > label {
     display: flex;
@@ -112,7 +113,15 @@ export default function DownloadDialog({ onClose }) {
                   type="radio"
                   onClick={() => setSaveMode("step")}
                 />
-                <span>STEP </span>
+                <span>STEP</span>
+              </label>
+              <label>
+                <input
+                  checked={saveMode === "step-assembly"}
+                  type="radio"
+                  onClick={() => setSaveMode("step-assembly")}
+                />
+                <span>STEP assembly</span>
               </label>
               <label>
                 <input

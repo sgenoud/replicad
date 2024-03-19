@@ -2,6 +2,7 @@
 // working on files in the worker.)
 //
 //import api from "../builder.worker"; /*
+import normalizeColor from "./normalizeColor";
 
 import { wrap } from "comlink";
 import CadWorker from "../builder.worker?worker";

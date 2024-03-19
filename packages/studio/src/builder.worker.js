@@ -2,6 +2,7 @@ import { expose } from "comlink";
 import * as replicad from "replicad";
 
 import initOpenCascade from "./initOCSingle.js";
+import normalizeColor from "./utils/normalizeColor";
 import { runInContext, buildModuleEvaluator } from "./vm";
 
 self.replicad = replicad;
@@ -99,10 +100,29 @@ const organiseReturnValue = (inputShapes, baseName = "Shape") => {
       };
     }
     const { name, shape, ...rest } = inputShape;
+
     return {
       name: name || `${baseName} ${i}`,
       shape: shapeOrSketch(shape),
       ...rest,
+    };
+  });
+};
+
+const normalizeColorAndOpacity = (shapes) => {
+  return shapes.map((shape) => {
+    const { color, opacity, ...rest } = shape;
+
+    const normalizedColor = color && normalizeColor(color);
+    let configuredOpacity = opacity;
+    if (normalizedColor && normalizedColor.alpha !== 1) {
+      configuredOpacity = opacity ?? normalizedColor.alpha;
+    }
+
+    return {
+      ...rest,
+      color: normalizedColor?.color,
+      opacity: configuredOpacity,
     };
   });
 };
@@ -129,6 +149,8 @@ const buildShapesFromCode = async (code, params) => {
   }
 
   shapes = organiseReturnValue(shapes);
+  shapes = normalizeColorAndOpacity(shapes);
+  console.log(shapes);
   SHAPES_MEMORY.defaultShape = shapes;
 
   return shapes
@@ -151,7 +173,12 @@ const buildShapesFromCode = async (code, params) => {
           (highlightEdge && highlightEdge(new replicad.EdgeFinder())) ||
           (highlightFace && highlightFace(new replicad.FaceFinder()));
 
-        const shapeInfo = { name, color, strokeType, opacity };
+        const shapeInfo = {
+          name,
+          color,
+          strokeType,
+          opacity,
+        };
 
         if (isBlueprintLike(shape)) {
           shapeInfo.format = "svg";
@@ -204,6 +231,14 @@ const exportShape = async (
 ) => {
   if (!SHAPES_MEMORY[shapeId])
     throw new Error(`Shape ${shapeId} not computed yet`);
+  if (fileType === "step-assembly") {
+    return [
+      {
+        blob: replicad.exportSTEP(SHAPES_MEMORY[shapeId]),
+        name: shapeId,
+      },
+    ];
+  }
   return SHAPES_MEMORY[shapeId].map(({ shape, name }) => ({
     blob: buildBlob(shape, fileType, meshConfig),
     name,
