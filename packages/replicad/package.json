@@ -1,6 +1,6 @@
 {
   "name": "replicad",
-  "version": "0.15.3",
+  "version": "0.16.0",
   "description": "The library to build browser based 3D models with code",
   "keywords": [
     "cad",
@@ -52,7 +52,7 @@
     "jest-matcher-utils": "^29.4.1",
     "jest-svg-snapshot": "^0.1.0",
     "prettier": "^2.4.1",
-    "replicad-opencascadejs": "^0.15.2",
+    "replicad-opencascadejs": "^0.16.0",
     "rollup": "3.28.0",
     "rollup-plugin-ts": "3.4.4",
     "typedoc": "^0.24.8",

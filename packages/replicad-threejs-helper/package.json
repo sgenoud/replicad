@@ -1,6 +1,6 @@
 {
   "name": "replicad-threejs-helper",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "description": "Helper to use threejs to render replicad models",
   "keywords": [
     "cad",
