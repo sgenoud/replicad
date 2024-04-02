@@ -23,6 +23,7 @@ export * from "./geom";
 export * from "./geomHelpers";
 export * from "./shapes";
 export * from "./shapeHelpers";
+export * from "./measureShape";
 export * from "./finders";
 export * from "./shortcuts.js";
 export * from "./addThickness";
