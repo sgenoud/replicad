@@ -258,15 +258,3 @@ export default class Sketch implements SketchInterface {
     return shape;
   }
 }
-
-const thread = simpleThread({
-  innerRadius: 44.65,
-  pitch: 1.7,
-  threadHeight: 6.2,
-  toothSide: 0.8,
-});
-
-const top = R.makeCylinder(44.65, 7)
-  .cut(R.makeCylinder(44.65 - 1.6, 10))
-  .rotate(2)
-  .fuse(thread.clone(), { optimisation: "sameFace" });
