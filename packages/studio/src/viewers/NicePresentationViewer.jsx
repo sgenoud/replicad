@@ -12,10 +12,11 @@ const PrettyMaterial = ({ ...props }) => {
 
 export default React.memo(function NicePresentationViewer({
   shapes,
+  orthographicCamera,
   disableAutoPosition,
 }) {
   return (
-    <Canvas>
+    <Canvas orthographic={orthographicCamera}>
       <directionalLight intensity={0.7} position={[-1, 0.1, 1]} castShadow />
       <directionalLight
         intensity={0.1}

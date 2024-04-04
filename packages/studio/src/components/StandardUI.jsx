@@ -86,6 +86,7 @@ export default function StandardUI({
   disableAutoPosition,
   disableDamping,
   showParams,
+    orthographicCamera,
   hideGrid,
   onSave,
   canSave,
@@ -100,6 +101,7 @@ export default function StandardUI({
       {computedShapes?.length ? (
         <Viewer
           shapes={computedShapes}
+          orthographicCamera={orthographicCamera}
           hideGrid={hideGrid}
           disableDamping={disableDamping}
           disableAutoPosition={disableAutoPosition}

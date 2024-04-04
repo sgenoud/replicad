@@ -52,6 +52,7 @@ export function LinkEditor({ fromCode }) {
   const [disableAutoPosition, setDisableAutoPosition] = useState(false);
   const [disableDamping, setDisableDamping] = useState(false);
   const [hideGrid, setHideGrid] = useState(false);
+  const [orthographicCamera, setOrthographicCamera] = useState(true);
   const [expandParametersPanel, setExpandParametersPanel] = useState(false);
 
   const [compressedCode, setCompressedCode] = useState(null);
@@ -87,6 +88,7 @@ export function LinkEditor({ fromCode }) {
       url.searchParams.set("disable-auto-position", "true");
     disableDamping && url.searchParams.set("disable-damping", "true");
     hideGrid && url.searchParams.set("hide-grid", "true");
+    orthographicCamera && url.searchParams.set("ortho-camera", "true");
     expandParametersPanel && url.searchParams.set("params", "true");
     link = url.toString();
   }
@@ -156,6 +158,15 @@ export function LinkEditor({ fromCode }) {
             onChange={(e) => setHideGrid(!e.target.checked)}
           />
           <label htmlFor="hide-grid">Grid</label>
+        </span>
+        <span>
+          <input
+            id="ortho-camera"
+            type="checkbox"
+            checked={!orthographicCamera}
+            onChange={(e) => setOrthographicCamera(!e.target.checked)}
+          />
+          <label htmlFor="ortho-camera">Perspective Camera</label>
         </span>
         <span>
           <input

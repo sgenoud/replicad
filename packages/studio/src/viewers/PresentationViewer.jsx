@@ -13,11 +13,12 @@ export default React.memo(function PresentationViewer({
   disableAutoPosition = false,
   disableDamping = false,
   hideGrid = false,
+  orthographicCamera = false,
 }) {
   const geometryReady = shapes && shapes.length && shapes[0].name;
 
   return (
-    <Canvas>
+    <Canvas orthographic={orthographicCamera}>
       {!hideGrid && <InfiniteGrid />}
       <Controls hideGizmo={!geometryReady} enableDamping={!disableDamping}>
         {shapes !== "error" && shapes.length && (

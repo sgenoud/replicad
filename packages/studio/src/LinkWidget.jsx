@@ -199,6 +199,9 @@ export default function LinkWidget() {
           searchParams.get("disable-auto-position")?.toLowerCase() === "true"
         }
         hideGrid={searchParams.get("hide-grid")?.toLowerCase() === "true"}
+        orthographicCamera={
+          searchParams.get("ortho-camera")?.toLowerCase() === "true"
+        }
         disableDamping={
           searchParams.get("disable-damping")?.toLowerCase() === "true"
         }
