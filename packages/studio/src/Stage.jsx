@@ -60,6 +60,12 @@ export default function Stage({ children, center, ...props }) {
     camera.lookAt(0, 0, 0);
 
     if (camera.type === "OrthographicCamera") {
+    camera.position.set(
+      radius,
+      -radius,
+      radius
+    );
+
       camera.zoom = 5;
       camera.near = -Math.max(5000, radius * 4);
       camera.updateProjectionMatrix();
