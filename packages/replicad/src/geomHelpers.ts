@@ -65,8 +65,8 @@ export function translate(shape: TopoDS_Shape, vector: Point): TopoDS_Shape {
 
 export function mirror(
   shape: TopoDS_Shape,
-  inputPlane: Plane | PlaneName | Point,
-  origin: Point
+  inputPlane?: Plane | PlaneName | Point,
+  origin?: Point
 ): TopoDS_Shape {
   const transformation = new Transformation();
   transformation.mirror(inputPlane, origin);

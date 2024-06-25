@@ -261,7 +261,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    *
    * @category Shape Transformations
    */
-  mirror(inputPlane: Plane | PlaneName | Point, origin: Point): this {
+  mirror(inputPlane?: Plane | PlaneName | Point, origin?: Point): this {
     const newShape = cast(mirror(this.wrapped, inputPlane, origin));
     this.delete();
 
