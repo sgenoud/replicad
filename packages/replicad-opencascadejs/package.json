@@ -14,6 +14,7 @@
     "src"
   ],
   "scripts": {
+    "build": "echo 'Please build manually'",
     "buildWasm": "pnpm run generateConfig && pnpm run buildSingle && pnpm run buildWithExeptions",
     "updateDocker": "docker pull donalffons/opencascade.js",
     "generateConfig": "ytt -f build-source/ --output-files build-config",
