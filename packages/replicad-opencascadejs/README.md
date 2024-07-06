@@ -7,7 +7,7 @@ configuration files).
 ## Usage
 
 ```
-pnpm build
+pnpm buildWasm
 ```
 
 You need to have a docker instance running and have run
