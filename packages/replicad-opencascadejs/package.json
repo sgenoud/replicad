@@ -14,8 +14,10 @@
     "src"
   ],
   "scripts": {
-    "build": "echo 'No build step required'",
+    "build": "pnpm run generateConfig && pnpm run buildSingle && pnpm run buildWithExeptions",
     "updateDocker": "docker pull donalffons/opencascade.js",
-    "buildWasm": "cd build-config; docker run -it --rm -v $(pwd):/src -u $(id -u):$(id -g) donalffons/opencascade.js custom_build_single.yml && mv replicad_single* ../src; cd -"
+    "generateConfig": "ytt -f build-source/ --output-files build-config",
+    "buildSingle": "cd build-config; docker run -it --rm -v $(pwd):/src -u $(id -u):$(id -g) donalffons/opencascade.js custom_build_single.yml && mv replicad_single* ../src; cd -",
+    "buildWithExceptions": "cd build-config; docker run -it --rm -v $(pwd):/src -u $(id -u):$(id -g) donalffons/opencascade.js custom_build_with_exceptions.yml && mv replicad_with_exceptions* ../src; cd -"
   }
 }
