@@ -64,6 +64,22 @@ const ErrorOverlay = styled(InfoBottomLeft)`
   }
 `;
 
+const InfoOverlay = styled(InfoBottomLeft)`
+  border-color: var(--color-primary-light);
+  background-color: white;
+  border-width: 2px;
+  max-height: initial;
+  max-width: 50vw;
+  max-height: 90vw;
+
+  z-index: 1000;
+`;
+
+const RightAligned = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
 export default observer(function AutoloadButton() {
   const store = useEditorStore();
   const toggleAutoload = useAutoload();
@@ -80,7 +96,27 @@ export default observer(function AutoloadButton() {
           <div>Error</div>
           <div>{store.error?.message}</div>
           {store.error.stack && <pre>{store.error.stack}</pre>}
+
+          <RightAligned>
+            <Button onClick={store.toggleExceptions}>
+              Toggle full exceptions
+            </Button>
+          </RightAligned>
         </ErrorOverlay>
+      )}
+      {!store.error && store.exceptionMode == "withExceptions" && (
+        <InfoOverlay>
+          <div>
+            You are currently in full exception mode. This means that the
+            computations are slower but will give you better information about
+            kernel errors.
+          </div>
+          <RightAligned>
+            <Button onClick={store.toggleExceptions}>
+              Disable full exception mode
+            </Button>
+          </RightAligned>
+        </InfoOverlay>
       )}
     </>
   );

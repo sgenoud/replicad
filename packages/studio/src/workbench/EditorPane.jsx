@@ -14,12 +14,17 @@ import Download from "../icons/Download";
 import Share from "../icons/Share";
 import LoadingScreen from "../components/LoadingScreen";
 import { LinkEditor } from "../components/LinkEditor";
+import { Button } from "../components/Button";
 
 import { Dialog, DialogTitle, DialogBody } from "../components/Dialog.jsx";
 import { useAutoload } from "./Autoload";
 import Reload from "../icons/Reload";
 
 export const ErrorOverlay = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+  gap: 0.4em;
   padding: 2em;
   border-color: red;
   border-width: 2px;
@@ -41,6 +46,21 @@ export const ErrorOverlay = styled.div`
     padding: 1em;
     background-color: #f2e0de;
   }
+`;
+
+export const InfoOverlay = styled.div`
+  padding: 2em;
+  font-size: 0.7em;
+  position: absolute;
+  height: 100px;
+  width: 100%;
+  bottom: 0;
+  background-color: #f2e0de;
+`;
+
+const RightAligned = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 export default observer(function EditorPane() {
@@ -66,34 +86,57 @@ export default observer(function EditorPane() {
   if (!store.code.initialized) return <LoadingScreen />;
 
   return (
-    <Splitter
-      direction={SplitDirection.Vertical}
-      gutterTheme={GutterTheme.Dark}
-      gutterClassName="custom-gutter-theme"
-      initialSizes={store.error ? [75, 25] : [100]}
-    >
-      <Editor
-        defaultLanguage="javascript"
-        defaultValue={store.code.current}
-        theme="vs-dark"
-        height="100%"
-        onChange={(e) => {
-          store.code.update(e, true);
-        }}
-        onMount={handleEditorDidMount}
-        options={{
-          automaticLayout: true,
-          minimap: { enabled: false },
-        }}
-      />
-      {store.error && (
-        <ErrorOverlay>
-          <div>Error</div>
-          <div>{store.error?.message}</div>
-          {store.error.stack && <pre>{store.error.stack}</pre>}
-        </ErrorOverlay>
+    <>
+      <Splitter
+        direction={SplitDirection.Vertical}
+        gutterTheme={GutterTheme.Dark}
+        gutterClassName="custom-gutter-theme"
+        initialSizes={store.error ? [75, 25] : [100]}
+      >
+        <Editor
+          defaultLanguage="javascript"
+          defaultValue={store.code.current}
+          theme="vs-dark"
+          height="100%"
+          onChange={(e) => {
+            store.code.update(e, true);
+          }}
+          onMount={handleEditorDidMount}
+          options={{
+            automaticLayout: true,
+            minimap: { enabled: false },
+          }}
+        />
+        {store.error && (
+          <ErrorOverlay>
+            <div>Error</div>
+            <div>{store.error?.message}</div>
+            {store.error.stack && <pre>{store.error.stack}</pre>}
+            {store.exceptionMode == "single" && (
+              <RightAligned>
+                <Button onClick={store.toggleExceptions}>
+                  Enable full exception mode
+                </Button>
+              </RightAligned>
+            )}
+          </ErrorOverlay>
+        )}
+      </Splitter>
+      {store.exceptionMode == "withExceptions" && (
+        <InfoOverlay>
+          <div>
+            You are currently in full exception mode. This means that the
+            computations are slower but will give you better information about
+            kernel errors.
+          </div>
+          <RightAligned>
+            <Button onClick={store.toggleExceptions}>
+              Disable full exception mode
+            </Button>
+          </RightAligned>
+        </InfoOverlay>
       )}
-    </Splitter>
+    </>
   );
 });
 

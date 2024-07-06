@@ -2,6 +2,7 @@ import { expose } from "comlink";
 import * as replicad from "replicad";
 
 import initOpenCascade from "./initOCSingle.js";
+import initOpenCascadeWithExceptions from "./initOCWithExceptions.js";
 import normalizeColor from "./utils/normalizeColor";
 import { runInContext, buildModuleEvaluator } from "./vm";
 
@@ -77,9 +78,42 @@ return dp
 
 const SHAPES_MEMORY = {};
 
-let OC = initOpenCascade().then((oc) => {
-  return oc;
-});
+const ocVersions = {
+  withExceptions: null,
+  single: null,
+  current: null,
+};
+
+let OC = Promise.reject("OpenCascade not initialized");
+
+function enableExceptions() {
+  if (!ocVersions.withExceptions) {
+    ocVersions.withExceptions = initOpenCascadeWithExceptions();
+  }
+  ocVersions.current = "withExceptions";
+  OC = ocVersions.withExceptions;
+}
+
+function disableExceptions() {
+  if (!ocVersions.single) {
+    ocVersions.single = initOpenCascade();
+  }
+  ocVersions.current = "single";
+  OC = ocVersions.single;
+}
+
+async function toggleExceptions() {
+  if (ocVersions.current === "single") {
+    enableExceptions();
+  } else {
+    disableExceptions();
+  }
+
+  await OC;
+  return ocVersions.current;
+}
+
+disableExceptions();
 
 const shapeOrSketch = (shape) => {
   if (!(shape instanceof replicad.Sketch)) return shape;
@@ -137,9 +171,19 @@ const buildShapesFromCode = async (code, params) => {
   try {
     shapes = await runCode(code, params);
   } catch (e) {
-    console.error(e);
+    let message = "error";
 
-    const message = e.message || `Kernel error ${e.toString()}`;
+    if (typeof e === "number") {
+      if (oc.OCJS) {
+        const error = oc.OCJS.getStandard_FailureData(e);
+        message = error.GetMessageString();
+      } else {
+        message = `Kernel error ${e}`;
+      }
+    } else {
+      message = e.message;
+      console.error(e);
+    }
 
     return {
       error: true,
@@ -273,6 +317,8 @@ const service = {
   exportShape,
   edgeInfo,
   faceInfo,
+  toggleExceptions,
+  exceptionsEnabled: () => ocVersions.current === "withExceptions",
 };
 
 expose(service, self);
