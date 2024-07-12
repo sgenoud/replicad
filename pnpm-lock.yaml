@@ -75,7 +75,7 @@ importers:
         specifier: ^2.4.1
         version: 2.4.1
       replicad-opencascadejs:
-        specifier: ^0.17.0
+        specifier: ^0.17.1
         version: link:../replicad-opencascadejs
       rollup:
         specifier: 3.28.0
@@ -120,10 +120,10 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       replicad:
-        specifier: ^0.17.0
+        specifier: ^0.17.1
         version: link:../replicad
       replicad-opencascadejs:
-        specifier: ^0.17.0
+        specifier: ^0.17.1
         version: link:../replicad-opencascadejs
       replicad-threejs-helper:
         specifier: ^0.17.0
@@ -311,10 +311,10 @@ importers:
         specifier: ^2.0.4
         version: 2.0.4(react@18.2.0)
       replicad:
-        specifier: ^0.17.0
+        specifier: ^0.17.1
         version: link:../replicad
       replicad-opencascadejs:
-        specifier: ^0.17.0
+        specifier: ^0.17.1
         version: link:../replicad-opencascadejs
       replicad-threejs-helper:
         specifier: ^0.17.0
