@@ -32,6 +32,7 @@ function createSnapshotIdentifier({
   )}-${currentTestName}-${counter}`
     .replace(/\s+/g, "-")
     .replace(/\//g, "-")
+    .replace(/>/g,'_')
     .toLowerCase();
 
   return snapshotIdentifier;
