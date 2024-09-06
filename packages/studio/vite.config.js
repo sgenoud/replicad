@@ -68,13 +68,7 @@ export default defineConfig({
     outDir: "dist",
     manifest: true,
     rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes("replicad")) {
-            return "replicad";
-          }
-        },
-      },
+      output: {},
     },
   },
   server: {
