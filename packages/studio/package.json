@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@devbookhq/splitter": "^1.4.0",
-    "@monaco-editor/react": "^4.4.6",
+    "@monaco-editor/react": "^4.6.0",
     "@react-three/drei": "9.92.7",
     "@react-three/fiber": "8.13.6",
     "axios": "^0.24.0",
@@ -43,6 +43,7 @@
     "mobx": "^6.10.0",
     "mobx-react": "^9.0.0",
     "mobx-state-tree": "^5.1.8",
+    "monaco-editor": "^0.51.0",
     "parse-css-color": "^0.2.1",
     "polished": "^4.1.3",
     "react": "^18.2.0",

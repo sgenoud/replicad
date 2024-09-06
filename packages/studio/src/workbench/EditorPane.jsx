@@ -7,6 +7,7 @@ import replicadTypes from "../../node_modules/replicad/dist/replicad.d.ts?raw";
 
 import Splitter, { GutterTheme, SplitDirection } from "@devbookhq/splitter";
 
+import "./loadMonaco";
 import useEditorStore from "../visualiser/editor/useEditorStore";
 import downloadCode from "../utils/downloadCode";
 import { HeaderButton } from "./panes";
