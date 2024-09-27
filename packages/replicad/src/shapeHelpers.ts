@@ -391,6 +391,14 @@ export const makeSphere = (radius: number): Solid => {
   return sphere;
 };
 
+export const makeBox = (corner1: Point, corner2: Point): Solid => {
+  const oc = getOC();
+  const boxMaker = new oc.BRepPrimAPI_MakeBox_4(asPnt(corner1), asPnt(corner2));
+  const box = new Solid(boxMaker.Solid());
+  boxMaker.delete();
+  return box;
+};
+
 export const makeVertex = (point: Point): Vertex => {
   const oc = getOC();
   const pnt = asPnt(point);

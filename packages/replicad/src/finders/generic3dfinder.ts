@@ -1,15 +1,31 @@
-import { Direction, DIRECTIONS, FaceOrEdge, Finder } from "./definitions";
+import {
+  Direction,
+  DIRECTIONS,
+  FaceOrEdge,
+  FilterFcn,
+  Finder,
+} from "./definitions";
 
-import { Vector, asPnt, Point } from "../geom";
+import { Vector, Point } from "../geom";
 import { DEG2RAD } from "../constants";
 import { AnyShape } from "../shapes";
-import { getOC } from "../oclib";
-import { GCWithObject, GCWithScope } from "../register";
+import { makeBox, makeVertex } from "../shapeHelpers";
+import { DistanceQuery } from "../measureShape";
 
 export abstract class Finder3d<Type extends FaceOrEdge> extends Finder<
   Type,
   AnyShape
 > {
+  /**
+   * Filter to find elements following a custom function.
+   *
+   * @category Filter
+   */
+  when(filter: (filter: FilterFcn<Type>) => boolean): this {
+    this.filters.push(filter);
+    return this;
+  }
+
   /**
    * Filter to find elements that are in the list.
    *
@@ -60,28 +76,14 @@ export abstract class Finder3d<Type extends FaceOrEdge> extends Finder<
    * @category Filter
    */
   atDistance(distance: number, point: Point = [0, 0, 0]): this {
-    const pnt = asPnt(point);
-
-    const oc = getOC();
-    const vertexMaker = new oc.BRepBuilderAPI_MakeVertex(pnt);
-    const vertex = vertexMaker.Vertex();
-    vertexMaker.delete();
-
-    const distanceBuilder = new oc.BRepExtrema_DistShapeShape_1();
-    distanceBuilder.LoadS1(vertex);
+    const vertex = makeVertex(point);
+    const query = new DistanceQuery(vertex);
 
     const checkPoint = ({ element }: { element: Type }) => {
-      const r = GCWithScope();
-      distanceBuilder.LoadS2(element.wrapped);
-      const progress = r(new oc.Message_ProgressRange_1());
-      distanceBuilder.Perform(progress);
-
-      return Math.abs(distanceBuilder.Value() - distance) < 1e-6;
+      return Math.abs(query.distanceTo(element) - distance) < 1e-6;
     };
 
     this.filters.push(checkPoint);
-    GCWithObject(checkPoint)(distanceBuilder);
-
     return this;
   }
 
@@ -95,6 +97,23 @@ export abstract class Finder3d<Type extends FaceOrEdge> extends Finder<
   }
 
   /**
+   * Filter to find elements that are within a certain distance from a point.
+   *
+   * @category Filter
+   */
+  withinDistance(distance: number, point: Point = [0, 0, 0]): this {
+    const vertex = makeVertex(point);
+    const query = new DistanceQuery(vertex);
+
+    const checkPoint = ({ element }: { element: Type }) => {
+      return query.distanceTo(element) - distance < 1e-6;
+    };
+
+    this.filters.push(checkPoint);
+    return this;
+  }
+
+  /**
    * Filter to find elements that are within a box
    *
    * The elements that are not fully contained in the box are also found.
@@ -102,33 +121,25 @@ export abstract class Finder3d<Type extends FaceOrEdge> extends Finder<
    * @category Filter
    */
   inBox(corner1: Point, corner2: Point) {
-    const oc = getOC();
-    const boxMaker = new oc.BRepPrimAPI_MakeBox_4(
-      asPnt(corner1),
-      asPnt(corner2)
-    );
-    const box = boxMaker.Solid();
-    boxMaker.delete();
+    const box = makeBox(corner1, corner2);
+    return this.inShape(box);
+  }
 
-    const distanceBuilder = new oc.BRepExtrema_DistShapeShape_1();
-    distanceBuilder.LoadS1(box);
+  /**
+   * Filter to find elements that are within a generic shape
+   *
+   * The elements that are not fully contained in the shape are also found.
+   *
+   * @category Filter
+   */
+  inShape(shape: AnyShape) {
+    const query = new DistanceQuery(shape);
 
     const checkPoint = ({ element }: { element: Type }) => {
-      const r = GCWithScope();
-      distanceBuilder.LoadS2(element.wrapped);
-      const progress = r(new oc.Message_ProgressRange_1());
-      distanceBuilder.Perform(progress);
-
-      return distanceBuilder.Value() < 1e-6;
+      return query.distanceTo(element) < 1e-6;
     };
 
-    // We cleanup the box and the distance builder when the function disappears
-    const gc = GCWithObject(checkPoint);
-    gc(box);
-    gc(distanceBuilder);
-
     this.filters.push(checkPoint);
-
     return this;
   }
 }

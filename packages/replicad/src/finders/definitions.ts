@@ -17,14 +17,13 @@ export const PLANE_TO_DIR: Record<StandardPlane, [number, number, number]> = {
 
 export type FaceOrEdge = Face | Edge;
 
+export type FilterFcn<Type> = {
+  element: Type;
+  normal: Vector | null;
+};
+
 export abstract class Finder<Type, FilterType> {
-  protected filters: (({
-    element,
-    normal,
-  }: {
-    element: Type;
-    normal: Vector | null;
-  }) => boolean)[];
+  protected filters: (({ element, normal }: FilterFcn<Type>) => boolean)[];
 
   protected abstract applyFilter(shape: FilterType): Type[];
 
