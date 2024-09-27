@@ -4,6 +4,7 @@ import * as replicad from "replicad";
 import initOpenCascade from "./initOCSingle.js";
 import initOpenCascadeWithExceptions from "./initOCWithExceptions.js";
 import normalizeColor from "./utils/normalizeColor";
+import { StudioHelper } from "./utils/StudioHelper";
 import { runInContext, buildModuleEvaluator } from "./vm";
 
 self.replicad = replicad;
@@ -168,7 +169,9 @@ const buildShapesFromCode = async (code, params) => {
     await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
 
   let shapes;
+  const helper = new StudioHelper();
   try {
+    self.$ = helper;
     shapes = await runCode(code, params);
   } catch (e) {
     let message = "error";
@@ -194,7 +197,7 @@ const buildShapesFromCode = async (code, params) => {
 
   shapes = organiseReturnValue(shapes);
   shapes = normalizeColorAndOpacity(shapes);
-  console.log(shapes);
+  shapes = helper.apply(shapes);
   SHAPES_MEMORY.defaultShape = shapes;
 
   return shapes
