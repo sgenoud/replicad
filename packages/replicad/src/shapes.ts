@@ -563,53 +563,35 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   }
 
   get startPoint(): Vector {
-    const curve = this.curve;
-    const outval = curve.startPoint;
-    curve.delete();
-    return outval;
+    return this.curve.startPoint;
   }
 
   get endPoint(): Vector {
-    const curve = this.curve;
-    const outval = curve.endPoint;
-    curve.delete();
-    return outval;
+    return this.curve.endPoint;
   }
 
   tangentAt(position = 0): Vector {
-    const curve = this.curve;
-    const tangent = curve.tangentAt(position);
-    curve.delete();
-    return tangent;
+    return this.curve.tangentAt(position);
+  }
+
+  pointAt(position = 0): Vector {
+    return this.curve.pointAt(position);
   }
 
   get isClosed(): boolean {
-    const curve = this.curve;
-    const isClosed = curve.isClosed;
-    curve.delete();
-
-    return isClosed;
+    return this.curve.isClosed;
   }
 
   get isPeriodic(): boolean {
-    const curve = this.curve;
-    const isPeriodic = curve.isPeriodic;
-    curve.delete();
-    return isPeriodic;
+    return this.curve.isPeriodic;
   }
 
   get period(): number {
-    const curve = this.curve;
-    const period = curve.period;
-    curve.delete();
-    return period;
+    return this.curve.period;
   }
 
   get geomType(): CurveType {
-    const curve = this.curve;
-    const type = curve.curveType;
-    curve.delete();
-    return type;
+    return this.curve.curveType;
   }
 
   get length(): number {
@@ -652,11 +634,19 @@ export class Curve extends WrappingObj<CurveLike> {
     return new Vector(umax);
   }
 
-  tangentAt(position: number): Vector {
-    let pos = position;
-    if (!position) {
-      pos = (this.wrapped.LastParameter() - this.wrapped.FirstParameter()) / 2;
-    }
+  protected _mapParameter(position: number): number {
+    const firstParam = this.wrapped.FirstParameter();
+    const lastParam = this.wrapped.LastParameter();
+
+    return firstParam + (lastParam - firstParam) * position;
+  }
+
+  pointAt(position = 0.5): Vector {
+    return new Vector(this.wrapped.Value(this._mapParameter(position)));
+  }
+
+  tangentAt(position = 0.5): Vector {
+    const pos = this._mapParameter(position);
 
     const tmp = new this.oc.gp_Pnt_1();
     const res = new this.oc.gp_Vec_1();
