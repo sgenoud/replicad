@@ -3,20 +3,12 @@ import * as replicad from "replicad";
 
 import initOpenCascade from "./initOCSingle.js";
 import initOpenCascadeWithExceptions from "./initOCWithExceptions.js";
-import normalizeColor from "./utils/normalizeColor";
 import { StudioHelper } from "./utils/StudioHelper";
 import { runInContext, buildModuleEvaluator } from "./vm";
 
-self.replicad = replicad;
+import { renderOutput, ShapeStandardizer } from "./utils/renderOutput";
 
-const isBlueprintLike = (shape) => {
-  return (
-    shape instanceof replicad.Blueprint ||
-    shape instanceof replicad.Blueprints ||
-    shape instanceof replicad.CompoundBlueprint ||
-    shape instanceof replicad.Drawing
-  );
-};
+self.replicad = replicad;
 
 export function runInContextAsOC(code, context = {}) {
   const editedText = `
@@ -116,50 +108,26 @@ async function toggleExceptions() {
 
 disableExceptions();
 
-const shapeOrSketch = (shape) => {
-  if (!(shape instanceof replicad.Sketch)) return shape;
-  if (shape.wire.isClosed) return shape.face();
-  return shape.wire;
-};
+const formatException = (oc, e) => {
+  let message = "error";
 
-const organiseReturnValue = (inputShapes, baseName = "Shape") => {
-  let shapes = inputShapes;
-
-  if (!Array.isArray(shapes)) shapes = [shapes];
-
-  return shapes.map((inputShape, i) => {
-    if (!inputShape.shape) {
-      return {
-        name: `${baseName} ${i}`,
-        shape: shapeOrSketch(inputShape),
-      };
+  if (typeof e === "number") {
+    if (oc.OCJS) {
+      const error = oc.OCJS.getStandard_FailureData(e);
+      message = error.GetMessageString();
+    } else {
+      message = `Kernel error ${e}`;
     }
-    const { name, shape, ...rest } = inputShape;
+  } else {
+    message = e.message;
+    console.error(e);
+  }
 
-    return {
-      name: name || `${baseName} ${i}`,
-      shape: shapeOrSketch(shape),
-      ...rest,
-    };
-  });
-};
-
-const normalizeColorAndOpacity = (shapes) => {
-  return shapes.map((shape) => {
-    const { color, opacity, ...rest } = shape;
-
-    const normalizedColor = color && normalizeColor(color);
-    let configuredOpacity = opacity;
-    if (normalizedColor && normalizedColor.alpha !== 1) {
-      configuredOpacity = opacity ?? normalizedColor.alpha;
-    }
-
-    return {
-      ...rest,
-      color: normalizedColor?.color,
-      opacity: configuredOpacity,
-    };
-  });
+  return {
+    error: true,
+    message,
+    stack: e.stack,
+  };
 };
 
 const buildShapesFromCode = async (code, params) => {
@@ -170,91 +138,22 @@ const buildShapesFromCode = async (code, params) => {
 
   let shapes;
   const helper = new StudioHelper();
+  const standardizer = new ShapeStandardizer();
+
   try {
     self.$ = helper;
+    self.registerShapeStandardizer =
+      standardizer.registerAdapter.bind(standardizer);
     shapes = await runCode(code, params);
   } catch (e) {
-    let message = "error";
-
-    if (typeof e === "number") {
-      if (oc.OCJS) {
-        const error = oc.OCJS.getStandard_FailureData(e);
-        message = error.GetMessageString();
-      } else {
-        message = `Kernel error ${e}`;
-      }
-    } else {
-      message = e.message;
-      console.error(e);
-    }
-
-    return {
-      error: true,
-      message,
-      stack: e.stack,
-    };
+    return formatException(oc, e);
   }
 
-  shapes = organiseReturnValue(shapes);
-  shapes = normalizeColorAndOpacity(shapes);
-  shapes = helper.apply(shapes);
-  SHAPES_MEMORY.defaultShape = shapes;
-
-  return shapes
-    .filter(
-      ({ shape }) => !(shape instanceof replicad.Drawing) || shape.innerShape
-    )
-    .map(
-      ({
-        name,
-        shape,
-        color,
-        strokeType,
-        opacity,
-        highlight: inputHighlight,
-        highlightEdge,
-        highlightFace,
-      }) => {
-        let highlight =
-          inputHighlight ||
-          (highlightEdge && highlightEdge(new replicad.EdgeFinder())) ||
-          (highlightFace && highlightFace(new replicad.FaceFinder()));
-
-        const shapeInfo = {
-          name,
-          color,
-          strokeType,
-          opacity,
-        };
-
-        if (isBlueprintLike(shape)) {
-          shapeInfo.format = "svg";
-          shapeInfo.paths = shape.toSVGPaths();
-          shapeInfo.viewbox = shape.toSVGViewBox();
-          return shapeInfo;
-        }
-
-        try {
-          shapeInfo.mesh = shape.mesh({ tolerance: 0.1, angularTolerance: 30 });
-          shapeInfo.edges = shape.meshEdges({ keepMesh: true });
-        } catch (e) {
-          console.error(e);
-          shapeInfo.error = true;
-          return shapeInfo;
-        }
-
-        if (highlight)
-          try {
-            shapeInfo.highlight = highlight.find(shape).map((s) => {
-              return s.hashCode;
-            });
-          } catch (e) {
-            console.error(e);
-          }
-
-        return shapeInfo;
-      }
-    );
+  return renderOutput(shapes, standardizer, (shapes) => {
+    const editedShapes = helper.apply(shapes);
+    SHAPES_MEMORY.defaultShape = shapes;
+    return editedShapes;
+  });
 };
 
 const buildBlob = (
