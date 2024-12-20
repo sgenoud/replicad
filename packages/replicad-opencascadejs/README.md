@@ -11,4 +11,4 @@ pnpm buildWasm
 ```
 
 You need to have a docker instance running and have run
-`docker-pull dolalffons/opencascade.js`
+`docker pull donalffons/opencascade.js`
