@@ -4,7 +4,6 @@ import { findCurveType } from "../definitionMaps";
 import { getOC } from "../oclib";
 import round2 from "../utils/round2";
 import round5 from "../utils/round5";
-import { approximateAsBSpline, BSplineToBezier } from "./approximations";
 import { Point2D } from "./definitions";
 
 const fromPnt = (pnt: gp_Pnt2d) => `${round2(pnt.X())} ${round2(pnt.Y())}`;
@@ -82,19 +81,5 @@ export const adaptedCurveToPathElem = (
     } ${curve.IsDirect() ? "1" : "0"} ${end}`;
   }
 
-  if (curveType === "BSPLINE_CURVE") {
-    const deg = adaptor.BSpline().get().Degree();
-    if (deg < 4) {
-      const bezierCurves = BSplineToBezier(adaptor);
-      return bezierCurves
-        .map((c) => adaptedCurveToPathElem(c.adaptor(), c.lastPoint))
-        .join(" ");
-    }
-  }
-
-  const bspline = approximateAsBSpline(adaptor);
-  const bezierCurves = BSplineToBezier(bspline.adaptor());
-  return bezierCurves
-    .map((c) => adaptedCurveToPathElem(c.adaptor(), c.lastPoint))
-    .join(" ");
+  throw new Error(`Unsupported curve type: ${curveType}`);
 };

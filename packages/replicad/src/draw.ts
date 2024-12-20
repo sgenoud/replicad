@@ -1,4 +1,5 @@
 import {
+  ApproximationOptions,
   BoundingBox2d,
   make2dCircle,
   make2dEllipse,
@@ -33,6 +34,7 @@ import { CornerFinder } from "./finders/cornerFinder";
 import { fillet2D, chamfer2D } from "./blueprints/customCorners";
 import { edgeToCurve } from "./curves";
 import { BSplineApproximationConfig } from "./shapeHelpers";
+import { approximateForSVG } from "./blueprints/approximations";
 
 export class Drawing implements DrawingInterface {
   private innerShape: Shape2D;
@@ -166,6 +168,16 @@ export class Drawing implements DrawingInterface {
 
   offset(distance: number): Drawing {
     return new Drawing(offset(this.innerShape, distance));
+  }
+
+  approximate(
+    target: "svg" | "arcs",
+    options: ApproximationOptions = {}
+  ): Drawing {
+    if (target !== "svg") {
+      throw new Error("Only 'svg' is supported for now");
+    }
+    return new Drawing(approximateForSVG(this.innerShape, options));
   }
 
   get blueprint(): Blueprint {

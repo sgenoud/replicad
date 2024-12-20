@@ -18,6 +18,7 @@ import {
   Curve2D,
   samePoint,
   isPoint2D,
+  approximateAsSvgCompatibleCurve,
 } from "../lib2d";
 import { assembleWire } from "../shapeHelpers";
 import { Face } from "../shapes";
@@ -199,17 +200,9 @@ export default class Blueprint implements DrawingInterface {
     const r = GCWithScope();
     const bp = this.clone().mirror([1, 0], [0, 0], "plane");
 
-    const path = bp.curves.flatMap((c) => {
-      if (
-        (c.geomType === "ELLIPSE" || c.geomType === "CIRCLE") &&
-        samePoint(c.firstPoint, c.lastPoint)
-      ) {
-        const [c1, c2] = c.splitAt([0.5]);
-        return [
-          adaptedCurveToPathElem(r(c1.adaptor()), c1.lastPoint),
-          adaptedCurveToPathElem(r(c2.adaptor()), c2.lastPoint),
-        ];
-      }
+    const compatibleCurves = approximateAsSvgCompatibleCurve(bp.curves);
+
+    const path = compatibleCurves.flatMap((c) => {
       return adaptedCurveToPathElem(r(c.adaptor()), c.lastPoint);
     });
 
