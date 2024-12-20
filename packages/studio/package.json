@@ -58,9 +58,6 @@
     "three": "^0.155.0",
     "vite-plugin-pwa": "^0.16.4"
   },
-  "resolutions": {
-    "babel-plugin-styled-components": "1.13.3"
-  },
   "devDependencies": {
     "@types/react-dom": "^18.2.0",
     "@types/styled-components": "5.1.9",
@@ -68,6 +65,7 @@
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "@vitejs/plugin-react": "^4.0.4",
+    "babel-plugin-styled-components": "1.13.3",
     "binaryen": "^101.0.0",
     "eslint": "^8.47.0",
     "eslint-plugin-react": "^7.33.1",
