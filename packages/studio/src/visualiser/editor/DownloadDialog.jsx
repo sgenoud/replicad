@@ -78,7 +78,7 @@ export default function DownloadDialog({ onClose }) {
       );
     } else {
       try {
-        await saveShape("defaultShape", saveMode);
+        await saveShape("defaultShape", saveMode, store.code.current);
       } catch (e) {
         console.error(e);
       } finally {

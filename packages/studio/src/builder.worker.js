@@ -55,11 +55,33 @@ const extractDefaultParamsFromCode = async (code) => {
 
   const editedText = `
 ${code}
-let dp = null
 try {
-  dp = defaultParams;
-} catch (e) { }
-return dp
+  return defaultParams;
+} catch (e) {
+  return null;
+}
+  `;
+
+  try {
+    return runInContext(editedText, {});
+  } catch (e) {
+    return {};
+  }
+};
+
+const extractDefaultNameFromCode = async (code) => {
+  if (code.match(/^\s*export\s+/m)) {
+    const module = await buildModuleEvaluator(code);
+    return module.defaultName || null;
+  }
+
+  const editedText = `
+${code}
+try {
+  return defaultName;
+} catch (e) {
+  return null;
+}
   `;
 
   try {
@@ -216,6 +238,7 @@ const service = {
   ready: () => OC.then(() => true),
   buildShapesFromCode,
   extractDefaultParamsFromCode,
+  extractDefaultNameFromCode,
   exportShape,
   edgeInfo,
   faceInfo,
