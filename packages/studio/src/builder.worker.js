@@ -87,7 +87,7 @@ try {
   try {
     return runInContext(editedText, {});
   } catch (e) {
-    return {};
+    return null;
   }
 };
 
