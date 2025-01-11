@@ -1,7 +1,10 @@
-import { fileSave } from 'browser-fs-access'
+import { fileSave } from 'browser-fs-access';
+import builderAPI from './builderAPI';
 
-export default (code, fileName) => {
-  fileName = fileName ?? 'replicad-script'
+export default async (code, fileName) => {
+  fileName = fileName
+    ?? await builderAPI.extractDefaultNameFromCode(code)
+    ?? 'replicad-script'
   return fileSave(
     new Blob([code], {
       type: "application/javascript",

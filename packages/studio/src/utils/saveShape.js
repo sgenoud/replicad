@@ -11,7 +11,7 @@ const mapExt = (ext) => {
   return ext;
 };
 
-export default async function saveShapes(shapeId, fileType = "stl") {
+export default async function saveShapes(shapeId, fileType = "stl", code) {
   const shapes = await builderAPI.exportShape(fileType, shapeId);
   if (shapes.length === 1) {
     const { blob, name } = shapes[0];
@@ -25,6 +25,7 @@ export default async function saveShapes(shapeId, fileType = "stl") {
     return;
   }
 
+  const defaultName = await builderAPI.extractDefaultNameFromCode(code);
   const zip = new JSZip();
   shapes.forEach((shape, i) => {
     zip.file(`${shape.name || `shape-${i}`}.${mapExt(fileType)}`, shape.blob);
@@ -33,7 +34,7 @@ export default async function saveShapes(shapeId, fileType = "stl") {
   await fileSave(zipBlob, {
     id: "exports",
     description: "Save zip",
-    fileName: `${shapeId}.zip`,
+    fileName: `${defaultName ?? shapeId}.zip`,
     extensions: [".zip"],
   });
 }
