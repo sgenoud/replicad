@@ -12,20 +12,20 @@ const mapExt = (ext) => {
 };
 
 export default async function saveShapes(shapeId, fileType = "stl", code) {
+  const defaultName = await builderAPI.extractDefaultNameFromCode(code);
   const shapes = await builderAPI.exportShape(fileType, shapeId);
   if (shapes.length === 1) {
     const { blob, name } = shapes[0];
     const ext = mapExt(fileType);
 
     await fileSave(blob, {
-      fileName: `${name || "shape"}.${ext}`,
+      fileName: `${name ?? defaultName ?? "shape"}.${ext}`,
       extensions: [`.${ext}`],
-      description: `Save ${name || "shape"} as ${fileType}`,
+      description: `Save ${name ?? defaultName ?? "shape"} as ${fileType}`,
     });
     return;
   }
 
-  const defaultName = await builderAPI.extractDefaultNameFromCode(code);
   const zip = new JSZip();
   shapes.forEach((shape, i) => {
     zip.file(`${shape.name || `shape-${i}`}.${mapExt(fileType)}`, shape.blob);
