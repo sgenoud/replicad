@@ -3,8 +3,8 @@ import builderAPI from './builderAPI';
 
 export default async (code, fileName) => {
   fileName = fileName
-    ?? await builderAPI.extractDefaultNameFromCode(code)
-    ?? 'replicad-script'
+    || await builderAPI.extractDefaultNameFromCode(code)
+    || 'replicad-script'
   return fileSave(
     new Blob([code], {
       type: "application/javascript",
