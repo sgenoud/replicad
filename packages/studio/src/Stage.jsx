@@ -33,7 +33,7 @@ export default function Stage({ children, center, ...props }) {
 
     set({ radius: sphere.radius, previousRadius: radius, top: box3.max.z });
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [children]);
+  }, []);
 
   React.useLayoutEffect(() => {
     if (previousRadius && previousRadius !== radius) {
