@@ -68,7 +68,6 @@ const isSVGable = (shape: any): shape is SVGable => {
 };
 
 const isMeshable = (shape: any): shape is Meshable => {
-  console.log("meesh", shape.mesh && shape.meshEdges);
   return !!(shape.mesh && shape.meshEdges);
 };
 
@@ -97,9 +96,10 @@ function createBasicShapeConfig(
     .map((inputShape, i) => {
       // We accept unamed shapes
       const { name, ...rest } = inputShape;
+      const index = shapes.length > 1 ? ` ${i}` : "";
 
       return {
-        name: name || `${baseName} ${i}`,
+        name: name || `${baseName}${index}`,
         ...rest,
       };
     });
@@ -257,11 +257,12 @@ export function render(shapes: Array<CleanConfig>) {
 export function renderOutput(
   shapes: unknown,
   shapeStandardizer?: ShapeStandardizer,
-  beforeRender?: (shapes: CleanConfig[]) => CleanConfig[]
+  beforeRender?: (shapes: CleanConfig[]) => CleanConfig[],
+  defaultName = "Shape"
 ) {
   const standardizer = shapeStandardizer || new ShapeStandardizer();
 
-  const baseShape = createBasicShapeConfig(shapes)
+  const baseShape = createBasicShapeConfig(shapes, defaultName)
     .map(normalizeColorAndOpacity)
     .map(normalizeHighlight);
   const standardizedShapes = standardizer.standardizeShape(baseShape);

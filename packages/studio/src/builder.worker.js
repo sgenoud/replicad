@@ -72,7 +72,7 @@ try {
 const extractDefaultNameFromCode = async (code) => {
   if (code.match(/^\s*export\s+/m)) {
     const module = await buildModuleEvaluator(code);
-    return module.defaultName || null;
+    return module.defaultName;
   }
 
   const editedText = `
@@ -80,14 +80,14 @@ ${code}
 try {
   return defaultName;
 } catch (e) {
-  return null;
+  return;
 }
   `;
 
   try {
     return runInContext(editedText, {});
   } catch (e) {
-    return null;
+    return;
   }
 };
 
@@ -159,6 +159,7 @@ const buildShapesFromCode = async (code, params) => {
     await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
 
   let shapes;
+  let defaultName;
   const helper = new StudioHelper();
   const standardizer = new ShapeStandardizer();
 
@@ -167,15 +168,21 @@ const buildShapesFromCode = async (code, params) => {
     self.registerShapeStandardizer =
       standardizer.registerAdapter.bind(standardizer);
     shapes = await runCode(code, params);
+    defaultName = await extractDefaultNameFromCode(code);
   } catch (e) {
     return formatException(oc, e);
   }
 
-  return renderOutput(shapes, standardizer, (shapes) => {
-    const editedShapes = helper.apply(shapes);
-    SHAPES_MEMORY.defaultShape = shapes;
-    return editedShapes;
-  });
+  return renderOutput(
+    shapes,
+    standardizer,
+    (shapes) => {
+      const editedShapes = helper.apply(shapes);
+      SHAPES_MEMORY.defaultShape = shapes;
+      return editedShapes;
+    },
+    defaultName
+  );
 };
 
 const buildBlob = (

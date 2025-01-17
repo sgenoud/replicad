@@ -19,9 +19,9 @@ export default async function saveShapes(shapeId, fileType = "stl", code) {
     const ext = mapExt(fileType);
 
     await fileSave(blob, {
-      fileName: `${name || defaultName || "shape"}.${ext}`,
+      fileName: `${defaultName || name || "shape"}.${ext}`,
       extensions: [`.${ext}`],
-      description: `Save ${name || defaultName || "shape"} as ${fileType}`,
+      description: `Save ${defaultName || name || "shape"} as ${fileType}`,
     });
     return;
   }
@@ -34,7 +34,7 @@ export default async function saveShapes(shapeId, fileType = "stl", code) {
   await fileSave(zipBlob, {
     id: "exports",
     description: "Save zip",
-    fileName: `${defaultName || shapeId}.zip`,
+    fileName: `${defaultName || "shapes"}.zip`,
     extensions: [".zip"],
   });
 }
