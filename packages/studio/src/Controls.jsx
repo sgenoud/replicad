@@ -28,6 +28,7 @@ export default React.memo(function Scene({
   hideGizmo,
   center,
   enableDamping = true,
+  autoCamera = true,
   children,
 }) {
   const controlsRef = useRef();
@@ -39,7 +40,11 @@ export default React.memo(function Scene({
         ref={controlsRef}
         enableDamping={enableDamping}
       />
-      <Stage constrols={controlsRef} center={center}>
+      <Stage
+        controls={controlsRef.current}
+        center={center}
+        autoCamera={autoCamera}
+      >
         {children}
       </Stage>
     </>

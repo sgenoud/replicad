@@ -2,19 +2,16 @@ import * as React from "react";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 
-export default function Stage({ children, center, ...props }) {
+export default function Stage({ children, center, controls, ...props }) {
   const camera = useThree((state) => state.camera);
   const { invalidate } = useThree();
   const outer = React.useRef(null);
   const inner = React.useRef(null);
 
-  const [{ radius, previousRadius, top }, set] = React.useState({
-    previousRadius: null,
-    radius: 0,
-    top: 0,
-  });
+  const resetCamera = React.useCallback(() => {
+    console.log("resetCamera");
+    if (!outer.current) return;
 
-  React.useLayoutEffect(() => {
     outer.current.updateWorldMatrix(true, true);
     const box3 = new THREE.Box3().setFromObject(inner.current);
 
@@ -31,24 +28,8 @@ export default function Stage({ children, center, ...props }) {
     const sphere = new THREE.Sphere();
     box3.getBoundingSphere(sphere);
 
-    set({ radius: sphere.radius, previousRadius: radius, top: box3.max.z });
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [children]);
-
-  React.useLayoutEffect(() => {
-    if (previousRadius && previousRadius !== radius) {
-      const ratio = radius / previousRadius;
-      camera.position.set(
-        camera.position.x * ratio,
-        camera.position.y * ratio,
-        camera.position.z * ratio
-      );
-
-      camera.far = Math.max(5000, radius * 4);
-
-      invalidate();
-      return;
-    }
+    const radius = sphere.radius;
+    const top = box3.max.z;
 
     camera.position.set(
       radius * 0.25,
@@ -60,20 +41,23 @@ export default function Stage({ children, center, ...props }) {
     camera.lookAt(0, 0, 0);
 
     if (camera.type === "OrthographicCamera") {
-    camera.position.set(
-      radius,
-      -radius,
-      radius
-    );
+      console.log("changing camera position");
+      camera.position.set(radius, -radius, radius);
 
       camera.zoom = 5;
       camera.near = -Math.max(5000, radius * 4);
-      camera.updateProjectionMatrix();
     }
 
+    camera.updateProjectionMatrix();
     invalidate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [radius, top, previousRadius]);
+    if (controls) {
+      controls.update();
+    }
+  }, [camera, controls, center, invalidate]);
+
+  React.useLayoutEffect(() => {
+    resetCamera();
+  }, [outer.current, controls]);
 
   return (
     <group {...props}>
