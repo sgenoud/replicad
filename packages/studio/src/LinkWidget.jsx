@@ -206,7 +206,7 @@ export default function LinkWidget() {
           searchParams.get("disable-damping")?.toLowerCase() === "true"
         }
         showParams={searchParams.get("params")?.toLowerCase() === "true"}
-        onSave={(format) => saveShape("defaultShape", format)}
+        onSave={(format) => saveShape("defaultShape", format, code)}
         canSave={geometryHasBeenComputed}
       />
       <AdditionalInfo>
