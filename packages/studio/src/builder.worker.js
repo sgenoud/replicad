@@ -168,7 +168,7 @@ const buildShapesFromCode = async (code, params) => {
     self.registerShapeStandardizer =
       standardizer.registerAdapter.bind(standardizer);
     shapes = await runCode(code, params);
-    defaultName = await extractDefaultNameFromCode(code);
+    defaultName = code && (await extractDefaultNameFromCode(code));
   } catch (e) {
     return formatException(oc, e);
   }
