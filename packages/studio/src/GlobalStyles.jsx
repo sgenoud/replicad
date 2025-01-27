@@ -58,6 +58,13 @@ export default createGlobalStyle`
     --bg-color: #f2f3f4;
   }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1e1e1e;
+  }
+}
+
+
 a {
     color: var(--color-primary);
 }
