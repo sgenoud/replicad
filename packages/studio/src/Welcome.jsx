@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 const Main = styled.div`
   width: 100%;
   min-height: 100%;
+  background-color: var(--bg-color);
 `;
 
 const Hero = styled.div`
@@ -54,6 +55,12 @@ const BoxCard = styled(Link)`
 
   &: hover {
     background-color: var(--color-primary-light);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &: hover {
+      background-color: var(--color-primary-dark);
+    }
   }
 `;
 

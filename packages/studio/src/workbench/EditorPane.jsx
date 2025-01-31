@@ -45,6 +45,7 @@ export const ErrorOverlay = styled.div`
     font-size: 0.6em;
     overflow-x: auto;
     padding: 1em;
+    color: #444;
     background-color: #f2e0de;
   }
 `;

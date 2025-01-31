@@ -52,7 +52,7 @@ export default observer(function ParamsEditor({
         colors: {
           elevation1: "white",
           elevation2: "var(--bg-color)",
-          elevation3: "white", // bg color of the root panel (main title bar)
+          elevation3: "var(--bg-color-secondary)", // bg color of the root panel (main title bar)
 
           highlight1: "var(--color-primary)",
           highlight2: "var(--color-primary)",
@@ -65,8 +65,8 @@ export default observer(function ParamsEditor({
           vivid1: "red",
         },
         sizes: {
-          controlWidth: "80px"
-        }
+          controlWidth: "80px",
+        },
       }}
     />
   );

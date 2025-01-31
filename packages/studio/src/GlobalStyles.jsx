@@ -37,8 +37,8 @@ export default createGlobalStyle`
   html, body {
     box-sizing: border-box;
     background-color: white;
-    color: #444;
-    fill: #444;
+        color: var(--text-color);
+        fill: var(--text-color);
     scroll-behavior: smooth;
   }
 
@@ -49,6 +49,9 @@ export default createGlobalStyle`
     }
 
 :root {
+    --text-color: #444;
+    --bg-color-secondary: white;
+
     --color-primary: rgb(90, 130, 150);
     --color-primary-light: rgb(170, 190, 200);
     --color-primary-dark: rgb(60, 90, 110);
@@ -61,6 +64,8 @@ export default createGlobalStyle`
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color: #1e1e1e;
+    --bg-color-secondary: #2e2e2e;
+    --text-color: #f2f2f2;
   }
 }
 

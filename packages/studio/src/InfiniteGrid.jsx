@@ -1,6 +1,8 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { Plane } from "@react-three/drei";
+import { useDarkMode } from "./utils/useDarkMode";
+import { useThree } from "@react-three/fiber";
 //
 //
 // Author: Fyrestar https://mevedia.com (https://github.com/Fyrestar/THREE.InfiniteGridHelper)
@@ -101,5 +103,14 @@ const infiniteGridMaterial = function InfiniteGridMaterial({
 
 export default () => {
   const material = useRef(infiniteGridMaterial());
+  const isDarkMode = useDarkMode();
+  const { invalidate } = useThree();
+
+  useEffect(() => {
+    material.current.uniforms.uColor.value = new THREE.Color(
+      isDarkMode ? "lightgrey" : "grey"
+    );
+    invalidate();
+  }, [isDarkMode, invalidate]);
   return <Plane material={material.current} />;
 };

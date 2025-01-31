@@ -43,7 +43,7 @@ const Select = styled.select`
 
 const ErrorOverlay = styled(InfoBottomLeft)`
   border-color: red;
-  background-color: white;
+  background-color: var(--bg-color);
   border-width: 2px;
   max-height: initial;
   max-width: 50vw;
@@ -61,11 +61,13 @@ const ErrorOverlay = styled(InfoBottomLeft)`
     font-size: 0.6em;
     overflow-x: auto;
     padding: 1em;
+    color: #444;
     background-color: #f2e0de;
   }
 `;
 
 const CenterInfo = styled.div`
+  background-color: var(--bg-color);
   display: flex;
   flex-direction: column;
   align-items: center;

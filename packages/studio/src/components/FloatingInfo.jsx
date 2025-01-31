@@ -7,13 +7,15 @@ export const InfoTopRight = styled.div`
   top: 3.5em;
   right: 2em;
   max-width: 300px;
-  padding: 10px;
+  padding: 8px;
   border-radius: 10px;
   max-height: calc(100% - 5em);
   overflow-y: auto;
 
   ${(props) =>
-    props.noBg ? "" : `background-color: white; border: 1px solid lightgrey;`}
+    props.noBg
+      ? ""
+      : `background-color: var(--bg-color); border: 1px solid lightgrey;`}
 `;
 
 export const InfoBottomLeft = styled(InfoTopRight)`

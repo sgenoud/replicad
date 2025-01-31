@@ -52,6 +52,12 @@ const WorkbenchWrapper = styled.div`
   & .custom-gutter-theme {
     background-color: var(--color-primary-light);
   }
+
+  @media (prefers-color-scheme: dark) {
+    & .custom-gutter-theme {
+      background-color: var(--bg-color);
+    }
+  }
 `;
 
 export default function Workbench() {
