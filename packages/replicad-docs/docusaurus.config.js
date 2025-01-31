@@ -89,6 +89,11 @@ const config = {
             title: "More",
             items: [
               {
+                href: "https://github.com/raydeleu/ReplicadManual/wiki",
+                label: "ReplicadManual by raydeleu",
+              },
+
+              {
                 label: "GitHub",
                 href: "https://github.com/sgenoud/replicad",
               },

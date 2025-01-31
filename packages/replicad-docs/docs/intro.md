@@ -29,3 +29,9 @@ tutorial](/docs/tutorial-overview/using-the-workbench)
 
 If you want to use replicad to build your own application, an editor,
 a generative 3D design, you can have a look at the [sample app](https://sample-app.replicad.xyz) and read the [documentation that is related to it](/docs/use-as-a-library)
+
+## Another ressource, the replicad manual
+
+A member of the community has written a manual for replicad. This is
+a very in depth resource that will help you build models with replicad. You can
+find it [here](https://github.com/raydeleu/ReplicadManual/wiki)
