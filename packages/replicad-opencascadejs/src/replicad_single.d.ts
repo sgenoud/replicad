@@ -912,6 +912,26 @@ export declare class BRepBuilderAPI_MakeShape extends BRepBuilderAPI_Command {
   delete(): void;
 }
 
+export declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
+  Init(S: Handle_Geom_Surface, UMin: Standard_Real, UMax: Standard_Real, VMin: Standard_Real, VMax: Standard_Real, Segment: Standard_Boolean): void;
+  IsDone(): Standard_Boolean;
+  Error(): BRepBuilderAPI_ShellError;
+  Shell(): TopoDS_Shell;
+  delete(): void;
+}
+
+  export declare class BRepBuilderAPI_MakeShell_1 extends BRepBuilderAPI_MakeShell {
+    constructor();
+  }
+
+  export declare class BRepBuilderAPI_MakeShell_2 extends BRepBuilderAPI_MakeShell {
+    constructor(S: Handle_Geom_Surface, Segment: Standard_Boolean);
+  }
+
+  export declare class BRepBuilderAPI_MakeShell_3 extends BRepBuilderAPI_MakeShell {
+    constructor(S: Handle_Geom_Surface, UMin: Standard_Real, UMax: Standard_Real, VMin: Standard_Real, VMax: Standard_Real, Segment: Standard_Boolean);
+  }
+
 export declare class BRepBuilderAPI_MakeSolid extends BRepBuilderAPI_MakeShape {
   Add(S: TopoDS_Shell): void;
   IsDone(): Standard_Boolean;
@@ -2869,6 +2889,30 @@ export declare class Geom_ElementarySurface extends Geom_Surface {
   delete(): void;
 }
 
+export declare class Handle_Geom_ElementarySurface {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom_ElementarySurface): void;
+  get(): Geom_ElementarySurface;
+  delete(): void;
+}
+
+  export declare class Handle_Geom_ElementarySurface_1 extends Handle_Geom_ElementarySurface {
+    constructor();
+  }
+
+  export declare class Handle_Geom_ElementarySurface_2 extends Handle_Geom_ElementarySurface {
+    constructor(thePtr: Geom_ElementarySurface);
+  }
+
+  export declare class Handle_Geom_ElementarySurface_3 extends Handle_Geom_ElementarySurface {
+    constructor(theHandle: Handle_Geom_ElementarySurface);
+  }
+
+  export declare class Handle_Geom_ElementarySurface_4 extends Handle_Geom_ElementarySurface {
+    constructor(theHandle: Handle_Geom_ElementarySurface);
+  }
+
 export declare class Geom_Geometry extends Standard_Transient {
   Mirror_1(P: gp_Pnt): void;
   Mirror_2(A1: gp_Ax1): void;
@@ -2893,6 +2937,93 @@ export declare class Geom_Geometry extends Standard_Transient {
   DynamicType(): Handle_Standard_Type;
   delete(): void;
 }
+
+export declare class Handle_Geom_Geometry {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom_Geometry): void;
+  get(): Geom_Geometry;
+  delete(): void;
+}
+
+  export declare class Handle_Geom_Geometry_1 extends Handle_Geom_Geometry {
+    constructor();
+  }
+
+  export declare class Handle_Geom_Geometry_2 extends Handle_Geom_Geometry {
+    constructor(thePtr: Geom_Geometry);
+  }
+
+  export declare class Handle_Geom_Geometry_3 extends Handle_Geom_Geometry {
+    constructor(theHandle: Handle_Geom_Geometry);
+  }
+
+  export declare class Handle_Geom_Geometry_4 extends Handle_Geom_Geometry {
+    constructor(theHandle: Handle_Geom_Geometry);
+  }
+
+export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
+  SetRadius(R: Standard_Real): void;
+  SetSphere(S: gp_Sphere): void;
+  Sphere(): gp_Sphere;
+  UReversedParameter(U: Standard_Real): Standard_Real;
+  VReversedParameter(V: Standard_Real): Standard_Real;
+  Area(): Standard_Real;
+  Bounds(U1: Standard_Real, U2: Standard_Real, V1: Standard_Real, V2: Standard_Real): void;
+  Coefficients(A1: Standard_Real, A2: Standard_Real, A3: Standard_Real, B1: Standard_Real, B2: Standard_Real, B3: Standard_Real, C1: Standard_Real, C2: Standard_Real, C3: Standard_Real, D: Standard_Real): void;
+  Radius(): Standard_Real;
+  Volume(): Standard_Real;
+  IsUClosed(): Standard_Boolean;
+  IsVClosed(): Standard_Boolean;
+  IsUPeriodic(): Standard_Boolean;
+  IsVPeriodic(): Standard_Boolean;
+  UIso(U: Standard_Real): Handle_Geom_Curve;
+  VIso(V: Standard_Real): Handle_Geom_Curve;
+  D0(U: Standard_Real, V: Standard_Real, P: gp_Pnt): void;
+  D1(U: Standard_Real, V: Standard_Real, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec): void;
+  D2(U: Standard_Real, V: Standard_Real, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec): void;
+  D3(U: Standard_Real, V: Standard_Real, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec, D3U: gp_Vec, D3V: gp_Vec, D3UUV: gp_Vec, D3UVV: gp_Vec): void;
+  DN(U: Standard_Real, V: Standard_Real, Nu: Graphic3d_ZLayerId, Nv: Graphic3d_ZLayerId): gp_Vec;
+  Transform(T: gp_Trsf): void;
+  Copy(): Handle_Geom_Geometry;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): Handle_Standard_Type;
+  DynamicType(): Handle_Standard_Type;
+  delete(): void;
+}
+
+  export declare class Geom_SphericalSurface_1 extends Geom_SphericalSurface {
+    constructor(A3: gp_Ax3, Radius: Standard_Real);
+  }
+
+  export declare class Geom_SphericalSurface_2 extends Geom_SphericalSurface {
+    constructor(S: gp_Sphere);
+  }
+
+export declare class Handle_Geom_SphericalSurface {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom_SphericalSurface): void;
+  get(): Geom_SphericalSurface;
+  delete(): void;
+}
+
+  export declare class Handle_Geom_SphericalSurface_1 extends Handle_Geom_SphericalSurface {
+    constructor();
+  }
+
+  export declare class Handle_Geom_SphericalSurface_2 extends Handle_Geom_SphericalSurface {
+    constructor(thePtr: Geom_SphericalSurface);
+  }
+
+  export declare class Handle_Geom_SphericalSurface_3 extends Handle_Geom_SphericalSurface {
+    constructor(theHandle: Handle_Geom_SphericalSurface);
+  }
+
+  export declare class Handle_Geom_SphericalSurface_4 extends Handle_Geom_SphericalSurface {
+    constructor(theHandle: Handle_Geom_SphericalSurface);
+  }
 
 export declare class Geom_Surface extends Geom_Geometry {
   UReverse(): void;
@@ -3992,6 +4123,25 @@ export declare type GeomAbs_SurfaceType = {
   GeomAbs_SurfaceOfExtrusion: {};
   GeomAbs_OffsetSurface: {};
   GeomAbs_OtherSurface: {};
+}
+
+export declare class GeomConvert {
+  constructor();
+  static SplitBSplineCurve_1(C: Handle_Geom_BSplineCurve, FromK1: Graphic3d_ZLayerId, ToK2: Graphic3d_ZLayerId, SameOrientation: Standard_Boolean): Handle_Geom_BSplineCurve;
+  static SplitBSplineCurve_2(C: Handle_Geom_BSplineCurve, FromU1: Standard_Real, ToU2: Standard_Real, ParametricTolerance: Standard_Real, SameOrientation: Standard_Boolean): Handle_Geom_BSplineCurve;
+  static SplitBSplineSurface_1(S: Handle_Geom_BSplineSurface, FromUK1: Graphic3d_ZLayerId, ToUK2: Graphic3d_ZLayerId, FromVK1: Graphic3d_ZLayerId, ToVK2: Graphic3d_ZLayerId, SameUOrientation: Standard_Boolean, SameVOrientation: Standard_Boolean): Handle_Geom_BSplineSurface;
+  static SplitBSplineSurface_2(S: Handle_Geom_BSplineSurface, FromK1: Graphic3d_ZLayerId, ToK2: Graphic3d_ZLayerId, USplit: Standard_Boolean, SameOrientation: Standard_Boolean): Handle_Geom_BSplineSurface;
+  static SplitBSplineSurface_3(S: Handle_Geom_BSplineSurface, FromU1: Standard_Real, ToU2: Standard_Real, FromV1: Standard_Real, ToV2: Standard_Real, ParametricTolerance: Standard_Real, SameUOrientation: Standard_Boolean, SameVOrientation: Standard_Boolean): Handle_Geom_BSplineSurface;
+  static SplitBSplineSurface_4(S: Handle_Geom_BSplineSurface, FromParam1: Standard_Real, ToParam2: Standard_Real, USplit: Standard_Boolean, ParametricTolerance: Standard_Real, SameOrientation: Standard_Boolean): Handle_Geom_BSplineSurface;
+  static CurveToBSplineCurve(C: Handle_Geom_Curve, Parameterisation: Convert_ParameterisationType): Handle_Geom_BSplineCurve;
+  static SurfaceToBSplineSurface(S: Handle_Geom_Surface): Handle_Geom_BSplineSurface;
+  static ConcatG1(ArrayOfCurves: TColGeom_Array1OfBSplineCurve, ArrayOfToler: IntTools_CArray1OfReal, ArrayOfConcatenated: Handle_TColGeom_HArray1OfBSplineCurve, ClosedFlag: Standard_Boolean, ClosedTolerance: Standard_Real): void;
+  static ConcatC1_1(ArrayOfCurves: TColGeom_Array1OfBSplineCurve, ArrayOfToler: IntTools_CArray1OfReal, ArrayOfIndices: Handle_TColStd_HArray1OfInteger, ArrayOfConcatenated: Handle_TColGeom_HArray1OfBSplineCurve, ClosedFlag: Standard_Boolean, ClosedTolerance: Standard_Real): void;
+  static ConcatC1_2(ArrayOfCurves: TColGeom_Array1OfBSplineCurve, ArrayOfToler: IntTools_CArray1OfReal, ArrayOfIndices: Handle_TColStd_HArray1OfInteger, ArrayOfConcatenated: Handle_TColGeom_HArray1OfBSplineCurve, ClosedFlag: Standard_Boolean, ClosedTolerance: Standard_Real, AngularTolerance: Standard_Real): void;
+  static C0BSplineToC1BSplineCurve(BS: Handle_Geom_BSplineCurve, tolerance: Standard_Real, AngularTolerance: Standard_Real): void;
+  static C0BSplineToArrayOfC1BSplineCurve_1(BS: Handle_Geom_BSplineCurve, tabBS: Handle_TColGeom_HArray1OfBSplineCurve, tolerance: Standard_Real): void;
+  static C0BSplineToArrayOfC1BSplineCurve_2(BS: Handle_Geom_BSplineCurve, tabBS: Handle_TColGeom_HArray1OfBSplineCurve, AngularTolerance: Standard_Real, tolerance: Standard_Real): void;
+  delete(): void;
 }
 
 export declare class GeomLib {
@@ -7417,6 +7567,48 @@ export declare class gp_Pnt2d {
     constructor(theXp: Standard_Real, theYp: Standard_Real);
   }
 
+export declare class gp_Sphere {
+  SetLocation(theLoc: gp_Pnt): void;
+  SetPosition(theA3: gp_Ax3): void;
+  SetRadius(theR: Standard_Real): void;
+  Area(): Standard_Real;
+  Coefficients(theA1: Standard_Real, theA2: Standard_Real, theA3: Standard_Real, theB1: Standard_Real, theB2: Standard_Real, theB3: Standard_Real, theC1: Standard_Real, theC2: Standard_Real, theC3: Standard_Real, theD: Standard_Real): void;
+  UReverse(): void;
+  VReverse(): void;
+  Direct(): Standard_Boolean;
+  Location(): gp_Pnt;
+  Position(): gp_Ax3;
+  Radius(): Standard_Real;
+  Volume(): Standard_Real;
+  XAxis(): gp_Ax1;
+  YAxis(): gp_Ax1;
+  Mirror_1(theP: gp_Pnt): void;
+  Mirrored_1(theP: gp_Pnt): gp_Sphere;
+  Mirror_2(theA1: gp_Ax1): void;
+  Mirrored_2(theA1: gp_Ax1): gp_Sphere;
+  Mirror_3(theA2: gp_Ax2): void;
+  Mirrored_3(theA2: gp_Ax2): gp_Sphere;
+  Rotate(theA1: gp_Ax1, theAng: Standard_Real): void;
+  Rotated(theA1: gp_Ax1, theAng: Standard_Real): gp_Sphere;
+  Scale(theP: gp_Pnt, theS: Standard_Real): void;
+  Scaled(theP: gp_Pnt, theS: Standard_Real): gp_Sphere;
+  Transform(theT: gp_Trsf): void;
+  Transformed(theT: gp_Trsf): gp_Sphere;
+  Translate_1(theV: gp_Vec): void;
+  Translated_1(theV: gp_Vec): gp_Sphere;
+  Translate_2(theP1: gp_Pnt, theP2: gp_Pnt): void;
+  Translated_2(theP1: gp_Pnt, theP2: gp_Pnt): gp_Sphere;
+  delete(): void;
+}
+
+  export declare class gp_Sphere_1 extends gp_Sphere {
+    constructor();
+  }
+
+  export declare class gp_Sphere_2 extends gp_Sphere {
+    constructor(theA3: gp_Ax3, theRadius: Standard_Real);
+  }
+
 export declare class gp_Trsf {
   SetMirror_1(theP: gp_Pnt): void;
   SetMirror_2(theA1: gp_Ax1): void;
@@ -8046,6 +8238,10 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepBuilderAPI_MakeFace_21: typeof BRepBuilderAPI_MakeFace_21;
   BRepBuilderAPI_MakeFace_22: typeof BRepBuilderAPI_MakeFace_22;
   BRepBuilderAPI_MakeShape: typeof BRepBuilderAPI_MakeShape;
+  BRepBuilderAPI_MakeShell: typeof BRepBuilderAPI_MakeShell;
+  BRepBuilderAPI_MakeShell_1: typeof BRepBuilderAPI_MakeShell_1;
+  BRepBuilderAPI_MakeShell_2: typeof BRepBuilderAPI_MakeShell_2;
+  BRepBuilderAPI_MakeShell_3: typeof BRepBuilderAPI_MakeShell_3;
   BRepBuilderAPI_MakeSolid: typeof BRepBuilderAPI_MakeSolid;
   BRepBuilderAPI_MakeSolid_1: typeof BRepBuilderAPI_MakeSolid_1;
   BRepBuilderAPI_MakeSolid_2: typeof BRepBuilderAPI_MakeSolid_2;
@@ -8261,7 +8457,25 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Geom_CylindricalSurface_1: typeof Geom_CylindricalSurface_1;
   Geom_CylindricalSurface_2: typeof Geom_CylindricalSurface_2;
   Geom_ElementarySurface: typeof Geom_ElementarySurface;
+  Handle_Geom_ElementarySurface: typeof Handle_Geom_ElementarySurface;
+  Handle_Geom_ElementarySurface_1: typeof Handle_Geom_ElementarySurface_1;
+  Handle_Geom_ElementarySurface_2: typeof Handle_Geom_ElementarySurface_2;
+  Handle_Geom_ElementarySurface_3: typeof Handle_Geom_ElementarySurface_3;
+  Handle_Geom_ElementarySurface_4: typeof Handle_Geom_ElementarySurface_4;
   Geom_Geometry: typeof Geom_Geometry;
+  Handle_Geom_Geometry: typeof Handle_Geom_Geometry;
+  Handle_Geom_Geometry_1: typeof Handle_Geom_Geometry_1;
+  Handle_Geom_Geometry_2: typeof Handle_Geom_Geometry_2;
+  Handle_Geom_Geometry_3: typeof Handle_Geom_Geometry_3;
+  Handle_Geom_Geometry_4: typeof Handle_Geom_Geometry_4;
+  Geom_SphericalSurface: typeof Geom_SphericalSurface;
+  Geom_SphericalSurface_1: typeof Geom_SphericalSurface_1;
+  Geom_SphericalSurface_2: typeof Geom_SphericalSurface_2;
+  Handle_Geom_SphericalSurface: typeof Handle_Geom_SphericalSurface;
+  Handle_Geom_SphericalSurface_1: typeof Handle_Geom_SphericalSurface_1;
+  Handle_Geom_SphericalSurface_2: typeof Handle_Geom_SphericalSurface_2;
+  Handle_Geom_SphericalSurface_3: typeof Handle_Geom_SphericalSurface_3;
+  Handle_Geom_SphericalSurface_4: typeof Handle_Geom_SphericalSurface_4;
   Geom_Surface: typeof Geom_Surface;
   Handle_Geom_Surface: typeof Handle_Geom_Surface;
   Handle_Geom_Surface_1: typeof Handle_Geom_Surface_1;
@@ -8395,6 +8609,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GeomAbs_JoinType: GeomAbs_JoinType;
   GeomAbs_Shape: GeomAbs_Shape;
   GeomAbs_SurfaceType: GeomAbs_SurfaceType;
+  GeomConvert: typeof GeomConvert;
   GeomLib: typeof GeomLib;
   HLRAlgo_Projector: typeof HLRAlgo_Projector;
   HLRAlgo_Projector_1: typeof HLRAlgo_Projector_1;
@@ -8711,6 +8926,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   gp_Pnt2d_1: typeof gp_Pnt2d_1;
   gp_Pnt2d_2: typeof gp_Pnt2d_2;
   gp_Pnt2d_3: typeof gp_Pnt2d_3;
+  gp_Sphere: typeof gp_Sphere;
+  gp_Sphere_1: typeof gp_Sphere_1;
+  gp_Sphere_2: typeof gp_Sphere_2;
   gp_Trsf: typeof gp_Trsf;
   gp_Trsf_1: typeof gp_Trsf_1;
   gp_Trsf_2: typeof gp_Trsf_2;

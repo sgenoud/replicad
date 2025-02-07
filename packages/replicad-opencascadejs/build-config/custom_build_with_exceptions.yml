@@ -28,6 +28,7 @@ mainBuild:
   - symbol: gp_Circ
   - symbol: gp_Elips
   - symbol: gp_Cylinder
+  - symbol: gp_Sphere
   - symbol: gp_Trsf
   - symbol: gp_GTrsf
   - symbol: Geom2d_Line
@@ -41,6 +42,8 @@ mainBuild:
   - symbol: Geom2d_Ellipse
   - symbol: Geom2d_Circle
   - symbol: Geom2d_Conic
+  - symbol: Geom_SphericalSurface
+  - symbol: Geom_ElementarySurface
   - symbol: Handle_Geom2d_Geometry
   - symbol: Handle_Geom2d_Line
   - symbol: Handle_Geom2d_Curve
@@ -50,6 +53,9 @@ mainBuild:
   - symbol: Handle_Geom2d_Circle
   - symbol: Handle_Geom2d_BezierCurve
   - symbol: Handle_Geom2d_BSplineCurve
+  - symbol: Handle_Geom_SphericalSurface
+  - symbol: Handle_Geom_ElementarySurface
+  - symbol: Handle_Geom_Geometry
   - symbol: gp_Vec2d
   - symbol: gp_Pnt2d
   - symbol: gp_Dir2d
@@ -150,6 +156,7 @@ mainBuild:
   - symbol: Geom2dConvert_ApproxCurve
   - symbol: Geom2dConvert
   - symbol: Convert_ParameterisationType
+  - symbol: GeomConvert
   - symbol: StlAPI_Writer
   - symbol: STEPControl_Writer
   - symbol: STEPControl_StepModelType
@@ -183,6 +190,7 @@ mainBuild:
   - symbol: BRepBuilderAPI_TransitionMode
   - symbol: BRepBuilderAPI_Sewing
   - symbol: BRepBuilderAPI_WireError
+  - symbol: BRepBuilderAPI_MakeShell
   - symbol: BRepPrimAPI_MakeOneAxis
   - symbol: BRepPrimAPI_MakeCylinder
   - symbol: BRepPrimAPI_MakeBox

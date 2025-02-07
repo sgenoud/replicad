@@ -11,11 +11,16 @@ import {
   isShape3D,
   Shell,
 } from "./shapes";
-import { asPnt, makeAx3, makeAx2, Point, Vector } from "./geom";
+import { asPnt, makeAx3, makeAx2, Point, Vector, makeAx1 } from "./geom";
 import { getOC } from "./oclib.js";
-import { localGC } from "./register.js";
+import { GCWithScope, localGC, WrappingObj } from "./register.js";
 import zip from "./utils/zip";
-import { GeomAPI_PointsToBSpline } from "replicad-opencascadejs";
+import {
+  GeomAPI_PointsToBSpline,
+  gp_GTrsf,
+  gp_Pnt,
+  TColgp_Array2OfPnt,
+} from "replicad-opencascadejs";
 
 export const makeLine = (v1: Point, v2: Point): Edge => {
   const oc = getOC();
@@ -389,6 +394,86 @@ export const makeSphere = (radius: number): Solid => {
   const sphere = new Solid(sphereMaker.Shape());
   sphereMaker.delete();
   return sphere;
+};
+
+class EllpsoidTransform extends WrappingObj<gp_GTrsf> {
+  constructor(x: number, y: number, z: number) {
+    const oc = getOC();
+    const r = GCWithScope();
+
+    const xyRatio = Math.sqrt((x * y) / z);
+    const xzRatio = x / xyRatio;
+    const yzRatio = y / xyRatio;
+
+    const transform = new oc.gp_GTrsf_1();
+    transform.SetAffinity_1(makeAx1([0, 0, 0], [0, 1, 0]), xzRatio);
+    const xy = r(new oc.gp_GTrsf_1());
+    xy.SetAffinity_1(makeAx1([0, 0, 0], [0, 0, 1]), xyRatio);
+    const yz = r(new oc.gp_GTrsf_1());
+    yz.SetAffinity_1(makeAx1([0, 0, 0], [1, 0, 0]), yzRatio);
+
+    transform.Multiply(xy);
+    transform.Multiply(yz);
+
+    super(transform);
+  }
+
+  applyToPoint(p: gp_Pnt): gp_Pnt {
+    const oc = getOC();
+    const r = GCWithScope();
+
+    const coords = r(p.XYZ());
+    this.wrapped.Transforms_1(coords);
+    return new oc.gp_Pnt_2(coords);
+  }
+}
+
+function convertToJSArray(arrayOfPoints: TColgp_Array2OfPnt): gp_Pnt[][] {
+  const newArray = [];
+
+  for (let r = arrayOfPoints.LowerRow(); r <= arrayOfPoints.UpperRow(); r++) {
+    const row: gp_Pnt[] = [];
+    newArray.push(row);
+    for (let c = arrayOfPoints.LowerCol(); c <= arrayOfPoints.UpperCol(); c++) {
+      const pnt = arrayOfPoints.Value(r, c);
+      row.push(pnt);
+    }
+  }
+
+  return newArray;
+}
+
+export const makeEllipsoid = (
+  aLength: number,
+  bLength: number,
+  cLength: number
+): Solid => {
+  const oc = getOC();
+  const r = GCWithScope();
+
+  const sphere = r(new oc.gp_Sphere_1());
+  sphere.SetRadius(1);
+
+  const sphericalSurface = r(new oc.Geom_SphericalSurface_2(sphere));
+
+  const baseSurface = oc.GeomConvert.SurfaceToBSplineSurface(
+    sphericalSurface.UReversed()
+  ).get();
+
+  const poles = convertToJSArray(baseSurface.Poles_2());
+  const transform = new EllpsoidTransform(aLength, bLength, cLength);
+
+  poles.forEach((columns, r) => {
+    columns.forEach((value, c) => {
+      const newPoint = transform.applyToPoint(value);
+      baseSurface.SetPole_1(r + 1, c + 1, newPoint);
+    });
+  });
+  const shell = cast(
+    r(new oc.BRepBuilderAPI_MakeShell_2(baseSurface.UReversed(), false)).Shell()
+  ) as Shell;
+
+  return makeSolid([shell]);
 };
 
 export const makeBox = (corner1: Point, corner2: Point): Solid => {

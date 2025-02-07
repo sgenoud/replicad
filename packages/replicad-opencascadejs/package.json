@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "echo 'Please build manually'",
-    "buildWasm": "pnpm run generateConfig && pnpm run buildSingle && pnpm run buildWithExeptions",
+    "buildWasm": "pnpm run generateConfig && pnpm run buildSingle && pnpm run buildWithExceptions",
     "updateDocker": "docker pull donalffons/opencascade.js",
     "generateConfig": "ytt -f build-source/ --output-files build-config",
     "buildSingle": "cd build-config; docker run -it --rm -v $(pwd):/src -u $(id -u):$(id -g) donalffons/opencascade.js custom_build_single.yml && mv replicad_single* ../src; cd -",
