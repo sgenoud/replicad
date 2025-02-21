@@ -77,7 +77,7 @@ export const makeHelix = (
   center: Point = [0, 0, 0],
   dir: Point = [0, 0, 1],
   lefthand = false
-): Edge => {
+): Wire => {
   const oc = getOC();
   const [r, gc] = localGC();
   let myDir = 2 * Math.PI;
@@ -119,7 +119,7 @@ export const makeHelix = (
 
   gc();
 
-  return new Edge(w);
+  return new Wire(w);
 };
 
 export const makeThreePointArc = (v1: Point, v2: Point, v3: Point): Edge => {
