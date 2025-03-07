@@ -37,7 +37,7 @@ const TEST_URL =
   "https%3A%2F%2Fraw.githubusercontent.com%2Fsgenoud%2Freplicad%2Fmain%2Fpackages%2Freplicad-docs%2Fexamples%2FsimpleVase.js";
 
 export default function LinkWidget() {
-  const { shapeURL } = useParams();
+  let { shapeURL } = useParams();
 
   const [computedShapes, updateComputedShapes] = useState([]);
   const [error, setError] = useState(null);
@@ -50,6 +50,16 @@ export default function LinkWidget() {
   const [defaultParams, setDefaultParams] = useState(null);
   const paramsToCompute = useRef(null);
   const readyToBuild = useRef(false);
+
+  if (!shapeURL) {
+    const hash = window.location.hash.substring(1);
+    const hashParams = new URLSearchParams(hash);
+    if (!hashParams.has("url")) {
+      setError({ type: "url" });
+      return;
+    }
+    shapeURL = hashParams.get("url");
+  }
 
   const codeUrl = decodeURIComponent(
     shapeURL === "test-shape" ? TEST_URL : shapeURL
@@ -146,8 +156,7 @@ export default function LinkWidget() {
         {error.type === "url" && (
           <>
             <p>
-              We could not find a shape to render{" "}
-              <a href={decodeURIComponent(shapeURL)}>here</a>.
+              We could not find a shape to render <a href={codeUrl}>here</a>.
             </p>
             <p>
               Are you sure that the link is pointing to a raw javascript file?
@@ -179,7 +188,7 @@ export default function LinkWidget() {
 
   const searchParams = new URLSearchParams(window.location.search);
 
-  let downloadURL = shapeURL;
+  let downloadURL = shapeURL && codeUrl;
   if (!downloadURL) {
     downloadURL = URL.createObjectURL(
       new Blob([code], {

@@ -70,7 +70,11 @@ export function LinkEditor({ fromCode }) {
   if (inputVal || compressedCode) {
     const url = new URL(window.location.href);
     if (inputVal) {
-      url.pathname = `/share/${encodeURIComponent(inputVal)}`;
+      url.pathname = "/share/url/";
+
+      const hashParams = new URLSearchParams();
+      hashParams.set("url", encodeURIComponent(inputVal));
+      url.hash = hashParams.toString();
     }
     if (compressedCode) {
       url.pathname = "/share/code/";
@@ -92,9 +96,6 @@ export function LinkEditor({ fromCode }) {
     expandParametersPanel && url.searchParams.set("params", "true");
     link = url.toString();
   }
-
-  console.log("link", link);
-  console.log("workbenchLink", workbenchLink);
 
   return (
     <>
