@@ -540,9 +540,10 @@ export const compoundShapes = (shapeArray: AnyShape[]): AnyShape => {
 
 export const makeCompound = compoundShapes;
 
-export function makeSolid(facesOrShells: Array<Face | Shell>): Solid {
+function _weld(facesOrShells: Array<Face | Shell>): AnyShape {
   const oc = getOC();
-  const [r, gc] = localGC();
+  const r = GCWithScope();
+
   const shellBuilder = r(
     new oc.BRepBuilderAPI_Sewing(1e-6, true, true, true, false)
   );
@@ -553,10 +554,41 @@ export function makeSolid(facesOrShells: Array<Face | Shell>): Solid {
 
   shellBuilder.Perform(r(new oc.Message_ProgressRange_1()));
 
-  const shell = r(downcast(shellBuilder.SewedShape()));
-  const solid = cast(r(new oc.ShapeFix_Solid_1()).SolidFromShell(shell));
+  return cast(downcast(shellBuilder.SewedShape()));
+}
 
-  gc();
+/** Welds faces and shells into a single shell.
+ *
+ * @param facesOrShells - An array of faces and shells to be welded.
+ * @param ignoreType - If true, the function will not check if the result is
+ * a shell.
+ * @returns A shell that contains all the faces and shells.
+ * */
+export function weldShellsAndFaces(
+  facesOrShells: Array<Face | Shell>,
+  ignoreType = false
+): Shell {
+  const shell = _weld(facesOrShells);
+
+  if (!ignoreType && !(shell instanceof Shell))
+    throw new Error("Could not make a solid of faces and shells");
+
+  return shell as Shell;
+}
+
+/** Welds faces and shells into a single shell and then makes a solid.
+ *
+ * @param facesOrShells - An array of faces and shells to be welded.
+ * @returns A solid that contains all the faces and shells.
+ **/
+export function makeSolid(facesOrShells: Array<Face | Shell>): Solid {
+  const r = GCWithScope();
+  const oc = getOC();
+  const shell = _weld(facesOrShells);
+  const solid = cast(
+    r(new oc.ShapeFix_Solid_1()).SolidFromShell(shell.wrapped)
+  );
+
   if (!(solid instanceof Solid))
     throw new Error("Could not make a solid of faces and shells");
 
