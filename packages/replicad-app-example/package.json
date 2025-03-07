@@ -1,6 +1,6 @@
 {
   "name": "replicad-app-example",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "description": "A simple React app based on replicad.",
   "private": true,
   "license": "MIT",
@@ -16,7 +16,7 @@
     "file-saver": "^2.0.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "replicad": "^0.18.1",
+    "replicad": "^0.18.2",
     "replicad-opencascadejs": "^0.18.0",
     "replicad-threejs-helper": "^0.18.0",
     "three": "^0.155.0"
