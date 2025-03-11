@@ -54,11 +54,9 @@ export default function LinkWidget() {
   if (!shapeURL) {
     const hash = window.location.hash.substring(1);
     const hashParams = new URLSearchParams(hash);
-    if (!hashParams.has("url")) {
-      setError({ type: "url" });
-      return;
+    if (hashParams.has("url")) {
+      shapeURL = hashParams.get("url");
     }
-    shapeURL = hashParams.get("url");
   }
 
   const codeUrl = decodeURIComponent(
