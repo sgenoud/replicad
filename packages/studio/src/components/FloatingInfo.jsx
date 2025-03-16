@@ -15,7 +15,7 @@ export const InfoTopRight = styled.div`
   ${(props) =>
     props.noBg
       ? ""
-      : `background-color: var(--bg-color); border: 1px solid lightgrey;`}
+      : `background-color: var(--bg-color); border: 1px solid var(--color-primary-light);`}
 `;
 
 export const InfoBottomLeft = styled(InfoTopRight)`

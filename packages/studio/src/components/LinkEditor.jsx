@@ -16,6 +16,9 @@ const Url = styled.a`
 
 const Divider = styled.hr`
   margin: 3em;
+  height: 1px;
+  border: 0;
+  border-bottom: 1px solid var(--color-primary-light);
 `;
 
 const Options = styled.div`

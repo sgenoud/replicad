@@ -30,7 +30,8 @@ const NumberEditor = React.memo(function NumberEditor({
     height: 24px;
     line-height: 1.15;
     border-radius: 3px;
-
+    background-color: var(--bg-color-secondary);
+    
     &:hover {
       box-shadow: inset 0 0 0 1px var(--color-primary);
     }
