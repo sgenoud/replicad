@@ -64,7 +64,7 @@ export const PaneHeader = styled.div`
   flex: 0 0 var(--pane-header-height);
   justify-content: flex-end;
   height: var(--pane-header-height);
-  background-color: var(--color-primary-dark);
+  background-color: var(--color-header-secondary);
   padding: 0.2em 2rem;
   box-shadow: rgb(0 0 0 / 35%) 0px -6px 12px 3px inset;
 

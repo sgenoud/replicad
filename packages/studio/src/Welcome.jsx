@@ -19,8 +19,8 @@ const Hero = styled.div`
   background: var(--color-primary-dark);
   background: linear-gradient(
     351deg,
-    var(--color-primary-dark) 0%,
-    var(--color-primary) 95%
+    var(--color-header-secondary) 0%,
+    var(--color-header-primary) 95%
   );
   color: white;
 `;

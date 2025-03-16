@@ -59,10 +59,16 @@ export default createGlobalStyle`
     --color-secondary-light: #f2e0de;
     --color-secondary-dark: #c0695d;
     --bg-color: #f2f3f4;
+    
+    --color-header-primary: rgb(90, 130, 150);
+    --color-header-secondary: rgb(60, 90, 110);
   }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --color-primary: rgb(122, 176, 204);
+    --color-primary-light: rgb(60, 90, 110);
+    --color-primary-dark: rgb(170, 190, 200);
     --bg-color: #1e1e1e;
     --bg-color-secondary: #2e2e2e;
     --text-color: #f2f2f2;

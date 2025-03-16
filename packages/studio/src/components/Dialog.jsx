@@ -54,7 +54,7 @@ const DialogBox = styled.div`
   flex-direction: column;
 
   background: var(--bg-color);
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-primary);
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   outline: none;
 
