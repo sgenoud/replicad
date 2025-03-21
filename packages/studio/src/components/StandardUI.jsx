@@ -47,13 +47,19 @@ const AutoConfig = ({ updateParams, defaultParams, hidden, collapsed }) => {
       hidden={hidden}
       theme={{
         colors: {
-          elevation1: "var(--color-primary)", // bg color of the root panel (main title bar)
-          elevation2: "var(--color-primary-dark)", // bg color of the rows (main panel color)
-          elevation3: "var(--color-primary)", // bg color of the inputs
+          elevation1: "var(--bg-color-secondary)",
+          elevation2: "var(--bg-color)",
+          elevation3: "var(--bg-color-secondary)", // bg color of the root panel (main title bar)
 
-          highlight1: "white",
-          highlight2: "var(--color-secondary-light)",
-          highlight3: "lightgrey",
+          highlight1: "var(--color-primary)",
+          highlight2: "var(--color-primary)",
+          highlight3: "var(--color-primary-dark)",
+
+          accent1: "var(--color-primary)",
+          accent2: "var(--color-primary-light)",
+          accent3: "var(--color-primary-dark)",
+
+          vivid1: "red",
         },
         sizes: {
           rootWidth: "250px",
