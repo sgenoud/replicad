@@ -62,6 +62,8 @@ export default createGlobalStyle`
     
     --color-header-primary: rgb(90, 130, 150);
     --color-header-secondary: rgb(60, 90, 110);
+
+    --color-lines: #ccc;
   }
 
 @media (prefers-color-scheme: dark) {
@@ -72,6 +74,8 @@ export default createGlobalStyle`
     --bg-color: #1e1e1e;
     --bg-color-secondary: #2e2e2e;
     --text-color: #f2f2f2;
+
+    --color-lines: #333;
   }
 }
 

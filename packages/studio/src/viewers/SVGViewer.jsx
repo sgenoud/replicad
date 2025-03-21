@@ -13,6 +13,13 @@ const SVGCanvas = styled.svg`
   background-color: var(--bg-color);
   max-width: 100vw;
   max-height: 100vh;
+
+  & line {
+    stroke: var(--color-lines);
+  }
+  & #raw-canvas {
+    stroke: var(--color-primary-dark);
+  }
 `;
 
 const range = (start, end, step = 1) => {
@@ -47,7 +54,6 @@ const SVGGrid = ({ viewbox }) => {
         y1={yMin}
         x2={x}
         y2={yMax}
-        stroke="#ccc"
         vectorEffect="non-scaling-stroke"
         strokeWidth="0.5"
       />
@@ -59,7 +65,6 @@ const SVGGrid = ({ viewbox }) => {
         y1={y}
         x2={xMax}
         y2={y}
-        stroke="#ccc"
         vectorEffect="non-scaling-stroke"
         strokeWidth="0.5"
       />
@@ -74,7 +79,6 @@ const SVGGrid = ({ viewbox }) => {
         y1={0}
         x2={xMax}
         y2={0}
-        stroke="#ccc"
         vectorEffect="non-scaling-stroke"
         strokeWidth="5"
       />
@@ -83,7 +87,6 @@ const SVGGrid = ({ viewbox }) => {
         y1={yMin}
         x2={0}
         y2={yMax}
-        stroke="#ccc"
         vectorEffect="non-scaling-stroke"
         strokeWidth="5"
       />
@@ -155,7 +158,7 @@ const addMarginToViewbox = (viewbox, margin) => {
   };
 };
 
-const SVGWindow = ({ viewbox, withGrid, children }) => {
+const SVGWindow = ({ viewbox, withGrid, defaultColor, children }) => {
   const [clientRect, setRect] = useState(null);
   const [canvasRef] = useRect(setRect, { resize: true });
 
@@ -198,14 +201,18 @@ const SVGWindow = ({ viewbox, withGrid, children }) => {
 
   return (
     <SVGCanvasWrapper ref={canvasRef}>
-      <RawCanvas viewbox={adaptedViewbox} withGrid={withGrid}>
+      <RawCanvas
+        viewbox={adaptedViewbox}
+        withGrid={withGrid}
+        defaultColor={defaultColor}
+      >
         {children}
       </RawCanvas>
     </SVGCanvasWrapper>
   );
 };
 
-const RawCanvas = ({ viewbox, withGrid, children }) => {
+const RawCanvas = ({ viewbox, withGrid, defaultColor, children }) => {
   return (
     <SVGCanvas
       viewBox={stringifyViewbox(viewbox)}
@@ -213,7 +220,12 @@ const RawCanvas = ({ viewbox, withGrid, children }) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       {withGrid && <SVGGrid viewbox={viewbox} />}
-      <g stroke="#3c5a6e" vectorEffect="non-scaling-stroke" fill="none">
+      <g
+        stroke={defaultColor}
+        id="raw-canvas"
+        vectorEffect="non-scaling-stroke"
+        fill="none"
+      >
         {children}
       </g>
     </SVGCanvas>
@@ -224,11 +236,16 @@ export default function SVGViewer({
   shape,
   withGrid = true,
   rawWindow = false,
+  defaultColor,
 }) {
   const Window = rawWindow ? RawCanvas : SVGWindow;
   if (shape && shape.format === "svg")
     return (
-      <Window viewbox={parseViewbox(shape.viewbox)} withGrid={withGrid}>
+      <Window
+        viewbox={parseViewbox(shape.viewbox)}
+        withGrid={withGrid}
+        defaultColor={defaultColor}
+      >
         <ShapePath shape={shape} />
       </Window>
     );
@@ -236,7 +253,7 @@ export default function SVGViewer({
   if (shape && shape.length && shape[0].format === "svg") {
     const viewbox = mergeViewboxes(shape.map((s) => s.viewbox));
     return (
-      <Window viewbox={viewbox} withGrid={withGrid}>
+      <Window viewbox={viewbox} withGrid={withGrid} defaultColor={defaultColor}>
         {shape.map((s) => {
           if (s && s.format === "svg")
             return <ShapePath shape={s} key={s.name} />;

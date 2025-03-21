@@ -46,7 +46,12 @@ export default function DownloadDialog({ onClose }) {
         new Blob(
           [
             renderToString(
-              <SVGViewer shape={store.currentMesh} withGrid={false} rawWindow />
+              <SVGViewer
+                shape={store.currentMesh}
+                withGrid={false}
+                rawWindow
+                defaultColor="black"
+              />
             ),
           ],
           {
