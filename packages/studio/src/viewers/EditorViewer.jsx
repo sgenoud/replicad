@@ -5,10 +5,10 @@ import debounce from "debounce";
 import Canvas from "./Canvas.jsx";
 import Material from "./Material.jsx";
 
-import Controls from "../Controls.jsx";
-import ShapeGeometry from "../ShapeGeometry.jsx";
-import DefaultGeometry from "../DefaultGeometry.jsx";
-import InfiniteGrid from "../InfiniteGrid.jsx";
+import Controls from "../components-3d/Controls.jsx";
+import ShapeGeometry from "../components-3d/ShapeGeometry.jsx";
+import DefaultGeometry from "../components-3d/DefaultGeometry.jsx";
+import InfiniteGrid from "../components-3d/InfiniteGrid.jsx";
 
 import SVGViewer from "./SVGViewer.jsx";
 

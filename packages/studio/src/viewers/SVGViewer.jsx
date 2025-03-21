@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { useRect } from "react-use-rect";
@@ -161,7 +161,7 @@ const SVGWindow = ({ viewbox, withGrid, children }) => {
 
   const [adaptedViewbox, setAdaptedViewbox] = useState(viewbox);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!clientRect) return;
     const marginedViewbox = addMarginToViewbox(viewbox, 0.1);
 

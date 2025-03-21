@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { Plane } from "@react-three/drei";
-import { useDarkMode } from "./utils/useDarkMode";
+import { useDarkMode } from "../utils/useDarkMode";
 import { useThree } from "@react-three/fiber";
 //
 //
