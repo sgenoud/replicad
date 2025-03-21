@@ -25,8 +25,8 @@ const Toast = styled.div`
   border-radius: 4px 0 0 4px;
   z-index: 1;
   text-align: left;
-  box-shadow: 3px 4px 5px 0 #8885;
-  background-color: white;
+  box-shadow: 3px 4px 5px 0 var(--bg-color);
+  background-color: var(--bg-color-secondary);
 
   & > :not(:last-child) {
     margin-bottom: 8px;
