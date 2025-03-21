@@ -44,7 +44,10 @@ export const VisualizerButtons = observer(() => {
         </>
       ) : null}
 
-      <HeaderButton onClick={() => store.ui.changeDownload(true)} title="Download">
+      <HeaderButton
+        onClick={() => store.ui.changeDownload(true)}
+        title="Download"
+      >
         <Download />
       </HeaderButton>
       {!store.ui.currentIsSVG && (
@@ -85,6 +88,7 @@ export default observer(function VisualizerPane() {
       {store.shapeLoaded ? (
         <EditorViewer
           shape={shape}
+          labels={store.currentLabels}
           hasError={store.hasError}
           clipDirection={store.ui.clip.planeVector}
           clipConstant={store.ui.clip.position}

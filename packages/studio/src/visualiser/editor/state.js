@@ -58,6 +58,7 @@ const AppState = types
   .volatile(() => ({
     defaultParams: null,
     currentMesh: [],
+    currentLabels: [],
     processing: false,
     shapeLoaded: false,
     error: false,
@@ -99,6 +100,15 @@ const AppState = types
       } catch (e) {
         console.error(e);
         self.error = e;
+      }
+
+      try {
+        self.currentLabels = yield api.computeLabels(
+          self.currentValues.code,
+          params
+        );
+      } catch (e) {
+        console.log("no labels");
       }
 
       try {

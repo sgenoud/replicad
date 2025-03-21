@@ -91,6 +91,18 @@ try {
   }
 };
 
+const computeLabels = async (code, params) => {
+  if (!code.match(/^\s*export\s+/m)) return [];
+  const module = await buildModuleEvaluator(code);
+
+  const oc = await OC;
+  replicad.setOC(oc);
+  if (!replicad.getFont())
+    await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
+
+  return module.labels?.(params || module.defaultParams || {}) || [];
+};
+
 const SHAPES_MEMORY = {};
 
 const ocVersions = {
@@ -244,6 +256,7 @@ const edgeInfo = (subshapeIndex, edgeIndex, shapeId = "defaultShape") => {
 const service = {
   ready: () => OC.then(() => true),
   buildShapesFromCode,
+  computeLabels,
   extractDefaultParamsFromCode,
   extractDefaultNameFromCode,
   exportShape,

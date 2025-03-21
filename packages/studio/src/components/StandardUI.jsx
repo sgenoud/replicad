@@ -21,7 +21,7 @@ const LoadingInfo = styled(InfoBottomLeft)`
   color: var(--color-primary-light);
 `;
 
-const AutoConfig = ({ updateParams, defaultParams, hidden, collapsed}) => {
+const AutoConfig = ({ updateParams, defaultParams, hidden, collapsed }) => {
   const [params] = useControls(() => defaultParams);
   const paramsUpdater = useRef(updateParams);
 
@@ -57,8 +57,8 @@ const AutoConfig = ({ updateParams, defaultParams, hidden, collapsed}) => {
         },
         sizes: {
           rootWidth: "250px",
-          controlWidth: "80px"
-        }
+          controlWidth: "80px",
+        },
       }}
     />
   );
@@ -81,12 +81,13 @@ const useDisplayMode = () => {
 
 export default function StandardUI({
   computedShapes,
+  computedLabels,
   defaultParams,
   updateParams,
   disableAutoPosition,
   disableDamping,
   showParams,
-    orthographicCamera,
+  orthographicCamera,
   hideGrid,
   onSave,
   canSave,
@@ -101,6 +102,7 @@ export default function StandardUI({
       {computedShapes?.length ? (
         <Viewer
           shapes={computedShapes}
+          labels={computedLabels}
           orthographicCamera={orthographicCamera}
           hideGrid={hideGrid}
           disableDamping={disableDamping}

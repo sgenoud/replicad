@@ -49,11 +49,11 @@ const Inline = styled.div`
 
 export function LinkEditor({ fromCode }) {
   const [inputVal, setInputVal] = useState("");
-  const [disableAutoPosition, setDisableAutoPosition] = useState(false);
+  const [disableAutoPosition, setDisableAutoPosition] = useState(true);
   const [disableDamping, setDisableDamping] = useState(false);
   const [hideGrid, setHideGrid] = useState(false);
   const [orthographicCamera, setOrthographicCamera] = useState(true);
-  const [expandParametersPanel, setExpandParametersPanel] = useState(false);
+  const [expandParametersPanel, setExpandParametersPanel] = useState(true);
 
   const [compressedCode, setCompressedCode] = useState(null);
 

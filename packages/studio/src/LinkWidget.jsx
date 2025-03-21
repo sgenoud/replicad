@@ -44,6 +44,7 @@ export default function LinkWidget() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [code, setCode] = useState(null);
+  const [labels, setLabels] = useState([]);
   const [rawCode, setRawCode] = useState(null);
 
   const [geometryHasBeenComputed, setGeometryHasBeenComputed] = useState(false);
@@ -135,6 +136,12 @@ export default function LinkWidget() {
             build({ ...paramsToCompute.current });
             paramsToCompute.current = null;
           }
+        })
+        .then(() => {
+          return builderAPI.computeLabels(code, buildParams);
+        })
+        .then((labels) => {
+          setLabels(labels);
         });
     },
     [code]
@@ -200,6 +207,7 @@ export default function LinkWidget() {
       <StandardUI
         isLoading={isLoading}
         computedShapes={computedShapes}
+        computedLabels={labels}
         defaultParams={defaultParams}
         updateParams={updateParams}
         disableAutoPosition={
