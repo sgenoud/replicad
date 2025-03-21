@@ -28,8 +28,8 @@ export const Button = styled.button`
     props.icon &&
     `
       color: ${`var(--color-${props.color || "primary"})`};
-      border-color: lightgrey;
-      background-color: #fff;
+      border-color: var(--bg-color-secondary);
+      background-color: var(--bg-color-secondary);
       border-radius: 50%;
       padding: 0.5em;
   `}
@@ -71,7 +71,7 @@ export const Button = styled.button`
     ${(props) =>
       props.icon &&
       `
-      color: white;
+      color: ${`var(--bg-color-secondary)`};
       background-color: ${`var(--color-${props.color || "primary"}-dark)`};
   `}
 
