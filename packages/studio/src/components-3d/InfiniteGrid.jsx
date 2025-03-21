@@ -108,7 +108,7 @@ export default () => {
 
   useEffect(() => {
     material.current.uniforms.uColor.value = new THREE.Color(
-      isDarkMode ? "lightgrey" : "grey"
+      isDarkMode ? "#aaa" : "grey"
     );
     invalidate();
   }, [isDarkMode, invalidate]);
