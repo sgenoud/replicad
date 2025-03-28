@@ -123,7 +123,9 @@ export function Label3D({
         fontSize={fontSize}
         position={labelPosition}
         anchorX={position === "side" ? "left" : "center"}
-        anchorY={position === "side" ? "middle" : "bottom"}
+        anchorY={
+          position === "side" ? "middle" : position === "top" ? "bottom" : "top"
+        }
         ref={textRef}
       >
         {text}

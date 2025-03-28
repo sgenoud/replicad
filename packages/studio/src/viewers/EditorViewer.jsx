@@ -90,18 +90,21 @@ export default observer(function EditorViewer({
       onCreated={(state) => (state.gl.localClippingEnabled = true)}
     >
       <InfiniteGrid />
-      {labels.map(({ from, to, offset, color, label, fontSize, mode }) => (
-        <Label3D
-          key={label}
-          start={from}
-          end={to}
-          offset={offset}
-          lineColor={color}
-          text={label}
-          lineMode={mode}
-          fontSize={fontSize}
-        />
-      ))}
+      {labels.map(
+        ({ from, to, offset, color, label, fontSize, mode, position }) => (
+          <Label3D
+            key={label}
+            start={from}
+            end={to}
+            offset={offset}
+            lineColor={color}
+            text={label}
+            lineMode={mode}
+            fontSize={fontSize}
+            position={position}
+          />
+        )
+      )}
 
       <Controls enableDamping={false}>
         {hasError ? (

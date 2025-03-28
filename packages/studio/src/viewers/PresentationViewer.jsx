@@ -32,18 +32,21 @@ export default React.memo(function PresentationViewer({
           />
         )}
         {disableAutoPosition &&
-          labels.map(({ from, to, offset, color, label, fontSize, mode }) => (
-            <Label3D
-              key={label}
-              start={from}
-              end={to}
-              offset={offset}
-              lineColor={color}
-              text={label}
-              lineMode={mode}
-              fontSize={fontSize}
-            />
-          ))}
+          labels.map(
+            ({ from, to, offset, color, label, fontSize, mode, position }) => (
+              <Label3D
+                key={label}
+                start={from}
+                end={to}
+                offset={offset}
+                lineColor={color}
+                text={label}
+                lineMode={mode}
+                fontSize={fontSize}
+                position={position}
+              />
+            )
+          )}
         {shapes === "error" && <DefaultGeometry />}
       </Controls>
     </Canvas>
