@@ -100,7 +100,13 @@ const computeLabels = async (code, params) => {
   if (!replicad.getFont())
     await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
 
-  return module.labels?.(params || module.defaultParams || {}) || [];
+  const labels = module.labels?.(params || module.defaultParams || {}) || [];
+
+  return labels.filter((labelConfig) => {
+    return (
+      labelConfig && labelConfig.label && labelConfig.from && labelConfig.to
+    );
+  });
 };
 
 const SHAPES_MEMORY = {};
