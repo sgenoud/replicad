@@ -4,7 +4,9 @@ import {
   make2dCircle,
   make2dEllipse,
   make2dInerpolatedBSplineCurve,
+  make2dSegmentCurve,
   Point2D,
+  samePoint,
   stitchCurves,
 } from "./lib2d";
 import {
@@ -365,11 +367,17 @@ export function drawText(
  */
 export const drawPointsInterpolation = (
   points: Point2D[],
-  approximationConfig: BSplineApproximationConfig = {}
+  approximationConfig: BSplineApproximationConfig = {},
+  options: {
+    closeShape?: boolean;
+  } = {}
 ): Drawing => {
-  return new Drawing(
-    new Blueprint([make2dInerpolatedBSplineCurve(points, approximationConfig)])
-  );
+  const curves = [make2dInerpolatedBSplineCurve(points, approximationConfig)];
+  if (options.closeShape && !samePoint(points[0], points[points.length - 1])) {
+    curves.push(make2dSegmentCurve(points[points.length - 1], points[0]));
+  }
+
+  return new Drawing(new Blueprint(curves));
 };
 
 /**
@@ -382,7 +390,7 @@ export const drawPointsInterpolation = (
  */
 export const drawParametricFunction = (
   func: (t: number) => Point2D,
-  { pointsCount = 400, start = 0, stop = 1 } = {},
+  { pointsCount = 400, start = 0, stop = 1, closeShape = false } = {},
   approximationConfig: BSplineApproximationConfig = {}
 ): Drawing => {
   const stepSize = (stop - start) / pointsCount;
@@ -390,7 +398,7 @@ export const drawParametricFunction = (
     return func(start + t * stepSize);
   });
 
-  return drawPointsInterpolation(points, approximationConfig);
+  return drawPointsInterpolation(points, approximationConfig, { closeShape });
 };
 
 export function drawFaceOutline(face: Face): Drawing {
