@@ -21,6 +21,17 @@ interface SVGable {
   toSVGViewBox: () => any;
 }
 
+type LabelConfig = {
+  label: string;
+  from: [number, number, number];
+  to: [number, number, number];
+  offset?: [number, number, number];
+  color?: string;
+  mode?: "length" | "point";
+  fontSize?: number;
+  position?: "auto" | "side" | "top" | "bottom";
+};
+
 type InputShape = {
   shape: unknown;
   name?: string;
@@ -30,6 +41,7 @@ type InputShape = {
   highlightEdge?: any;
   highlightFace?: any;
   strokeType?: string;
+  labels?: LabelConfig[];
 };
 
 type CleanConfig = {
@@ -39,6 +51,7 @@ type CleanConfig = {
   opacity?: number;
   highlight?: any;
   strokeType?: string;
+  labels: LabelConfig[];
 };
 
 type SVGShapeConfiguration = {
@@ -55,6 +68,7 @@ type MeshableConfiguration = {
   color?: string;
   opacity?: number;
   highlight?: any;
+  labels: LabelConfig[];
 };
 
 const isSVGable = (shape: any): shape is SVGable => {
@@ -143,6 +157,36 @@ function normalizeHighlight<T extends Record<string, any>>(config: T) {
   };
 }
 
+function normalizeLabels<T extends Record<string, any>>(config: T) {
+  const { labels = [], ...rest } = config;
+
+  const filteredLabel = labels
+    .filter((labelConfig: any) => {
+      return (
+        labelConfig && labelConfig.label && labelConfig.from && labelConfig.to
+      );
+    })
+    .map((labelConfig: any) => {
+      const { label, from, to, offset, color, mode, fontSize, position } =
+        labelConfig;
+      return {
+        label: label ?? "Label",
+        from,
+        to,
+        offset,
+        color,
+        mode,
+        fontSize,
+        position,
+      };
+    });
+
+  return {
+    ...rest,
+    labels: filteredLabel,
+  };
+}
+
 function checkShapeConfigIsValid<
   T extends Record<string, any> & { shape: unknown }
 >(shape: T): shape is T & { shape: Meshable | SVGable } {
@@ -211,11 +255,12 @@ function renderSVG(shapeConfig: SVGShapeConfiguration) {
 }
 
 function renderMesh(shapeConfig: MeshableConfiguration) {
-  const { name, shape, color, opacity, highlight } = shapeConfig;
+  const { name, shape, color, opacity, labels, highlight } = shapeConfig;
   const shapeInfo = {
     name,
     color,
     opacity,
+    labels,
     mesh: null,
     edges: null,
     error: false,
@@ -264,7 +309,9 @@ export function renderOutput(
 
   const baseShape = createBasicShapeConfig(shapes, defaultName)
     .map(normalizeColorAndOpacity)
-    .map(normalizeHighlight);
+    .map(normalizeHighlight)
+    .map(normalizeLabels);
+
   const standardizedShapes = standardizer.standardizeShape(baseShape);
 
   const config = beforeRender

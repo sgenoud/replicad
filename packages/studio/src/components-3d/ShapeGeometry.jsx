@@ -3,6 +3,7 @@ import { lighten, darken, complement } from "polished";
 import { Plane } from "three";
 
 import { Positionner, Box } from "./Positionner.jsx";
+import { Label3D } from "./FloatingLabel.jsx";
 import ClipPlane from "./ClipPlane.jsx";
 import {
   useWrappedFaceEvent,
@@ -47,56 +48,73 @@ const ShapeGeometry = ({
   }, [clipDirection, clipConstant]);
 
   return (
-    <ClipPlane sideColor={colors.sideColor} clippingPlane={clippingPlane}>
-      {FaceMaterial && (
-        <ReplicadFacesMesh
-          faces={shape.mesh}
-          defaultHighlight={shape.highlight}
-          highlight={facesHighlight}
-          onClick={fOnClick}
-        >
-          <FaceMaterial
-            attach="material-0"
-            transparent={transparent}
-            opacity={shape.opacity}
-            color={colors.base}
-            polygonOffset
-            polygonOffsetFactor={2.0}
-            polygonOffsetUnits={1.0}
+    <>
+      {(shape.labels ?? []).map(
+        ({ from, to, offset, color, label, fontSize, mode, position }) => (
+          <Label3D
+            key={label}
+            start={from}
+            end={to}
+            offset={offset}
+            lineColor={color}
+            text={label}
+            lineMode={mode}
+            fontSize={fontSize}
+            position={position}
           />
-          <FaceMaterial
-            attach="material-1"
-            transparent={transparent}
-            opacity={shape.opacity}
-            color={colors.selected}
-            polygonOffset
-            polygonOffsetFactor={2.0}
-            polygonOffsetUnits={1.0}
-          />
-        </ReplicadFacesMesh>
+        )
       )}
-      {shape.edges && LineMaterial && (
-        <ReplicadEdgesMesh
-          edges={shape.edges}
-          defaultHighlight={shape.highlight}
-          highlight={edgesHighlight}
-          onClick={eOnClick}
-        >
-          <LineMaterial
-            attach="material-0"
-            transparent={transparent}
-            opacity={shape.opacity}
-            color={colors.line}
-          />
-          <LineMaterial
-            attach="material-1"
-            transparent={transparent}
-            opacity={shape.opacity}
-            color={colors.lineselected}
-          />
-        </ReplicadEdgesMesh>
-      )}
-    </ClipPlane>
+      <ClipPlane sideColor={colors.sideColor} clippingPlane={clippingPlane}>
+        {FaceMaterial && (
+          <ReplicadFacesMesh
+            faces={shape.mesh}
+            defaultHighlight={shape.highlight}
+            highlight={facesHighlight}
+            onClick={fOnClick}
+          >
+            <FaceMaterial
+              attach="material-0"
+              transparent={transparent}
+              opacity={shape.opacity}
+              color={colors.base}
+              polygonOffset
+              polygonOffsetFactor={2.0}
+              polygonOffsetUnits={1.0}
+            />
+            <FaceMaterial
+              attach="material-1"
+              transparent={transparent}
+              opacity={shape.opacity}
+              color={colors.selected}
+              polygonOffset
+              polygonOffsetFactor={2.0}
+              polygonOffsetUnits={1.0}
+            />
+          </ReplicadFacesMesh>
+        )}
+        {shape.edges && LineMaterial && (
+          <ReplicadEdgesMesh
+            edges={shape.edges}
+            defaultHighlight={shape.highlight}
+            highlight={edgesHighlight}
+            onClick={eOnClick}
+          >
+            <LineMaterial
+              attach="material-0"
+              transparent={transparent}
+              opacity={shape.opacity}
+              color={colors.line}
+            />
+            <LineMaterial
+              attach="material-1"
+              transparent={transparent}
+              opacity={shape.opacity}
+              color={colors.lineselected}
+            />
+          </ReplicadEdgesMesh>
+        )}
+      </ClipPlane>
+    </>
   );
 };
 

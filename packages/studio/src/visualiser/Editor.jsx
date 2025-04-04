@@ -149,7 +149,6 @@ const EditorView = observer(function Editor() {
           hasError={store.hasError}
           clipDirection={store.ui.clip.planeVector}
           clipConstant={store.ui.clip.position}
-          labels={store.currentLabels}
         />
       ) : (
         <LoadingScreen />

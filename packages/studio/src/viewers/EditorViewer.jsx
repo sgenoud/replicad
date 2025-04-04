@@ -9,7 +9,6 @@ import Controls from "../components-3d/Controls.jsx";
 import ShapeGeometry from "../components-3d/ShapeGeometry.jsx";
 import DefaultGeometry from "../components-3d/DefaultGeometry.jsx";
 import InfiniteGrid from "../components-3d/InfiniteGrid.jsx";
-import { Label3D } from "../components-3d/FloatingLabel.jsx";
 
 import SVGViewer from "./SVGViewer.jsx";
 
@@ -69,7 +68,6 @@ export default observer(function EditorViewer({
   shape,
   hasError,
   selectMode = "all",
-  labels = [],
   onSelected,
   clipDirection,
   clipConstant,
@@ -90,21 +88,6 @@ export default observer(function EditorViewer({
       onCreated={(state) => (state.gl.localClippingEnabled = true)}
     >
       <InfiniteGrid />
-      {labels.map(
-        ({ from, to, offset, color, label, fontSize, mode, position }) => (
-          <Label3D
-            key={label}
-            start={from}
-            end={to}
-            offset={offset}
-            lineColor={color}
-            text={label}
-            lineMode={mode}
-            fontSize={fontSize}
-            position={position}
-          />
-        )
-      )}
 
       <Controls enableDamping={false}>
         {hasError ? (
