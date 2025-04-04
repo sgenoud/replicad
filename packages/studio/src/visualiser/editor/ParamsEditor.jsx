@@ -65,7 +65,7 @@ export default observer(function ParamsEditor({
           vivid1: "red",
         },
         sizes: {
-          controlWidth: "80px",
+          controlWidth: "150px",
         },
       }}
     />
