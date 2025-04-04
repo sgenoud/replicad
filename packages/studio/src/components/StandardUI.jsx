@@ -62,8 +62,8 @@ const AutoConfig = ({ updateParams, defaultParams, hidden, collapsed }) => {
           vivid1: "red",
         },
         sizes: {
-          rootWidth: "250px",
-          controlWidth: "80px",
+          rootWidth: null,
+          controlWidth: "150px",
         },
       }}
     />
