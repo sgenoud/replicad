@@ -1,4 +1,5 @@
 import React from "react";
+import debounce from "debounce";
 import styled from "styled-components";
 import { observer } from "mobx-react";
 import Editor from "@monaco-editor/react";
@@ -100,9 +101,9 @@ export default observer(function EditorPane() {
           defaultValue={store.code.current}
           theme="vs-dark"
           height="100%"
-          onChange={(e) => {
+          onChange={debounce((e) => {
             store.code.update(e, true);
-          }}
+          }, 300)}
           onMount={handleEditorDidMount}
           options={{
             automaticLayout: true,
