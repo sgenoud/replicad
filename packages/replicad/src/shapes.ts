@@ -1,6 +1,6 @@
 import { WrappingObj, GCWithScope } from "./register.js";
 import { Vector, Point, Plane, PlaneName, asPnt, BoundingBox } from "./geom.js";
-import { HASH_CODE_MAX } from "./constants.js";
+import { DEG2RAD, HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
 
 import {
@@ -73,6 +73,51 @@ export interface CurveLike {
 }
 
 /**
+ * We can defined a chamfer with only a number - in that case it will be
+ * symmetric
+ *
+ * We can also define a chamfer with two distances, in that case the chamfer
+ * will be asymmetric, and the first distance will be used for selected face.
+ *
+ * We can also define a chamfer with a distance and an angle, in that case
+ * the chamfer will be asymmetric, and the distance will be used
+ * for selected face.
+ *
+ * Note that the selected face is a function that takes a FaceFinder, and if
+ * this fails, you might expect an error.
+ *
+ */
+export type ChamferRadius =
+  | number
+  | {
+      distances: [number, number];
+      selectedFace: (f: FaceFinder) => FaceFinder;
+    }
+  | {
+      distance: number;
+      angle: number;
+      selectedFace: (f: FaceFinder) => FaceFinder;
+    };
+
+function isNumber(r: unknown): r is number {
+  return typeof r === "number";
+}
+
+function isChamferRadius(r: unknown): r is ChamferRadius {
+  if (typeof r === "number") return true;
+  if (typeof r === "object" && r !== null) {
+    const obj = r as Omit<ChamferRadius, number>;
+    return (
+      ("distances" in obj &&
+        Array.isArray(obj.distances) &&
+        "selectedFace" in obj) ||
+      ("distance" in obj && "angle" in obj && "selectedFace" in obj)
+    );
+  }
+  return false;
+}
+
+/**
  * A generic way to define radii for fillet or chamfer (the operation)
  *
  * If the radius is a filter finder object (with an EdgeFinder as filter, and
@@ -85,10 +130,10 @@ export interface CurveLike {
  * If the radius is a function edges will be filletted or chamfered according
  * to the value returned by the function (0 or null will not add any fillet).
  */
-export type RadiusConfig =
-  | ((e: Edge) => number | null)
-  | number
-  | { filter: EdgeFinder; radius: number; keep?: boolean };
+export type RadiusConfig<R = number> =
+  | ((e: Edge) => R | null)
+  | R
+  | { filter: EdgeFinder; radius: R; keep?: boolean };
 
 const asTopo = (entity: TopoEntity): TopAbs_ShapeEnum => {
   const oc = getOC();
@@ -1106,11 +1151,12 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     return newShape;
   }
 
-  protected _builderIter(
-    radiusConfigInput: RadiusConfig,
-    builderAdd: (r: number, edge: TopoDS_Edge) => void
+  protected _builderIter<R = number>(
+    radiusConfigInput: RadiusConfig<R>,
+    builderAdd: (r: R, edge: TopoDS_Edge) => void,
+    isRadius: (r: unknown) => r is R
   ): number {
-    if (typeof radiusConfigInput === "number") {
+    if (isRadius(radiusConfigInput)) {
       let edgeCount = 0;
       for (const rawEdge of this._iterTopo("edge")) {
         builderAdd(radiusConfigInput, downcast(rawEdge));
@@ -1119,7 +1165,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
       return edgeCount;
     }
 
-    let radiusConfigFun: (e: Edge) => number | null;
+    let radiusConfigFun: (e: Edge) => R | null;
     let finalize: null | (() => void) = null;
 
     if (typeof radiusConfigInput === "function") {
@@ -1127,7 +1173,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     } else {
       radiusConfigFun = (element: Edge) => {
         const shouldKeep = radiusConfigInput.filter.shouldKeep(element);
-        return shouldKeep ? radiusConfigInput.radius || 1 : 0;
+        return shouldKeep ? radiusConfigInput.radius || (1 as R) : null;
       };
 
       if (radiusConfigInput.filter && !radiusConfigInput.keep) {
@@ -1187,8 +1233,10 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
       };
     }
 
-    const edgesFound = this._builderIter(config, (r, e) =>
-      filletBuilder.Add_2(r, e)
+    const edgesFound = this._builderIter(
+      config,
+      (r, e) => filletBuilder.Add_2(r, e),
+      isNumber
     );
     if (!edgesFound) throw new Error("Could not fillet, no edge was selected");
 
@@ -1214,7 +1262,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    * @category Shape Modifications
    */
   chamfer(
-    radiusConfig: RadiusConfig,
+    radiusConfig: RadiusConfig<ChamferRadius>,
     filter?: (e: EdgeFinder) => EdgeFinder
   ): Shape3D {
     const r = GCWithScope();
@@ -1224,14 +1272,41 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     );
 
     let config = radiusConfig;
-    if (typeof radiusConfig === "number" && filter) {
+
+    if (isChamferRadius(radiusConfig) && filter) {
       config = {
         radius: radiusConfig,
         filter: filter(new EdgeFinder()),
       };
     }
-    const edgesFound = this._builderIter(config, (r, e) =>
-      chamferBuilder.Add_2(r, e)
+    const edgesFound = this._builderIter(
+      config,
+      (r, e) => {
+        if (isNumber(r)) return chamferBuilder.Add_2(r, e);
+
+        const finder = new FaceFinder();
+        const face = r.selectedFace(finder).find(this, { unique: true });
+        if (!face) throw new Error("Could not find face for chamfer");
+
+        if ("distances" in r) {
+          return chamferBuilder.Add_3(
+            r.distances[0] ?? 1,
+            r.distances[1] ?? 1,
+            e,
+            face.wrapped
+          );
+        }
+
+        if ("distance" in r) {
+          return chamferBuilder.AddDA(
+            r.distance,
+            r.angle * DEG2RAD,
+            e,
+            face.wrapped
+          );
+        }
+      },
+      isChamferRadius
     );
     if (!edgesFound) throw new Error("Could not chamfer, no edge was selected");
 
