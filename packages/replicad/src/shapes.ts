@@ -99,6 +99,8 @@ export type ChamferRadius =
       selectedFace: (f: FaceFinder) => FaceFinder;
     };
 
+export type FilletRadius = number | [number, number];
+
 function isNumber(r: unknown): r is number {
   return typeof r === "number";
 }
@@ -113,6 +115,14 @@ function isChamferRadius(r: unknown): r is ChamferRadius {
         "selectedFace" in obj) ||
       ("distance" in obj && "angle" in obj && "selectedFace" in obj)
     );
+  }
+  return false;
+}
+
+function isFilletRadius(r: unknown): r is FilletRadius {
+  if (typeof r === "number") return true;
+  if (Array.isArray(r) && r.length === 2) {
+    return r.every(isNumber);
   }
   return false;
 }
@@ -1213,7 +1223,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    * @category Shape Modifications
    */
   fillet(
-    radiusConfig: RadiusConfig,
+    radiusConfig: RadiusConfig<FilletRadius>,
     filter?: (e: EdgeFinder) => EdgeFinder
   ): Shape3D {
     const r = GCWithScope();
@@ -1226,7 +1236,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     );
 
     let config = radiusConfig;
-    if (typeof radiusConfig === "number" && filter) {
+    if (isFilletRadius(radiusConfig) && filter) {
       config = {
         radius: radiusConfig,
         filter: filter(new EdgeFinder()),
@@ -1235,8 +1245,12 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
 
     const edgesFound = this._builderIter(
       config,
-      (r, e) => filletBuilder.Add_2(r, e),
-      isNumber
+      (r, e) => {
+        if (isNumber(r)) return filletBuilder.Add_2(r, e);
+        console.log(e);
+        return filletBuilder.Add_3(r[0], r[1], e);
+      },
+      isFilletRadius
     );
     if (!edgesFound) throw new Error("Could not fillet, no edge was selected");
 
