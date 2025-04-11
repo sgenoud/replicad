@@ -1,8 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+//
+const { themes } = require("prism-react-renderer");
+const lightTheme = themes.github;
+const darkTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -28,7 +29,7 @@ const config = {
             "https://github.com/sgenoud/replicad/tree/main/packages/replicad-docs",
         },
         theme: {
-          customCss: require.resolve("./src/css/custom.css"),
+          customCss: "./src/css/custom.css",
         },
       }),
     ],
@@ -103,8 +104,8 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} QuaroTech.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: lightTheme,
+        darkTheme: darkTheme,
       },
     }),
   plugins: [
@@ -115,8 +116,8 @@ const config = {
       {
         entryPoints: ["../replicad/src/index.ts"],
         tsconfig: "../replicad/tsconfig.json",
-        watch: process.env.TYPEDOC_WATCH,
-        sidebar: { position: 100 },
+
+        watch: process.env.TYPEDOC_WATCH === "true",
       },
     ],
   ],

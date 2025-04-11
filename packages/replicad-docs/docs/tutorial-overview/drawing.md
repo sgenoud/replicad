@@ -81,15 +81,15 @@ To understand what the different parameters do, let's play with them:
 In addition to the `draw` API, replicad provides some drawing functions
 to draw common and useful shapes. You can for instance:
 
-- draw a rectangle [`drawRoundedRectangle`](/docs/api#drawroundedrectangle)
-- draw a polygon [`drawPolysides`](/docs/api#drawpolysides)
-- circle [`drawCircle`](/docs/api#drawcircle) or ellipse [`drawEllipse`](/docs/api#drawellipse)
-- draw some text in a ttf font [`drawText`](/docs/api#drawtext)
+- draw a rectangle [`drawRoundedRectangle`](/docs/api/functions/drawRoundedRectangle)
+- draw a polygon [`drawPolysides`](/docs/api/functions/drawPolysides)
+- circle [`drawCircle`](/docs/api/functions/drawCircle) or ellipse [`drawEllipse`](/docs/api/functions/drawEllipse)
+- draw some text in a ttf font [`drawText`](/docs/api/functions/drawText)
 - draw based on a parametric function
-  [`drawParametricFunction`](/docs/api#drawparametricfunction), with an [example
+  [`drawParametricFunction`](/docs/api/functions/drawParametricFunction), with an [example
   here](/docs/examples/cadquery-gear)
 
-They are [documented in the API](/docs/api#drawing-functions-1)
+They are [documented in the API](/docs/api#drawing)
 
 ## Practicing with the watering can tutorial
 

@@ -15,6 +15,7 @@
   "typedocOptions": {
     "watch": true,
     "readme": "none",
+    "useCodeBlocks": true,
     "categoryOrder": ["Drawing", "Import", "*"],
     "kindSortOrder": [
       "Function",

@@ -8,7 +8,7 @@ At its core, replicad is just a library. You can then create your own viewer,
 editor, configurator on top of it.
 
 In order to show what can be done in the most simple way, you can find a sample
-app here: <https://sample-app.replicad.xyz>.
+app here: [https://sample-app.replicad.xyz](https://sample-app.replicad.xyz).
 
 ## Display of the model
 

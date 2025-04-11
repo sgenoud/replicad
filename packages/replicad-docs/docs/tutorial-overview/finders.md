@@ -74,12 +74,12 @@ for faces that:
   sides of the roof
 
 and other methods you can find in the [API
-documentation](/docs/api/classes/FaceFinder#filter-methods)
+documentation](/docs/api/classes/FaceFinder#filter)
 
 ### Finding edges
 
 To find edges, it works in the same way, you just work with an `EdgeFinder`
-instead of a face finder and use the methods that are [documented here](/docs/api/classes/EdgeFinder#filter-methods).
+instead of a face finder and use the methods that are [documented here](/docs/api/classes/EdgeFinder#filter).
 
 For instance, to find the top of the roof
 
