@@ -3,6 +3,29 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Line, Text } from "@react-three/drei";
 import { Vector3 } from "three";
 
+const POSITIONS = {
+  top: {
+    text: "center",
+    xAlign: "center",
+    yAlign: "bottom",
+  },
+  bottom: {
+    text: "center",
+    xAlign: "center",
+    yAlign: "top",
+  },
+  side: {
+    text: "left",
+    xAlign: "left",
+    yAlign: "middle",
+  },
+  "side-end": {
+    text: "right",
+    xAlign: "right",
+    yAlign: "middle",
+  },
+};
+
 export function Label3D({
   start,
   end,
@@ -53,7 +76,7 @@ export function Label3D({
       .multiplyScalar(0.5)
       .addScaledVector(
         offsetVector,
-        offsetSize * (position === "side" ? 1.5 : 1)
+        offsetSize * (position.slice(0, 4) === "side" ? 1.5 : 1)
       );
   }
 
@@ -112,20 +135,21 @@ export function Label3D({
     );
   }
 
+  const { xAlign, yAlign, textAlign } =
+    POSITIONS[position] || POSITIONS["side"];
+
   return (
     <group>
       {line}
       <Text
         color={color}
-        textAlign={position === "side" ? "left" : "center"}
+        textAlign={textAlign}
         outlineColor={lineColor}
         outlineWidth={fontSize / 20}
         fontSize={fontSize}
         position={labelPosition}
-        anchorX={position === "side" ? "left" : "center"}
-        anchorY={
-          position === "side" ? "middle" : position === "top" ? "bottom" : "top"
-        }
+        anchorX={xAlign}
+        anchorY={yAlign}
         ref={textRef}
       >
         {text}
