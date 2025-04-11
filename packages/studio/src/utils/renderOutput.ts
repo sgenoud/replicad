@@ -8,6 +8,7 @@ import {
   Drawing,
   Sketches,
   CompoundSketch,
+  Vertex,
 } from "replicad";
 import normalizeColor from "./normalizeColor";
 
@@ -167,8 +168,25 @@ function normalizeLabels<T extends Record<string, any>>(config: T) {
       );
     })
     .map((labelConfig: any) => {
-      const { label, from, to, offset, color, mode, fontSize, position } =
-        labelConfig;
+      const {
+        label,
+        from: fromInput,
+        to: toInput,
+        offset: offsetInput,
+        color,
+        mode,
+        fontSize,
+        position,
+      } = labelConfig;
+
+      console.log(fromInput);
+
+      const from =
+        fromInput instanceof Vertex ? fromInput.asTuple() : fromInput;
+      const to = toInput instanceof Vertex ? toInput.asTuple() : toInput;
+      const offset =
+        offsetInput instanceof Vertex ? offsetInput.asTuple() : offsetInput;
+
       return {
         label: label ?? "Label",
         from,
