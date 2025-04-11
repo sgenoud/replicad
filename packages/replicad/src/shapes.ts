@@ -50,6 +50,7 @@ type TopoEntity =
   | "shape";
 
 type GenericTopo =
+  | TopoDS_Vertex
   | TopoDS_Face
   | TopoDS_Shape
   | TopoDS_Edge
@@ -244,6 +245,8 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
     if (this.constructor !== newShape.constructor)
       throw new Error("unexpected types mismatch");
+
+    // @ts-expect-error we actually check just before
     return newShape as typeof this;
   }
 
@@ -264,6 +267,8 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
     if (this.constructor !== newShape.constructor)
       throw new Error("unexpected types mismatch");
+
+    // @ts-expect-error we actually check just before
     return newShape as typeof this;
   }
 
@@ -308,6 +313,8 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     this.delete();
     if (this.constructor !== newShape.constructor)
       throw new Error("unexpected types mismatch");
+
+    // @ts-expect-error we actually check just before
     return newShape as typeof this;
   }
 
@@ -322,6 +329,8 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
     if (this.constructor !== newShape.constructor)
       throw new Error("unexpected types mismatch");
+
+    // @ts-expect-error we actually check just before
     return newShape as typeof this;
   }
 
@@ -336,6 +345,8 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
     if (this.constructor !== newShape.constructor)
       throw new Error("unexpected types mismatch");
+
+    // @ts-expect-error we actually check just before
     return newShape as typeof this;
   }
 
@@ -603,7 +614,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 }
 
 export class Vertex extends Shape<TopoDS_Vertex> {
-  public asTuple(): [number, number, number] {
+  asTuple(): [number, number, number] {
     const pnt = this.oc.BRep_Tool.Pnt(this.wrapped);
     const tuple: [number, number, number] = [pnt.X(), pnt.Y(), pnt.Z()];
     pnt.delete();
@@ -1375,6 +1386,7 @@ export function cast(shape: TopoDS_Shape): AnyShape {
   const oc = getOC();
   const ta = oc.TopAbs_ShapeEnum;
 
+  // @ts-expect-error forcing TS to work with occt weird types
   const CAST_MAP = new Map([
     [ta.TopAbs_VERTEX, Vertex],
     [ta.TopAbs_EDGE, Edge],
