@@ -1,3 +1,5 @@
+import { transpile } from "typescript";
+
 function buildFunctionWithContext(eval_string, context) {
   return `
   return function (context) {
@@ -21,13 +23,25 @@ function buildEvaluator(eval_string, context) {
 }
 
 export async function buildModuleEvaluator(moduleString) {
+  const code = transpile(moduleString, {
+    target: "es6",
+    module: "es6",
+    noImplicitAny: false,
+    strict: false,
+  });
+
   const url = URL.createObjectURL(
-    new Blob([moduleString], { type: "text/javascript" })
+    new Blob([code], { type: "text/javascript" })
   );
   return await import(/* @vite-ignore */ `${url}`);
 }
 
 export function runInContext(text, context = {}) {
-  let evaluator = buildEvaluator(text, context);
+  const code = transpile(text, {
+    target: "es6",
+    noImplicitAny: false,
+    strict: false,
+  });
+  let evaluator = buildEvaluator(code, context);
   return evaluator(context);
 }

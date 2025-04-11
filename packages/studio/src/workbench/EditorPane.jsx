@@ -68,6 +68,7 @@ const RightAligned = styled.div`
 
 export default observer(function EditorPane() {
   const store = useEditorStore();
+  const editorRef = React.useRef(null);
 
   const handleEditorDidMount = (_, monaco) => {
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
@@ -84,9 +85,37 @@ export default observer(function EditorPane() {
 `,
       },
     ]);
+    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
+    monaco.languages.typescript.typescriptDefaults.setExtraLibs([
+      {
+        content: `declare module 'replicad' { ${replicadTypes} }`,
+      },
+      {
+        content: `
+  import * as replicadAll from 'replicad';
+  declare global {
+  declare var replicad = replicadAll;
+  }
+`,
+      },
+    ]);
+    editorRef.current = monaco;
   };
 
   if (!store.code.initialized) return <LoadingScreen />;
+
+  if (store.code.current) {
+    const isTypeScript = store.code.current.includes("// lint TS");
+
+    const model = editorRef.current?.editor.getModels()[0];
+
+    if (model) {
+      editorRef.current?.editor.setModelLanguage(
+        model,
+        isTypeScript ? "typescript" : "javascript"
+      );
+    }
+  }
 
   return (
     <>

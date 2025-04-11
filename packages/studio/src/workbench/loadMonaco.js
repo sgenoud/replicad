@@ -44,7 +44,17 @@ const formatWithPrettier = (value) => {
 
 monaco.languages.registerDocumentFormattingEditProvider("javascript", {
   provideDocumentFormattingEdits: (model) => {
-    console.log("mmm");
+    return [
+      {
+        range: model.getFullModelRange(),
+        text: formatWithPrettier(model.getValue()),
+      },
+    ];
+  },
+});
+
+monaco.languages.registerDocumentFormattingEditProvider("typescript", {
+  provideDocumentFormattingEdits: (model) => {
     return [
       {
         range: model.getFullModelRange(),
