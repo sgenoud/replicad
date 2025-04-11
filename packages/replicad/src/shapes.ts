@@ -547,7 +547,15 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 }
 
-export class Vertex extends Shape<TopoDS_Vertex> {}
+export class Vertex extends Shape<TopoDS_Vertex> {
+  public asTuple(): [number, number, number] {
+    const pnt = this.oc.BRep_Tool.Pnt(this.wrapped);
+    const tuple: [number, number, number] = [pnt.X(), pnt.Y(), pnt.Z()];
+    pnt.delete();
+    return tuple;
+  }
+}
+
 export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   protected abstract _geomAdaptor(): CurveLike;
   get repr(): string {
@@ -1258,6 +1266,7 @@ export function downcast(shape: TopoDS_Shape): GenericTopo {
   const ta = oc.TopAbs_ShapeEnum;
 
   const CAST_MAP = new Map([
+    [ta.TopAbs_VERTEX, oc.TopoDS.Vertex_1],
     [ta.TopAbs_EDGE, oc.TopoDS.Edge_1],
     [ta.TopAbs_WIRE, oc.TopoDS.Wire_1],
     [ta.TopAbs_FACE, oc.TopoDS.Face_1],
@@ -1290,6 +1299,6 @@ export function cast(shape: TopoDS_Shape): AnyShape {
 
   const Klass = CAST_MAP.get(shapeType(shape));
 
-  if (!Klass) throw new Error("Could not find a wrapper for this shape type");
+  if (!Klass) throw new Error(`Could not find a wrapper for this shape type`);
   return new Klass(downcast(shape));
 }
