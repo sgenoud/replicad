@@ -108,6 +108,7 @@ const config = {
         darkTheme: darkTheme,
       },
     }),
+
   plugins: [
     [
       "docusaurus-plugin-typedoc",
@@ -116,6 +117,7 @@ const config = {
       {
         entryPoints: ["../replicad/src/index.ts"],
         tsconfig: "../replicad/tsconfig.json",
+        useCodeblocks: true,
 
         watch: process.env.TYPEDOC_WATCH === "true",
       },
