@@ -67,6 +67,47 @@ const main = () => {
 };
 ```
 
+### Asymmetric chamfer
+
+By default chamfer operations will use a radius, the same distance on both
+sides of a edge. If you want to use a different distance on each side and
+create an asymmetric chamfer, you can use a custom radius:
+
+```js withWorkbench
+const { makeBaseBox, EdgeFinder } = replicad;
+
+export default function main() {
+  let base = makeBaseBox(30, 50, 10);
+  return base.chamfer(
+    {
+      distances: [5, 2],
+      selectedFace: (f) => f.inPlane("YZ", 15),
+    },
+    (e) => e.inPlane("XY", 10)
+  );
+}
+```
+
+The selected face corresponds to the face on which the first distance will be
+applied.
+
+### Fillet with radius evolution
+
+You can also have a fillet vary along the edge. This is done by using an array
+of two numbers. The first number is the radius at the start of the edge, and
+the second number is the radius at the end of the edge.
+
+```js withWorkbench
+const { makeBaseBox } = replicad;
+
+export default function main() {
+  let base = makeBaseBox(30, 50, 10);
+  return base.fillet([4, 1], (e) => e.inPlane("YZ", 15).inDirection("Y"));
+}
+```
+
+###
+
 ## Shell
 
 With a shell you can hollow out a full shape (keeping a wall of a certain

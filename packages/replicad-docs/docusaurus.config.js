@@ -117,7 +117,7 @@ const config = {
       {
         entryPoints: ["../replicad/src/index.ts"],
         tsconfig: "../replicad/tsconfig.json",
-        useCodeblocks: true,
+        useCodeBlocks: true,
 
         watch: process.env.TYPEDOC_WATCH === "true",
       },
