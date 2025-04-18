@@ -19,6 +19,16 @@ import {
   subtract2d,
 } from "./vectorOperations.js";
 
+/**
+ * Creates a 2D segment curve between two points.
+ *
+ * @param startPoint - The starting point of the segment.
+ * @param endPoint - The ending point of the segment.
+ *
+ * @returns A Curve2D object representing the segment.
+ *
+ * @category Planar curves
+ */
 export const make2dSegmentCurve = (
   startPoint: Point2D,
   endPoint: Point2D
@@ -39,6 +49,17 @@ export const make2dSegmentCurve = (
   return curve;
 };
 
+/**
+ * Creates a 2D arc curve defined by three points.
+ *
+ * @param startPoint - The starting point of the arc.
+ * @param midPoint - The midpoint of the arc.
+ * @param endPoint - The ending point of the arc.
+ *
+ * @returns A Curve2D object representing the arc.
+ *
+ * @category Planar curves
+ */
 export const make2dThreePointArc = (
   startPoint: Point2D,
   midPoint: Point2D,
@@ -68,6 +89,17 @@ export const make2dThreePointArc = (
   return curve;
 };
 
+/**
+ * Creates a 2D tangent arc curve defined by three points.
+ *
+ * @param startPoint - The starting point of the arc.
+ * @param tangent - The tangent vector at the starting point.
+ * @param endPoint - The ending point of the arc.
+ *
+ * @returns A Curve2D object representing the tangent arc.
+ *
+ * @category Planar curves
+ */
 export const make2dTangentArc = (
   startPoint: Point2D,
   tangent: Point2D,
@@ -97,6 +129,16 @@ export const make2dTangentArc = (
   return curve;
 };
 
+/**
+ * Creates a 2D circle curve.
+ *
+ * @param radius - The radius of the circle.
+ * @param center - The center point of the circle (default is [0, 0]).
+ *
+ * @returns A Curve2D object representing the circle.
+ *
+ * @category Planar curves
+ */
 export const make2dCircle = (
   radius: number,
   center: Point2D = [0, 0]
@@ -112,6 +154,19 @@ export const make2dCircle = (
   return new Curve2D(segment as unknown as Handle_Geom2d_Curve);
 };
 
+/**
+ * Creates a 2D ellipse curve.
+ *
+ * @param majorRadius - The major radius of the ellipse.
+ * @param minorRadius - The minor radius of the ellipse.
+ * @param xDir - The direction vector for the major axis (default is [1, 0]).
+ * @param center - The center point of the ellipse (default is [0, 0]).
+ * @param direct - Whether the ellipse is direct (default is true).
+ *
+ * @returns A Curve2D object representing the ellipse.
+ *
+ * @category Planar curves
+ */
 export const make2dEllipse = (
   majorRadius: number,
   minorRadius: number,
@@ -136,6 +191,21 @@ export const make2dEllipse = (
   return new Curve2D(segment as unknown as Handle_Geom2d_Curve);
 };
 
+/**
+ * Creates a 2D ellipse arc curve.
+ *
+ * @param majorRadius - The major radius of the ellipse.
+ * @param minorRadius - The minor radius of the ellipse.
+ * @param startAngle - The starting angle of the arc.
+ * @param endAngle - The ending angle of the arc.
+ * @param center - The center point of the ellipse (default is [0, 0]).
+ * @param xDir - The direction vector for the major axis (default is [1, 0]).
+ * @param direct - Whether the ellipse is direct (default is true).
+ *
+ * @returns A Curve2D object representing the ellipse arc.
+ *
+ * @category Planar curves
+ */
 export const make2dEllipseArc = (
   majorRadius: number,
   minorRadius: number,
@@ -159,6 +229,17 @@ export const make2dEllipseArc = (
   return new Curve2D(segment);
 };
 
+/**
+ * Creates a 2D Bezier curve defined by a start point, control points, and an end point.
+ *
+ * @param startPoint - The starting point of the Bezier curve.
+ * @param controls - An array of control points for the Bezier curve.
+ * @param endPoint - The ending point of the Bezier curve.
+ *
+ * @returns A Curve2D object representing the Bezier curve.
+ *
+ * @category Planar curves
+ */
 export const make2dBezierCurve = (
   startPoint: Point2D,
   controls: Point2D[],
@@ -184,6 +265,20 @@ export const make2dBezierCurve = (
   return new Curve2D(new oc.Handle_Geom2d_Curve_2(bezCurve));
 };
 
+/**
+ * Creates a 2D B-spline curve defined by a set of points.
+ *
+ * @param points - An array of points defining the B-spline curve.
+ * @param options - Options for the B-spline curve.
+ * @param options.tolerance - The tolerance for the approximation (default is 1e-3).
+ * @param options.smoothing - Smoothing parameters for the B-spline curve (default is null).
+ * @param options.degMax - Maximum degree of the B-spline curve (default is 3).
+ * @param options.degMin - Minimum degree of the B-spline curve (default is 1).
+ *
+ * @returns A Curve2D object representing the B-spline curve.
+ *
+ * @category Planar curves
+ */
 export function make2dInerpolatedBSplineCurve(
   points: Point2D[],
   {

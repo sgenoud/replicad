@@ -230,6 +230,11 @@ export const sketchParametricFunction = (
   return sketch;
 };
 
+/**
+ * Creates the `Sketch` of a helix
+ *
+ * @category Sketching
+ */
 export const sketchHelix = (
   pitch: number,
   height: number,

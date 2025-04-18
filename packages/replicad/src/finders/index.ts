@@ -6,7 +6,10 @@ export type { FilterFcn };
  * Combine a set of finder filters (defined with radius) to pass as a filter
  * function.
  *
- * It returns the filter, as well as a cleanup function.
+ * @param filters - An array of objects containing a filter and its radius.
+ * @returns A tuple containing a filter function and a cleanup function.
+ *
+ * @category Finders
  */
 export const combineFinderFilters = <Type, T, R = number>(
   filters: { filter: Finder<Type, T>; radius: R }[]

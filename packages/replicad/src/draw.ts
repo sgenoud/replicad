@@ -38,6 +38,13 @@ import { edgeToCurve } from "./curves";
 import { BSplineApproximationConfig } from "./shapeHelpers";
 import { approximateForSVG } from "./blueprints/approximations";
 
+/**
+ * @categoryDescription Drawing
+ *
+ * Drawing are shapes in the 2D space. You can either use a "builder pen" to
+ * draw a shape, or use some of the canned shapes like circles or rectangles.
+ */
+
 export class Drawing implements DrawingInterface {
   private innerShape: Shape2D;
 
@@ -197,6 +204,13 @@ export class Drawing implements DrawingInterface {
   }
 }
 
+/**
+ * DrawingPen is a helper class to draw in 2D. It is used to create drawings
+ * by exposing a builder interface. It is not a drawing itself, but it can be
+ * used to create a drawing.
+ *
+ * @category Drawing
+ */
 export class DrawingPen
   extends BaseSketcher2d
   implements GenericSketcher<Drawing>
@@ -401,17 +415,6 @@ export const drawParametricFunction = (
   return drawPointsInterpolation(points, approximationConfig, { closeShape });
 };
 
-export function drawFaceOutline(face: Face): Drawing {
-  const outerWire = face.clone().outerWire();
-  const curves = outerWire.edges.map((e) => edgeToCurve(e, face));
-
-  const stitchedCurves = stitchCurves(curves).map((s) => new Blueprint(s));
-  if (stitchedCurves.length === 0) return new Drawing();
-  if (stitchedCurves.length === 1) return new Drawing(stitchedCurves[0]);
-
-  return new Drawing(new Blueprints(stitchedCurves));
-}
-
 const edgesToDrawing = (edges: Edge[]): Drawing => {
   const planeFace = (
     drawRectangle(1000, 1000).sketchOnPlane() as Sketch
@@ -425,6 +428,13 @@ const edgesToDrawing = (edges: Edge[]): Drawing => {
   return new Drawing(new Blueprints(stitchedCurves));
 };
 
+/**
+ * Creates the `Drawing` of a projection of a shape on a plane.
+ *
+ * The projection is done by projecting the edges of the shape on the plane.
+ *
+ * @category Drawing
+ */
 export function drawProjection(
   shape: AnyShape,
   projectionCamera: ProjectionPlane | ProjectionCamera = "front"
@@ -442,4 +452,20 @@ export function drawProjection(
     visible: edgesToDrawing(visible),
     hidden: edgesToDrawing(hidden),
   };
+}
+
+/**
+ * Creates the `Drawing` out of a face
+ *
+ * @category Drawing
+ */
+export function drawFaceOutline(face: Face): Drawing {
+  const outerWire = face.clone().outerWire();
+  const curves = outerWire.edges.map((e) => edgeToCurve(e, face));
+
+  const stitchedCurves = stitchCurves(curves).map((s) => new Blueprint(s));
+  if (stitchedCurves.length === 0) return new Drawing();
+  if (stitchedCurves.length === 1) return new Drawing(stitchedCurves[0]);
+
+  return new Drawing(new Blueprints(stitchedCurves));
 }

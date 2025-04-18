@@ -16,7 +16,7 @@
     "watch": true,
     "readme": "none",
     "useCodeBlocks": true,
-    "categoryOrder": ["Drawing", "Import", "*"],
+    "categoryOrder": ["Drawing", "Import", "Finders", "Solids", "*"],
     "kindSortOrder": [
       "Function",
       "Reference",

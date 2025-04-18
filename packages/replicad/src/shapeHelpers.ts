@@ -371,6 +371,11 @@ export const makeNonPlanarFace = (wire: Wire): Face => {
   return newFace;
 };
 
+/**
+ * Creates a cylinder with the given radius and height.
+ *
+ * @category Solids
+ */
 export const makeCylinder = (
   radius: number,
   height: number,
@@ -387,6 +392,11 @@ export const makeCylinder = (
   return solid;
 };
 
+/**
+ * Creates a sphere with the given radius.
+ *
+ * @category Solids
+ */
 export const makeSphere = (radius: number): Solid => {
   const oc = getOC();
 
@@ -443,6 +453,11 @@ function convertToJSArray(arrayOfPoints: TColgp_Array2OfPnt): gp_Pnt[][] {
   return newArray;
 }
 
+/**
+ * Creates an ellipsoid with the given lengths of the axes.
+ *
+ * @category Solids
+ */
 export const makeEllipsoid = (
   aLength: number,
   bLength: number,
@@ -476,6 +491,11 @@ export const makeEllipsoid = (
   return makeSolid([shell]);
 };
 
+/**
+ * Creates a box with the given corner points.
+ *
+ * @category Solids
+ */
 export const makeBox = (corner1: Point, corner2: Point): Solid => {
   const oc = getOC();
   const boxMaker = new oc.BRepPrimAPI_MakeBox_4(asPnt(corner1), asPnt(corner2));
@@ -580,6 +600,8 @@ export function weldShellsAndFaces(
  *
  * @param facesOrShells - An array of faces and shells to be welded.
  * @returns A solid that contains all the faces and shells.
+ *
+ * @category Solids
  **/
 export function makeSolid(facesOrShells: Array<Face | Shell>): Solid {
   const r = GCWithScope();
