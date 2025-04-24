@@ -150,7 +150,7 @@ axes around the origin.
 const { drawRoundedRectangle, makePlane } = replicad;
 
 const main = () => {
-  const plane = makePlane("XY").rotate2DAxes(30, "Y");
+  const plane = makePlane("XY").rotate2DAxes(30);
   return drawRoundedRectangle(100, 50).sketchOnPlane(plane);
 };
 ```
