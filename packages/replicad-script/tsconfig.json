@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "es6",
+    "module": "es2015",
+    "strict": true,
+    "lib": ["es2022", "dom"],
+    "preserveSymlinks": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["./src"]
+}
