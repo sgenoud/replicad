@@ -31,7 +31,7 @@ import { lookFromPlane, ProjectionCamera } from "./projection/ProjectionCamera";
 import type { ProjectionPlane } from "./projection/ProjectionCamera";
 import { makeProjectedEdges } from "./projection/makeProjectedEdges";
 
-import offset from "./blueprints/offset";
+import offset, { Offset2DConfig } from "./blueprints/offset";
 import { CornerFinder } from "./finders/cornerFinder";
 import { fillet2D, chamfer2D } from "./blueprints/customCorners";
 import { edgeToCurve } from "./curves";
@@ -175,8 +175,8 @@ export class Drawing implements DrawingInterface {
     return this.innerShape?.toSVGPaths() || [];
   }
 
-  offset(distance: number): Drawing {
-    return new Drawing(offset(this.innerShape, distance));
+  offset(distance: number, offsetConfig: Offset2DConfig = {}): Drawing {
+    return new Drawing(offset(this.innerShape, distance, offsetConfig));
   }
 
   approximate(

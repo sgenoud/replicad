@@ -8,6 +8,9 @@ import {
   make2dSegmentCurve,
   squareDistance2d,
   make2dArcFromCenter,
+  add2d,
+  subtract2d,
+  determinant2x2,
 } from "../lib2d";
 import {
   Blueprint,
@@ -23,7 +26,112 @@ const PRECISION = 1e-8;
 const samePoint = (x: Point2D, y: Point2D) =>
   defaultSamePoint(x, y, PRECISION * 10);
 
-export function rawOffsets(blueprint: Blueprint, offset: number): Curve2D[] {
+const getIntersectionPoint = (
+  line1Start: Point2D,
+  line1End: Point2D,
+  line2Start: Point2D,
+  line2End: Point2D
+) => {
+  const x =
+    determinant2x2([
+      [
+        determinant2x2([
+          [line1Start[0], line1Start[1]],
+          [line1End[0], line1End[1]],
+        ]),
+        determinant2x2([
+          [line1Start[0], 1],
+          [line1End[0], 1],
+        ]),
+      ],
+      [
+        determinant2x2([
+          [line2Start[0], line2Start[1]],
+          [line2End[0], line2End[1]],
+        ]),
+        determinant2x2([
+          [line2Start[0], 1],
+          [line2End[0], 1],
+        ]),
+      ],
+    ]) /
+    determinant2x2([
+      [
+        determinant2x2([
+          [line1Start[0], 1],
+          [line1End[0], 1],
+        ]),
+        determinant2x2([
+          [line1Start[1], 1],
+          [line1End[1], 1],
+        ]),
+      ],
+      [
+        determinant2x2([
+          [line2Start[0], 1],
+          [line2End[0], 1],
+        ]),
+        determinant2x2([
+          [line2Start[1], 1],
+          [line2End[1], 1],
+        ]),
+      ],
+    ]);
+
+  const y =
+    determinant2x2([
+      [
+        determinant2x2([
+          [line1Start[0], line1Start[1]],
+          [line1End[0], line1End[1]],
+        ]),
+        determinant2x2([
+          [line1Start[1], 1],
+          [line1End[1], 1],
+        ]),
+      ],
+      [
+        determinant2x2([
+          [line2Start[0], line2Start[1]],
+          [line2End[0], line2End[1]],
+        ]),
+        determinant2x2([
+          [line2Start[1], 1],
+          [line2End[1], 1],
+        ]),
+      ],
+    ]) /
+    determinant2x2([
+      [
+        determinant2x2([
+          [line1Start[0], 1],
+          [line1End[0], 1],
+        ]),
+        determinant2x2([
+          [line1Start[1], 1],
+          [line1End[1], 1],
+        ]),
+      ],
+      [
+        determinant2x2([
+          [line2Start[0], 1],
+          [line2End[0], 1],
+        ]),
+        determinant2x2([
+          [line2Start[1], 1],
+          [line2End[1], 1],
+        ]),
+      ],
+    ]);
+
+  return [x, y] as Point2D;
+};
+
+export function rawOffsets(
+  blueprint: Blueprint,
+  offset: number,
+  offsetConfig: Offset2DConfig = {}
+): Curve2D[] {
   const correctedOffset =
     blueprint.orientation === "clockwise" ? -offset : offset;
   const offsetCurves: OffsetCurvePair[] = blueprint.curves.map((c) => ({
@@ -66,8 +174,10 @@ export function rawOffsets(blueprint: Blueprint, offset: number): Curve2D[] {
   };
 
   for (const curve of iterateOffsetCurves()) {
+    const previousFirstPoint = previousCurve.offset.firstPoint;
     const previousLastPoint = previousCurve.offset.lastPoint;
     const firstPoint = curve.offset.firstPoint;
+    const lastPoint = curve.offset.lastPoint;
 
     // When the offset curves do still touch we do nothing
     if (samePoint(previousLastPoint, firstPoint)) {
@@ -123,17 +233,62 @@ export function rawOffsets(blueprint: Blueprint, offset: number): Curve2D[] {
       continue;
     }
 
-    // When the offset curves do not intersect we link them with an arc of
-    // radius offset
+    switch (offsetConfig.lineJoinType ?? "round") {
+      case "round":
+        // When the offset curves do not intersect we link them with an arc of
+        // radius offset
+        const arcJoiner = make2dArcFromCenter(
+          previousLastPoint,
+          firstPoint,
+          previousCurve.original.lastPoint
+        );
 
-    const joiner = make2dArcFromCenter(
-      previousLastPoint,
-      firstPoint,
-      previousCurve.original.lastPoint
-    );
+        appendCurve(previousCurve);
+        offsettedArray.push(arcJoiner);
 
-    appendCurve(previousCurve);
-    offsettedArray.push(joiner);
+        break;
+      case "bevel":
+        // When the offset curves do not intersect we link them with a segment
+        const bevelJoiner = make2dSegmentCurve(previousLastPoint, firstPoint);
+
+        appendCurve(previousCurve);
+        offsettedArray.push(bevelJoiner);
+
+        break;
+      case "miter":
+        // When the offset curves do not intersect we determine the intersection
+        // of the two offset curves by extending the tangents
+        const previousOtherPoint =
+          previousCurve.offset instanceof Curve2D
+            ? subtract2d(previousLastPoint, previousCurve.offset.tangentAt(1))
+            : previousCurve.offset.firstPoint;
+        const nextOtherPoint =
+          curve.offset instanceof Curve2D
+            ? add2d(firstPoint, curve.offset.tangentAt(0))
+            : curve.offset.lastPoint;
+
+        const offsetIntersectionPoint = getIntersectionPoint(
+          previousOtherPoint,
+          previousLastPoint,
+          firstPoint,
+          nextOtherPoint
+        );
+        const miterJoiner1 = make2dSegmentCurve(
+          previousLastPoint,
+          offsetIntersectionPoint
+        );
+        const miterJoiner2 = make2dSegmentCurve(
+          offsetIntersectionPoint,
+          firstPoint
+        );
+
+        appendCurve(previousCurve);
+        offsettedArray.push(miterJoiner1);
+        offsettedArray.push(miterJoiner2);
+
+        break;
+    }
+
     previousCurve = curve;
   }
 
@@ -148,8 +303,16 @@ interface OffsetCurvePair {
   original: Curve2D;
 }
 
-export function offsetBlueprint(blueprint: Blueprint, offset: number): Shape2D {
-  const offsettedArray = rawOffsets(blueprint, offset);
+export interface Offset2DConfig {
+  lineJoinType?: "miter" | "bevel" | "round";
+}
+
+export function offsetBlueprint(
+  blueprint: Blueprint,
+  offset: number,
+  offsetConfig: Offset2DConfig = {}
+): Shape2D {
+  const offsettedArray = rawOffsets(blueprint, offset, offsetConfig);
 
   if (offsettedArray.length < 2) return null;
 
@@ -234,16 +397,25 @@ const fuseAll = (blueprints: Shape2D[]): Shape2D => {
   return fused;
 };
 
-export default function offset(bp: Shape2D, offsetDistance: number): Shape2D {
+export default function offset(
+  bp: Shape2D,
+  offsetDistance: number,
+  offsetConfig: Offset2DConfig = {}
+): Shape2D {
   if (bp instanceof Blueprint) {
-    return offsetBlueprint(bp, offsetDistance);
+    return offsetBlueprint(bp, offsetDistance, offsetConfig);
   } else if (bp instanceof Blueprints) {
-    return fuseAll(bp.blueprints.map((b) => offset(b, offsetDistance)));
+    return fuseAll(
+      bp.blueprints.map((b) => offset(b, offsetDistance, offsetConfig))
+    );
   } else if (bp instanceof CompoundBlueprint) {
     const innerShape = fuseAll(
-      bp.blueprints.slice(1).map((b) => offset(b, offsetDistance))
+      bp.blueprints.slice(1).map((b) => offset(b, offsetDistance, offsetConfig))
     );
-    return cut2D(offset(bp.blueprints[0], offsetDistance), innerShape);
+    return cut2D(
+      offset(bp.blueprints[0], offsetDistance, offsetConfig),
+      innerShape
+    );
   }
   return null;
 }

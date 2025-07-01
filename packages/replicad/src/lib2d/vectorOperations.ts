@@ -1,4 +1,4 @@
-import { Point2D } from "./definitions";
+import { Matrix2X2, Point2D } from "./definitions";
 
 export const samePoint = (
   [x0, y0]: Point2D,
@@ -91,4 +91,8 @@ export const cartesianToPolar = ([x, y]: Point2D): [number, number] => {
   const theta = Math.atan2(y, x);
 
   return [r, theta];
+};
+
+export const determinant2x2 = (matrix: Matrix2X2) => {
+  return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
 };
