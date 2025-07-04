@@ -127,6 +127,75 @@ const getIntersectionPoint = (
   return [x, y] as Point2D;
 };
 
+function joinRound(
+  appendCurve: (curve: OffsetCurvePair | Curve2D) => void,
+  previousLastPoint: Point2D,
+  firstPoint: Point2D,
+  previousCurve: OffsetCurvePair,
+  _curve: OffsetCurvePair
+) {
+  const arcJoiner = make2dArcFromCenter(
+    previousLastPoint,
+    firstPoint,
+    previousCurve.original.lastPoint
+  );
+
+  appendCurve(previousCurve);
+  appendCurve(arcJoiner);
+}
+
+function joinBevel(
+  appendCurve: (curve: OffsetCurvePair | Curve2D) => void,
+  previousLastPoint: Point2D,
+  firstPoint: Point2D,
+  previousCurve: OffsetCurvePair,
+  _curve: OffsetCurvePair
+) {
+  const bevelJoiner = make2dSegmentCurve(previousLastPoint, firstPoint);
+
+  appendCurve(previousCurve);
+  appendCurve(bevelJoiner);
+}
+
+function joinMiter(
+  appendCurve: (curve: OffsetCurvePair | Curve2D) => void,
+  previousLastPoint: Point2D,
+  firstPoint: Point2D,
+  previousCurve: OffsetCurvePair,
+  curve: OffsetCurvePair
+) {
+  const previousOtherPoint =
+    previousCurve.offset instanceof Curve2D
+      ? subtract2d(previousLastPoint, previousCurve.offset.tangentAt(1))
+      : previousCurve.offset.firstPoint;
+  const nextOtherPoint =
+    curve.offset instanceof Curve2D
+      ? add2d(firstPoint, curve.offset.tangentAt(0))
+      : curve.offset.lastPoint;
+
+  const offsetIntersectionPoint = getIntersectionPoint(
+    previousOtherPoint,
+    previousLastPoint,
+    firstPoint,
+    nextOtherPoint
+  );
+  const miterJoiner1 = make2dSegmentCurve(
+    previousLastPoint,
+    offsetIntersectionPoint
+  );
+  const miterJoiner2 = make2dSegmentCurve(offsetIntersectionPoint, firstPoint);
+
+  appendCurve(previousCurve);
+  appendCurve(miterJoiner1);
+  appendCurve(miterJoiner2);
+}
+
+const OFFSET_JOINERS = {
+  round: joinRound,
+  bevel: joinBevel,
+  miter: joinMiter,
+} as const;
+
 export function rawOffsets(
   blueprint: Blueprint,
   offset: number,
@@ -153,17 +222,31 @@ export function rawOffsets(
   if (!previousCurve) return [];
   if (offsettedArray.length === 1) return offsettedArray;
 
-  const appendCurve = (curve: OffsetCurvePair) => {
+  function appendCurve(curve: OffsetCurvePair | Curve2D) {
+    // There are different ways to build the array of offsetted curves.
+    // This should build the array of offsetted curves depending on the shape of
+    // what we are offsetting.
+
+    // if the curve is a Curve2D we just push it
+    if (curve instanceof Curve2D) {
+      offsettedArray.push(curve);
+      return;
+    }
+
     if (!savedLastCurve) {
+      // we make the first curve we append available to wrap when iterating
       savedLastCurve = curve;
     } else if (curve.offset instanceof Curve2D) {
+      // if we have an offset curve that is a Curve2D we push it
       offsettedArray.push(curve.offset);
     } else if (!samePoint(curve.offset.firstPoint, curve.offset.lastPoint)) {
+      // if the offset curve is collapsed we push a segment curve
       offsettedArray.push(
         make2dSegmentCurve(curve.offset.firstPoint, curve.offset.lastPoint)
       );
     }
-  };
+  }
+
   const iterateOffsetCurves = function* (): Generator<OffsetCurvePair> {
     for (const curve of offsetCurves.slice(0, -1)) {
       yield curve;
@@ -174,10 +257,8 @@ export function rawOffsets(
   };
 
   for (const curve of iterateOffsetCurves()) {
-    const previousFirstPoint = previousCurve.offset.firstPoint;
     const previousLastPoint = previousCurve.offset.lastPoint;
     const firstPoint = curve.offset.firstPoint;
-    const lastPoint = curve.offset.lastPoint;
 
     // When the offset curves do still touch we do nothing
     if (samePoint(previousLastPoint, firstPoint)) {
@@ -233,61 +314,10 @@ export function rawOffsets(
       continue;
     }
 
-    switch (offsetConfig.lineJoinType ?? "round") {
-      case "round":
-        // When the offset curves do not intersect we link them with an arc of
-        // radius offset
-        const arcJoiner = make2dArcFromCenter(
-          previousLastPoint,
-          firstPoint,
-          previousCurve.original.lastPoint
-        );
-
-        appendCurve(previousCurve);
-        offsettedArray.push(arcJoiner);
-
-        break;
-      case "bevel":
-        // When the offset curves do not intersect we link them with a segment
-        const bevelJoiner = make2dSegmentCurve(previousLastPoint, firstPoint);
-
-        appendCurve(previousCurve);
-        offsettedArray.push(bevelJoiner);
-
-        break;
-      case "miter":
-        // When the offset curves do not intersect we determine the intersection
-        // of the two offset curves by extending the tangents
-        const previousOtherPoint =
-          previousCurve.offset instanceof Curve2D
-            ? subtract2d(previousLastPoint, previousCurve.offset.tangentAt(1))
-            : previousCurve.offset.firstPoint;
-        const nextOtherPoint =
-          curve.offset instanceof Curve2D
-            ? add2d(firstPoint, curve.offset.tangentAt(0))
-            : curve.offset.lastPoint;
-
-        const offsetIntersectionPoint = getIntersectionPoint(
-          previousOtherPoint,
-          previousLastPoint,
-          firstPoint,
-          nextOtherPoint
-        );
-        const miterJoiner1 = make2dSegmentCurve(
-          previousLastPoint,
-          offsetIntersectionPoint
-        );
-        const miterJoiner2 = make2dSegmentCurve(
-          offsetIntersectionPoint,
-          firstPoint
-        );
-
-        appendCurve(previousCurve);
-        offsettedArray.push(miterJoiner1);
-        offsettedArray.push(miterJoiner2);
-
-        break;
-    }
+    // When the offset curves do not intersect we link them with an offset
+    // joiner
+    const joiner = OFFSET_JOINERS[offsetConfig.lineJoinType ?? "round"];
+    joiner(appendCurve, previousLastPoint, firstPoint, previousCurve, curve);
 
     previousCurve = curve;
   }
