@@ -38,6 +38,8 @@ import { edgeToCurve } from "./curves";
 import { BSplineApproximationConfig } from "./shapeHelpers";
 import { approximateForSVG } from "./blueprints/approximations";
 
+export { Offset2DConfig };
+
 /**
  * @categoryDescription Drawing
  *
