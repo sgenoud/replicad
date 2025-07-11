@@ -141,6 +141,7 @@
     - symbol: Poly_PolygonOnTriangulation
     - symbol: Handle_Poly_PolygonOnTriangulation
 
+    - symbol: BinTools
     - symbol: BRep_Tool
     - symbol: BRepLib
     - symbol: BRepTools
@@ -294,4 +295,3 @@
     - -sALLOW_MEMORY_GROWTH=1
     - -sEXPORTED_RUNTIME_METHODS=["FS"]
     - -O3
-
