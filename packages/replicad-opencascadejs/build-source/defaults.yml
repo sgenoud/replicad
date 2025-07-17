@@ -9,7 +9,7 @@
     - symbol: TColStd_Array1OfBoolean
     - symbol: TColgp_Array1OfVec
     - symbol: TColStd_Array1OfInteger
-    - symbol: TColStd_Array1OfReal 
+    - symbol: TColStd_Array1OfReal
     - symbol: Poly_Array1OfTriangle
     - symbol: Standard_Transient
     - symbol: Precision
@@ -80,9 +80,9 @@
     - symbol: Bnd_Box2d
     - symbol: BndLib_Add2dCurve
     - symbol: Geom2dAPI_InterCurveCurve
-    - symbol: Geom2dAPI_ProjectPointOnCurve 
+    - symbol: Geom2dAPI_ProjectPointOnCurve
     - symbol: Geom2dAPI_PointsToBSpline
-    - symbol: Geom2dAPI_ExtremaCurveCurve 
+    - symbol: Geom2dAPI_ExtremaCurveCurve
 
     - symbol: Bnd_Box
     - symbol: Bnd_OBB
@@ -91,6 +91,7 @@
     - symbol: GeomAbs_CurveType
     - symbol: GeomAbs_SurfaceType
     - symbol: GeomAbs_Shape
+    - symbol: GeomTools
     - symbol: Geom_Geometry
     - symbol: Geom_Curve
     - symbol: Geom_Surface
@@ -279,7 +280,6 @@
     - symbol: Quantity_ColorRGBA
     - symbol: Quantity_Color
     - symbol: XCAFDoc_ColorType
-
     - symbol: XSControl_WorkSession
     - symbol: Handle_XSControl_WorkSession
     - symbol: STEPCAFControl_Writer
