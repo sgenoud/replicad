@@ -203,6 +203,11 @@ export const shapeType = (shape: TopoDS_Shape): TopAbs_ShapeEnum => {
   return shape.ShapeType();
 };
 
+export function deserializeShape(data: string): Shape<TopoDS_Shape> {
+  const oc = getOC();
+  return new Shape(oc.BRepToolsWrapper.Read(data));
+}
+
 export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   constructor(ocShape: Type) {
     super(ocShape);
@@ -215,11 +220,6 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   serialize(): string {
     const oc = getOC();
     return oc.BRepToolsWrapper.Write(this.wrapped);
-  }
-
-  static deserializeShape(data: string): Shape<TopoDS_Shape> {
-    const oc = getOC();
-    return new Shape(oc.BRepToolsWrapper.Read(data));
   }
 
   get hashCode(): number {
