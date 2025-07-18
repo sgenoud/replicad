@@ -7,7 +7,7 @@ mainBuild:
   bindings: #@ data.values.bindings
   emccFlags: #@ data.values.buildFlags
 
-additionalCppCode: |
+#@ additional_cpp = |
   typedef Handle(IMeshTools_Context) Handle_IMeshTools_Context;
   class OCJS {
   public:
@@ -16,6 +16,4 @@ additionalCppCode: |
     }
   };
 
-
-
-
+additionalCppCode: #@ data.values.additionalCppCode + additional_cpp
