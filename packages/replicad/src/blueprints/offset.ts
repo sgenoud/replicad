@@ -326,7 +326,7 @@ export function rawOffsets(
   return offsettedArray;
 }
 
-export interface OffsetCurvePair {
+interface OffsetCurvePair {
   offset:
     | Curve2D
     | { collapsed: true; firstPoint: Point2D; lastPoint: Point2D };
