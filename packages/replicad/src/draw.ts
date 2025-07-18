@@ -1,6 +1,7 @@
 import {
   ApproximationOptions,
   BoundingBox2d,
+  Curve2D,
   make2dCircle,
   make2dEllipse,
   make2dInerpolatedBSplineCurve,
@@ -20,6 +21,7 @@ import {
   ScaleMode,
   Shape2D,
   Blueprints,
+  CompoundBlueprint,
 } from "./blueprints";
 import { Plane, PlaneName, Point } from "./geom";
 import type { AnyShape, Edge, Face } from "./shapes";
@@ -38,8 +40,6 @@ import { edgeToCurve } from "./curves";
 import { BSplineApproximationConfig } from "./shapeHelpers";
 import { approximateForSVG } from "./blueprints/approximations";
 
-export { Offset2DConfig };
-
 /**
  * @categoryDescription Drawing
  *
@@ -56,6 +56,55 @@ export class Drawing implements DrawingInterface {
 
   clone(): Drawing {
     return new Drawing(this.innerShape?.clone() || null);
+  }
+
+  serialize(): string {
+    // walk the tree of blueprints
+    function serializeHelper(shape: Shape2D): any {
+      if (shape instanceof CompoundBlueprint) {
+        return {
+          type: "CompoundBlueprint",
+          blueprints: shape.blueprints.map(serializeHelper),
+        };
+      } else if (shape instanceof Blueprints) {
+        return {
+          type: "Blueprints",
+          blueprints: shape.blueprints.map(serializeHelper),
+        };
+      } else if (shape instanceof Blueprint) {
+        return {
+          type: "Blueprint",
+          curves: shape.curves.map((c) => c.serialize()),
+        };
+      } else {
+        throw new Error("Unknown shape type for serialization");
+      }
+    }
+
+    return JSON.stringify(serializeHelper(this.innerShape));
+  }
+
+  static deserializeDrawing(data: string): Drawing {
+    function deserializeHelper(json: any): Shape2D {
+      if (json["type"] === "CompoundBlueprint") {
+        const blueprints = json["blueprints"].map(deserializeHelper);
+        return new CompoundBlueprint(blueprints);
+      } else if (json["type"] === "Blueprints") {
+        const blueprints = json["blueprints"].map(deserializeHelper);
+        return new Blueprints(blueprints);
+      } else if (json["type"] === "Blueprint") {
+        const curves = json["curves"].map((c: string) =>
+          Curve2D.deserializeCurve(c)
+        );
+        return new Blueprint(curves);
+      } else {
+        throw new Error("Unknown shape type for deserialization");
+      }
+    }
+
+    const json = JSON.parse(data);
+    const shape = deserializeHelper(json);
+    return new Drawing(shape);
   }
 
   get boundingBox(): BoundingBox2d {

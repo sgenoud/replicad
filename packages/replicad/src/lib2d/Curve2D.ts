@@ -48,6 +48,17 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     return this.wrapped.get();
   }
 
+  serialize(): string {
+    const oc = getOC();
+    return oc.GeomToolsWrapper.Write(this.wrapped);
+  }
+
+  static deserializeCurve(data: string): Curve2D {
+    const oc = getOC();
+    const handle = oc.GeomToolsWrapper.Read(data);
+    return new Curve2D(handle);
+  }
+
   value(parameter: number): Point2D {
     const pnt = this.innerCurve.Value(parameter);
     const vec: Point2D = [pnt.X(), pnt.Y()];

@@ -212,6 +212,16 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return new (<any>this.constructor)(downcast(this.wrapped));
   }
 
+  serialize(): string {
+    const oc = getOC();
+    return oc.BRepToolsWrapper.Write(this.wrapped);
+  }
+
+  static deserializeShape(data: string): Shape<TopoDS_Shape> {
+    const oc = getOC();
+    return new Shape(oc.BRepToolsWrapper.Read(data));
+  }
+
   get hashCode(): number {
     return this.wrapped.HashCode(HASH_CODE_MAX);
   }
