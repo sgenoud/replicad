@@ -470,6 +470,23 @@ export declare class ShapeFix_EdgeConnect {
   delete(): void;
 }
 
+export declare class GeomTools {
+  constructor();
+  static Dump_1(S: Handle_Geom_Surface, OS: Standard_OStream): void;
+  static Write_1(S: Handle_Geom_Surface, OS: Standard_OStream): void;
+  static Read_1(S: Handle_Geom_Surface, IS: Standard_IStream): void;
+  static Dump_2(C: Handle_Geom_Curve, OS: Standard_OStream): void;
+  static Write_2(C: Handle_Geom_Curve, OS: Standard_OStream): void;
+  static Read_2(C: Handle_Geom_Curve, IS: Standard_IStream): void;
+  static Dump_3(C: Handle_Geom2d_Curve, OS: Standard_OStream): void;
+  static Write_3(C: Handle_Geom2d_Curve, OS: Standard_OStream): void;
+  static Read_3(C: Handle_Geom2d_Curve, IS: Standard_IStream): void;
+  static SetUndefinedTypeHandler(aHandler: Handle_GeomTools_UndefinedTypeHandler): void;
+  static GetUndefinedTypeHandler(): Handle_GeomTools_UndefinedTypeHandler;
+  static GetReal(IS: Standard_IStream, theValue: Standard_Real): void;
+  delete(): void;
+}
+
 export declare class Handle_Geom_Curve {
   Nullify(): void;
   IsNull(): boolean;
@@ -8016,6 +8033,20 @@ export declare class OCJS {
   delete(): void;
 }
 
+export declare class GeomToolsWrapper {
+  constructor();
+  static Write(geometry: Handle_Geom2d_Curve): string;
+  static Read(data: string): Handle_Geom2d_Curve;
+  delete(): void;
+}
+
+export declare class BRepToolsWrapper {
+  constructor();
+  static Write(shape: TopoDS_Shape): string;
+  static Read(data: string): TopoDS_Shape;
+  delete(): void;
+}
+
 type Standard_Boolean = boolean;
 type Standard_Byte = number;
 type Standard_Character = number;
@@ -8210,6 +8241,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   ShapeFix_Face_1: typeof ShapeFix_Face_1;
   ShapeFix_Face_2: typeof ShapeFix_Face_2;
   ShapeFix_EdgeConnect: typeof ShapeFix_EdgeConnect;
+  GeomTools: typeof GeomTools;
   Handle_Geom_Curve: typeof Handle_Geom_Curve;
   Handle_Geom_Curve_1: typeof Handle_Geom_Curve_1;
   Handle_Geom_Curve_2: typeof Handle_Geom_Curve_2;
@@ -9015,6 +9047,8 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   MoniTool_TypedValue_1: typeof MoniTool_TypedValue_1;
   MoniTool_TypedValue_2: typeof MoniTool_TypedValue_2;
   OCJS: typeof OCJS;
+  GeomToolsWrapper: typeof GeomToolsWrapper;
+  BRepToolsWrapper: typeof BRepToolsWrapper;
 };
 
 declare function init(): Promise<OpenCascadeInstance>;
