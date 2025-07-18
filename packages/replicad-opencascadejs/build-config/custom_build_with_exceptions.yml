@@ -84,6 +84,7 @@ mainBuild:
   - symbol: GeomAbs_CurveType
   - symbol: GeomAbs_SurfaceType
   - symbol: GeomAbs_Shape
+  - symbol: GeomTools
   - symbol: Geom_Geometry
   - symbol: Geom_Curve
   - symbol: Geom_Surface
@@ -260,6 +261,8 @@ mainBuild:
   - symbol: STEPControl_StepModelType
   - symbol: IFSelect_ReturnStatus
   - symbol: IFSelect_WorkSession
+  - symbol: BRepToolsWrapper
+  - symbol: GeomToolsWrapper
   - symbol: OCJS
   - symbol: Standard_Failure
   emccFlags:
@@ -277,5 +280,39 @@ additionalCppCode: |
   public:
     static Standard_Failure* getStandard_FailureData(intptr_t exceptionPtr) {
       return reinterpret_cast<Standard_Failure*>(exceptionPtr);
+    }
+  };
+
+  class BRepToolsWrapper {
+  public:
+    static std::string Write(const TopoDS_Shape& shape) {
+      std::ostringstream oss(std::ios::binary);
+      BRepTools::Write(shape, oss);
+      return oss.str();
+    }
+
+    static TopoDS_Shape Read(const std::string& data) {
+      std::istringstream iss(data, std::ios::binary);
+      TopoDS_Shape shape;
+      BRep_Builder builder;
+      Message_ProgressRange progress;
+      BRepTools::Read(shape, iss, builder, progress);
+      return shape;
+    }
+  };
+
+  class GeomToolsWrapper {
+  public:
+    static std::string Write(const Handle(Geom2d_Curve)& geometry) {
+      std::ostringstream oss(std::ios::binary);
+      GeomTools::Write(geometry, oss);
+      return oss.str();
+    }
+
+    static Handle(Geom2d_Curve) Read(const std::string& data) {
+      std::istringstream iss(data, std::ios::binary);
+      Handle(Geom2d_Curve) geometry;
+      GeomTools::Read(geometry, iss);
+      return geometry;
     }
   };
