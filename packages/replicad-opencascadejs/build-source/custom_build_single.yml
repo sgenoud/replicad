@@ -6,3 +6,5 @@ mainBuild:
   name: replicad_single.js
   bindings: #@ data.values.bindings
   emccFlags: #@ data.values.buildFlags
+
+additionalCppCode: #@ data.values.additionalCppCode
