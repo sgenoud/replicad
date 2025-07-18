@@ -288,6 +288,7 @@ bindings:
   - symbol: IFSelect_WorkSession
 
   - symbol: BinToolsWrapper
+  - symbol: BRepToolsWrapper
   - symbol: GeomToolsWrapper
 
 buildFlags:
@@ -298,36 +299,3 @@ buildFlags:
   - -sALLOW_MEMORY_GROWTH=1
   - -sEXPORTED_RUNTIME_METHODS=["FS"]
   - -O3
-
-additionalCppCode: |
-  class BinToolsWrapper {
-  public:
-    static std::string Write(const TopoDS_Shape& shape) {
-      std::ostringstream oss(std::ios::binary);
-      BinTools::Write(shape, oss);
-      return oss.str();
-    }
-
-    static TopoDS_Shape Read(const std::string& data) {
-      std::istringstream iss(data, std::ios::binary);
-      TopoDS_Shape shape;
-      BinTools::Read(shape, iss);
-      return shape;
-    }
-  };
-
-  class GeomToolsWrapper {
-  public:
-    static std::string Write(const Handle(Geom2d_Curve)& geometry) {
-      std::ostringstream oss(std::ios::binary);
-      GeomTools::Write(geometry, oss);
-      return oss.str();
-    }
-
-    static Handle(Geom2d_Curve) Read(const std::string& data) {
-      std::istringstream iss(data, std::ios::binary);
-      Handle(Geom2d_Curve) geometry;
-      GeomTools::Read(geometry, iss);
-      return geometry;
-    }
-  };

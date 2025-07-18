@@ -7,7 +7,7 @@ mainBuild:
   bindings: #@ data.values.bindings
   emccFlags: #@ data.values.buildFlags
 
-#@ additional_cpp = |
+additionalCppCode: |
   typedef Handle(IMeshTools_Context) Handle_IMeshTools_Context;
   class OCJS {
   public:
@@ -16,4 +16,36 @@ mainBuild:
     }
   };
 
-additionalCppCode: #@ data.values.additionalCppCode + additional_cpp
+  class BRepToolsWrapper {
+  public:
+    static std::string Write(const TopoDS_Shape& shape) {
+      std::ostringstream oss(std::ios::binary);
+      BRepTools::Write(shape, oss);
+      return oss.str();
+    }
+
+    static TopoDS_Shape Read(const std::string& data) {
+      std::istringstream iss(data, std::ios::binary);
+      TopoDS_Shape shape;
+      BRep_Builder builder;
+      Message_ProgressRange progress;
+      BRepTools::Read(shape, iss, builder, progress);
+      return shape;
+    }
+  };
+
+  class GeomToolsWrapper {
+  public:
+    static std::string Write(const Handle(Geom2d_Curve)& geometry) {
+      std::ostringstream oss(std::ios::binary);
+      GeomTools::Write(geometry, oss);
+      return oss.str();
+    }
+
+    static Handle(Geom2d_Curve) Read(const std::string& data) {
+      std::istringstream iss(data, std::ios::binary);
+      Handle(Geom2d_Curve) geometry;
+      GeomTools::Read(geometry, iss);
+      return geometry;
+    }
+  };
