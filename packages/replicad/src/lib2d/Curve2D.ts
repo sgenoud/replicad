@@ -16,6 +16,12 @@ import { pnt } from "./ocWrapper.js";
 import { reprPnt } from "./utils.js";
 import { distance2d, samePoint } from "./vectorOperations.js";
 
+export function deserializeCurve2D(data: string): Curve2D {
+  const oc = getOC();
+  const handle = oc.GeomToolsWrapper.Read(data);
+  return new Curve2D(handle);
+}
+
 export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
   _boundingBox: null | BoundingBox2d;
   constructor(handle: Handle_Geom2d_Curve) {
@@ -51,12 +57,6 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
   serialize(): string {
     const oc = getOC();
     return oc.GeomToolsWrapper.Write(this.wrapped);
-  }
-
-  static deserializeCurve(data: string): Curve2D {
-    const oc = getOC();
-    const handle = oc.GeomToolsWrapper.Read(data);
-    return new Curve2D(handle);
   }
 
   value(parameter: number): Point2D {
