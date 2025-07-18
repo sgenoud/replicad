@@ -1,0 +1,16 @@
+---
+sidebar_position: 9
+title: Serialization
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import { iframePath } from "../../examples/helpers.js";
+import MyComponentSource from "!!raw-loader!../../examples/serialization.js";
+
+Here are a few examples of how replicad objects can be serialized and deserialized.
+
+2D Drawings and 3D Shapes each have their own schema. Shapes in particular can be
+serialized either to a string (recommended) or directly a file by using some raw
+OC utilities.
+
+<CodeBlock className="language-jsx">{MyComponentSource}</CodeBlock>
