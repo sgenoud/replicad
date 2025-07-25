@@ -14,4 +14,4 @@ is a fairly complex build (that uses blueprints and sweeps).
 
 And here is what the code looks like.
 
-<CodeBlock className="language-jsx">{MyComponentSource}</CodeBlock>
+<CodeBlock workbench className="language-jsx">{MyComponentSource}</CodeBlock>
