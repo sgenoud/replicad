@@ -203,9 +203,9 @@ export const shapeType = (shape: TopoDS_Shape): TopAbs_ShapeEnum => {
   return shape.ShapeType();
 };
 
-export function deserializeShape(data: string): Shape<TopoDS_Shape> {
+export function deserializeShape(data: string): AnyShape {
   const oc = getOC();
-  return new Shape(oc.BRepToolsWrapper.Read(data));
+  return cast(oc.BRepToolsWrapper.Read(data));
 }
 
 export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
