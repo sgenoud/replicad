@@ -272,8 +272,7 @@ mainBuild:
   - -sEXPORTED_RUNTIME_METHODS=["FS"]
   - -O3
   - -sDISABLE_EXCEPTION_CATCHING=1
-additionalCppCode: |2
-
+additionalCppCode: |
   class BRepToolsWrapper {
   public:
     static std::string Write(const TopoDS_Shape& shape) {
@@ -281,7 +280,6 @@ additionalCppCode: |2
       BRepTools::Write(shape, oss);
       return oss.str();
     }
-
     static TopoDS_Shape Read(const std::string& data) {
       std::istringstream iss(data, std::ios::binary);
       TopoDS_Shape shape;
@@ -292,7 +290,6 @@ additionalCppCode: |2
     }
   };
 
-
   class GeomToolsWrapper {
   public:
     static std::string Write(const Handle(Geom2d_Curve)& geometry) {
@@ -300,7 +297,6 @@ additionalCppCode: |2
       GeomTools::Write(geometry, oss);
       return oss.str();
     }
-
     static Handle(Geom2d_Curve) Read(const std::string& data) {
       std::istringstream iss(data, std::ios::binary);
       Handle(Geom2d_Curve) geometry;
