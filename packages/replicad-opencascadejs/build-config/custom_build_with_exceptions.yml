@@ -273,7 +273,6 @@ mainBuild:
   - -sALLOW_MEMORY_GROWTH=1
   - -sEXPORTED_RUNTIME_METHODS=["FS"]
   - -O3
-  - -sDISABLE_EXCEPTION_CATCHING=1
 additionalCppCode: |
   typedef Handle(IMeshTools_Context) Handle_IMeshTools_Context;
   class OCJS {
@@ -290,7 +289,6 @@ additionalCppCode: |
       BRepTools::Write(shape, oss);
       return oss.str();
     }
-
     static TopoDS_Shape Read(const std::string& data) {
       std::istringstream iss(data, std::ios::binary);
       TopoDS_Shape shape;
@@ -308,7 +306,6 @@ additionalCppCode: |
       GeomTools::Write(geometry, oss);
       return oss.str();
     }
-
     static Handle(Geom2d_Curve) Read(const std::string& data) {
       std::istringstream iss(data, std::ios::binary);
       Handle(Geom2d_Curve) geometry;
