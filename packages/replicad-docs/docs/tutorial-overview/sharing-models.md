@@ -48,6 +48,11 @@ function main(
 }
 ```
 
+The `defaultParams` object allows for a wide variety of parameter types. It is
+built using the [Leva](https://github.com/pmndrs/leva) GUI library.
+See [Leva's "inputs" documentation](https://github.com/pmndrs/leva/blob/main/docs/inputs.md)
+for details about all the possibilities.
+
 When sharing with the share application, a simple form will be offered to the
 user to change the parameters and customise the shape.
 
