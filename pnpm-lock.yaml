@@ -75,7 +75,7 @@ importers:
         specifier: ^2.4.1
         version: 2.4.1
       replicad-opencascadejs:
-        specifier: ^0.19.0
+        specifier: ^0.20.0
         version: link:../replicad-opencascadejs
       rollup:
         specifier: 3.28.0
@@ -120,13 +120,13 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       replicad:
-        specifier: ^0.19.1
+        specifier: ^0.20.0
         version: link:../replicad
       replicad-opencascadejs:
-        specifier: ^0.19.0
+        specifier: ^0.20.0
         version: link:../replicad-opencascadejs
       replicad-threejs-helper:
-        specifier: ^0.19.0
+        specifier: ^0.20.0
         version: link:../replicad-threejs-helper
       three:
         specifier: ^0.155.0
@@ -16679,6 +16679,7 @@ packages:
         integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==,
       }
     engines: { node: ">= 8" }
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   sourcemap-codec@1.4.8:
     resolution:
