@@ -39,7 +39,7 @@
     "debounce": "^1.2.1",
     "idb-keyval": "^6.2.1",
     "jszip": "^3.10.1",
-    "leva": "^0.9.35",
+    "leva": "^0.10.0",
     "mobx": "^6.13.5",
     "mobx-react": "^9.2.0",
     "mobx-state-tree": "^5.4.2",

@@ -6,7 +6,6 @@ export const InfoTopRight = styled.div`
   position: absolute;
   top: 3.5em;
   right: 2em;
-  max-width: 300px;
   padding: 8px;
   border-radius: 10px;
   max-height: calc(100% - 5em);
