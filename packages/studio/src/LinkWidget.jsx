@@ -36,21 +36,11 @@ const AdditionalInfo = styled.div`
 const TEST_URL =
   "https%3A%2F%2Fraw.githubusercontent.com%2Fsgenoud%2Freplicad%2Fmain%2Fpackages%2Freplicad-docs%2Fexamples%2FsimpleVase.js";
 
-export default function LinkWidget() {
+const useCode = (readyToBuild, setError) => {
   let { shapeURL } = useParams();
-
-  const [computedShapes, updateComputedShapes] = useState([]);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
   const [code, setCode] = useState(null);
-  const [labels, setLabels] = useState([]);
-  const [rawCode, setRawCode] = useState(null);
 
-  const [geometryHasBeenComputed, setGeometryHasBeenComputed] = useState(false);
-  const [defaultParams, setDefaultParams] = useState(null);
-  const paramsToCompute = useRef(null);
-  const readyToBuild = useRef(false);
+  const [rawCode, setRawCode] = useState(null);
 
   if (!shapeURL) {
     const hash = window.location.hash.substring(1);
@@ -65,22 +55,24 @@ export default function LinkWidget() {
   );
 
   useEffect(() => {
-    if (!shapeURL) return;
+    if (shapeURL) {
+      loadCodeFromUrl();
+    } else {
+      loadCodeFromParam();
+    }
 
-    axios
-      .get(codeUrl)
-      .then((response) => {
+    async function loadCodeFromUrl() {
+      try {
+        const response = await axios.get(codeUrl);
         setCode(response.data);
         readyToBuild.current = true;
-      })
-      .catch((e) => {
+      } catch (e) {
         console.error(e);
-        setError({ type: "url" });
-      });
-  }, [shapeURL]);
+        setError({ type: "url", codeUrl: codeUrl });
+      }
+    }
 
-  useEffect(() => {
-    const loadCodeFromParam = async () => {
+    async function loadCodeFromParam() {
       const hash = window.location.hash.substring(1);
       const hashParams = new URLSearchParams(hash);
       if (!hashParams.has("code")) {
@@ -95,11 +87,56 @@ export default function LinkWidget() {
       } catch (e) {
         setError({ type: "code" });
       }
-    };
-
-    if (shapeURL) return;
-    loadCodeFromParam();
+    }
   }, [shapeURL]);
+
+  const url = new URL(window.location.href);
+  url.pathname = "/workbench";
+  url.hash = "";
+  url.search = "";
+  if (shapeURL) {
+    url.searchParams.set("from-url", shapeURL);
+  } else {
+    const hashParams = new URLSearchParams();
+    hashParams.set("code", rawCode);
+    url.hash = hashParams.toString();
+  }
+  const workbenchUrl = url.toString();
+
+  let downloadURL = shapeURL && codeUrl;
+  if (!downloadURL) {
+    downloadURL = URL.createObjectURL(
+      new Blob([code], {
+        type: "application/javascript",
+      })
+    );
+  }
+
+  const updateCode = (newCode) => {
+    if (newCode === code) return;
+    setCode(newCode);
+    setError(null);
+  };
+
+  return { code, workbenchUrl, downloadURL, setCode: updateCode };
+};
+
+export default function LinkWidget() {
+  const [computedShapes, updateComputedShapes] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [labels, setLabels] = useState([]);
+
+  const [geometryHasBeenComputed, setGeometryHasBeenComputed] = useState(false);
+  const [defaultParams, setDefaultParams] = useState(null);
+  const paramsToCompute = useRef(null);
+  const readyToBuild = useRef(false);
+
+  const { code, workbenchUrl, downloadURL, setCode } = useCode(
+    readyToBuild,
+    setError
+  );
 
   useEffect(() => {
     if (!code) return;
@@ -147,12 +184,62 @@ export default function LinkWidget() {
     [code]
   );
 
-  const updateParams = (newParams) => {
-    if (readyToBuild.current && code) build(newParams);
-    else {
-      paramsToCompute.current = newParams;
-    }
+  const updateParams = useCallback(
+    (newParams) => {
+      if (readyToBuild.current && code) build(newParams);
+      else {
+        paramsToCompute.current = newParams;
+      }
+    },
+    [build, code]
+  );
+
+  useEffect(() => {
+    build();
+  }, [build]);
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const checkParam = (paramName) => {
+    return searchParams.get(paramName)?.toLowerCase() === "true";
   };
+
+  useEffect(() => {
+    if (!checkParam("enable-post-message-mode")) return;
+    if (defaultParams) updateParams(defaultParams);
+
+    const update = (event) => {
+      console.log(event);
+      if (
+        !event?.data ||
+        !event.data.type ||
+        event.data.type !== "replicad-command"
+      ) {
+        return;
+      }
+
+      if (event.data.command === "update") {
+        const newParams = { ...(defaultParams || {}), ...event.data.params };
+        updateParams(newParams);
+        return;
+      }
+
+      if (event.data.command === "download") {
+        saveShape("defaultShape", event.data.params.format || "stl", code);
+      }
+
+      if (event.data.command === "load-code") {
+        const newCode = event.data.params.code;
+        setCode(newCode);
+      }
+    };
+    console.warn("Unknown command received:", event?.data?.command);
+
+    window.addEventListener("message", update);
+    window.parent.postMessage("replicad-ready", "*");
+    return () => {
+      window.removeEventListener("message", update);
+    };
+  }, [updateParams, defaultParams]);
 
   if (error)
     return (
@@ -161,7 +248,8 @@ export default function LinkWidget() {
         {error.type === "url" && (
           <>
             <p>
-              We could not find a shape to render <a href={codeUrl}>here</a>.
+              We could not find a shape to render <a href={downloadURL}>here</a>
+              .
             </p>
             <p>
               Are you sure that the link is pointing to a raw javascript file?
@@ -178,30 +266,6 @@ export default function LinkWidget() {
       </CenterInfo>
     );
 
-  const url = new URL(window.location.href);
-  url.pathname = "/workbench";
-  url.hash = "";
-  url.search = "";
-  if (shapeURL) {
-    url.searchParams.set("from-url", shapeURL);
-  } else {
-    const hashParams = new URLSearchParams();
-    hashParams.set("code", rawCode);
-    url.hash = hashParams.toString();
-  }
-  const workbenchUrl = url.toString();
-
-  const searchParams = new URLSearchParams(window.location.search);
-
-  let downloadURL = shapeURL && codeUrl;
-  if (!downloadURL) {
-    downloadURL = URL.createObjectURL(
-      new Blob([code], {
-        type: "application/javascript",
-      })
-    );
-  }
-
   return (
     <>
       <StandardUI
@@ -210,34 +274,26 @@ export default function LinkWidget() {
         computedLabels={labels}
         defaultParams={defaultParams}
         updateParams={updateParams}
-        disableAutoPosition={
-          searchParams.get("disable-auto-position")?.toLowerCase() === "true"
-        }
-        hideGrid={searchParams.get("hide-grid")?.toLowerCase() === "true"}
-        orthographicCamera={
-          searchParams.get("ortho-camera")?.toLowerCase() === "true"
-        }
-        disableDamping={
-          searchParams.get("disable-damping")?.toLowerCase() === "true"
-        }
-        showParams={searchParams.get("params")?.toLowerCase() === "true"}
+        disableAutoPosition={checkParam("disable-auto-position")}
+        hideGrid={checkParam("hide-grid")}
+        orthographicCamera={checkParam("ortho-camera")}
+        disableDamping={checkParam("disable-damping")}
+        showParams={checkParam("params")}
+        disableMenus={checkParam("enable-post-message-mode")}
         onSave={(format) => saveShape("defaultShape", format, code)}
         canSave={geometryHasBeenComputed}
       />
       <AdditionalInfo>
         <a href="https://replicad.xyz" target="_blank">
-          {" "}
-          replicad
-        </a>{" "}
+          {" replicad "}
+        </a>
         |
         <a href={workbenchUrl} target="_blank">
-          {" "}
-          edit{" "}
+          {" edit "}
         </a>
         |
         <a href={downloadURL} target="_blank">
-          {" "}
-          source{" "}
+          {" source "}
         </a>
       </AdditionalInfo>
     </>

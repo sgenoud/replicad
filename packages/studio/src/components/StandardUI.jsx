@@ -93,6 +93,7 @@ export default function StandardUI({
   disableAutoPosition,
   disableDamping,
   showParams,
+  disableMenus,
   orthographicCamera,
   hideGrid,
   onSave,
@@ -118,7 +119,7 @@ export default function StandardUI({
         <LoadingScreen />
       )}
 
-      {defaultParams && (
+      {defaultParams && !disableMenus && (
         <AutoConfig
           hidden={niceViewer}
           collapsed={!showParams}
@@ -126,37 +127,39 @@ export default function StandardUI({
           updateParams={updateParams}
         />
       )}
-      <InfoMenu noBg hide={niceViewer}>
-        <ContextButton icon onClick={toggleNiceViewer}>
-          {niceViewer ? <Configure /> : <Focus />}
-        </ContextButton>
-        {!niceViewer && (
-          <>
-            <ContextButton
-              icon
-              disabled={!canSave}
-              onClick={() => onSave("stl")}
-            >
-              <Download text="STL" />
-            </ContextButton>
-            <ContextButton
-              icon
-              disabled={!canSave}
-              onClick={() => onSave("step")}
-            >
-              <Download text="STEP" />
-            </ContextButton>
-          </>
-        )}
-        {isInIframe && (
-          <ContextButton
-            icon
-            onClick={() => window.open(window.location, "_blank")}
-          >
-            <NewWindow />
+      {!disableMenus && (
+        <InfoMenu noBg hide={niceViewer}>
+          <ContextButton icon onClick={toggleNiceViewer}>
+            {niceViewer ? <Configure /> : <Focus />}
           </ContextButton>
-        )}
-      </InfoMenu>
+          {!niceViewer && (
+            <>
+              <ContextButton
+                icon
+                disabled={!canSave}
+                onClick={() => onSave("stl")}
+              >
+                <Download text="STL" />
+              </ContextButton>
+              <ContextButton
+                icon
+                disabled={!canSave}
+                onClick={() => onSave("step")}
+              >
+                <Download text="STEP" />
+              </ContextButton>
+            </>
+          )}
+          {isInIframe && (
+            <ContextButton
+              icon
+              onClick={() => window.open(window.location, "_blank")}
+            >
+              <NewWindow />
+            </ContextButton>
+          )}
+        </InfoMenu>
+      )}
       {isLoading && !!computedShapes?.length && (
         <LoadingInfo noBg hide={niceViewer}>
           <Loading size="3em" />
