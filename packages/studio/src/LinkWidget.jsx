@@ -208,7 +208,6 @@ export default function LinkWidget() {
     if (defaultParams) updateParams(defaultParams);
 
     const update = (event) => {
-      console.log(event);
       if (
         !event?.data ||
         !event.data.type ||

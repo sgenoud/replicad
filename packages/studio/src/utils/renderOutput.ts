@@ -179,8 +179,6 @@ function normalizeLabels<T extends Record<string, any>>(config: T) {
         position,
       } = labelConfig;
 
-      console.log(fromInput);
-
       const from =
         fromInput instanceof Vertex ? fromInput.asTuple() : fromInput;
       const to = toInput instanceof Vertex ? toInput.asTuple() : toInput;
