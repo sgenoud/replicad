@@ -273,7 +273,6 @@ mainBuild:
   - -sALLOW_MEMORY_GROWTH=1
   - -sEXPORTED_RUNTIME_METHODS=["FS"]
   - -O3
-  - -sDISABLE_EXCEPTION_CATCHING=1
 additionalCppCode: |
   typedef Handle(IMeshTools_Context) Handle_IMeshTools_Context;
   class OCJS {
