@@ -14,16 +14,30 @@ const FONT_REGISTER: Record<string, opentype.Font> = {};
  *
  * The font should be in TTF
  */
-export const loadFont = async (fontPath: string, fontFamily = "default") => {
-  // @ts-expect-error missing info in the types
-  const font: opentype.Font = await opentype.load(fontPath, null, {
-    isUrl: true,
-  });
+export async function loadFont(
+  fontPath: string | ArrayBuffer,
+  fontFamily = "default",
+  force = false
+) {
+  if (!force && FONT_REGISTER[fontFamily]) {
+    console.log(`Font ${fontFamily} already loaded`);
+    return FONT_REGISTER[fontFamily];
+  }
+
+  let fontData: ArrayBuffer;
+  if (typeof fontPath === "string") {
+    const response = await fetch(fontPath);
+    fontData = await response.arrayBuffer();
+  } else {
+    fontData = fontPath;
+  }
+
+  const font: opentype.Font = opentype.parse(fontData);
   FONT_REGISTER[fontFamily] = font;
   if (!FONT_REGISTER.default) FONT_REGISTER.default = font;
 
   return font;
-};
+}
 
 export const getFont = (fontFamily = "default") => {
   return FONT_REGISTER[fontFamily];
@@ -88,7 +102,13 @@ export function textBlueprints(
   text: string,
   { startX = 0, startY = 0, fontSize = 16, fontFamily = "default" } = {}
 ): Blueprints {
-  const font = getFont(fontFamily);
+  let font = getFont(fontFamily);
+  if (!font) {
+    console.warn(
+      `Font family "${fontFamily}" not found, please load it first, using the default`
+    );
+    font = getFont();
+  }
   const writtenText = font.getPath(text, -startX, -startY, fontSize);
   const blueprints = Array.from(sketchFontCommands(writtenText.commands));
   return organiseBlueprints(blueprints).mirror([0, 0]);
