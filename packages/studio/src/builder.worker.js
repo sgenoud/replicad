@@ -238,6 +238,12 @@ const exportShape = async (
   }));
 };
 
+const loadFont = async (fontData, fontName, forceUpdate = false) => {
+  const oc = await OC;
+  replicad.setOC(oc);
+  await replicad.loadFont(fontData, fontName, forceUpdate);
+};
+
 const faceInfo = (subshapeIndex, faceIndex, shapeId = "defaultShape") => {
   const face = SHAPES_MEMORY[shapeId]?.[subshapeIndex]?.shape.faces[faceIndex];
   if (!face) return null;
@@ -262,6 +268,7 @@ const edgeInfo = (subshapeIndex, edgeIndex, shapeId = "defaultShape") => {
 const service = {
   ready: () => OC.then(() => true),
   buildShapesFromCode,
+  loadFont,
   computeLabels,
   extractDefaultParamsFromCode,
   extractDefaultNameFromCode,

@@ -132,6 +132,7 @@ export default function LinkWidget() {
   const [defaultParams, setDefaultParams] = useState(null);
   const paramsToCompute = useRef(null);
   const readyToBuild = useRef(false);
+  const lastParams = useRef({});
 
   const { code, workbenchUrl, downloadURL, setCode } = useCode(
     readyToBuild,
@@ -179,6 +180,7 @@ export default function LinkWidget() {
         })
         .then((labels) => {
           setLabels(labels);
+          lastParams.current = buildParams;
         });
     },
     [code]
@@ -197,6 +199,14 @@ export default function LinkWidget() {
   useEffect(() => {
     build();
   }, [build]);
+
+  const loadFont = useCallback(
+    async (fontData, fontName, forceUpdate) => {
+      await builderAPI.ready();
+      await builderAPI.loadFont(fontData, fontName, forceUpdate);
+    },
+    [builderAPI]
+  );
 
   const searchParams = new URLSearchParams(window.location.search);
   const checkParam = (paramName) => {
@@ -224,6 +234,12 @@ export default function LinkWidget() {
 
       if (event.data.command === "download") {
         saveShape("defaultShape", event.data.params.format || "stl", code);
+      }
+
+      if (event.data.command === "load-font") {
+        const { font, fontName, forceUpdate } = event.data.params;
+        loadFont(font, fontName, forceUpdate);
+        return;
       }
 
       if (event.data.command === "load-code") {
