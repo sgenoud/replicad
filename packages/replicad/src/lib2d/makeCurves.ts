@@ -340,10 +340,11 @@ export function make2dInerpolatedBSplineCurve(
 export const make2dArcFromCenter = (
   startPoint: Point2D,
   endPoint: Point2D,
-  center: Point2D
+  center: Point2D,
+  longArc = false
 ) => {
   const midChord = scalarMultiply2d(add2d(startPoint, endPoint), 0.5);
-  const orientedRadius = distance2d(center, startPoint);
+  const orientedRadius = distance2d(center, startPoint) * (longArc ? -1 : 1);
 
   const midChordDir = normalize2d(subtract2d(midChord, center));
 

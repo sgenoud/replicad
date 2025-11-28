@@ -14,7 +14,12 @@ import {
   Handle_Geom2d_Curve,
   Handle_Geom_Surface,
 } from "replicad-opencascadejs";
-import { chamferCurves, Curve2D, filletCurves } from "./lib2d";
+import {
+  chamferCurves,
+  Curve2D,
+  dogboneFilletCurves,
+  filletCurves,
+} from "./lib2d";
 
 import {
   normalize2d,
@@ -41,11 +46,25 @@ type UVBounds = {
   vMax: number;
 };
 
+function buildCornerFunction(
+  radius: number | ((first: Curve2D, second: Curve2D) => Curve2D[]),
+  mode: "chamfer" | "fillet" | "dogbone"
+) {
+  if (typeof radius === "function") return radius;
+  const makeFn =
+    mode === "chamfer"
+      ? chamferCurves
+      : mode === "dogbone"
+      ? dogboneFilletCurves
+      : filletCurves;
+  return (first: Curve2D, second: Curve2D) => makeFn(first, second, radius);
+}
+
 export class BaseSketcher2d {
   protected pointer: Point2D;
   protected firstPoint: Point2D;
   protected pendingCurves: Curve2D[];
-  protected _nextCorner: { radius: number; mode: "fillet" | "chamfer" } | null;
+  protected _nextCorner: null | ((f: Curve2D, s: Curve2D) => Curve2D[]);
 
   constructor(origin: Point2D = [0, 0]) {
     this.pointer = origin;
@@ -83,12 +102,7 @@ export class BaseSketcher2d {
     const previousCurve = this.pendingCurves.pop();
     if (!previousCurve) throw new Error("bug in the custom corner algorithm");
 
-    const makeCorner =
-      this._nextCorner.mode === "chamfer" ? chamferCurves : filletCurves;
-
-    this.pendingCurves.push(
-      ...makeCorner(previousCurve, curve, this._nextCorner.radius)
-    );
+    this.pendingCurves.push(...this._nextCorner(previousCurve, curve));
     this._nextCorner = null;
   }
 
@@ -462,16 +476,19 @@ export class BaseSketcher2d {
   /**
    * Changes the corner between the previous and next segments.
    */
-  customCorner(radius: number, mode: "fillet" | "chamfer" = "fillet") {
+  customCorner(
+    radius: number | ((first: Curve2D, second: Curve2D) => Curve2D[]),
+    mode: "fillet" | "chamfer" = "fillet"
+  ) {
     if (!this.pendingCurves.length)
       throw new Error("You need a curve defined to fillet the angle");
 
-    this._nextCorner = { mode, radius };
+    this._nextCorner = buildCornerFunction(radius, mode);
     return this;
   }
 
   protected _customCornerLastWithFirst(
-    radius: number,
+    radius: number | ((f: Curve2D, s: Curve2D) => Curve2D[]),
     mode: "fillet" | "chamfer" = "fillet"
   ) {
     if (!radius) return;
@@ -482,9 +499,9 @@ export class BaseSketcher2d {
     if (!previousCurve || !curve)
       throw new Error("Not enough curves to close and fillet");
 
-    const makeCorner = mode === "chamfer" ? chamferCurves : filletCurves;
-
-    this.pendingCurves.push(...makeCorner(previousCurve, curve, radius));
+    this.pendingCurves.push(
+      ...buildCornerFunction(radius, mode)(previousCurve, curve)
+    );
   }
 
   protected _closeSketch(): void {
@@ -619,8 +636,8 @@ export default class FaceSketcher
    * first segments and returns the sketch.
    */
   closeWithCustomCorner(
-    radius: number,
-    mode: "fillet" | "chamfer" = "fillet"
+    radius: number | ((f: Curve2D, s: Curve2D) => Curve2D[]),
+    mode: "fillet" | "chamfer" | "dogbone" = "fillet"
   ): Sketch {
     this._closeSketch();
     this._customCornerLastWithFirst(radius, mode);
@@ -663,7 +680,7 @@ export class BlueprintSketcher
 
   closeWithCustomCorner(
     radius: number,
-    mode: "fillet" | "chamfer" = "fillet"
+    mode: "fillet" | "chamfer" | "dogbone" = "fillet"
   ): Blueprint {
     this._closeSketch();
     this._customCornerLastWithFirst(radius, mode);

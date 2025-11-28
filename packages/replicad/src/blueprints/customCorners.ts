@@ -1,5 +1,11 @@
 import { Corner, CornerFinder } from "../finders/cornerFinder";
-import { chamferCurves, Curve2D, filletCurves, samePoint } from "../lib2d";
+import {
+  chamferCurves,
+  Curve2D,
+  filletCurves,
+  samePoint,
+  dogboneFilletCurves,
+} from "../lib2d";
 import Blueprint from "./Blueprint";
 import Blueprints from "./Blueprints";
 import { Shape2D } from "./boolean2D";
@@ -94,4 +100,12 @@ export function chamfer2D(
   finder?: CornerFinder
 ) {
   return modifyCorner2D(chamferCurves, shape, radius, finder);
+}
+
+export function dogbone2D(
+  shape: Shape2D,
+  radius: number,
+  finder?: CornerFinder
+) {
+  return modifyCorner2D(dogboneFilletCurves, shape, radius, finder);
 }

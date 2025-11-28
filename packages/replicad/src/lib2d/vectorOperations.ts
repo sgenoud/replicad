@@ -41,6 +41,10 @@ export function crossProduct2d([x0, y0]: Point2D, [x1, y1]: Point2D): number {
   return x0 * y1 - y0 * x1;
 }
 
+export function dotProduct2d([x0, y0]: Point2D, [x1, y1]: Point2D): number {
+  return x0 * x1 + y0 * y1;
+}
+
 export const angle2d = (
   [x0, y0]: Point2D,
   [x1, y1]: Point2D = [0, 0]
