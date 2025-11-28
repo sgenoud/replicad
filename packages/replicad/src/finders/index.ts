@@ -27,3 +27,4 @@ export const combineFinderFilters = <Type, T, R = number>(
 export * from "./edgeFinder";
 export * from "./faceFinder";
 export * from "./cornerFinder";
+export * from "./helpers";

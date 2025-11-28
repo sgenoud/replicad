@@ -692,6 +692,11 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     if (orient === this.oc.TopAbs_Orientation.TopAbs_FORWARD) return "forward";
     return "backward";
   }
+
+  flipOrientation(): Type {
+    const flipped = this.wrapped.Reversed();
+    return cast(flipped) as unknown as Type;
+  }
 }
 
 export class Curve extends WrappingObj<CurveLike> {
@@ -848,6 +853,11 @@ export class Face extends Shape<TopoDS_Face> {
     return "backward";
   }
 
+  flipOrientation(): Face {
+    const flipped = this.wrapped.Reversed();
+    return cast(flipped) as Face;
+  }
+
   get geomType(): SurfaceType {
     const surface = this.surface;
     const geomType = surface.surfaceType;
@@ -888,6 +898,26 @@ export class Face extends Shape<TopoDS_Face> {
     return point;
   }
 
+  uvCoordinates(point: Point): [number, number] {
+    const r = GCWithScope();
+    const surface = r(this.oc.BRep_Tool.Surface_2(this.wrapped));
+
+    const projectedPoint = r(
+      new this.oc.GeomAPI_ProjectPointOnSurf_2(
+        r(asPnt(point)),
+        surface,
+        this.oc.Extrema_ExtAlgo.Extrema_ExtAlgo_Grad as any
+      )
+    );
+
+    const uPtr = { current: 0 };
+    const vPtr = { current: 0 };
+
+    // @ts-expect-error missing type in oc
+    projectedPoint.LowerDistanceParameters(uPtr, vPtr);
+    return [uPtr.current, vPtr.current];
+  }
+
   normalAt(locationVector?: Point): Vector {
     let u = 0;
     let v = 0;
@@ -899,23 +929,7 @@ export class Face extends Shape<TopoDS_Face> {
       u = 0.5 * (uMin + uMax);
       v = 0.5 * (vMin + vMax);
     } else {
-      const surface = r(this.oc.BRep_Tool.Surface_2(this.wrapped));
-
-      const projectedPoint = r(
-        new this.oc.GeomAPI_ProjectPointOnSurf_2(
-          r(asPnt(locationVector)),
-          surface,
-          this.oc.Extrema_ExtAlgo.Extrema_ExtAlgo_Grad as any
-        )
-      );
-
-      const uPtr = { current: 0 };
-      const vPtr = { current: 0 };
-
-      // @ts-expect-error missing type in oc
-      projectedPoint.LowerDistanceParameters(uPtr, vPtr);
-      u = uPtr.current;
-      v = vPtr.current;
+      [u, v] = this.uvCoordinates(locationVector);
     }
 
     const p = r(new this.oc.gp_Pnt_1());

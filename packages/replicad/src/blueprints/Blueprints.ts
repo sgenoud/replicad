@@ -4,12 +4,13 @@ import CompoundBlueprint from "./CompoundBlueprint";
 import { DrawingInterface } from "./lib";
 import { asSVG, viewbox } from "./svg";
 
-import { Face } from "../shapes";
+import { AnyShape, Face } from "../shapes";
 
 import { Plane, PlaneName, Point } from "../geom";
 
 import { ScaleMode } from "../curves";
 import Sketches from "../sketches/Sketches";
+import { SingleFace } from "../finders";
 
 export default class Blueprints implements DrawingInterface {
   blueprints: Array<Blueprint | CompoundBlueprint>;
@@ -83,6 +84,22 @@ export default class Blueprints implements DrawingInterface {
     return new Sketches(
       this.blueprints.map((bp) => bp.sketchOnFace(face, scaleMode))
     );
+  }
+
+  punchHole(
+    shape: AnyShape,
+    face: SingleFace,
+    options: {
+      height?: number;
+      origin?: Point;
+      draftAngle?: number;
+    } = {}
+  ) {
+    let outShape = shape;
+    this.blueprints.forEach((b) => {
+      outShape = b.punchHole(outShape, face, options);
+    });
+    return outShape;
   }
 
   toSVGViewBox(margin = 1) {

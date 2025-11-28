@@ -39,6 +39,7 @@ import { fillet2D, chamfer2D } from "./blueprints/customCorners";
 import { edgeToCurve } from "./curves";
 import { BSplineApproximationConfig } from "./shapeHelpers";
 import { approximateForSVG } from "./blueprints/approximations";
+import { SingleFace } from "./finders";
 
 /**
  * @categoryDescription Drawing
@@ -189,6 +190,19 @@ export class Drawing implements DrawingInterface {
   sketchOnFace(face: Face, scaleMode: ScaleMode): SketchInterface | Sketches {
     if (!this.innerShape) throw new Error("Trying to sketch an empty drawing");
     return this.innerShape.sketchOnFace(face, scaleMode);
+  }
+
+  punchHole(
+    shape: AnyShape,
+    faceFinder: SingleFace,
+    options: {
+      height?: number;
+      origin?: Point;
+      draftAngle?: number;
+    } = {}
+  ): AnyShape {
+    if (!this.innerShape) return shape;
+    return this.innerShape.punchHole(shape, faceFinder, options);
   }
 
   toSVG(margin?: number): string {

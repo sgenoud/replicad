@@ -21,7 +21,7 @@ import {
   approximateAsSvgCompatibleCurve,
 } from "../lib2d";
 import { assembleWire } from "../shapeHelpers";
-import { Face } from "../shapes";
+import { AnyShape, cast, Face } from "../shapes";
 import Sketch from "../sketches/Sketch";
 
 import { getOC } from "../oclib.js";
@@ -31,6 +31,7 @@ import { DrawingInterface } from "./lib";
 import round5 from "../utils/round5";
 import { asSVG, viewbox } from "./svg";
 import { GCWithScope } from "../register";
+import { getSingleFace, SingleFace } from "../finders";
 
 /**
  * A Blueprint is an abstract Sketch, a 2D set of curves that can then be
@@ -194,6 +195,54 @@ export default class Blueprint implements DrawingInterface {
       sketch.baseFace = face;
     }
     return sketch;
+  }
+
+  subFace(face: Face, origin?: Point | null): Face {
+    let subFace = this.translate(face.uvCoordinates(origin || face.center))
+      .sketchOnFace(face, "original")
+      .face();
+
+    if (subFace.orientation !== face.orientation) {
+      subFace = subFace.flipOrientation();
+    }
+    return subFace;
+  }
+
+  punchHole(
+    shape: AnyShape,
+    face: SingleFace,
+    {
+      height = null,
+      origin = null,
+      draftAngle = 0,
+    }: {
+      height?: number | null;
+      origin?: Point | null;
+      draftAngle?: number;
+    } = {}
+  ) {
+    const oc = getOC();
+    const gc = GCWithScope();
+
+    const foundFace = getSingleFace(face, shape);
+    const hole = this.subFace(foundFace, origin);
+
+    const maker = gc(
+      new oc.BRepFeat_MakeDPrism_1(
+        shape.wrapped,
+        hole.wrapped,
+        foundFace.wrapped,
+        draftAngle * DEG2RAD,
+        0,
+        false
+      )
+    );
+    if (height) {
+      maker.Perform_1(height);
+    } else {
+      maker.PerformThruAll();
+    }
+    return cast(maker.Shape());
   }
 
   toSVGPathD() {

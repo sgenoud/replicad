@@ -3,12 +3,13 @@ import Blueprint from "./Blueprint";
 import { DrawingInterface } from "./lib";
 import { asSVG, viewbox } from "./svg";
 
-import { Face } from "../shapes";
+import { AnyShape, Face } from "../shapes";
 
 import { Plane, PlaneName, Point } from "../geom";
 
 import { ScaleMode } from "../curves";
 import CompoundSketch from "../sketches/CompoundSketch";
+import { SingleFace } from "../finders";
 
 export default class CompoundBlueprint implements DrawingInterface {
   blueprints: Blueprint[];
@@ -100,6 +101,18 @@ export default class CompoundBlueprint implements DrawingInterface {
     );
 
     return new CompoundSketch(sketches);
+  }
+
+  punchHole(
+    shape: AnyShape,
+    face: SingleFace,
+    options: {
+      height?: number;
+      origin?: Point;
+      draftAngle?: number;
+    } = {}
+  ): AnyShape {
+    return this.blueprints[0].punchHole(shape, face, options);
   }
 
   toSVGViewBox(margin = 1) {
