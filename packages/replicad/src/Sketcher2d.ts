@@ -489,7 +489,7 @@ export class BaseSketcher2d {
 
   protected _customCornerLastWithFirst(
     radius: number | ((f: Curve2D, s: Curve2D) => Curve2D[]),
-    mode: "fillet" | "chamfer" = "fillet"
+    mode: "fillet" | "chamfer" | "dogbone" = "fillet"
   ) {
     if (!radius) return;
 
