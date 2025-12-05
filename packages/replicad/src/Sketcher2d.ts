@@ -82,6 +82,39 @@ export class BaseSketcher2d {
     return [u, v];
   }
 
+  /**
+   * Returns the current pen position as [x, y] coordinates
+   * 
+   * Added By Ben Harper 5/12/2025 
+
+   * @category Drawing State
+   */
+  get penPosition(): Point2D {
+    return this.pointer;
+  }
+
+  /**
+   * Returns the current pen angle in degrees
+   * 
+   * The angle represents the tangent direction at the current pen position,
+   * based on the last drawing operation (line, arc, bezier, etc.).
+   * Returns 0 if nothing has been drawn yet.
+   * 
+   * @category Drawing State
+   * 
+   * Added By Ben Harper 5/12/2025 to solve issue with being unable to draw a line perpendicular 
+   * to the tangent extension at the end of a .tangentArc() that did not finish at a known angle. 
+   */
+  get penAngle(): number {
+    if (this.pendingCurves.length === 0) return 0;
+    
+    const lastCurve = this.pendingCurves[this.pendingCurves.length - 1];
+    const [dx, dy] = lastCurve.tangentAt(1);
+    const angleInRadians = Math.atan2(dy, dx);
+    
+    return angleInRadians * RAD2DEG;
+  }
+
   movePointerTo(point: Point2D): this {
     if (this.pendingCurves.length)
       throw new Error(
