@@ -1,7 +1,7 @@
 ## replicad studio
 
-This repo contains the code of the [replicad studio
-website](studio.replicad.xyz).
+This repo contains the code of the replicad studio
+website https://studio.replicad.xyz/
 
 You can run it locall by cloning the repo and running (you can use another
 package manager as well):
