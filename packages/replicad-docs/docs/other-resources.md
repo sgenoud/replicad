@@ -2,7 +2,7 @@
 sidebar_position: 6
 ---
 
-# Other ressources
+# Other resources
 
 ## [Questions and community][forum]
 
