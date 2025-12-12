@@ -1,6 +1,6 @@
 {
   "name": "replicad-docs",
-  "version": "0.20.1",
+  "version": "0.20.5",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
