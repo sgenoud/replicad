@@ -93,6 +93,10 @@ export class BaseSketcher2d {
   }
 
   lineTo(point: Point2D): this {
+    if (samePoint(point, this.firstPoint)) {
+      point = this.firstPoint
+    }
+
     const curve = make2dSegmentCurve(
       this._convertToUV(this.pointer),
       this._convertToUV(point)
@@ -149,6 +153,10 @@ export class BaseSketcher2d {
   }
 
   threePointsArcTo(end: Point2D, midPoint: Point2D): this {
+    if (samePoint(end, this.firstPoint)) {
+      end = this.firstPoint
+    }
+
     this.saveCurve(
       make2dThreePointArc(
         this._convertToUV(this.pointer),
@@ -174,6 +182,10 @@ export class BaseSketcher2d {
   }
 
   sagittaArcTo(end: Point2D, sagitta: number): this {
+    if (samePoint(end, this.firstPoint)) {
+      end = this.firstPoint
+    }
+
     const [x0, y0] = this.pointer;
     const [x1, y1] = end;
 
@@ -216,6 +228,10 @@ export class BaseSketcher2d {
   }
 
   bulgeArcTo(end: Point2D, bulge: number): this {
+    if (samePoint(end, this.firstPoint)) {
+      end = this.firstPoint
+    }
+
     if (!bulge) return this.lineTo(end);
     const halfChord = distance2d(this.pointer, end) / 2;
     const bulgeAsSagitta = -bulge * halfChord;
@@ -239,6 +255,10 @@ export class BaseSketcher2d {
   }
 
   tangentArcTo(end: Point2D): this {
+    if (samePoint(end, this.firstPoint)) {
+      end = this.firstPoint
+    }
+
     const previousCurve = this.pendingCurves.length
       ? this.pendingCurves[this.pendingCurves.length - 1]
       : null;
@@ -271,6 +291,10 @@ export class BaseSketcher2d {
     longAxis = false,
     sweep = false
   ): this {
+    if (samePoint(end, this.firstPoint)) {
+      end = this.firstPoint
+    }
+
     let rotationAngle = rotation;
     let majorRadius = horizontalRadius;
     let minorRadius = verticalRadius;
@@ -376,6 +400,10 @@ export class BaseSketcher2d {
   }
 
   bezierCurveTo(end: Point2D, controlPoints: Point2D | Point2D[]): this {
+    if (samePoint(end, this.firstPoint)) {
+      end = this.firstPoint
+    }
+
     let cp: Point2D[];
     if (controlPoints.length === 2 && !Array.isArray(controlPoints[0])) {
       cp = [controlPoints as Point2D];
@@ -408,6 +436,10 @@ export class BaseSketcher2d {
   }
 
   smoothSplineTo(end: Point2D, config?: SplineConfig): this {
+    if (samePoint(end, this.firstPoint)) {
+      end = this.firstPoint
+    }
+
     const { endTangent, startTangent, startFactor, endFactor } =
       defaultsSplineConfig(config);
 
