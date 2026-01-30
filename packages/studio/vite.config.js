@@ -63,7 +63,7 @@ export default defineConfig({
       },
     }),
   ],
-  optimizeDeps: { exclude: ["replicad"] },
+  optimizeDeps: { exclude: ["replicad", "manifold-3d"] },
   build: {
     outDir: "dist",
     manifest: true,

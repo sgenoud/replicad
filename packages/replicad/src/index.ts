@@ -18,10 +18,13 @@ export type { GenericSketcher, SplineConfig, Point2D };
 
 export * from "./constants";
 export * from "./oclib";
+export * from "./manifoldlib";
 export * from "./register";
 export * from "./geom";
 export * from "./geomHelpers";
 export * from "./shapes";
+export * from "./shapeInterfaces";
+export * from "./meshShapes";
 export * from "./shapeHelpers";
 export * from "./measureShape";
 export * from "./finders";

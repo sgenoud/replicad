@@ -1,5 +1,6 @@
 import { expose } from "comlink";
 import * as replicad from "replicad";
+import * as manifoldModule from "manifold-3d";
 
 import initOpenCascade from "./initOCSingle.js";
 import initOpenCascadeWithExceptions from "./initOCWithExceptions.js";
@@ -9,6 +10,27 @@ import { runInContext, buildModuleEvaluator } from "./vm";
 import { renderOutput, ShapeStandardizer } from "./utils/renderOutput";
 
 self.replicad = replicad;
+
+const loadManifold = async () => {
+  const moduleOrFactory = manifoldModule.default || manifoldModule;
+  const loadedModule =
+    typeof moduleOrFactory === "function"
+      ? await moduleOrFactory()
+      : moduleOrFactory;
+
+  const manifold = loadedModule?.Manifold
+    ? loadedModule
+    : loadedModule?.default?.Manifold
+    ? loadedModule.default
+    : null;
+
+  console.log(manifold);
+  if (manifold?.Manifold) replicad.setManifold(manifold);
+
+  return manifold;
+};
+
+const MANIFOLD = loadManifold();
 
 export function runInContextAsOC(code, context = {}) {
   const editedText = `
@@ -97,6 +119,7 @@ const computeLabels = async (code, params) => {
 
   const oc = await OC;
   replicad.setOC(oc);
+  await MANIFOLD;
   if (!replicad.getFont())
     await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
 
@@ -173,6 +196,7 @@ const formatException = (oc, e) => {
 const buildShapesFromCode = async (code, params) => {
   const oc = await OC;
   replicad.setOC(oc);
+  await MANIFOLD;
   if (!replicad.getFont())
     await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
 

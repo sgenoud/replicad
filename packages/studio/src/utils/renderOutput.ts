@@ -13,8 +13,10 @@ import {
 import normalizeColor from "./normalizeColor";
 
 interface Meshable {
-  mesh: (config: { tolerance: number; angularTolerance: number }) => any;
-  meshEdges: (config: { keepMesh: boolean }) => any;
+  mesh: (
+    config?: { tolerance: number; angularTolerance: number } | number
+  ) => any;
+  meshEdges?: (config: { keepMesh: boolean }) => any;
 }
 
 interface SVGable {
@@ -83,7 +85,7 @@ const isSVGable = (shape: any): shape is SVGable => {
 };
 
 const isMeshable = (shape: any): shape is Meshable => {
-  return !!(shape.mesh && shape.meshEdges);
+  return !!shape?.mesh;
 };
 
 function createBasicShapeConfig(
@@ -284,11 +286,38 @@ function renderMesh(shapeConfig: MeshableConfiguration) {
   };
 
   try {
-    shapeInfo.mesh = shape.mesh({
-      tolerance: 0.1,
-      angularTolerance: 30,
-    });
-    shapeInfo.edges = shape.meshEdges({ keepMesh: true });
+    const hasMeshEdges = typeof shape.meshEdges === "function";
+    const mesh = hasMeshEdges
+      ? shape.mesh({
+          tolerance: 0.1,
+          angularTolerance: 30,
+        })
+      : shape.mesh();
+    if (mesh) {
+      if (!Array.isArray(mesh.vertices) && ArrayBuffer.isView(mesh.vertices)) {
+        mesh.vertices = Array.from(mesh.vertices);
+      }
+      if (
+        !Array.isArray(mesh.triangles) &&
+        ArrayBuffer.isView(mesh.triangles)
+      ) {
+        mesh.triangles = Array.from(mesh.triangles);
+      }
+      if (!Array.isArray(mesh.normals) && ArrayBuffer.isView(mesh.normals)) {
+        mesh.normals = Array.from(mesh.normals);
+      }
+      if (
+        Array.isArray(mesh.normals) &&
+        Array.isArray(mesh.vertices) &&
+        mesh.normals.length !== mesh.vertices.length
+      ) {
+        delete mesh.normals;
+      }
+    }
+    shapeInfo.mesh = mesh;
+    if (hasMeshEdges) {
+      shapeInfo.edges = shape.meshEdges({ keepMesh: true });
+    }
   } catch (e) {
     console.error(e);
     shapeInfo.error = true;

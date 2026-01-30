@@ -1,7 +1,10 @@
 import { WrappingObj, GCWithScope } from "./register.js";
 import { Vector, Point, Plane, PlaneName, asPnt, BoundingBox } from "./geom.js";
+import type { Shape3DLike } from "./shapeInterfaces.js";
 import { DEG2RAD, HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
+import { getManifold } from "./manifoldlib.js";
+import { MeshShape } from "./meshShapes.js";
 
 import {
   TopoDS_Face,
@@ -1042,7 +1045,16 @@ export class Face extends Shape<TopoDS_Face> {
   }
 }
 
-export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
+export class _3DShape<Type extends TopoDS_Shape>
+  extends Shape<Type>
+  implements
+    Shape3DLike<
+      Shape3D,
+      ShapeMesh,
+      AnyShape,
+      { tolerance?: number; angularTolerance?: number }
+    >
+{
   /**
    * Builds a new shape out of the two, fused, shapes
    *
@@ -1109,7 +1121,7 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
    *
    * @category Shape Modifications
    */
-  intersect(tool: AnyShape): AnyShape {
+  intersect(tool: AnyShape): Shape3D {
     const r = GCWithScope();
     const progress = r(new this.oc.Message_ProgressRange_1());
     const intersector = r(
@@ -1122,6 +1134,68 @@ export class _3DShape<Type extends TopoDS_Shape> extends Shape<Type> {
     if (!isShape3D(newShape))
       throw new Error("Could not intersect as a 3d shape");
     return newShape;
+  }
+
+  meshShape(options?: {
+    tolerance?: number;
+    angularTolerance?: number;
+  }): MeshShape {
+    const { triangles, vertices, normals } = this.mesh(options);
+    const manifold = getManifold();
+    const tol = options?.tolerance ?? 1e-6;
+    const scale = tol === 0 ? 0 : 1 / tol;
+    const keyFor = (x: number, y: number, z: number): string => {
+      if (scale === 0) return `${x}|${y}|${z}`;
+      return `${Math.round(x * scale)}|${Math.round(y * scale)}|${Math.round(
+        z * scale
+      )}`;
+    };
+    const mergeFrom: number[] = [];
+    const mergeTo: number[] = [];
+    const seen = new Map<string, number>();
+    for (let i = 0; i < vertices.length; i += 3) {
+      const x = vertices[i];
+      const y = vertices[i + 1];
+      const z = vertices[i + 2];
+      const key = keyFor(x, y, z);
+      const existing = seen.get(key);
+      const idx = i / 3;
+      if (existing !== undefined) {
+        mergeFrom.push(idx);
+        mergeTo.push(existing);
+      } else {
+        seen.set(key, idx);
+      }
+    }
+    const numProp = normals.length === vertices.length ? 6 : 3;
+    const vertProperties =
+      numProp === 3
+        ? new Float32Array(vertices)
+        : (() => {
+            const count = vertices.length / 3;
+            const props = new Float32Array(count * numProp);
+            for (let i = 0; i < count; i++) {
+              const vBase = i * 3;
+              const pBase = i * numProp;
+              props[pBase] = vertices[vBase];
+              props[pBase + 1] = vertices[vBase + 1];
+              props[pBase + 2] = vertices[vBase + 2];
+              props[pBase + 3] = normals[vBase];
+              props[pBase + 4] = normals[vBase + 1];
+              props[pBase + 5] = normals[vBase + 2];
+            }
+            return props;
+          })();
+    const meshData = {
+      vertProperties,
+      triVerts: new Uint32Array(triangles),
+      numProp,
+      mergeFromVert: mergeFrom.length ? new Uint32Array(mergeFrom) : undefined,
+      mergeToVert: mergeTo.length ? new Uint32Array(mergeTo) : undefined,
+    };
+    const mesh = manifold.Mesh ? new manifold.Mesh(meshData) : meshData;
+    const manifoldShape = new manifold.Manifold(mesh as any);
+    return new MeshShape(manifoldShape);
   }
 
   /**

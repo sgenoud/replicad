@@ -585,6 +585,13 @@ export class BoundingBox extends WrappingObj<Bnd_Box> {
     super(boundBox);
   }
 
+  static fromBounds(min: Point, max: Point): BoundingBox {
+    const box = new BoundingBox();
+    // @ts-expect-error oc typings don't include Bnd_Box::Update
+    box.wrapped.Update(min[0], min[1], min[2], max[0], max[1], max[2]);
+    return box;
+  }
+
   get repr(): string {
     const [min, max] = this.bounds;
     return `${new Vector(min).repr} - ${new Vector(max).repr}`;
