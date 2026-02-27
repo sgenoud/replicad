@@ -251,13 +251,13 @@ export const make2dBezierCurve = (
   const arrayOfPoints = r(
     new oc.TColgp_Array1OfPnt2d_2(1, controls.length + 2)
   );
-  arrayOfPoints.SetValue(1, r(pnt(startPoint)));
+  arrayOfPoints.SetValue_1(1, r(pnt(startPoint)));
 
   controls.forEach((p, i) => {
-    arrayOfPoints.SetValue(i + 2, r(pnt(p)));
+    arrayOfPoints.SetValue_1(i + 2, r(pnt(p)));
   });
 
-  arrayOfPoints.SetValue(controls.length + 2, r(pnt(endPoint)));
+  arrayOfPoints.SetValue_1(controls.length + 2, r(pnt(endPoint)));
 
   const bezCurve = new oc.Geom2d_BezierCurve_1(arrayOfPoints);
   gc();
@@ -299,7 +299,7 @@ export function make2dInerpolatedBSplineCurve(
   const pnts = r(new oc.TColgp_Array1OfPnt2d_2(1, points.length));
 
   points.forEach((point, index) => {
-    pnts.SetValue(index + 1, r(pnt(point)));
+    pnts.SetValue_1(index + 1, r(pnt(point)));
   });
 
   let splineBuilder: Geom2dAPI_PointsToBSpline;

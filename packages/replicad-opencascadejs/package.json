@@ -1,10 +1,11 @@
 {
   "name": "replicad-opencascadejs",
-  "version": "0.23.0",
+  "version": "0.21.0-v8.25",
   "description": "OpencascadeJS custom build for replicad",
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "",
   "license": "MIT",
+  "type": "module",
   "main": "src/replicad_single.js",
   "directories": {
     "lib": "src",

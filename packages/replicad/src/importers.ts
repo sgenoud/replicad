@@ -57,7 +57,7 @@ export async function importSTL(STLBlob: Blob) {
   const reader = r(new oc.StlAPI_Reader());
   const readShape = r(new oc.TopoDS_Shell());
 
-  if (reader.Read(readShape, fileName)) {
+  if (reader.Read_1(readShape, fileName)) {
     oc.FS.unlink("/" + fileName);
 
     const shapeUpgrader = r(
@@ -67,7 +67,7 @@ export async function importSTL(STLBlob: Blob) {
     const upgradedShape = r(shapeUpgrader.Shape());
 
     const solidSTL = r(new oc.BRepBuilderAPI_MakeSolid_1());
-    solidSTL.Add(oc.TopoDS.Shell_1(upgradedShape));
+    solidSTL.Add(oc.TopoDS_Cast.Shell(upgradedShape));
     const asSolid = r(solidSTL.Solid());
 
     const shape = cast(asSolid);

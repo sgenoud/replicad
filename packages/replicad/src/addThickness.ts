@@ -15,11 +15,13 @@ import { localGC } from "./register";
 import { Vector, makeAx1, Point } from "./geom";
 import { DEG2RAD } from "./constants";
 import {
-  Handle_Law_Function,
+  Law_Function,
   Law_Linear,
   Law_S,
   TopoDS_Shape,
 } from "replicad-opencascadejs";
+
+type Handle_Law_Function = ReturnType<Law_Function["Trim"]>;
 
 export const basicFaceExtrusion = (face: Face, extrusionVec: Vector): Solid => {
   const oc = getOC();

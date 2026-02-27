@@ -88,7 +88,7 @@ export const makeHelix = (
   const geomLine = r(
     new oc.Geom2d_Line_3(
       r(new oc.gp_Pnt2d_3(0.0, 0.0)),
-      r(new oc.gp_Dir2d_4(myDir, pitch))
+      r(new oc.gp_Dir2d_5(myDir, pitch))
     )
   );
 
@@ -183,7 +183,7 @@ export const makeBSplineApproximation = function makeBSplineApproximation(
   const pnts = r(new oc.TColgp_Array1OfPnt_2(1, points.length));
 
   points.forEach((point, index) => {
-    pnts.SetValue(index + 1, r(asPnt(point)));
+    pnts.SetValue_1(index + 1, r(asPnt(point)));
   });
 
   let splineBuilder: GeomAPI_PointsToBSpline;
@@ -229,7 +229,7 @@ export const makeBezierCurve = (points: Point[]): Edge => {
   const oc = getOC();
   const arrayOfPoints = new oc.TColgp_Array1OfPnt_2(1, points.length);
   points.forEach((p, i) => {
-    arrayOfPoints.SetValue(i + 1, asPnt(p));
+    arrayOfPoints.SetValue_1(i + 1, asPnt(p));
   });
   const bezCurve = new oc.Geom_BezierCurve_1(arrayOfPoints);
 
@@ -445,7 +445,8 @@ function convertToJSArray(arrayOfPoints: TColgp_Array2OfPnt): gp_Pnt[][] {
     const row: gp_Pnt[] = [];
     newArray.push(row);
     for (let c = arrayOfPoints.LowerCol(); c <= arrayOfPoints.UpperCol(); c++) {
-      const pnt = arrayOfPoints.Value(r, c);
+      // @ts-expect-error Value binding missing from TColgp_Array2OfPnt d.ts
+      const pnt: gp_Pnt = arrayOfPoints.Value(r, c);
       row.push(pnt);
     }
   }

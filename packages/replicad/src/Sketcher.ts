@@ -19,7 +19,7 @@ import {
   GenericSketcher,
 } from "./sketcherlib.js";
 import { CurveLike, Edge, Wire } from "./shapes.js";
-import { Handle_Geom_BezierCurve } from "replicad-opencascadejs";
+import { Geom_BezierCurve } from "replicad-opencascadejs";
 import Sketch from "./sketches/Sketch.js";
 
 /**
@@ -391,7 +391,7 @@ export default class Sketcher implements GenericSketcher<Sketch> {
     } else if (previousEdge.geomType === "BEZIER_CURVE") {
       const rawCurve = (
         r(previousEdge.curve).wrapped as CurveLike & {
-          Bezier: () => Handle_Geom_BezierCurve;
+          Bezier: () => { get(): Geom_BezierCurve };
         }
       )
         .Bezier()

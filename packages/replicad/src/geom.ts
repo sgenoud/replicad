@@ -44,7 +44,7 @@ export const makeAx3 = (center: Point, dir: Point, xDir?: Point): gp_Ax3 => {
     axis = new oc.gp_Ax3_3(origin, direction, xDirection);
     xDirection.delete();
   } else {
-    axis = new oc.gp_Ax3_4(origin, direction);
+    axis = new oc.gp_Ax3_5(origin, direction);
   }
   origin.delete();
   direction.delete();
@@ -75,7 +75,7 @@ export const makeAx2 = (center: Point, dir: Point, xDir?: Point): gp_Ax2 => {
     axis = new oc.gp_Ax2_2(origin, direction, xDirection);
     xDirection.delete();
   } else {
-    axis = new oc.gp_Ax2_3(origin, direction);
+    axis = new oc.gp_Ax2_4(origin, direction);
   }
   origin.delete();
   direction.delete();
@@ -193,7 +193,7 @@ export class Vector extends WrappingObj<gp_Vec> {
   }
 
   toDir(): gp_Dir {
-    return new this.oc.gp_Dir_3(this.wrapped.XYZ());
+    return new this.oc.gp_Dir_4(this.wrapped.XYZ());
   }
 
   rotate(
@@ -357,7 +357,8 @@ export class Transformation extends WrappingObj<gp_Trsf> {
     const transformer = new this.oc.BRepBuilderAPI_Transform_2(
       shape,
       this.wrapped,
-      true
+      true,
+      false
     );
     return transformer.ModifiedShape(shape);
   }
@@ -627,19 +628,15 @@ export class BoundingBox extends WrappingObj<Bnd_Box> {
   }
 
   get bounds(): [SimplePoint, SimplePoint] {
-    const xMin = { current: 0 };
-    const yMin = { current: 0 };
-    const zMin = { current: 0 };
-    const xMax = { current: 0 };
-    const yMax = { current: 0 };
-    const zMax = { current: 0 };
-
-    // @ts-ignore missing type in oc
-    this.wrapped.Get(xMin, yMin, zMin, xMax, yMax, zMax);
-    return [
-      [xMin.current, yMin.current, zMin.current],
-      [xMax.current, yMax.current, zMax.current],
+    const cornerMin = this.wrapped.CornerMin();
+    const cornerMax = this.wrapped.CornerMax();
+    const result: [SimplePoint, SimplePoint] = [
+      [cornerMin.X(), cornerMin.Y(), cornerMin.Z()],
+      [cornerMax.X(), cornerMax.Y(), cornerMax.Z()],
     ];
+    cornerMin.delete();
+    cornerMax.delete();
+    return result;
   }
 
   get center(): SimplePoint {

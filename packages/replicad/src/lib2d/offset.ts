@@ -86,7 +86,7 @@ export const make2dOffset = (
 
   const offsetCurve = new Curve2D(
     new oc.Handle_Geom2d_Curve_2(
-      new oc.Geom2d_OffsetCurve(curve.wrapped, offset, true)
+      new oc.Geom2d_OffsetCurve_1(curve.wrapped, offset, true)
     )
   );
 

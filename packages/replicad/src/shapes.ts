@@ -32,7 +32,6 @@ import {
   Adaptor3d_Surface,
   BRepAdaptor_Curve,
   BRepAdaptor_CompCurve,
-  BRepAdaptor_Surface,
 } from "replicad-opencascadejs";
 import { EdgeFinder, FaceFinder } from "./finders/index.js";
 import {
@@ -190,12 +189,12 @@ export const iterTopo = function* iterTopo(
     asTopo(topo),
     asTopo("shape")
   );
-  const hashes = new Map();
+  const seen: TopoDS_Shape[] = [];
   while (explorer.More()) {
     const item = explorer.Current();
-    const hash = item.HashCode(HASH_CODE_MAX);
-    if (!hashes.get(hash)) {
-      hashes.set(hash, true);
+    const isDuplicate = seen.some((s) => s.IsSame(item));
+    if (!isDuplicate) {
+      seen.push(item);
       yield item;
     }
     explorer.Next();
@@ -241,7 +240,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   get hashCode(): number {
-    return this.wrapped.HashCode(HASH_CODE_MAX);
+    return this.oc.OCJS_ShapeHasher.HashCode(this.wrapped, HASH_CODE_MAX);
   }
 
   get isNull(): boolean {
@@ -421,7 +420,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   protected _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
-    new this.oc.BRepMesh_IncrementalMesh_2(
+    new this.oc.BRepMesh_IncrementalMeshWrapper(
       this.wrapped,
       tolerance,
       false,
@@ -536,17 +535,17 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
             edgeLoc
           )
         );
-        const edgeNodes = polygon?.get()?.Nodes();
-        if (!edgeNodes) {
+        const poly = polygon?.get();
+        if (!poly || poly.NbNodes() === 0) {
           continue;
         }
-        r(edgeNodes);
 
         const [recordPoint, done] = addEdge();
+        const nbEdgeNodes = poly.NbNodes();
 
-        for (let i = edgeNodes.Lower(); i <= edgeNodes.Upper(); i++) {
+        for (let i = 1; i <= nbEdgeNodes; i++) {
           const p = r(
-            r(tri.Node(edgeNodes.Value(i))).Transformed(
+            r(tri.Node(poly.Node(i))).Transformed(
               edgeLoc.Transformation()
             )
           );
@@ -595,10 +594,9 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     const writer = new this.oc.STEPControl_Writer_1();
 
     this.oc.Interface_Static.SetIVal("write.step.schema", 5);
-    writer.Model(true).delete();
     const progress = new this.oc.Message_ProgressRange_1();
 
-    writer.Transfer(
+    writer.Transfer_1(
       this.wrapped,
       this.oc.STEPControl_StepModelType
         .STEPControl_AsIs as STEPControl_StepModelType,
@@ -617,7 +615,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
       this.oc.FS.unlink("/" + filename);
 
       // Return the contents of the STEP File
-      const blob = new Blob([file], { type: "application/STEP" });
+      const blob = new Blob([file as BlobPart], { type: "application/STEP" });
       return blob;
     } else {
       throw new Error("WRITE STEP FILE FAILED.");
@@ -647,7 +645,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
       this.oc.FS.unlink("/" + filename);
 
       // Return the contents of the STEP File
-      const blob = new Blob([file], { type: "application/sla" });
+      const blob = new Blob([file as BlobPart], { type: "application/sla" });
       return blob;
     } else {
       throw new Error("WRITE STL FILE FAILED.");
@@ -871,8 +869,10 @@ export class Surface extends WrappingObj<Adaptor3d_Surface> {
 }
 
 export class Face extends Shape<TopoDS_Face> {
-  protected _geomAdaptor(): BRepAdaptor_Surface {
-    return new this.oc.BRepAdaptor_Surface_2(this.wrapped, false);
+  protected _geomAdaptor(): Adaptor3d_Surface {
+    // BRepAdaptor_Surface extends Adaptor3d_Surface via GeomAdaptor_TransformedSurface
+    // but the intermediate class is missing from the V8 d.ts, so we cast here
+    return new this.oc.BRepAdaptor_Surface_2(this.wrapped, false) as unknown as Adaptor3d_Surface;
   }
 
   get surface(): Surface {
@@ -1030,12 +1030,12 @@ export class Face extends Shape<TopoDS_Face> {
       triangulatedFace.vertices[(i - 1) * 3 + 2] = p.Z();
     }
 
-    const normalsArray = r(new this.oc.TColgp_Array1OfDir_2(1, nbNodes));
-    const pc = r(new this.oc.Poly_Connect_2(triangulation));
-    this.oc.StdPrs_ToolTriangulatedShape.Normal(this.wrapped, pc, normalsArray);
-    triangulatedFace.verticesNormals = new Array(normalsArray.Length() * 3);
-    for (let i = normalsArray.Lower(); i <= normalsArray.Upper(); i++) {
-      const d = r(r(normalsArray.Value(i)).Transformed(transformation));
+    if (!tri.HasNormals()) {
+      tri.ComputeNormals();
+    }
+    triangulatedFace.verticesNormals = new Array(nbNodes * 3);
+    for (let i = 1; i <= nbNodes; i++) {
+      const d = r(r(tri.Normal_1(i)).Transformed(transformation));
       triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X();
       triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y();
       triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z();
@@ -1520,14 +1520,14 @@ export function downcast(shape: TopoDS_Shape): GenericTopo {
   const ta = oc.TopAbs_ShapeEnum;
 
   const CAST_MAP = new Map([
-    [ta.TopAbs_VERTEX, oc.TopoDS.Vertex_1],
-    [ta.TopAbs_EDGE, oc.TopoDS.Edge_1],
-    [ta.TopAbs_WIRE, oc.TopoDS.Wire_1],
-    [ta.TopAbs_FACE, oc.TopoDS.Face_1],
-    [ta.TopAbs_SHELL, oc.TopoDS.Shell_1],
-    [ta.TopAbs_SOLID, oc.TopoDS.Solid_1],
-    [ta.TopAbs_COMPSOLID, oc.TopoDS.CompSolid_1],
-    [ta.TopAbs_COMPOUND, oc.TopoDS.Compound_1],
+    [ta.TopAbs_VERTEX, oc.TopoDS_Cast.Vertex],
+    [ta.TopAbs_EDGE, oc.TopoDS_Cast.Edge],
+    [ta.TopAbs_WIRE, oc.TopoDS_Cast.Wire],
+    [ta.TopAbs_FACE, oc.TopoDS_Cast.Face],
+    [ta.TopAbs_SHELL, oc.TopoDS_Cast.Shell],
+    [ta.TopAbs_SOLID, oc.TopoDS_Cast.Solid],
+    [ta.TopAbs_COMPSOLID, oc.TopoDS_Cast.CompSolid],
+    [ta.TopAbs_COMPOUND, oc.TopoDS_Cast.Compound],
   ]);
 
   const myType = shapeType(shape);

@@ -10,7 +10,7 @@ export const pnt = ([x, y]: Point2D): gp_Pnt2d => {
 
 export const direction2d = ([x, y]: Point2D): gp_Dir2d => {
   const oc = getOC();
-  return new oc.gp_Dir2d_4(x, y);
+  return new oc.gp_Dir2d_5(x, y);
 };
 
 export const vec = ([x, y]: Point2D): gp_Vec2d => {

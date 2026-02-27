@@ -65,7 +65,6 @@ export function createAssembly(shapes: ShapeConfig[] = []): AssemblyExporter {
     ctool.SetColor_3(
       shapeNode,
       wrapColor(color || "#f00", alpha ?? 1),
-      // @ts-expect-error the type system does not work for these
       oc.XCAFDoc_ColorType.XCAFDoc_ColorSurf
     );
   }
@@ -120,7 +119,7 @@ export function exportSTEP(
   writer.SetColorMode(true);
   writer.SetLayerMode(true);
   writer.SetNameMode(true);
-  oc.Interface_Static.SetIVal("write.surfacecurve.mode", true);
+  oc.Interface_Static.SetIVal("write.surfacecurve.mode", 1);
   oc.Interface_Static.SetIVal("write.precision.mode", 0);
   oc.Interface_Static.SetIVal("write.step.assembly", 2);
   oc.Interface_Static.SetIVal("write.step.schema", 5);
@@ -143,7 +142,7 @@ export function exportSTEP(
     oc.FS.unlink("/" + filename);
 
     // Return the contents of the STEP File
-    const blob = new Blob([file], { type: "application/STEP" });
+    const blob = new Blob([file as BlobPart], { type: "application/STEP" });
     return blob;
   } else {
     throw new Error("WRITE STEP FILE FAILED.");
