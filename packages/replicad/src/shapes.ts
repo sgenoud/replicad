@@ -1140,8 +1140,7 @@ export class _3DShape<Type extends TopoDS_Shape>
     tolerance?: number;
     angularTolerance?: number;
   }): MeshShape {
-    const { triangles, vertices, normals } = this.mesh(options);
-    const manifold = getManifold();
+    const { triangles, vertices } = this.mesh(options);
     const tol = options?.tolerance ?? 1e-6;
     const scale = tol === 0 ? 0 : 1 / tol;
     const keyFor = (x: number, y: number, z: number): string => {
@@ -1167,25 +1166,8 @@ export class _3DShape<Type extends TopoDS_Shape>
         seen.set(key, idx);
       }
     }
-    const numProp = normals.length === vertices.length ? 6 : 3;
-    const vertProperties =
-      numProp === 3
-        ? new Float32Array(vertices)
-        : (() => {
-            const count = vertices.length / 3;
-            const props = new Float32Array(count * numProp);
-            for (let i = 0; i < count; i++) {
-              const vBase = i * 3;
-              const pBase = i * numProp;
-              props[pBase] = vertices[vBase];
-              props[pBase + 1] = vertices[vBase + 1];
-              props[pBase + 2] = vertices[vBase + 2];
-              props[pBase + 3] = normals[vBase];
-              props[pBase + 4] = normals[vBase + 1];
-              props[pBase + 5] = normals[vBase + 2];
-            }
-            return props;
-          })();
+    const numProp = 3;
+    const vertProperties = new Float32Array(vertices);
     const meshData = {
       vertProperties,
       triVerts: new Uint32Array(triangles),
@@ -1193,8 +1175,10 @@ export class _3DShape<Type extends TopoDS_Shape>
       mergeFromVert: mergeFrom.length ? new Uint32Array(mergeFrom) : undefined,
       mergeToVert: mergeTo.length ? new Uint32Array(mergeTo) : undefined,
     };
-    const mesh = manifold.Mesh ? new manifold.Mesh(meshData) : meshData;
-    const manifoldShape = new manifold.Manifold(mesh as any);
+
+    const manifold = getManifold();
+    const mesh = new manifold.Mesh(meshData);
+    const manifoldShape = new manifold.Manifold(mesh);
     return new MeshShape(manifoldShape);
   }
 

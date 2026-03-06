@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import debounce from "debounce";
 
 import Canvas from "./Canvas.jsx";
-import Material from "./Material.jsx";
+import Material, { MeshMaterial } from "./Material.jsx";
 
 import Controls from "../components-3d/Controls.jsx";
 import ShapeGeometry from "../components-3d/ShapeGeometry.jsx";
@@ -98,6 +98,7 @@ export default observer(function EditorViewer({
               key={s.name}
               shape={s}
               FaceMaterial={Material}
+              MeshFaceMaterial={MeshMaterial}
               clipDirection={clipDirection}
               clipConstant={clipConstant}
             />
@@ -108,6 +109,7 @@ export default observer(function EditorViewer({
             edgesHighlight={edgeSelected}
             shape={shape}
             FaceMaterial={Material}
+            MeshFaceMaterial={MeshMaterial}
             onEdgeClick={updateEdgeSelected}
             onFaceClick={updateFaceSelected}
             clipDirection={clipDirection}

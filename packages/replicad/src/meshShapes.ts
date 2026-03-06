@@ -34,19 +34,11 @@ const manifoldTransformFromTransformation = (
   yPoint.delete();
   zPoint.delete();
 
+  // prettier-ignore
   return [
-    x[0],
-    y[0],
-    z[0],
-    o[0],
-    x[1],
-    y[1],
-    z[1],
-    o[1],
-    x[2],
-    y[2],
-    z[2],
-    o[2],
+    x[0], y[0], z[0], o[0],
+    x[1], y[1], z[1], o[1],
+    x[2], y[2], z[2], o[2],
   ];
 };
 
@@ -176,15 +168,17 @@ export class MeshShape
     return new MeshShape(this.wrapped.asOriginal());
   }
 
-  mesh(normalIdx?: number): MeshShapeMesh {
-    const mesh = this.wrapped.getMesh(normalIdx);
+  mesh(): MeshShapeMesh {
+    const withNormals = this.wrapped.calculateNormals(0, 0.1);
+    const mesh = withNormals.getMesh();
     const numProp = mesh.numProp ?? 3;
+
     const vertProperties = Array.from(mesh.vertProperties);
     const triangles = Array.from(mesh.triVerts);
     const vertices: number[] = [];
     const numVert = mesh.numVert ?? Math.floor(vertProperties.length / numProp);
-    const normalOffset =
-      normalIdx !== undefined ? normalIdx : numProp >= 6 ? 3 : -1;
+
+    const normalOffset = numProp >= 6 ? 3 : -1;
 
     const normals: number[] = [];
     for (let i = 0; i < numVert; i++) {

@@ -30,6 +30,7 @@ const ShapeGeometry = ({
   edgesHighlight,
   LineMaterial = "lineBasicMaterial",
   FaceMaterial = "meshBasicMaterial",
+  MeshFaceMaterial = FaceMaterial,
   clipDirection = null,
   clipConstant = 0,
 }) => {
@@ -38,6 +39,8 @@ const ShapeGeometry = ({
 
   const colors = colorVariants(shape.color);
   const transparent = shape.opacity && shape.opacity !== 1;
+  const FaceMaterialToUse =
+    shape.solidType === "mesh" ? MeshFaceMaterial : FaceMaterial;
 
   const clippingPlane = useMemo(() => {
     if (!clipDirection) return null;
@@ -65,14 +68,14 @@ const ShapeGeometry = ({
         )
       )}
       <ClipPlane sideColor={colors.sideColor} clippingPlane={clippingPlane}>
-        {FaceMaterial && (
+        {FaceMaterialToUse && (
           <ReplicadFacesMesh
             faces={shape.mesh}
             defaultHighlight={shape.highlight}
             highlight={facesHighlight}
             onClick={fOnClick}
           >
-            <FaceMaterial
+            <FaceMaterialToUse
               attach="material-0"
               transparent={transparent}
               opacity={shape.opacity}
@@ -81,7 +84,7 @@ const ShapeGeometry = ({
               polygonOffsetFactor={2.0}
               polygonOffsetUnits={1.0}
             />
-            <FaceMaterial
+            <FaceMaterialToUse
               attach="material-1"
               transparent={transparent}
               opacity={shape.opacity}
@@ -150,6 +153,7 @@ export function ShapeGeometries({
   disableAutoPosition = false,
   LineMaterial = "lineBasicMaterial",
   FaceMaterial = "meshBasicMaterial",
+  MeshFaceMaterial = FaceMaterial,
 }) {
   const [selectedFace, selectFace] = useSelection(selectMode, ["all", "faces"]);
   const [selectedEdge, selectEdge] = useSelection(selectMode, ["all", "edges"]);
@@ -171,6 +175,7 @@ export function ShapeGeometries({
               facesHighlight={faceHighlight}
               LineMaterial={LineMaterial}
               FaceMaterial={FaceMaterial}
+              MeshFaceMaterial={MeshFaceMaterial}
               onFaceClick={selectFace(shape.name)}
               onEdgeClick={selectEdge(shape.name)}
             />

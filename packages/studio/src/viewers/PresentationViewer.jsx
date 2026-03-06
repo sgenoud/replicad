@@ -1,7 +1,7 @@
 import React from "react";
 
 import Canvas from "./Canvas.jsx";
-import Material from "./Material.jsx";
+import Material, { MeshMaterial } from "./Material.jsx";
 
 import Controls from "../components-3d/Controls.jsx";
 import { ShapeGeometries } from "../components-3d/ShapeGeometry.jsx";
@@ -27,6 +27,7 @@ export default React.memo(function PresentationViewer({
             selectMode="none"
             disableAutoPosition={disableAutoPosition}
             FaceMaterial={Material}
+            MeshFaceMaterial={MeshMaterial}
           />
         )}
         {shapes === "error" && <DefaultGeometry />}

@@ -1,13 +1,10 @@
+import type { ManifoldToplevel as ManifoldModule } from "manifold-3d";
 import type { Box, Manifold, Mesh, Vec3 } from "manifold-3d";
 
 export type ManifoldInstance = Manifold;
 export type ManifoldMesh = Mesh;
 export type ManifoldVec3 = Vec3;
 export type ManifoldBox = Box;
-export type ManifoldModule = {
-  Manifold: typeof Manifold;
-  Mesh?: typeof Mesh;
-};
 
 const MANIFOLD: { library: ManifoldModule | null } = {
   library: null,

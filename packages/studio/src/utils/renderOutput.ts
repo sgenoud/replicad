@@ -9,6 +9,7 @@ import {
   Sketches,
   CompoundSketch,
   Vertex,
+  MeshShape,
 } from "replicad";
 import normalizeColor from "./normalizeColor";
 
@@ -35,11 +36,14 @@ type LabelConfig = {
   position?: "auto" | "side" | "top" | "bottom";
 };
 
+type SolidType = "shape" | "mesh";
+
 type InputShape = {
   shape: unknown;
   name?: string;
   color?: string;
   opacity?: number;
+  solidType?: SolidType;
   highlight?: any;
   highlightEdge?: any;
   highlightFace?: any;
@@ -52,6 +56,7 @@ type CleanConfig = {
   shape: Meshable | SVGable;
   color?: string;
   opacity?: number;
+  solidType?: SolidType;
   highlight?: any;
   strokeType?: string;
   labels: LabelConfig[];
@@ -70,6 +75,7 @@ type MeshableConfiguration = {
   shape: Meshable;
   color?: string;
   opacity?: number;
+  solidType?: SolidType;
   highlight?: any;
   labels: LabelConfig[];
 };
@@ -86,6 +92,11 @@ const isSVGable = (shape: any): shape is SVGable => {
 
 const isMeshable = (shape: any): shape is Meshable => {
   return !!shape?.mesh;
+};
+
+const inferSolidType = (shape: any): SolidType => {
+  if (shape instanceof MeshShape) return "mesh";
+  return "shape";
 };
 
 function createBasicShapeConfig(
@@ -273,11 +284,13 @@ function renderSVG(shapeConfig: SVGShapeConfiguration) {
 }
 
 function renderMesh(shapeConfig: MeshableConfiguration) {
-  const { name, shape, color, opacity, labels, highlight } = shapeConfig;
+  const { name, shape, color, opacity, labels, highlight, solidType } =
+    shapeConfig;
   const shapeInfo = {
     name,
     color,
     opacity,
+    solidType: solidType || inferSolidType(shape),
     labels,
     mesh: null,
     edges: null,
