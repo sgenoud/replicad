@@ -231,6 +231,10 @@ export class Transformation extends WrappingObj<gp_Trsf> {
     super(transform || new oc.gp_Trsf_1());
   }
 
+  clone() {
+    return new Transformation(this.wrapped.Clone());
+  }
+
   translate(xDist: number, yDist: number, zDist: number): Transformation;
   translate(vector: Point): Transformation;
   translate(
@@ -298,6 +302,15 @@ export class Transformation extends WrappingObj<gp_Trsf> {
     this.wrapped.SetScale(pnt, scale);
     pnt.delete();
     return this;
+  }
+
+  inverse(): this {
+    this.wrapped.Invert();
+    return this;
+  }
+
+  inverted(): Transformation {
+    return new Transformation(this.wrapped.Inverted());
   }
 
   coordSystemChange(fromSystem: CoordSystem, toSystem: CoordSystem): this {

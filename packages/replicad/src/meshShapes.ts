@@ -16,9 +16,8 @@ const asVec3 = (v: Point): ManifoldVec3 => {
   return res;
 };
 
-const manifoldTransformFromTransformation = (
-  transform: Transformation
-): number[] => {
+const manifoldTransformFromTransformation = (t: Transformation): number[] => {
+  const transform = t.inverted();
   const origin = transform.transformPoint([0, 0, 0]);
   const xPoint = transform.transformPoint([1, 0, 0]);
   const yPoint = transform.transformPoint([0, 1, 0]);
