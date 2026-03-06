@@ -1731,50 +1731,6 @@ export declare class Bnd_Box {
     constructor(theMin: gp_Pnt, theMax: gp_Pnt);
   }
 
-export declare class Bnd_OBB {
-  ReBuild(theListOfPoints: TColgp_Array1OfPnt, theListOfTolerances: TColStd_Array1OfReal, theIsOptimal: Standard_Boolean): void;
-  SetCenter(theCenter: gp_Pnt): void;
-  SetXComponent(theXDirection: gp_Dir, theHXSize: Standard_Real): void;
-  SetYComponent(theYDirection: gp_Dir, theHYSize: Standard_Real): void;
-  SetZComponent(theZDirection: gp_Dir, theHZSize: Standard_Real): void;
-  Position(): gp_Ax3;
-  Center(): gp_XYZ;
-  XDirection(): gp_XYZ;
-  YDirection(): gp_XYZ;
-  ZDirection(): gp_XYZ;
-  XHSize(): Standard_Real;
-  YHSize(): Standard_Real;
-  ZHSize(): Standard_Real;
-  GetHalfSizes(): HalfSizes;
-  IsVoid(): Standard_Boolean;
-  SetVoid(): void;
-  SetAABox(theFlag: Standard_Boolean): void;
-  IsAABox(): Standard_Boolean;
-  Enlarge(theGapAdd: Standard_Real): void;
-  GetVertex(theP: gp_Pnt[8]): Standard_Boolean;
-  SquareExtent(): Standard_Real;
-  IsOut_1(theOther: Bnd_OBB): Standard_Boolean;
-  IsOut_2(theP: gp_Pnt): Standard_Boolean;
-  Contains(theP: gp_Pnt): Standard_Boolean;
-  Intersects(theOther: Bnd_OBB): Standard_Boolean;
-  IsCompletelyInside(theOther: Bnd_OBB): Standard_Boolean;
-  Add_1(theOther: Bnd_OBB): void;
-  Add_2(theP: gp_Pnt): void;
-  delete(): void;
-}
-
-  export declare class Bnd_OBB_1 extends Bnd_OBB {
-    constructor();
-  }
-
-  export declare class Bnd_OBB_2 extends Bnd_OBB {
-    constructor(theCenter: gp_Pnt, theXDirection: gp_Dir, theYDirection: gp_Dir, theZDirection: gp_Dir, theHXSize: Standard_Real, theHYSize: Standard_Real, theHZSize: Standard_Real);
-  }
-
-  export declare class Bnd_OBB_3 extends Bnd_OBB {
-    constructor(theBox: Bnd_Box);
-  }
-
 export declare type Convert_ParameterisationType = {
   Convert_TgtThetaOver2: {};
   Convert_TgtThetaOver2_1: {};
@@ -1788,9 +1744,9 @@ export declare type Convert_ParameterisationType = {
 
 export declare class Poly_PolygonOnTriangulation extends Standard_Transient {
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  Copy(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  Copy(): any;
   Deflection_1(): Standard_Real;
   Deflection_2(theDefl: Standard_Real): void;
   NbNodes(): Standard_Integer;
@@ -1799,9 +1755,9 @@ export declare class Poly_PolygonOnTriangulation extends Standard_Transient {
   HasParameters(): Standard_Boolean;
   Parameter(theIndex: Standard_Integer): Standard_Real;
   SetParameter(theIndex: Standard_Integer, theValue: Standard_Real): void;
-  SetParameters(theParameters: Standard_Integer): void;
+  SetParameters(theParameters: any): void;
   Nodes(): TColStd_Array1OfInteger;
-  Parameters(): Standard_Integer;
+  Parameters(): any;
   ChangeNodes(): TColStd_Array1OfInteger;
   ChangeParameters(): TColStd_Array1OfReal;
   delete(): void;
@@ -2359,6 +2315,30 @@ export declare class TopoDS_Cast {
   delete(): void;
 }
 
+export declare class Handle_Geom2d_BezierCurve {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom2d_BezierCurve): void;
+  get(): Geom2d_BezierCurve;
+  delete(): void;
+}
+
+  export declare class Handle_Geom2d_BezierCurve_1 extends Handle_Geom2d_BezierCurve {
+    constructor();
+  }
+
+  export declare class Handle_Geom2d_BezierCurve_2 extends Handle_Geom2d_BezierCurve {
+    constructor(thePtr: Geom2d_BezierCurve);
+  }
+
+  export declare class Handle_Geom2d_BezierCurve_3 extends Handle_Geom2d_BezierCurve {
+    constructor(theHandle: Handle_Geom2d_BezierCurve);
+  }
+
+  export declare class Handle_Geom2d_BezierCurve_4 extends Handle_Geom2d_BezierCurve {
+    constructor(theHandle: Handle_Geom2d_BezierCurve);
+  }
+
 export declare class Handle_Poly_Triangulation {
   Nullify(): void;
   IsNull(): boolean;
@@ -2450,6 +2430,30 @@ export declare class Handle_Geom2d_TrimmedCurve {
     constructor(theHandle: Handle_Geom2d_TrimmedCurve);
   }
 
+export declare class Handle_Geom2d_BSplineCurve {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Geom2d_BSplineCurve): void;
+  get(): Geom2d_BSplineCurve;
+  delete(): void;
+}
+
+  export declare class Handle_Geom2d_BSplineCurve_1 extends Handle_Geom2d_BSplineCurve {
+    constructor();
+  }
+
+  export declare class Handle_Geom2d_BSplineCurve_2 extends Handle_Geom2d_BSplineCurve {
+    constructor(thePtr: Geom2d_BSplineCurve);
+  }
+
+  export declare class Handle_Geom2d_BSplineCurve_3 extends Handle_Geom2d_BSplineCurve {
+    constructor(theHandle: Handle_Geom2d_BSplineCurve);
+  }
+
+  export declare class Handle_Geom2d_BSplineCurve_4 extends Handle_Geom2d_BSplineCurve {
+    constructor(theHandle: Handle_Geom2d_BSplineCurve);
+  }
+
 export declare class Handle_XCAFDoc_ShapeTool {
   Nullify(): void;
   IsNull(): boolean;
@@ -2474,6 +2478,30 @@ export declare class Handle_XCAFDoc_ShapeTool {
     constructor(theHandle: Handle_XCAFDoc_ShapeTool);
   }
 
+export declare class Handle_HLRBRep_Algo {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: HLRBRep_Algo): void;
+  get(): HLRBRep_Algo;
+  delete(): void;
+}
+
+  export declare class Handle_HLRBRep_Algo_1 extends Handle_HLRBRep_Algo {
+    constructor();
+  }
+
+  export declare class Handle_HLRBRep_Algo_2 extends Handle_HLRBRep_Algo {
+    constructor(thePtr: HLRBRep_Algo);
+  }
+
+  export declare class Handle_HLRBRep_Algo_3 extends Handle_HLRBRep_Algo {
+    constructor(theHandle: Handle_HLRBRep_Algo);
+  }
+
+  export declare class Handle_HLRBRep_Algo_4 extends Handle_HLRBRep_Algo {
+    constructor(theHandle: Handle_HLRBRep_Algo);
+  }
+
 export declare class Handle_Geom_Geometry {
   Nullify(): void;
   IsNull(): boolean;
@@ -2496,6 +2524,30 @@ export declare class Handle_Geom_Geometry {
 
   export declare class Handle_Geom_Geometry_4 extends Handle_Geom_Geometry {
     constructor(theHandle: Handle_Geom_Geometry);
+  }
+
+export declare class Handle_Law_Function {
+  Nullify(): void;
+  IsNull(): boolean;
+  reset(thePtr: Law_Function): void;
+  get(): Law_Function;
+  delete(): void;
+}
+
+  export declare class Handle_Law_Function_1 extends Handle_Law_Function {
+    constructor();
+  }
+
+  export declare class Handle_Law_Function_2 extends Handle_Law_Function {
+    constructor(thePtr: Law_Function);
+  }
+
+  export declare class Handle_Law_Function_3 extends Handle_Law_Function {
+    constructor(theHandle: Handle_Law_Function);
+  }
+
+  export declare class Handle_Law_Function_4 extends Handle_Law_Function {
+    constructor(theHandle: Handle_Law_Function);
   }
 
 export declare class Handle_Geom_Surface {
@@ -2606,7 +2658,7 @@ export declare class BRepAlgoAPI_BuilderAlgo extends BRepAlgoAPI_Algo {
   SectionEdges(): TopTools_ListOfShape;
   DSFiller(): BOPAlgo_PPaveFiller;
   Builder(): BOPAlgo_PBuilder;
-  History(): Standard_Integer;
+  History(): any;
   delete(): void;
 }
 
@@ -2691,10 +2743,10 @@ export declare class BRepAlgoAPI_Algo extends BRepBuilderAPI_MakeShape {
   Clear(): void;
   ClearWarnings(): void;
   FuzzyValue(): Standard_Real;
-  GetReport(): Standard_Integer;
-  HasError(theType: Standard_Integer): Standard_Boolean;
+  GetReport(): any;
+  HasError(theType: any): Standard_Boolean;
   HasErrors(): Standard_Boolean;
-  HasWarning(theType: Standard_Integer): Standard_Boolean;
+  HasWarning(theType: any): Standard_Boolean;
   HasWarnings(): Standard_Boolean;
   RunParallel(): Standard_Boolean;
   SetFuzzyValue(theFuzz: Standard_Real): void;
@@ -2749,15 +2801,15 @@ export declare class Law_Composite extends Law_Function {
   Value(X: Standard_Real): Standard_Real;
   D1(X: Standard_Real, F: Standard_Real, D: Standard_Real): void;
   D2(X: Standard_Real, F: Standard_Real, D: Standard_Real, D2: Standard_Real): void;
-  Trim(PFirst: Standard_Real, PLast: Standard_Real, Tol: Standard_Real): Standard_Integer;
+  Trim(PFirst: Standard_Real, PLast: Standard_Real, Tol: Standard_Real): any;
   Bounds(PFirst: Standard_Real, PLast: Standard_Real): void;
-  ChangeElementaryLaw(W: Standard_Real): Standard_Integer;
-  ChangeLaws(): Standard_Integer;
+  ChangeElementaryLaw(W: Standard_Real): any;
+  ChangeLaws(): any;
   IsPeriodic(): Standard_Boolean;
   SetPeriodic(): void;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -2776,8 +2828,8 @@ export declare class Law_Interpol extends Law_BSpFunc {
   Set_2(ParAndRad: TColgp_Array1OfPnt2d, Dd: Standard_Real, Df: Standard_Real, Periodic: Standard_Boolean): void;
   SetInRelative_2(ParAndRad: TColgp_Array1OfPnt2d, Ud: Standard_Real, Uf: Standard_Real, Dd: Standard_Real, Df: Standard_Real, Periodic: Standard_Boolean): void;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -2811,8 +2863,8 @@ export declare class Law_S extends Law_BSpFunc {
   Set_1(Pdeb: Standard_Real, Valdeb: Standard_Real, Pfin: Standard_Real, Valfin: Standard_Real): void;
   Set_2(Pdeb: Standard_Real, Valdeb: Standard_Real, Ddeb: Standard_Real, Pfin: Standard_Real, Valfin: Standard_Real, Dfin: Standard_Real): void;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -2825,11 +2877,11 @@ export declare class Law_Linear extends Law_Function {
   Value(X: Standard_Real): Standard_Real;
   D1(X: Standard_Real, F: Standard_Real, D: Standard_Real): void;
   D2(X: Standard_Real, F: Standard_Real, D: Standard_Real, D2: Standard_Real): void;
-  Trim(PFirst: Standard_Real, PLast: Standard_Real, Tol: Standard_Real): Standard_Integer;
+  Trim(PFirst: Standard_Real, PLast: Standard_Real, Tol: Standard_Real): any;
   Bounds(PFirst: Standard_Real, PLast: Standard_Real): void;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -2840,11 +2892,11 @@ export declare class Law_Function extends Standard_Transient {
   Value(X: Standard_Real): Standard_Real;
   D1(X: Standard_Real, F: Standard_Real, D: Standard_Real): void;
   D2(X: Standard_Real, F: Standard_Real, D: Standard_Real, D2: Standard_Real): void;
-  Trim(PFirst: Standard_Real, PLast: Standard_Real, Tol: Standard_Real): Standard_Integer;
+  Trim(PFirst: Standard_Real, PLast: Standard_Real, Tol: Standard_Real): any;
   Bounds(PFirst: Standard_Real, PLast: Standard_Real): void;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -2917,7 +2969,7 @@ export declare class Geom2dAPI_PointsToBSpline {
   Init_3(Points: TColgp_Array1OfPnt2d, ParType: Approx_ParametrizationType, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol2D: Standard_Real): void;
   Init_4(Points: TColgp_Array1OfPnt2d, Parameters: TColStd_Array1OfReal, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol2D: Standard_Real): void;
   Init_5(Points: TColgp_Array1OfPnt2d, Weight1: Standard_Real, Weight2: Standard_Real, Weight3: Standard_Real, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol2D: Standard_Real): void;
-  Curve(): Standard_Integer;
+  Curve(): any;
   IsDone(): Standard_Boolean;
   delete(): void;
 }
@@ -2951,7 +3003,7 @@ export declare class GeomAPI_PointsToBSpline {
   Init_2(Points: TColgp_Array1OfPnt, ParType: Approx_ParametrizationType, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real): void;
   Init_3(Points: TColgp_Array1OfPnt, Parameters: TColStd_Array1OfReal, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real): void;
   Init_4(Points: TColgp_Array1OfPnt, Weight1: Standard_Real, Weight2: Standard_Real, Weight3: Standard_Real, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real): void;
-  Curve(): Standard_Integer;
+  Curve(): any;
   IsDone(): Standard_Boolean;
   delete(): void;
 }
@@ -3017,56 +3069,6 @@ export declare class GeomAPI_ProjectPointOnSurf {
     constructor(P: gp_Pnt, Surface: any, Umin: Standard_Real, Usup: Standard_Real, Vmin: Standard_Real, Vsup: Standard_Real, Algo: Extrema_ExtAlgo);
   }
 
-export declare class GeomAPI_PointsToBSplineSurface {
-  Init_1(Points: TColgp_Array2OfPnt, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real): void;
-  Interpolate_1(Points: TColgp_Array2OfPnt, thePeriodic: Standard_Boolean): void;
-  Interpolate_2(Points: TColgp_Array2OfPnt, ParType: Approx_ParametrizationType, thePeriodic: Standard_Boolean): void;
-  Init_2(ZPoints: TColStd_Array2OfReal, X0: Standard_Real, dX: Standard_Real, Y0: Standard_Real, dY: Standard_Real, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real): void;
-  Interpolate_3(ZPoints: TColStd_Array2OfReal, X0: Standard_Real, dX: Standard_Real, Y0: Standard_Real, dY: Standard_Real): void;
-  Init_3(Points: TColgp_Array2OfPnt, ParType: Approx_ParametrizationType, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real, thePeriodic: Standard_Boolean): void;
-  Init_4(Points: TColgp_Array2OfPnt, Weight1: Standard_Real, Weight2: Standard_Real, Weight3: Standard_Real, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real): void;
-  Surface(): Standard_Integer;
-  IsDone(): Standard_Boolean;
-  delete(): void;
-}
-
-  export declare class GeomAPI_PointsToBSplineSurface_1 extends GeomAPI_PointsToBSplineSurface {
-    constructor();
-  }
-
-  export declare class GeomAPI_PointsToBSplineSurface_2 extends GeomAPI_PointsToBSplineSurface {
-    constructor(Points: TColgp_Array2OfPnt, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real);
-  }
-
-  export declare class GeomAPI_PointsToBSplineSurface_3 extends GeomAPI_PointsToBSplineSurface {
-    constructor(Points: TColgp_Array2OfPnt, ParType: Approx_ParametrizationType, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real);
-  }
-
-  export declare class GeomAPI_PointsToBSplineSurface_4 extends GeomAPI_PointsToBSplineSurface {
-    constructor(Points: TColgp_Array2OfPnt, Weight1: Standard_Real, Weight2: Standard_Real, Weight3: Standard_Real, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real);
-  }
-
-  export declare class GeomAPI_PointsToBSplineSurface_5 extends GeomAPI_PointsToBSplineSurface {
-    constructor(ZPoints: TColStd_Array2OfReal, X0: Standard_Real, dX: Standard_Real, Y0: Standard_Real, dY: Standard_Real, DegMin: Standard_Integer, DegMax: Standard_Integer, Continuity: GeomAbs_Shape, Tol3D: Standard_Real);
-  }
-
-export declare class GeomAPI_Interpolate {
-  Load_1(InitialTangent: gp_Vec, FinalTangent: gp_Vec, Scale: Standard_Boolean): void;
-  Load_2(Tangents: TColgp_Array1OfVec, TangentFlags: any, Scale: Standard_Boolean): void;
-  Perform(): void;
-  Curve(): any;
-  IsDone(): Standard_Boolean;
-  delete(): void;
-}
-
-  export declare class GeomAPI_Interpolate_1 extends GeomAPI_Interpolate {
-    constructor(Points: any, PeriodicFlag: Standard_Boolean, Tolerance: Standard_Real);
-  }
-
-  export declare class GeomAPI_Interpolate_2 extends GeomAPI_Interpolate {
-    constructor(Points: any, Parameters: any, PeriodicFlag: Standard_Boolean, Tolerance: Standard_Real);
-  }
-
 export declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
   Prism(): BRepSweep_Prism;
   Build(theRange: Message_ProgressRange): void;
@@ -3085,43 +3087,6 @@ export declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
 
   export declare class BRepPrimAPI_MakePrism_2 extends BRepPrimAPI_MakePrism {
     constructor(S: TopoDS_Shape, D: gp_Dir, Inf: Standard_Boolean, Copy: Standard_Boolean, Canonize: Standard_Boolean);
-  }
-
-export declare class BRepPrimAPI_MakeRevolution extends BRepPrimAPI_MakeOneAxis {
-  Revolution(): BRepPrim_Revolution;
-  delete(): void;
-}
-
-  export declare class BRepPrimAPI_MakeRevolution_1 extends BRepPrimAPI_MakeRevolution {
-    constructor(Meridian: any);
-  }
-
-  export declare class BRepPrimAPI_MakeRevolution_2 extends BRepPrimAPI_MakeRevolution {
-    constructor(Meridian: any, angle: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeRevolution_3 extends BRepPrimAPI_MakeRevolution {
-    constructor(Meridian: any, VMin: Standard_Real, VMax: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeRevolution_4 extends BRepPrimAPI_MakeRevolution {
-    constructor(Meridian: any, VMin: Standard_Real, VMax: Standard_Real, angle: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeRevolution_5 extends BRepPrimAPI_MakeRevolution {
-    constructor(Axes: gp_Ax2, Meridian: any);
-  }
-
-  export declare class BRepPrimAPI_MakeRevolution_6 extends BRepPrimAPI_MakeRevolution {
-    constructor(Axes: gp_Ax2, Meridian: any, angle: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeRevolution_7 extends BRepPrimAPI_MakeRevolution {
-    constructor(Axes: gp_Ax2, Meridian: any, VMin: Standard_Real, VMax: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeRevolution_8 extends BRepPrimAPI_MakeRevolution {
-    constructor(Axes: gp_Ax2, Meridian: any, VMin: Standard_Real, VMax: Standard_Real, angle: Standard_Real);
   }
 
 export declare class BRepPrimAPI_MakeSphere extends BRepPrimAPI_MakeOneAxis {
@@ -3234,43 +3199,6 @@ export declare class BRepPrimAPI_MakeOneAxis extends BRepBuilderAPI_MakeShape {
   delete(): void;
 }
 
-export declare class BRepPrimAPI_MakeTorus extends BRepPrimAPI_MakeOneAxis {
-  Torus(): BRepPrim_Torus;
-  delete(): void;
-}
-
-  export declare class BRepPrimAPI_MakeTorus_1 extends BRepPrimAPI_MakeTorus {
-    constructor(R1: Standard_Real, R2: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeTorus_2 extends BRepPrimAPI_MakeTorus {
-    constructor(R1: Standard_Real, R2: Standard_Real, angle: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeTorus_3 extends BRepPrimAPI_MakeTorus {
-    constructor(R1: Standard_Real, R2: Standard_Real, angle1: Standard_Real, angle2: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeTorus_4 extends BRepPrimAPI_MakeTorus {
-    constructor(R1: Standard_Real, R2: Standard_Real, angle1: Standard_Real, angle2: Standard_Real, angle: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeTorus_5 extends BRepPrimAPI_MakeTorus {
-    constructor(Axes: gp_Ax2, R1: Standard_Real, R2: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeTorus_6 extends BRepPrimAPI_MakeTorus {
-    constructor(Axes: gp_Ax2, R1: Standard_Real, R2: Standard_Real, angle: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeTorus_7 extends BRepPrimAPI_MakeTorus {
-    constructor(Axes: gp_Ax2, R1: Standard_Real, R2: Standard_Real, angle1: Standard_Real, angle2: Standard_Real);
-  }
-
-  export declare class BRepPrimAPI_MakeTorus_8 extends BRepPrimAPI_MakeTorus {
-    constructor(Axes: gp_Ax2, R1: Standard_Real, R2: Standard_Real, angle1: Standard_Real, angle2: Standard_Real, angle: Standard_Real);
-  }
-
 export declare class BRepPrimAPI_MakeBox extends BRepBuilderAPI_MakeShape {
   Init_1(theDX: Standard_Real, theDY: Standard_Real, theDZ: Standard_Real): void;
   Init_2(thePnt: gp_Pnt, theDX: Standard_Real, theDY: Standard_Real, theDZ: Standard_Real): void;
@@ -3307,6 +3235,133 @@ export declare class BRepPrimAPI_MakeBox extends BRepBuilderAPI_MakeShape {
 
   export declare class BRepPrimAPI_MakeBox_5 extends BRepPrimAPI_MakeBox {
     constructor(Axes: gp_Ax2, dx: Standard_Real, dy: Standard_Real, dz: Standard_Real);
+  }
+
+export declare class HLRBRep_InternalAlgo extends Standard_Transient {
+  Projector_1(P: HLRAlgo_Projector): void;
+  Projector_2(): HLRAlgo_Projector;
+  Update(): void;
+  Load_1(S: any, SData: any, nbIso: Standard_Integer): void;
+  Load_2(S: any, nbIso: Standard_Integer): void;
+  Index(S: any): Standard_Integer;
+  Remove(I: Standard_Integer): void;
+  ShapeData(I: Standard_Integer, SData: any): void;
+  SeqOfShapeBounds(): any;
+  NbShapes(): Standard_Integer;
+  ShapeBounds(I: Standard_Integer): HLRBRep_ShapeBounds;
+  InitEdgeStatus(): void;
+  Select_1(): void;
+  Select_2(I: Standard_Integer): void;
+  SelectEdge(I: Standard_Integer): void;
+  SelectFace(I: Standard_Integer): void;
+  ShowAll_1(): void;
+  ShowAll_2(I: Standard_Integer): void;
+  HideAll_1(): void;
+  HideAll_2(I: Standard_Integer): void;
+  PartialHide(): void;
+  Hide_1(): void;
+  Hide_2(I: Standard_Integer): void;
+  Hide_3(I: Standard_Integer, J: Standard_Integer): void;
+  Debug_1(deb: Standard_Boolean): void;
+  Debug_2(): Standard_Boolean;
+  DataStructure(): any;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  delete(): void;
+}
+
+  export declare class HLRBRep_InternalAlgo_1 extends HLRBRep_InternalAlgo {
+    constructor();
+  }
+
+  export declare class HLRBRep_InternalAlgo_2 extends HLRBRep_InternalAlgo {
+    constructor(A: any);
+  }
+
+export declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
+  Add_1(S: TopoDS_Shape, SData: any, nbIso: Standard_Integer): void;
+  Add_2(S: TopoDS_Shape, nbIso: Standard_Integer): void;
+  Index(S: TopoDS_Shape): Standard_Integer;
+  OutLinedShapeNullify(): void;
+  static get_type_name(): Standard_Character;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  delete(): void;
+}
+
+  export declare class HLRBRep_Algo_1 extends HLRBRep_Algo {
+    constructor();
+  }
+
+  export declare class HLRBRep_Algo_2 extends HLRBRep_Algo {
+    constructor(A: any);
+  }
+
+export declare class HLRBRep_HLRToShape {
+  constructor(A: any)
+  VCompound_1(): TopoDS_Shape;
+  VCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  Rg1LineVCompound_1(): TopoDS_Shape;
+  Rg1LineVCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  RgNLineVCompound_1(): TopoDS_Shape;
+  RgNLineVCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  OutLineVCompound_1(): TopoDS_Shape;
+  OutLineVCompound3d(): TopoDS_Shape;
+  OutLineVCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  IsoLineVCompound_1(): TopoDS_Shape;
+  IsoLineVCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  HCompound_1(): TopoDS_Shape;
+  HCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  Rg1LineHCompound_1(): TopoDS_Shape;
+  Rg1LineHCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  RgNLineHCompound_1(): TopoDS_Shape;
+  RgNLineHCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  OutLineHCompound_1(): TopoDS_Shape;
+  OutLineHCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  IsoLineHCompound_1(): TopoDS_Shape;
+  IsoLineHCompound_2(S: TopoDS_Shape): TopoDS_Shape;
+  CompoundOfEdges_1(type: HLRBRep_TypeOfResultingEdge, visible: Standard_Boolean, In3d: Standard_Boolean): TopoDS_Shape;
+  CompoundOfEdges_2(S: TopoDS_Shape, type: HLRBRep_TypeOfResultingEdge, visible: Standard_Boolean, In3d: Standard_Boolean): TopoDS_Shape;
+  delete(): void;
+}
+
+export declare class HLRAlgo_Projector {
+  Set(T: gp_Trsf, Persp: Standard_Boolean, Focus: Standard_Real): void;
+  Directions(D1: gp_Vec2d, D2: gp_Vec2d, D3: gp_Vec2d): void;
+  Scaled(On: Standard_Boolean): void;
+  Perspective(): Standard_Boolean;
+  Transformation(): gp_Trsf;
+  InvertedTransformation(): gp_Trsf;
+  FullTransformation(): gp_Trsf;
+  Focus(): Standard_Real;
+  Transform_1(D: gp_Vec): void;
+  Transform_2(Pnt: gp_Pnt): void;
+  Project_1(P: gp_Pnt, Pout: gp_Pnt2d): void;
+  Project_2(P: gp_Pnt, X: Standard_Real, Y: Standard_Real, Z: Standard_Real): void;
+  Project_3(P: gp_Pnt, D1: gp_Vec, Pout: gp_Pnt2d, D1out: gp_Vec2d): void;
+  Shoot(X: Standard_Real, Y: Standard_Real): gp_Lin;
+  delete(): void;
+}
+
+  export declare class HLRAlgo_Projector_1 extends HLRAlgo_Projector {
+    constructor();
+  }
+
+  export declare class HLRAlgo_Projector_2 extends HLRAlgo_Projector {
+    constructor(CS: gp_Ax2);
+  }
+
+  export declare class HLRAlgo_Projector_3 extends HLRAlgo_Projector {
+    constructor(CS: gp_Ax2, Focus: Standard_Real);
+  }
+
+  export declare class HLRAlgo_Projector_4 extends HLRAlgo_Projector {
+    constructor(T: gp_Trsf, Persp: Standard_Boolean, Focus: Standard_Real);
+  }
+
+  export declare class HLRAlgo_Projector_5 extends HLRAlgo_Projector {
+    constructor(T: gp_Trsf, Persp: Standard_Boolean, Focus: Standard_Real, v1: gp_Vec2d, v2: gp_Vec2d, v3: gp_Vec2d);
   }
 
 export declare type BRepOffset_Mode = {
@@ -3445,25 +3500,6 @@ export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
   Spine(): TopoDS_Wire;
   delete(): void;
 }
-
-export declare class BRepOffsetAPI_MakePipe extends BRepPrimAPI_MakeSweep {
-  Pipe(): BRepFill_Pipe;
-  Build(theRange: Message_ProgressRange): void;
-  FirstShape(): TopoDS_Shape;
-  LastShape(): TopoDS_Shape;
-  Generated_1(S: TopoDS_Shape): TopTools_ListOfShape;
-  Generated_2(SSpine: TopoDS_Shape, SProfile: TopoDS_Shape): TopoDS_Shape;
-  ErrorOnSurface(): Standard_Real;
-  delete(): void;
-}
-
-  export declare class BRepOffsetAPI_MakePipe_1 extends BRepOffsetAPI_MakePipe {
-    constructor(Spine: TopoDS_Wire, Profile: TopoDS_Shape);
-  }
-
-  export declare class BRepOffsetAPI_MakePipe_2 extends BRepOffsetAPI_MakePipe {
-    constructor(Spine: TopoDS_Wire, Profile: TopoDS_Shape, aMode: GeomFill_Trihedron, ForceApproxC1: Standard_Boolean);
-  }
 
 export declare class BRepExtrema_DistShapeShape {
   SetDeflection(theDeflection: Standard_Real): void;
@@ -3699,8 +3735,8 @@ export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
   Add(shape: TopoDS_Shape): void;
   Perform(theProgress: Message_ProgressRange): void;
   SewedShape(): TopoDS_Shape;
-  SetContext(theContext: Standard_Integer): void;
-  GetContext(): Standard_Integer;
+  SetContext(theContext: any): void;
+  GetContext(): any;
   NbFreeEdges(): Standard_Integer;
   FreeEdge(index: Standard_Integer): TopoDS_Edge;
   NbMultipleEdges(): Standard_Integer;
@@ -3738,8 +3774,8 @@ export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
   SetNonManifoldMode(theNonManifoldMode: Standard_Boolean): void;
   NonManifoldMode(): Standard_Boolean;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -3974,19 +4010,6 @@ export declare class BRepBuilderAPI_Command {
   delete(): void;
 }
 
-export declare class BRepCheck_Analyzer {
-  constructor(S: TopoDS_Shape, GeomControls: Standard_Boolean, theIsParallel: Standard_Boolean, theIsExact: Standard_Boolean)
-  Init(S: TopoDS_Shape, GeomControls: Standard_Boolean): void;
-  SetExactMethod(theIsExact: Standard_Boolean): void;
-  IsExactMethod(): Standard_Boolean;
-  SetParallel(theIsParallel: Standard_Boolean): void;
-  IsParallel(): Standard_Boolean;
-  IsValid_1(S: TopoDS_Shape): Standard_Boolean;
-  IsValid_2(): Standard_Boolean;
-  Result(theSubS: TopoDS_Shape): Standard_Integer;
-  delete(): void;
-}
-
 export declare class BRepLib {
   constructor();
   static Precision_1(P: Standard_Real): void;
@@ -4116,13 +4139,13 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
   Closed(IC: Standard_Integer): Standard_Boolean;
   Build(theRange: Message_ProgressRange): void;
   Reset(): void;
-  Builder(): Standard_Integer;
+  Builder(): any;
   Generated(EorV: TopoDS_Shape): TopTools_ListOfShape;
   Modified(F: TopoDS_Shape): TopTools_ListOfShape;
   IsDeleted(F: TopoDS_Shape): Standard_Boolean;
   Simulate(IC: Standard_Integer): void;
   NbSurf(IC: Standard_Integer): Standard_Integer;
-  Sect(IC: Standard_Integer, IS: Standard_Integer): Standard_Integer;
+  Sect(IC: Standard_Integer, IS: Standard_Integer): any;
   delete(): void;
 }
 
@@ -4204,7 +4227,7 @@ export declare class BRepFilletAPI_LocalOperation extends BRepBuilderAPI_MakeSha
   Reset(): void;
   Simulate(IC: Standard_Integer): void;
   NbSurf(IC: Standard_Integer): Standard_Integer;
-  Sect(IC: Standard_Integer, IS: Standard_Integer): Standard_Integer;
+  Sect(IC: Standard_Integer, IS: Standard_Integer): any;
   delete(): void;
 }
 
@@ -4317,8 +4340,8 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
   SolidFromShell(shell: TopoDS_Shell): TopoDS_Solid;
   Status(status: ShapeExtend_Status): Standard_Boolean;
   Solid(): TopoDS_Shape;
-  FixShellTool(): Standard_Integer;
-  SetMsgRegistrator(msgreg: Standard_Integer): void;
+  FixShellTool(): any;
+  SetMsgRegistrator(msgreg: any): void;
   SetPrecision(preci: Standard_Real): void;
   SetMinTolerance(mintol: Standard_Real): void;
   SetMaxTolerance(maxtol: Standard_Real): void;
@@ -4327,8 +4350,8 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
   CreateOpenSolidMode(): Standard_Boolean;
   Shape(): TopoDS_Shape;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -4342,11 +4365,11 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
 
 export declare class ShapeFix_Root extends Standard_Transient {
   constructor()
-  Set(Root: Standard_Integer): void;
-  SetContext(context: Standard_Integer): void;
-  Context(): Standard_Integer;
-  SetMsgRegistrator(msgreg: Standard_Integer): void;
-  MsgRegistrator(): Standard_Integer;
+  Set(Root: any): void;
+  SetContext(context: any): void;
+  Context(): any;
+  SetMsgRegistrator(msgreg: any): void;
+  MsgRegistrator(): any;
   SetPrecision(preci: Standard_Real): void;
   Precision(): Standard_Real;
   SetMinTolerance(mintol: Standard_Real): void;
@@ -4361,17 +4384,8 @@ export declare class ShapeFix_Root extends Standard_Transient {
   SendFail_1(shape: TopoDS_Shape, message: Message_Msg): void;
   SendFail_2(message: Message_Msg): void;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  delete(): void;
-}
-
-export declare class ShapeFix_EdgeConnect {
-  constructor()
-  Add_1(aFirst: TopoDS_Edge, aSecond: TopoDS_Edge): void;
-  Add_2(aShape: TopoDS_Shape): void;
-  Build(): void;
-  Clear(): void;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -4501,15 +4515,15 @@ export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
 export declare class Adaptor3d_Curve extends Standard_Transient {
   constructor();
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  ShallowCopy(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  ShallowCopy(): any;
   FirstParameter(): Standard_Real;
   LastParameter(): Standard_Real;
   Continuity(): GeomAbs_Shape;
   NbIntervals(S: GeomAbs_Shape): Standard_Integer;
   Intervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
-  Trim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): Standard_Integer;
+  Trim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): any;
   IsClosed(): Standard_Boolean;
   IsPeriodic(): Standard_Boolean;
   Period(): Standard_Real;
@@ -4530,9 +4544,9 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
   IsRational(): Standard_Boolean;
   NbPoles(): Standard_Integer;
   NbKnots(): Standard_Integer;
-  Bezier(): Standard_Integer;
-  BSpline(): Standard_Integer;
-  OffsetCurve(): Standard_Integer;
+  Bezier(): any;
+  BSpline(): any;
+  OffsetCurve(): any;
   EvalD0(U: Standard_Real): gp_Pnt;
   EvalD1(U: Standard_Real): any;
   EvalD2(U: Standard_Real): any;
@@ -4544,9 +4558,9 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
 export declare class Adaptor3d_Surface extends Standard_Transient {
   constructor();
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  ShallowCopy(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  ShallowCopy(): any;
   FirstUParameter(): Standard_Real;
   LastUParameter(): Standard_Real;
   FirstVParameter(): Standard_Real;
@@ -4557,8 +4571,8 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
   NbVIntervals(S: GeomAbs_Shape): Standard_Integer;
   UIntervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
   VIntervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
-  UTrim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): Standard_Integer;
-  VTrim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): Standard_Integer;
+  UTrim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): any;
+  VTrim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): any;
   IsUClosed(): Standard_Boolean;
   IsVClosed(): Standard_Boolean;
   IsUPeriodic(): Standard_Boolean;
@@ -4587,12 +4601,12 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
   NbVKnots(): Standard_Integer;
   IsURational(): Standard_Boolean;
   IsVRational(): Standard_Boolean;
-  Bezier(): Standard_Integer;
-  BSpline(): Standard_Integer;
+  Bezier(): any;
+  BSpline(): any;
   AxeOfRevolution(): gp_Ax1;
   Direction(): gp_Dir;
-  BasisCurve(): Standard_Integer;
-  BasisSurface(): Standard_Integer;
+  BasisCurve(): any;
+  BasisSurface(): any;
   OffsetValue(): Standard_Real;
   EvalD0(U: Standard_Real, V: Standard_Real): gp_Pnt;
   EvalD1(U: Standard_Real, V: Standard_Real): any;
@@ -4729,8 +4743,8 @@ export declare class Geom_BoundedCurve extends Geom_Curve {
   EndPoint(): gp_Pnt;
   StartPoint(): gp_Pnt;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -4868,8 +4882,8 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
 
 export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   HasEvalRepresentation(): Standard_Boolean;
-  EvalRepresentation(): Standard_Integer;
-  SetEvalRepresentation(theDesc: Standard_Integer): void;
+  EvalRepresentation(): any;
+  SetEvalRepresentation(theDesc: any): void;
   ClearEvalRepresentation(): void;
   IncreaseDegree(Degree: Standard_Integer): void;
   IncreaseMultiplicity_1(Index: Standard_Integer, M: Standard_Integer): void;
@@ -4940,11 +4954,11 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   Transform(T: gp_Trsf): void;
   static MaxDegree(): Standard_Integer;
   Resolution(Tolerance3D: Standard_Real, UTolerance: Standard_Real): void;
-  Copy(): Standard_Integer;
-  IsEqual(theOther: Standard_Integer, thePreci: Standard_Real): Standard_Boolean;
+  Copy(): any;
+  IsEqual(theOther: any, thePreci: Standard_Real): Standard_Boolean;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -4975,18 +4989,18 @@ export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
   IsVClosed(): Standard_Boolean;
   IsUPeriodic(): Standard_Boolean;
   IsVPeriodic(): Standard_Boolean;
-  UIso(U: Standard_Real): Standard_Integer;
-  VIso(V: Standard_Real): Standard_Integer;
+  UIso(U: Standard_Real): any;
+  VIso(V: Standard_Real): any;
   EvalD0(U: Standard_Real, V: Standard_Real): gp_Pnt;
   EvalD1(U: Standard_Real, V: Standard_Real): any;
   EvalD2(U: Standard_Real, V: Standard_Real): any;
   EvalD3(U: Standard_Real, V: Standard_Real): any;
   EvalDN(U: Standard_Real, V: Standard_Real, Nu: Standard_Integer, Nv: Standard_Integer): gp_Vec;
   Transform(T: gp_Trsf): void;
-  Copy(): Standard_Integer;
+  Copy(): any;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5000,8 +5014,8 @@ export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
 
 export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   HasEvalRepresentation(): Standard_Boolean;
-  EvalRepresentation(): Standard_Integer;
-  SetEvalRepresentation(theDesc: Standard_Integer): void;
+  EvalRepresentation(): any;
+  SetEvalRepresentation(theDesc: any): void;
   ClearEvalRepresentation(): void;
   Increase(Degree: Standard_Integer): void;
   InsertPoleAfter_1(Index: Standard_Integer, P: gp_Pnt): void;
@@ -5041,13 +5055,13 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   Transform(T: gp_Trsf): void;
   static MaxDegree(): Standard_Integer;
   Resolution(Tolerance3D: Standard_Real, UTolerance: Standard_Real): void;
-  Copy(): Standard_Integer;
+  Copy(): any;
   Knots(): TColStd_Array1OfReal;
   Multiplicities(): TColStd_Array1OfInteger;
   KnotSequence(): TColStd_Array1OfReal;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5102,18 +5116,18 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
   IsVClosed(): Standard_Boolean;
   IsUPeriodic(): Standard_Boolean;
   IsVPeriodic(): Standard_Boolean;
-  UIso(U: Standard_Real): Standard_Integer;
-  VIso(V: Standard_Real): Standard_Integer;
+  UIso(U: Standard_Real): any;
+  VIso(V: Standard_Real): any;
   EvalD0(U: Standard_Real, V: Standard_Real): gp_Pnt;
   EvalD1(U: Standard_Real, V: Standard_Real): any;
   EvalD2(U: Standard_Real, V: Standard_Real): any;
   EvalD3(U: Standard_Real, V: Standard_Real): any;
   EvalDN(U: Standard_Real, V: Standard_Real, Nu: Standard_Integer, Nv: Standard_Integer): gp_Vec;
   Transform(T: gp_Trsf): void;
-  Copy(): Standard_Integer;
+  Copy(): any;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5127,10 +5141,10 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
 
 export declare class Geom_Surface extends Geom_Geometry {
   UReverse(): void;
-  UReversed(): Standard_Integer;
+  UReversed(): any;
   UReversedParameter(U: Standard_Real): Standard_Real;
   VReverse(): void;
-  VReversed(): Standard_Integer;
+  VReversed(): any;
   VReversedParameter(V: Standard_Real): Standard_Real;
   TransformParameters(U: Standard_Real, V: Standard_Real, T: gp_Trsf): void;
   ParametricTransformation(T: gp_Trsf): gp_GTrsf2d;
@@ -5141,8 +5155,8 @@ export declare class Geom_Surface extends Geom_Geometry {
   UPeriod(): Standard_Real;
   IsVPeriodic(): Standard_Boolean;
   VPeriod(): Standard_Real;
-  UIso(U: Standard_Real): Standard_Integer;
-  VIso(V: Standard_Real): Standard_Integer;
+  UIso(U: Standard_Real): any;
+  VIso(V: Standard_Real): any;
   Continuity(): GeomAbs_Shape;
   IsCNu(N: Standard_Integer): Standard_Boolean;
   IsCNv(N: Standard_Integer): Standard_Boolean;
@@ -5158,8 +5172,8 @@ export declare class Geom_Surface extends Geom_Geometry {
   DN(U: Standard_Real, V: Standard_Real, Nu: Standard_Integer, Nv: Standard_Integer): gp_Vec;
   Value(U: Standard_Real, V: Standard_Real): gp_Pnt;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5178,8 +5192,8 @@ export declare class Geom_ElementarySurface extends Geom_Surface {
   IsCNu(N: Standard_Integer): Standard_Boolean;
   IsCNv(N: Standard_Integer): Standard_Boolean;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5188,7 +5202,7 @@ export declare class Geom_Curve extends Geom_Geometry {
   ReversedParameter(U: Standard_Real): Standard_Real;
   TransformedParameter(U: Standard_Real, T: gp_Trsf): Standard_Real;
   ParametricTransformation(T: gp_Trsf): Standard_Real;
-  Reversed(): Standard_Integer;
+  Reversed(): any;
   FirstParameter(): Standard_Real;
   LastParameter(): Standard_Real;
   IsClosed(): Standard_Boolean;
@@ -5208,59 +5222,17 @@ export declare class Geom_Curve extends Geom_Geometry {
   DN(U: Standard_Real, N: Standard_Integer): gp_Vec;
   Value(U: Standard_Real): gp_Pnt;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
 export declare class Geom_BoundedSurface extends Geom_Surface {
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
-
-export declare class Geom_ConicalSurface extends Geom_ElementarySurface {
-  SetCone(C: gp_Cone): void;
-  SetRadius(R: Standard_Real): void;
-  SetSemiAngle(Ang: Standard_Real): void;
-  Cone(): gp_Cone;
-  UReversedParameter(U: Standard_Real): Standard_Real;
-  VReversedParameter(V: Standard_Real): Standard_Real;
-  VReverse(): void;
-  TransformParameters(U: Standard_Real, V: Standard_Real, T: gp_Trsf): void;
-  ParametricTransformation(T: gp_Trsf): gp_GTrsf2d;
-  Apex(): gp_Pnt;
-  Bounds(U1: Standard_Real, U2: Standard_Real, V1: Standard_Real, V2: Standard_Real): void;
-  Coefficients(A1: Standard_Real, A2: Standard_Real, A3: Standard_Real, B1: Standard_Real, B2: Standard_Real, B3: Standard_Real, C1: Standard_Real, C2: Standard_Real, C3: Standard_Real, D: Standard_Real): void;
-  RefRadius(): Standard_Real;
-  SemiAngle(): Standard_Real;
-  IsUClosed(): Standard_Boolean;
-  IsVClosed(): Standard_Boolean;
-  IsUPeriodic(): Standard_Boolean;
-  IsVPeriodic(): Standard_Boolean;
-  UIso(U: Standard_Real): Standard_Integer;
-  VIso(V: Standard_Real): Standard_Integer;
-  EvalD0(U: Standard_Real, V: Standard_Real): gp_Pnt;
-  EvalD1(U: Standard_Real, V: Standard_Real): any;
-  EvalD2(U: Standard_Real, V: Standard_Real): any;
-  EvalD3(U: Standard_Real, V: Standard_Real): any;
-  EvalDN(U: Standard_Real, V: Standard_Real, Nu: Standard_Integer, Nv: Standard_Integer): gp_Vec;
-  Transform(T: gp_Trsf): void;
-  Copy(): Standard_Integer;
-  static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  delete(): void;
-}
-
-  export declare class Geom_ConicalSurface_1 extends Geom_ConicalSurface {
-    constructor(A3: gp_Ax3, Ang: Standard_Real, Radius: Standard_Real);
-  }
-
-  export declare class Geom_ConicalSurface_2 extends Geom_ConicalSurface {
-    constructor(C: gp_Cone);
-  }
 
 export declare class GProp_GProps {
   Add(Item: GProp_GProps, Density: Standard_Real): void;
@@ -5284,8 +5256,8 @@ export declare class GProp_GProps {
 
 export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   HasEvalRepresentation(): Standard_Boolean;
-  EvalRepresentation(): Standard_Integer;
-  SetEvalRepresentation(theDesc: Standard_Integer): void;
+  EvalRepresentation(): any;
+  SetEvalRepresentation(theDesc: any): void;
   ClearEvalRepresentation(): void;
   IncreaseDegree(Degree: Standard_Integer): void;
   IncreaseMultiplicity_1(Index: Standard_Integer, M: Standard_Integer): void;
@@ -5358,10 +5330,10 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   Transform(T: gp_Trsf2d): void;
   static MaxDegree(): Standard_Integer;
   Resolution(ToleranceUV: Standard_Real, UTolerance: Standard_Real): void;
-  Copy(): Standard_Integer;
+  Copy(): any;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5381,8 +5353,8 @@ export declare class Geom2d_BoundedCurve extends Geom2d_Curve {
   EndPoint(): gp_Pnt2d;
   StartPoint(): gp_Pnt2d;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5433,10 +5405,10 @@ export declare class Geom2d_Circle extends Geom2d_Conic {
   EvalD3(U: Standard_Real): any;
   EvalDN(U: Standard_Real, N: Standard_Integer): gp_Vec2d;
   Transform(T: gp_Trsf2d): void;
-  Copy(): Standard_Integer;
+  Copy(): any;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5478,10 +5450,10 @@ export declare class Geom2d_Line extends Geom2d_Curve {
   Transform(T: gp_Trsf2d): void;
   TransformedParameter(U: Standard_Real, T: gp_Trsf2d): Standard_Real;
   ParametricTransformation(T: gp_Trsf2d): Standard_Real;
-  Copy(): Standard_Integer;
+  Copy(): any;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5502,7 +5474,7 @@ export declare class Geom2d_Curve extends Geom2d_Geometry {
   ReversedParameter(U: Standard_Real): Standard_Real;
   TransformedParameter(U: Standard_Real, T: gp_Trsf2d): Standard_Real;
   ParametricTransformation(T: gp_Trsf2d): Standard_Real;
-  Reversed(): Standard_Integer;
+  Reversed(): any;
   FirstParameter(): Standard_Real;
   LastParameter(): Standard_Real;
   IsClosed(): Standard_Boolean;
@@ -5522,8 +5494,8 @@ export declare class Geom2d_Curve extends Geom2d_Geometry {
   DN(U: Standard_Real, N: Standard_Integer): gp_Vec2d;
   Value(U: Standard_Real): gp_Pnt2d;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5571,8 +5543,8 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
 
 export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   HasEvalRepresentation(): Standard_Boolean;
-  EvalRepresentation(): Standard_Integer;
-  SetEvalRepresentation(theDesc: Standard_Integer): void;
+  EvalRepresentation(): any;
+  SetEvalRepresentation(theDesc: any): void;
   ClearEvalRepresentation(): void;
   Increase(Degree: Standard_Integer): void;
   InsertPoleAfter(Index: Standard_Integer, P: gp_Pnt2d, Weight: Standard_Real): void;
@@ -5610,13 +5582,13 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   Transform(T: gp_Trsf2d): void;
   static MaxDegree(): Standard_Integer;
   Resolution(ToleranceUV: Standard_Real, UTolerance: Standard_Real): void;
-  Copy(): Standard_Integer;
+  Copy(): any;
   Knots(): TColStd_Array1OfReal;
   Multiplicities(): TColStd_Array1OfInteger;
   KnotSequence(): TColStd_Array1OfReal;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5647,8 +5619,8 @@ export declare class Geom2d_Conic extends Geom2d_Curve {
   Continuity(): GeomAbs_Shape;
   IsCN(N: Standard_Integer): Standard_Boolean;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5699,10 +5671,10 @@ export declare class Geom2d_Ellipse extends Geom2d_Conic {
   EvalD3(U: Standard_Real): any;
   EvalDN(U: Standard_Real, N: Standard_Integer): gp_Vec2d;
   Transform(T: gp_Trsf2d): void;
-  Copy(): Standard_Integer;
+  Copy(): any;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -5779,15 +5751,15 @@ export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
 export declare class Adaptor2d_Curve2d extends Standard_Transient {
   constructor();
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  ShallowCopy(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  ShallowCopy(): any;
   FirstParameter(): Standard_Real;
   LastParameter(): Standard_Real;
   Continuity(): GeomAbs_Shape;
   NbIntervals(S: GeomAbs_Shape): Standard_Integer;
   Intervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
-  Trim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): Standard_Integer;
+  Trim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): any;
   IsClosed(): Standard_Boolean;
   IsPeriodic(): Standard_Boolean;
   Period(): Standard_Real;
@@ -5809,8 +5781,8 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
   NbPoles(): Standard_Integer;
   NbKnots(): Standard_Integer;
   NbSamples(): Standard_Integer;
-  Bezier(): Standard_Integer;
-  BSpline(): Standard_Integer;
+  Bezier(): any;
+  BSpline(): any;
   EvalD0(U: Standard_Real): gp_Pnt2d;
   EvalD1(U: Standard_Real): any;
   EvalD2(U: Standard_Real): any;
@@ -5821,8 +5793,8 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
 
 export declare class GeomTools {
   constructor();
-  static SetUndefinedTypeHandler(aHandler: Standard_Integer): void;
-  static GetUndefinedTypeHandler(): Standard_Integer;
+  static SetUndefinedTypeHandler(aHandler: any): void;
+  static GetUndefinedTypeHandler(): any;
   delete(): void;
 }
 
@@ -5856,22 +5828,6 @@ export declare class Geom2dConvert_BSplineCurveToBezierCurve {
     constructor(BasisCurve: any, U1: Standard_Real, U2: Standard_Real, ParametricTolerance: Standard_Real);
   }
 
-export declare class Geom2dConvert_ApproxCurve {
-  Curve(): any;
-  IsDone(): Standard_Boolean;
-  HasResult(): Standard_Boolean;
-  MaxError(): Standard_Real;
-  delete(): void;
-}
-
-  export declare class Geom2dConvert_ApproxCurve_1 extends Geom2dConvert_ApproxCurve {
-    constructor(Curve: any, Tol2d: Standard_Real, Order: GeomAbs_Shape, MaxSegments: Standard_Integer, MaxDegree: Standard_Integer);
-  }
-
-  export declare class Geom2dConvert_ApproxCurve_2 extends Geom2dConvert_ApproxCurve {
-    constructor(Curve: any, Tol2d: Standard_Real, Order: GeomAbs_Shape, MaxSegments: Standard_Integer, MaxDegree: Standard_Integer);
-  }
-
 export declare class GeomLib {
   constructor();
   static To3d(Position: gp_Ax2, Curve2d: any): any;
@@ -5901,7 +5857,7 @@ export declare class GeomLib {
 }
 
 export declare class GCE2d_MakeArcOfEllipse extends GCE2d_Root {
-  Value(): Standard_Integer;
+  Value(): any;
   delete(): void;
 }
 
@@ -5918,7 +5874,7 @@ export declare class GCE2d_MakeArcOfEllipse extends GCE2d_Root {
   }
 
 export declare class GCE2d_MakeEllipse extends GCE2d_Root {
-  Value(): Standard_Integer;
+  Value(): any;
   delete(): void;
 }
 
@@ -5939,7 +5895,7 @@ export declare class GCE2d_MakeEllipse extends GCE2d_Root {
   }
 
 export declare class GCE2d_MakeSegment extends GCE2d_Root {
-  Value(): Standard_Integer;
+  Value(): any;
   delete(): void;
 }
 
@@ -5964,7 +5920,7 @@ export declare class GCE2d_MakeSegment extends GCE2d_Root {
   }
 
 export declare class GCE2d_MakeArcOfCircle extends GCE2d_Root {
-  Value(): Standard_Integer;
+  Value(): any;
   delete(): void;
 }
 
@@ -5989,7 +5945,7 @@ export declare class GCE2d_MakeArcOfCircle extends GCE2d_Root {
   }
 
 export declare class GCE2d_MakeCircle extends GCE2d_Root {
-  Value(): Standard_Integer;
+  Value(): any;
   delete(): void;
 }
 
@@ -6070,25 +6026,8 @@ export declare class GCPnts_TangentialDeflection {
     constructor(theC: Adaptor2d_Curve2d, theFirstParameter: Standard_Real, theLastParameter: Standard_Real, theAngularDeflection: Standard_Real, theCurvatureDeflection: Standard_Real, theMinimumOfPoints: Standard_Integer, theUTol: Standard_Real, theMinLen: Standard_Real);
   }
 
-export declare class GC_MakeArcOfEllipse extends GC_Root {
-  Value(): Standard_Integer;
-  delete(): void;
-}
-
-  export declare class GC_MakeArcOfEllipse_1 extends GC_MakeArcOfEllipse {
-    constructor(Elips: gp_Elips, Alpha1: Standard_Real, Alpha2: Standard_Real, Sense: Standard_Boolean);
-  }
-
-  export declare class GC_MakeArcOfEllipse_2 extends GC_MakeArcOfEllipse {
-    constructor(Elips: gp_Elips, P: gp_Pnt, Alpha: Standard_Real, Sense: Standard_Boolean);
-  }
-
-  export declare class GC_MakeArcOfEllipse_3 extends GC_MakeArcOfEllipse {
-    constructor(Elips: gp_Elips, P1: gp_Pnt, P2: gp_Pnt, Sense: Standard_Boolean);
-  }
-
 export declare class GC_MakeArcOfCircle extends GC_Root {
-  Value(): Standard_Integer;
+  Value(): any;
   delete(): void;
 }
 
@@ -6269,10 +6208,10 @@ export declare class BRepTools {
   static CleanGeometry(theShape: TopoDS_Shape): void;
   static RemoveUnusedPCurves(S: TopoDS_Shape): void;
   static Triangulation(theShape: TopoDS_Shape, theLinDefl: Standard_Real, theToCheckFreeEdges: Standard_Boolean): Standard_Boolean;
-  static LoadTriangulation(theShape: TopoDS_Shape, theTriangulationIdx: Standard_Integer, theToSetAsActive: Standard_Boolean, theFileSystem: Standard_Integer): Standard_Boolean;
+  static LoadTriangulation(theShape: TopoDS_Shape, theTriangulationIdx: Standard_Integer, theToSetAsActive: Standard_Boolean, theFileSystem: any): Standard_Boolean;
   static UnloadTriangulation(theShape: TopoDS_Shape, theTriangulationIdx: Standard_Integer): Standard_Boolean;
   static ActivateTriangulation(theShape: TopoDS_Shape, theTriangulationIdx: Standard_Integer, theToActivateStrictly: Standard_Boolean): Standard_Boolean;
-  static LoadAllTriangulations(theShape: TopoDS_Shape, theFileSystem: Standard_Integer): Standard_Boolean;
+  static LoadAllTriangulations(theShape: TopoDS_Shape, theFileSystem: any): Standard_Boolean;
   static UnloadAllTriangulations(theShape: TopoDS_Shape): Standard_Boolean;
   static Compare_1(V1: TopoDS_Vertex, V2: TopoDS_Vertex): Standard_Boolean;
   static Compare_2(E1: TopoDS_Edge, E2: TopoDS_Edge): Standard_Boolean;
@@ -6283,7 +6222,7 @@ export declare class BRepTools {
   static Write_3(theShape: TopoDS_Shape, theFile: Standard_Character, theProgress: Message_ProgressRange): Standard_Boolean;
   static Write_4(theShape: TopoDS_Shape, theFile: Standard_Character, theWithTriangles: Standard_Boolean, theWithNormals: Standard_Boolean, theVersion: TopTools_FormatVersion, theProgress: Message_ProgressRange): Standard_Boolean;
   static Read_2(Sh: TopoDS_Shape, File: Standard_Character, B: BRep_Builder, theProgress: Message_ProgressRange): Standard_Boolean;
-  static EvalAndUpdateTol(theE: TopoDS_Edge, theC3d: Standard_Integer, theC2d: Standard_Integer, theS: Standard_Integer, theF: Standard_Real, theL: Standard_Real): Standard_Real;
+  static EvalAndUpdateTol(theE: TopoDS_Edge, theC3d: any, theC2d: any, theS: any, theF: Standard_Real, theL: Standard_Real): Standard_Real;
   static OriEdgeInFace(theEdge: TopoDS_Edge, theFace: TopoDS_Face): TopAbs_Orientation;
   static RemoveInternals(theS: TopoDS_Shape, theForce: Standard_Boolean): void;
   static CheckLocations(theS: TopoDS_Shape, theProblemShapes: TopTools_ListOfShape): void;
@@ -6349,9 +6288,9 @@ export declare class BRep_Tool {
 
 export declare class BRepAdaptor_Surface extends GeomAdaptor_TransformedSurface {
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  ShallowCopy(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  ShallowCopy(): any;
   Initialize(F: TopoDS_Face, Restriction: Standard_Boolean): void;
   Face(): TopoDS_Face;
   Tolerance(): Standard_Real;
@@ -6368,9 +6307,9 @@ export declare class BRepAdaptor_Surface extends GeomAdaptor_TransformedSurface 
 
 export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  ShallowCopy(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  ShallowCopy(): any;
   Initialize_1(W: TopoDS_Wire, KnotByCurvilinearAbcissa: Standard_Boolean): void;
   Initialize_2(W: TopoDS_Wire, KnotByCurvilinearAbcissa: Standard_Boolean, First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): void;
   Wire(): TopoDS_Wire;
@@ -6380,7 +6319,7 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
   Continuity(): GeomAbs_Shape;
   NbIntervals(S: GeomAbs_Shape): Standard_Integer;
   Intervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
-  Trim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): Standard_Integer;
+  Trim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): any;
   IsClosed(): Standard_Boolean;
   IsPeriodic(): Standard_Boolean;
   Period(): Standard_Real;
@@ -6401,8 +6340,8 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
   IsRational(): Standard_Boolean;
   NbPoles(): Standard_Integer;
   NbKnots(): Standard_Integer;
-  Bezier(): Standard_Integer;
-  BSpline(): Standard_Integer;
+  Bezier(): any;
+  BSpline(): any;
   delete(): void;
 }
 
@@ -6420,9 +6359,9 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
 
 export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  ShallowCopy(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  ShallowCopy(): any;
   Reset(): void;
   Initialize_1(E: TopoDS_Edge): void;
   Initialize_2(E: TopoDS_Edge, F: TopoDS_Face): void;
@@ -6438,7 +6377,7 @@ export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
   Continuity(): GeomAbs_Shape;
   NbIntervals(S: GeomAbs_Shape): Standard_Integer;
   Intervals(T: TColStd_Array1OfReal, S: GeomAbs_Shape): void;
-  Trim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): Standard_Integer;
+  Trim(First: Standard_Real, Last: Standard_Real, Tol: Standard_Real): any;
   IsClosed(): Standard_Boolean;
   IsPeriodic(): Standard_Boolean;
   Period(): Standard_Real;
@@ -6459,9 +6398,9 @@ export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
   IsRational(): Standard_Boolean;
   NbPoles(): Standard_Integer;
   NbKnots(): Standard_Integer;
-  Bezier(): Standard_Integer;
-  BSpline(): Standard_Integer;
-  OffsetCurve(): Standard_Integer;
+  Bezier(): any;
+  BSpline(): any;
+  OffsetCurve(): any;
   delete(): void;
 }
 
@@ -6479,9 +6418,9 @@ export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
 
 export declare class BRepAdaptor_Curve2d extends Geom2dAdaptor_Curve {
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  ShallowCopy(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  ShallowCopy(): any;
   Initialize(E: TopoDS_Edge, F: TopoDS_Face): void;
   Edge(): TopoDS_Edge;
   Face(): TopoDS_Face;
@@ -6530,13 +6469,6 @@ export declare class StlAPI {
   delete(): void;
 }
 
-export declare class StlAPI_Writer {
-  constructor()
-  ASCIIMode(): Standard_Boolean;
-  Write_1(theShape: TopoDS_Shape, theFileName: Standard_Character, theProgress: Message_ProgressRange): Standard_Boolean;
-  delete(): void;
-}
-
 export declare class Interface_Static extends Interface_TypedValue {
   Family(): Standard_Character;
   SetWild(wildcard: any): void;
@@ -6581,8 +6513,8 @@ export declare class Interface_TypedValue extends MoniTool_TypedValue {
   static ParamTypeToValueType(typ: Interface_ParamType): MoniTool_ValueType;
   static ValueTypeToParamType(typ: MoniTool_ValueType): Interface_ParamType;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -6653,29 +6585,29 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
   constructor()
   ClearData(theMode: Standard_Integer): void;
   SelectNorm(theNormName: Standard_Character): Standard_Boolean;
-  SetController(theCtl: Standard_Integer): void;
+  SetController(theCtl: any): void;
   SelectedNorm(theRsc: Standard_Boolean): Standard_Character;
-  NormAdaptor(): Standard_Integer;
-  Context(): Standard_Integer;
-  SetAllContext(theContext: Standard_Integer): void;
+  NormAdaptor(): any;
+  Context(): XSControl_WorkSessionMap;
+  SetAllContext(theContext: XSControl_WorkSessionMap): void;
   ClearContext(): void;
   InitTransferReader(theMode: Standard_Integer): void;
-  SetTransferReader(theTR: Standard_Integer): void;
-  TransferReader(): Standard_Integer;
-  MapReader(): Standard_Integer;
-  SetMapReader(theTP: Standard_Integer): Standard_Boolean;
-  Result(theEnt: Standard_Integer, theMode: Standard_Integer): Standard_Integer;
-  TransferReadOne(theEnts: Standard_Integer, theProgress: Message_ProgressRange): Standard_Integer;
+  SetTransferReader(theTR: any): void;
+  TransferReader(): any;
+  MapReader(): any;
+  SetMapReader(theTP: any): Standard_Boolean;
+  Result(theEnt: any, theMode: Standard_Integer): any;
+  TransferReadOne(theEnts: any, theProgress: Message_ProgressRange): Standard_Integer;
   TransferReadRoots(theProgress: Message_ProgressRange): Standard_Integer;
-  NewModel(): Standard_Integer;
-  TransferWriter(): Standard_Integer;
-  SetMapWriter(theFP: Standard_Integer): Standard_Boolean;
+  NewModel(): any;
+  TransferWriter(): any;
+  SetMapWriter(theFP: any): Standard_Boolean;
   TransferWriteShape(theShape: TopoDS_Shape, theCompGraph: Standard_Boolean, theProgress: Message_ProgressRange): IFSelect_ReturnStatus;
-  Vars(): Standard_Integer;
-  SetVars(theVars: Standard_Integer): void;
+  Vars(): any;
+  SetVars(theVars: any): void;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
   delete(): void;
 }
 
@@ -7149,10 +7081,10 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   constructor()
   static AutoNaming(): Standard_Boolean;
   static SetAutoNaming(theIsAutoNaming: Standard_Boolean): void;
-  static Set(L: TDF_Label): Standard_Integer;
+  static Set(L: TDF_Label): any;
   static GetID(): Standard_GUID;
   BaseLabel(): TDF_Label;
-  ShapeTool(): Standard_Integer;
+  ShapeTool(): any;
   IsColor(lab: TDF_Label): Standard_Boolean;
   static GetColor_1(lab: TDF_Label, col: Quantity_Color): Standard_Boolean;
   static GetColor_2(lab: TDF_Label, col: Quantity_ColorRGBA): Standard_Boolean;
@@ -7192,9 +7124,9 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   ReverseChainsOfTreeNodes(): Standard_Boolean;
   ID(): Standard_GUID;
   static get_type_name(): Standard_Character;
-  static get_type_descriptor(): Standard_Integer;
-  DynamicType(): Standard_Integer;
-  NewEmpty(): Standard_Integer;
+  static get_type_descriptor(): any;
+  DynamicType(): any;
+  NewEmpty(): any;
   delete(): void;
 }
 
@@ -7967,10 +7899,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Bnd_Box: typeof Bnd_Box;
   Bnd_Box_1: typeof Bnd_Box_1;
   Bnd_Box_2: typeof Bnd_Box_2;
-  Bnd_OBB: typeof Bnd_OBB;
-  Bnd_OBB_1: typeof Bnd_OBB_1;
-  Bnd_OBB_2: typeof Bnd_OBB_2;
-  Bnd_OBB_3: typeof Bnd_OBB_3;
   Convert_ParameterisationType: Convert_ParameterisationType;
   Poly_PolygonOnTriangulation: typeof Poly_PolygonOnTriangulation;
   Poly_PolygonOnTriangulation_1: typeof Poly_PolygonOnTriangulation_1;
@@ -8030,6 +7958,11 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Handle_Geom_Curve_3: typeof Handle_Geom_Curve_3;
   Handle_Geom_Curve_4: typeof Handle_Geom_Curve_4;
   TopoDS_Cast: typeof TopoDS_Cast;
+  Handle_Geom2d_BezierCurve: typeof Handle_Geom2d_BezierCurve;
+  Handle_Geom2d_BezierCurve_1: typeof Handle_Geom2d_BezierCurve_1;
+  Handle_Geom2d_BezierCurve_2: typeof Handle_Geom2d_BezierCurve_2;
+  Handle_Geom2d_BezierCurve_3: typeof Handle_Geom2d_BezierCurve_3;
+  Handle_Geom2d_BezierCurve_4: typeof Handle_Geom2d_BezierCurve_4;
   Handle_Poly_Triangulation: typeof Handle_Poly_Triangulation;
   Handle_Poly_Triangulation_1: typeof Handle_Poly_Triangulation_1;
   Handle_Poly_Triangulation_2: typeof Handle_Poly_Triangulation_2;
@@ -8048,16 +7981,31 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Handle_Geom2d_TrimmedCurve_2: typeof Handle_Geom2d_TrimmedCurve_2;
   Handle_Geom2d_TrimmedCurve_3: typeof Handle_Geom2d_TrimmedCurve_3;
   Handle_Geom2d_TrimmedCurve_4: typeof Handle_Geom2d_TrimmedCurve_4;
+  Handle_Geom2d_BSplineCurve: typeof Handle_Geom2d_BSplineCurve;
+  Handle_Geom2d_BSplineCurve_1: typeof Handle_Geom2d_BSplineCurve_1;
+  Handle_Geom2d_BSplineCurve_2: typeof Handle_Geom2d_BSplineCurve_2;
+  Handle_Geom2d_BSplineCurve_3: typeof Handle_Geom2d_BSplineCurve_3;
+  Handle_Geom2d_BSplineCurve_4: typeof Handle_Geom2d_BSplineCurve_4;
   Handle_XCAFDoc_ShapeTool: typeof Handle_XCAFDoc_ShapeTool;
   Handle_XCAFDoc_ShapeTool_1: typeof Handle_XCAFDoc_ShapeTool_1;
   Handle_XCAFDoc_ShapeTool_2: typeof Handle_XCAFDoc_ShapeTool_2;
   Handle_XCAFDoc_ShapeTool_3: typeof Handle_XCAFDoc_ShapeTool_3;
   Handle_XCAFDoc_ShapeTool_4: typeof Handle_XCAFDoc_ShapeTool_4;
+  Handle_HLRBRep_Algo: typeof Handle_HLRBRep_Algo;
+  Handle_HLRBRep_Algo_1: typeof Handle_HLRBRep_Algo_1;
+  Handle_HLRBRep_Algo_2: typeof Handle_HLRBRep_Algo_2;
+  Handle_HLRBRep_Algo_3: typeof Handle_HLRBRep_Algo_3;
+  Handle_HLRBRep_Algo_4: typeof Handle_HLRBRep_Algo_4;
   Handle_Geom_Geometry: typeof Handle_Geom_Geometry;
   Handle_Geom_Geometry_1: typeof Handle_Geom_Geometry_1;
   Handle_Geom_Geometry_2: typeof Handle_Geom_Geometry_2;
   Handle_Geom_Geometry_3: typeof Handle_Geom_Geometry_3;
   Handle_Geom_Geometry_4: typeof Handle_Geom_Geometry_4;
+  Handle_Law_Function: typeof Handle_Law_Function;
+  Handle_Law_Function_1: typeof Handle_Law_Function_1;
+  Handle_Law_Function_2: typeof Handle_Law_Function_2;
+  Handle_Law_Function_3: typeof Handle_Law_Function_3;
+  Handle_Law_Function_4: typeof Handle_Law_Function_4;
   Handle_Geom_Surface: typeof Handle_Geom_Surface;
   Handle_Geom_Surface_1: typeof Handle_Geom_Surface_1;
   Handle_Geom_Surface_2: typeof Handle_Geom_Surface_2;
@@ -8137,27 +8085,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GeomAPI_ProjectPointOnSurf_3: typeof GeomAPI_ProjectPointOnSurf_3;
   GeomAPI_ProjectPointOnSurf_4: typeof GeomAPI_ProjectPointOnSurf_4;
   GeomAPI_ProjectPointOnSurf_5: typeof GeomAPI_ProjectPointOnSurf_5;
-  GeomAPI_PointsToBSplineSurface: typeof GeomAPI_PointsToBSplineSurface;
-  GeomAPI_PointsToBSplineSurface_1: typeof GeomAPI_PointsToBSplineSurface_1;
-  GeomAPI_PointsToBSplineSurface_2: typeof GeomAPI_PointsToBSplineSurface_2;
-  GeomAPI_PointsToBSplineSurface_3: typeof GeomAPI_PointsToBSplineSurface_3;
-  GeomAPI_PointsToBSplineSurface_4: typeof GeomAPI_PointsToBSplineSurface_4;
-  GeomAPI_PointsToBSplineSurface_5: typeof GeomAPI_PointsToBSplineSurface_5;
-  GeomAPI_Interpolate: typeof GeomAPI_Interpolate;
-  GeomAPI_Interpolate_1: typeof GeomAPI_Interpolate_1;
-  GeomAPI_Interpolate_2: typeof GeomAPI_Interpolate_2;
   BRepPrimAPI_MakePrism: typeof BRepPrimAPI_MakePrism;
   BRepPrimAPI_MakePrism_1: typeof BRepPrimAPI_MakePrism_1;
   BRepPrimAPI_MakePrism_2: typeof BRepPrimAPI_MakePrism_2;
-  BRepPrimAPI_MakeRevolution: typeof BRepPrimAPI_MakeRevolution;
-  BRepPrimAPI_MakeRevolution_1: typeof BRepPrimAPI_MakeRevolution_1;
-  BRepPrimAPI_MakeRevolution_2: typeof BRepPrimAPI_MakeRevolution_2;
-  BRepPrimAPI_MakeRevolution_3: typeof BRepPrimAPI_MakeRevolution_3;
-  BRepPrimAPI_MakeRevolution_4: typeof BRepPrimAPI_MakeRevolution_4;
-  BRepPrimAPI_MakeRevolution_5: typeof BRepPrimAPI_MakeRevolution_5;
-  BRepPrimAPI_MakeRevolution_6: typeof BRepPrimAPI_MakeRevolution_6;
-  BRepPrimAPI_MakeRevolution_7: typeof BRepPrimAPI_MakeRevolution_7;
-  BRepPrimAPI_MakeRevolution_8: typeof BRepPrimAPI_MakeRevolution_8;
   BRepPrimAPI_MakeSphere: typeof BRepPrimAPI_MakeSphere;
   BRepPrimAPI_MakeSphere_1: typeof BRepPrimAPI_MakeSphere_1;
   BRepPrimAPI_MakeSphere_2: typeof BRepPrimAPI_MakeSphere_2;
@@ -8181,21 +8111,25 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepPrimAPI_MakeCylinder_3: typeof BRepPrimAPI_MakeCylinder_3;
   BRepPrimAPI_MakeCylinder_4: typeof BRepPrimAPI_MakeCylinder_4;
   BRepPrimAPI_MakeOneAxis: typeof BRepPrimAPI_MakeOneAxis;
-  BRepPrimAPI_MakeTorus: typeof BRepPrimAPI_MakeTorus;
-  BRepPrimAPI_MakeTorus_1: typeof BRepPrimAPI_MakeTorus_1;
-  BRepPrimAPI_MakeTorus_2: typeof BRepPrimAPI_MakeTorus_2;
-  BRepPrimAPI_MakeTorus_3: typeof BRepPrimAPI_MakeTorus_3;
-  BRepPrimAPI_MakeTorus_4: typeof BRepPrimAPI_MakeTorus_4;
-  BRepPrimAPI_MakeTorus_5: typeof BRepPrimAPI_MakeTorus_5;
-  BRepPrimAPI_MakeTorus_6: typeof BRepPrimAPI_MakeTorus_6;
-  BRepPrimAPI_MakeTorus_7: typeof BRepPrimAPI_MakeTorus_7;
-  BRepPrimAPI_MakeTorus_8: typeof BRepPrimAPI_MakeTorus_8;
   BRepPrimAPI_MakeBox: typeof BRepPrimAPI_MakeBox;
   BRepPrimAPI_MakeBox_1: typeof BRepPrimAPI_MakeBox_1;
   BRepPrimAPI_MakeBox_2: typeof BRepPrimAPI_MakeBox_2;
   BRepPrimAPI_MakeBox_3: typeof BRepPrimAPI_MakeBox_3;
   BRepPrimAPI_MakeBox_4: typeof BRepPrimAPI_MakeBox_4;
   BRepPrimAPI_MakeBox_5: typeof BRepPrimAPI_MakeBox_5;
+  HLRBRep_InternalAlgo: typeof HLRBRep_InternalAlgo;
+  HLRBRep_InternalAlgo_1: typeof HLRBRep_InternalAlgo_1;
+  HLRBRep_InternalAlgo_2: typeof HLRBRep_InternalAlgo_2;
+  HLRBRep_Algo: typeof HLRBRep_Algo;
+  HLRBRep_Algo_1: typeof HLRBRep_Algo_1;
+  HLRBRep_Algo_2: typeof HLRBRep_Algo_2;
+  HLRBRep_HLRToShape: typeof HLRBRep_HLRToShape;
+  HLRAlgo_Projector: typeof HLRAlgo_Projector;
+  HLRAlgo_Projector_1: typeof HLRAlgo_Projector_1;
+  HLRAlgo_Projector_2: typeof HLRAlgo_Projector_2;
+  HLRAlgo_Projector_3: typeof HLRAlgo_Projector_3;
+  HLRAlgo_Projector_4: typeof HLRAlgo_Projector_4;
+  HLRAlgo_Projector_5: typeof HLRAlgo_Projector_5;
   BRepOffset_Mode: BRepOffset_Mode;
   BRepOffsetAPI_MakeThickSolid: typeof BRepOffsetAPI_MakeThickSolid;
   BRepOffsetAPI_MakeFilling: typeof BRepOffsetAPI_MakeFilling;
@@ -8206,9 +8140,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepOffsetAPI_MakeOffset_2: typeof BRepOffsetAPI_MakeOffset_2;
   BRepOffsetAPI_MakeOffset_3: typeof BRepOffsetAPI_MakeOffset_3;
   BRepOffsetAPI_MakePipeShell: typeof BRepOffsetAPI_MakePipeShell;
-  BRepOffsetAPI_MakePipe: typeof BRepOffsetAPI_MakePipe;
-  BRepOffsetAPI_MakePipe_1: typeof BRepOffsetAPI_MakePipe_1;
-  BRepOffsetAPI_MakePipe_2: typeof BRepOffsetAPI_MakePipe_2;
   BRepExtrema_DistShapeShape: typeof BRepExtrema_DistShapeShape;
   BRepExtrema_DistShapeShape_1: typeof BRepExtrema_DistShapeShape_1;
   BRepExtrema_DistShapeShape_2: typeof BRepExtrema_DistShapeShape_2;
@@ -8303,7 +8234,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepBuilderAPI_MakeSolid_6: typeof BRepBuilderAPI_MakeSolid_6;
   BRepBuilderAPI_MakeSolid_7: typeof BRepBuilderAPI_MakeSolid_7;
   BRepBuilderAPI_Command: typeof BRepBuilderAPI_Command;
-  BRepCheck_Analyzer: typeof BRepCheck_Analyzer;
   BRepLib: typeof BRepLib;
   BRepGProp: typeof BRepGProp;
   BRepGProp_Face: typeof BRepGProp_Face;
@@ -8321,7 +8251,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   ShapeFix_Solid_1: typeof ShapeFix_Solid_1;
   ShapeFix_Solid_2: typeof ShapeFix_Solid_2;
   ShapeFix_Root: typeof ShapeFix_Root;
-  ShapeFix_EdgeConnect: typeof ShapeFix_EdgeConnect;
   ShapeFix_Face: typeof ShapeFix_Face;
   ShapeFix_Face_1: typeof ShapeFix_Face_1;
   ShapeFix_Face_2: typeof ShapeFix_Face_2;
@@ -8365,9 +8294,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Geom_ElementarySurface: typeof Geom_ElementarySurface;
   Geom_Curve: typeof Geom_Curve;
   Geom_BoundedSurface: typeof Geom_BoundedSurface;
-  Geom_ConicalSurface: typeof Geom_ConicalSurface;
-  Geom_ConicalSurface_1: typeof Geom_ConicalSurface_1;
-  Geom_ConicalSurface_2: typeof Geom_ConicalSurface_2;
   GProp_GProps: typeof GProp_GProps;
   GProp_GProps_1: typeof GProp_GProps_1;
   GProp_GProps_2: typeof GProp_GProps_2;
@@ -8409,9 +8335,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Geom2dConvert_BSplineCurveToBezierCurve: typeof Geom2dConvert_BSplineCurveToBezierCurve;
   Geom2dConvert_BSplineCurveToBezierCurve_1: typeof Geom2dConvert_BSplineCurveToBezierCurve_1;
   Geom2dConvert_BSplineCurveToBezierCurve_2: typeof Geom2dConvert_BSplineCurveToBezierCurve_2;
-  Geom2dConvert_ApproxCurve: typeof Geom2dConvert_ApproxCurve;
-  Geom2dConvert_ApproxCurve_1: typeof Geom2dConvert_ApproxCurve_1;
-  Geom2dConvert_ApproxCurve_2: typeof Geom2dConvert_ApproxCurve_2;
   GeomLib: typeof GeomLib;
   GCE2d_MakeArcOfEllipse: typeof GCE2d_MakeArcOfEllipse;
   GCE2d_MakeArcOfEllipse_1: typeof GCE2d_MakeArcOfEllipse_1;
@@ -8451,10 +8374,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GCPnts_TangentialDeflection_3: typeof GCPnts_TangentialDeflection_3;
   GCPnts_TangentialDeflection_4: typeof GCPnts_TangentialDeflection_4;
   GCPnts_TangentialDeflection_5: typeof GCPnts_TangentialDeflection_5;
-  GC_MakeArcOfEllipse: typeof GC_MakeArcOfEllipse;
-  GC_MakeArcOfEllipse_1: typeof GC_MakeArcOfEllipse_1;
-  GC_MakeArcOfEllipse_2: typeof GC_MakeArcOfEllipse_2;
-  GC_MakeArcOfEllipse_3: typeof GC_MakeArcOfEllipse_3;
   GC_MakeArcOfCircle: typeof GC_MakeArcOfCircle;
   GC_MakeArcOfCircle_1: typeof GC_MakeArcOfCircle_1;
   GC_MakeArcOfCircle_2: typeof GC_MakeArcOfCircle_2;
@@ -8495,7 +8414,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   TopExp_Explorer_2: typeof TopExp_Explorer_2;
   StlAPI_Reader: typeof StlAPI_Reader;
   StlAPI: typeof StlAPI;
-  StlAPI_Writer: typeof StlAPI_Writer;
   Interface_Static: typeof Interface_Static;
   Interface_Static_1: typeof Interface_Static_1;
   Interface_Static_2: typeof Interface_Static_2;

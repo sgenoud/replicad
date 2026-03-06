@@ -1,0 +1,34 @@
+0:_embind_register_memory_view
+1:_embind_register_integer
+2:_embind_register_std_wstring
+3:_embind_register_float
+4:_embind_register_bigint
+5:emscripten_resize_heap
+6:_setitimer_js
+7:_emscripten_runtime_keepalive_clear
+8:_embind_register_void
+9:_embind_register_std_string
+10:_embind_register_emval
+11:_embind_register_bool
+12:_abort_js
+13:__wasi_proc_exit
+14:sbrk
+15:__cxxabiv1::__fundamental_type_info::~__fundamental_type_info()
+16:emscripten_builtin_free
+17:embind_init_builtin()
+18:__cxxabiv1::__shim_type_info::noop1() const
+19:emscripten_builtin_malloc
+20:action_terminate
+21:action_abort
+22:abort
+23:_emscripten_timeout
+24:__wasm_call_ctors
+25:__cxxabiv1::__si_class_type_info::search_below_dst(__cxxabiv1::__dynamic_cast_info*, void const*, int, bool) const
+26:__cxxabiv1::__si_class_type_info::search_above_dst(__cxxabiv1::__dynamic_cast_info*, void const*, void const*, int, bool) const
+27:__cxxabiv1::__si_class_type_info::has_unambiguous_public_base(__cxxabiv1::__dynamic_cast_info*, void*, int) const
+28:__cxxabiv1::__shim_type_info::~__shim_type_info()
+29:__cxxabiv1::__fundamental_type_info::can_catch(__cxxabiv1::__shim_type_info const*, void*&) const
+30:__cxxabiv1::__class_type_info::search_below_dst(__cxxabiv1::__dynamic_cast_info*, void const*, int, bool) const
+31:__cxxabiv1::__class_type_info::search_above_dst(__cxxabiv1::__dynamic_cast_info*, void const*, void const*, int, bool) const
+32:__cxxabiv1::__class_type_info::has_unambiguous_public_base(__cxxabiv1::__dynamic_cast_info*, void*, int) const
+33:__cxxabiv1::__class_type_info::can_catch(__cxxabiv1::__shim_type_info const*, void*&) const
