@@ -63,6 +63,10 @@ export class MeshShape
 {
   constructor(manifoldShape: ManifoldInstance) {
     super(manifoldShape);
+    // Force manifold to eagerly process mesh data. Without this, the
+    // internal representation may depend on the input Mesh WASM object
+    // which can be freed before the Manifold is queried.
+    manifoldShape.numVert();
   }
 
   clone(): MeshShape {
@@ -168,8 +172,8 @@ export class MeshShape
   }
 
   mesh(): MeshShapeMesh {
-    const withNormals = this.wrapped.calculateNormals(0, 0.1);
-    const mesh = withNormals.getMesh();
+    const meshSource = this.wrapped.calculateNormals(0, 0.1);
+    const mesh = meshSource.getMesh();
     const numProp = mesh.numProp ?? 3;
 
     const vertProperties = Array.from(mesh.vertProperties);

@@ -1,6 +1,7 @@
 import { expose } from "comlink";
 import * as replicad from "replicad";
-import * as manifoldModule from "manifold-3d";
+import { getManifoldModule, setWasmUrl } from "manifold-3d/lib/wasm.js";
+import manifoldWasmUrl from "manifold-3d/manifold.wasm?url";
 
 import initOpenCascade from "./initOCSingle.js";
 import initOpenCascadeWithExceptions from "./initOCWithExceptions.js";
@@ -11,26 +12,29 @@ import { renderOutput, ShapeStandardizer } from "./utils/renderOutput";
 
 self.replicad = replicad;
 
+let manifoldModulePromise = null;
+
 const loadManifold = async () => {
-  const moduleOrFactory = manifoldModule.default || manifoldModule;
-  const loadedModule =
-    typeof moduleOrFactory === "function"
-      ? await moduleOrFactory()
-      : moduleOrFactory;
-
-  const manifold = loadedModule?.Manifold
-    ? loadedModule
-    : loadedModule?.default?.Manifold
-    ? loadedModule.default
-    : null;
-
-  console.log(manifold);
-  if (manifold?.Manifold) replicad.setManifold(manifold);
-
-  return manifold;
+  setWasmUrl(manifoldWasmUrl);
+  // Cache the promise itself (not just the result) to avoid concurrent
+  // instantiation during the await window where manifoldwasm is still null
+  if (!manifoldModulePromise) {
+    manifoldModulePromise = getManifoldModule();
+  }
+  return manifoldModulePromise;
 };
 
 const MANIFOLD = loadManifold();
+
+async function ensureReplicadReady() {
+  const [oc, manifold] = await Promise.all([OC, MANIFOLD]);
+  replicad.setOC(oc);
+  if (manifold?.Manifold) {
+    manifold.setup();
+    replicad.setManifold(manifold);
+  }
+  return oc;
+}
 
 export function runInContextAsOC(code, context = {}) {
   const editedText = `
@@ -46,7 +50,7 @@ return main(replicad, __inputParams || dp)
 }
 
 async function runAsFunction(code, params) {
-  const oc = await OC;
+  const oc = await ensureReplicadReady();
 
   return runInContextAsOC(code, {
     oc,
@@ -56,6 +60,7 @@ async function runAsFunction(code, params) {
 }
 
 export async function runAsModule(code, params) {
+  await ensureReplicadReady();
   const module = await buildModuleEvaluator(code);
 
   if (module.default) return module.default(params || module.defaultParams);
@@ -71,6 +76,7 @@ const runCode = async (code, params) => {
 
 const extractDefaultParamsFromCode = async (code) => {
   if (code.match(/^\s*export\s+/m)) {
+    await ensureReplicadReady();
     const module = await buildModuleEvaluator(code);
     return module.defaultParams || null;
   }
@@ -93,6 +99,7 @@ try {
 
 const extractDefaultNameFromCode = async (code) => {
   if (code.match(/^\s*export\s+/m)) {
+    await ensureReplicadReady();
     const module = await buildModuleEvaluator(code);
     return module.defaultName;
   }
@@ -115,11 +122,8 @@ try {
 
 const computeLabels = async (code, params) => {
   if (!code.match(/^\s*export\s+/m)) return [];
+  await ensureReplicadReady();
   const module = await buildModuleEvaluator(code);
-
-  const oc = await OC;
-  replicad.setOC(oc);
-  await MANIFOLD;
   if (!replicad.getFont())
     await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
 
@@ -194,9 +198,7 @@ const formatException = (oc, e) => {
 };
 
 const buildShapesFromCode = async (code, params) => {
-  const oc = await OC;
-  replicad.setOC(oc);
-  await MANIFOLD;
+  const oc = await ensureReplicadReady();
   if (!replicad.getFont())
     await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
 
@@ -263,8 +265,7 @@ const exportShape = async (
 };
 
 const loadFont = async (fontData, fontName, forceUpdate = false) => {
-  const oc = await OC;
-  replicad.setOC(oc);
+  await ensureReplicadReady();
   await replicad.loadFont(fontData, fontName, forceUpdate);
 };
 
@@ -290,7 +291,7 @@ const edgeInfo = (subshapeIndex, edgeIndex, shapeId = "defaultShape") => {
 };
 
 const service = {
-  ready: () => OC.then(() => true),
+  ready: () => ensureReplicadReady().then(() => true),
   buildShapesFromCode,
   loadFont,
   computeLabels,

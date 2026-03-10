@@ -295,6 +295,7 @@ function renderMesh(shapeConfig: MeshableConfiguration) {
     mesh: null,
     edges: null,
     error: false,
+    message: null,
     highlight: null,
   };
 
@@ -334,6 +335,7 @@ function renderMesh(shapeConfig: MeshableConfiguration) {
   } catch (e) {
     console.error(e);
     shapeInfo.error = true;
+    shapeInfo.message = e?.message || "Could not generate the mesh";
     return shapeInfo;
   }
 

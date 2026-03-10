@@ -15,25 +15,46 @@ export default function Stage({ children, center, ...props }) {
   });
 
   React.useLayoutEffect(() => {
-    outer.current.updateWorldMatrix(true, true);
-    const box3 = new THREE.Box3().setFromObject(inner.current);
+    let raf = null;
 
-    if (center) {
-      const centerPoint = new THREE.Vector3();
-      box3.getCenter(centerPoint);
-      outer.current.position.set(
-        outer.current.position.x - centerPoint.x,
-        outer.current.position.y - centerPoint.y,
-        outer.current.position.z - centerPoint.z
-      );
+    const updateBounds = () => {
+      if (!outer.current || !inner.current) return 0;
+
+      outer.current.updateWorldMatrix(true, true);
+      const box3 = new THREE.Box3().setFromObject(inner.current);
+
+      if (center) {
+        const centerPoint = new THREE.Vector3();
+        box3.getCenter(centerPoint);
+        outer.current.position.set(-centerPoint.x, -centerPoint.y, -centerPoint.z);
+        outer.current.updateWorldMatrix(true, true);
+        box3.setFromObject(inner.current);
+      }
+
+      const sphere = new THREE.Sphere();
+      box3.getBoundingSphere(sphere);
+
+      set((prev) => ({
+        radius: sphere.radius,
+        previousRadius: prev.radius,
+        top: box3.max.z,
+      }));
+
+      return sphere.radius;
+    };
+
+    const measuredRadius = updateBounds();
+
+    // Geometry buffers are populated in child layout effects; a next-frame
+    // remeasure avoids ending up with radius=0 on initial load.
+    if (!measuredRadius) {
+      raf = requestAnimationFrame(updateBounds);
     }
 
-    const sphere = new THREE.Sphere();
-    box3.getBoundingSphere(sphere);
-
-    set({ radius: sphere.radius, previousRadius: radius, top: box3.max.z });
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [children]);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [children, center]);
 
   React.useLayoutEffect(() => {
     if (previousRadius && previousRadius !== radius) {
@@ -72,7 +93,6 @@ export default function Stage({ children, center, ...props }) {
     }
 
     invalidate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [radius, top, previousRadius]);
 
   return (
