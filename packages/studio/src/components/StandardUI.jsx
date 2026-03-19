@@ -104,6 +104,27 @@ export default function StandardUI({
   const [niceViewer, toggleNiceViewer] = useDisplayMode();
   const Viewer = niceViewer ? NicePresentationViewer : PresentationViewer;
 
+  const hasMeshShapes = computedShapes?.some((s) => s.solidType === "mesh");
+  const hasNonMeshShapes = computedShapes?.some(
+    (s) => s.mesh && s.solidType !== "mesh"
+  );
+
+  const onSaveStep = () => {
+    if (hasMeshShapes) {
+      if (!hasNonMeshShapes) {
+        alert("STEP export is not available for mesh shapes. Use STL instead.");
+        return;
+      }
+      if (
+        !confirm(
+          "Some shapes are mesh-based and will be excluded from the STEP export. Continue?"
+        )
+      )
+        return;
+    }
+    onSave("step");
+  };
+
   return (
     <>
       {computedShapes?.length ? (
@@ -144,7 +165,7 @@ export default function StandardUI({
               <ContextButton
                 icon
                 disabled={!canSave}
-                onClick={() => onSave("step")}
+                onClick={onSaveStep}
               >
                 <Download text="STEP" />
               </ContextButton>

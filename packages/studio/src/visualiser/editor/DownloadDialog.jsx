@@ -16,6 +16,12 @@ import saveShape from "../../utils/saveShape";
 import useEditorStore from "./useEditorStore";
 import SVGViewer from "../../viewers/SVGViewer";
 
+const Warning = styled.p`
+  color: #b45309;
+  font-size: 0.9em;
+  margin-top: 0.5em;
+`;
+
 const Choices = styled.div`
   display: flex;
 
@@ -37,8 +43,19 @@ export default function DownloadDialog({ onClose }) {
   const store = useEditorStore();
 
   const isSVG = store.currentMesh[0]?.format === "svg";
+  const hasMeshShapes = store.currentMesh.some(
+    (s) => s.solidType === "mesh"
+  );
+  const hasNonMeshShapes = store.currentMesh.some(
+    (s) => s.mesh && s.solidType !== "mesh"
+  );
 
-  const [saveMode, setSaveMode] = useState(isSVG ? "svg" : "step");
+  const [saveMode, setSaveMode] = useState(
+    isSVG ? "svg" : hasMeshShapes ? "stl" : "step"
+  );
+
+  const isStepMode =
+    saveMode === "step" || saveMode === "step-assembly";
 
   const onDownload = async () => {
     if (saveMode === "svg") {
@@ -155,6 +172,13 @@ export default function DownloadDialog({ onClose }) {
             <span>JSON</span>
           </label>
         </Choices>
+        {hasMeshShapes && isStepMode && (
+          <Warning>
+            {hasNonMeshShapes
+              ? "Mesh shapes will be excluded from the STEP export."
+              : "STEP export is not available for mesh shapes. Use STL instead."}
+          </Warning>
+        )}
       </DialogBody>
       <DialogButtons>
         <ButtonBar>

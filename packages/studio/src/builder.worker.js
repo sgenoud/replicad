@@ -229,6 +229,8 @@ const buildShapesFromCode = async (code, params) => {
   );
 };
 
+const isMeshShape = (shape) => shape instanceof replicad.MeshShape;
+
 const buildBlob = (
   shape,
   fileType,
@@ -250,15 +252,28 @@ const exportShape = async (
 ) => {
   if (!SHAPES_MEMORY[shapeId])
     throw new Error(`Shape ${shapeId} not computed yet`);
+
+  const isStepExport =
+    fileType === "step" || fileType === "step-assembly";
+  const exportableShapes = isStepExport
+    ? SHAPES_MEMORY[shapeId].filter(({ shape }) => !isMeshShape(shape))
+    : SHAPES_MEMORY[shapeId];
+
+  if (isStepExport && exportableShapes.length === 0) {
+    throw new Error(
+      "STEP export is not supported for mesh shapes. No exportable shapes found."
+    );
+  }
+
   if (fileType === "step-assembly") {
     return [
       {
-        blob: replicad.exportSTEP(SHAPES_MEMORY[shapeId]),
+        blob: replicad.exportSTEP(exportableShapes),
         name: shapeId,
       },
     ];
   }
-  return SHAPES_MEMORY[shapeId].map(({ shape, name }) => ({
+  return exportableShapes.map(({ shape, name }) => ({
     blob: buildBlob(shape, fileType, meshConfig),
     name,
   }));
