@@ -104,10 +104,12 @@ export default function StandardUI({
   const [niceViewer, toggleNiceViewer] = useDisplayMode();
   const Viewer = niceViewer ? NicePresentationViewer : PresentationViewer;
 
-  const hasMeshShapes = computedShapes?.some((s) => s.solidType === "mesh");
-  const hasNonMeshShapes = computedShapes?.some(
-    (s) => s.mesh && s.solidType !== "mesh"
-  );
+  const hasMeshShapes =
+    Array.isArray(computedShapes) &&
+    computedShapes.some((s) => s.solidType === "mesh");
+  const hasNonMeshShapes =
+    Array.isArray(computedShapes) &&
+    computedShapes.some((s) => s.mesh && s.solidType !== "mesh");
 
   const onSaveStep = () => {
     if (hasMeshShapes) {
@@ -162,11 +164,7 @@ export default function StandardUI({
               >
                 <Download text="STL" />
               </ContextButton>
-              <ContextButton
-                icon
-                disabled={!canSave}
-                onClick={onSaveStep}
-              >
+              <ContextButton icon disabled={!canSave} onClick={onSaveStep}>
                 <Download text="STEP" />
               </ContextButton>
             </>
