@@ -232,7 +232,9 @@ export class Transformation extends WrappingObj<gp_Trsf> {
   }
 
   clone() {
-    return new Transformation(this.wrapped.Clone());
+    const clone = this.wrapped.Inverted();
+    clone.Invert();
+    return new Transformation(clone);
   }
 
   translate(xDist: number, yDist: number, zDist: number): Transformation;
