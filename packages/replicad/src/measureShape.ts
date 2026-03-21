@@ -38,8 +38,8 @@ export function measureShapeSurfaceProperties(
   shape: Face | Shape3D
 ): SurfacePhysicalProperties {
   const oc = getOC();
-  const properties = new oc.GProp_GProps_1();
-  oc.BRepGProp.SurfaceProperties_1(shape.wrapped, properties, false, false);
+  const properties = new oc.GProp_GProps();
+  oc.BRepGProp.SurfaceProperties(shape.wrapped, properties, false, false);
   return new SurfacePhysicalProperties(properties);
 }
 
@@ -47,7 +47,7 @@ export function measureShapeLinearProperties(
   shape: AnyShape
 ): LinearPhysicalProperties {
   const oc = getOC();
-  const properties = new oc.GProp_GProps_1();
+  const properties = new oc.GProp_GProps();
   oc.BRepGProp.LinearProperties(shape.wrapped, properties, false, false);
   return new LinearPhysicalProperties(properties);
 }
@@ -56,8 +56,8 @@ export function measureShapeVolumeProperties(
   shape: Shape3D
 ): VolumePhysicalProperties {
   const oc = getOC();
-  const properties = new oc.GProp_GProps_1();
-  oc.BRepGProp.VolumeProperties_1(
+  const properties = new oc.GProp_GProps();
+  oc.BRepGProp.VolumeProperties(
     shape.wrapped,
     properties,
     false,
@@ -97,7 +97,7 @@ export function measureLength(shape: AnyShape) {
 export class DistanceTool extends WrappingObj<BRepExtrema_DistShapeShape> {
   constructor() {
     const oc = getOC();
-    super(new oc.BRepExtrema_DistShapeShape_1());
+    super(new oc.BRepExtrema_DistShapeShape());
   }
 
   distanceBetween(shape1: AnyShape, shape2: AnyShape): number {
@@ -124,7 +124,7 @@ export function measureDistanceBetween(
 export class DistanceQuery extends WrappingObj<BRepExtrema_DistShapeShape> {
   constructor(shape: AnyShape) {
     const oc = getOC();
-    super(new oc.BRepExtrema_DistShapeShape_1());
+    super(new oc.BRepExtrema_DistShapeShape());
     this.wrapped.LoadS1(shape.wrapped);
   }
 

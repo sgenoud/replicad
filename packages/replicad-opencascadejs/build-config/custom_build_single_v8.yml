@@ -103,6 +103,7 @@ mainBuild:
   - symbol: Poly_Triangle
   - symbol: Poly_Triangulation
   - symbol: Poly_PolygonOnTriangulation
+  - symbol: Poly_MergeNodesTool
   - symbol: BRep_Tool
   - symbol: BRepLib
   - symbol: BRepTools
@@ -208,7 +209,8 @@ mainBuild:
   - symbol: IFSelect_WorkSession
   - symbol: XSControl_WorkSession
   - symbol: STEPCAFControl_Writer
-  - symbol: BRepMesh_IncrementalMeshWrapper
+  - symbol: BRepMesh_DiscretRoot
+  - symbol: BRepMesh_IncrementalMesh
   - symbol: BRepToolsWrapper
   - symbol: GeomToolsWrapper
   - symbol: OCJS_ShapeHasher
@@ -216,9 +218,12 @@ mainBuild:
   - symbol: HLRBRep_Algo
   - symbol: HLRBRep_HLRToShape
   - symbol: HLRBRep_InternalAlgo
-  - symbol: TopoDS_Cast
   emccFlags:
   - -flto
+  - -sWASM_BIGINT
+  - -sEVAL_CTORS=1
+  - -sSUPPORT_LONGJMP=0
+  - -sDISABLE_EXCEPTION_CATCHING=1
   - -sEXPORT_ES6=1
   - -sMODULARIZE
   - -sALLOW_MEMORY_GROWTH=1
@@ -232,32 +237,6 @@ mainBuild:
   - -sSTACK_SIZE=8388608
   - -O3
 additionalCppCode: |
-  class TopoDS_Cast {
-  public:
-    static TopoDS_Vertex Vertex(const TopoDS_Shape& S) { return ::TopoDS::Vertex(S); }
-    static TopoDS_Edge Edge(const TopoDS_Shape& S) { return ::TopoDS::Edge(S); }
-    static TopoDS_Wire Wire(const TopoDS_Shape& S) { return ::TopoDS::Wire(S); }
-    static TopoDS_Face Face(const TopoDS_Shape& S) { return ::TopoDS::Face(S); }
-    static TopoDS_Shell Shell(const TopoDS_Shape& S) { return ::TopoDS::Shell(S); }
-    static TopoDS_Solid Solid(const TopoDS_Shape& S) { return ::TopoDS::Solid(S); }
-    static TopoDS_Compound Compound(const TopoDS_Shape& S) { return ::TopoDS::Compound(S); }
-    static TopoDS_CompSolid CompSolid(const TopoDS_Shape& S) { return ::TopoDS::CompSolid(S); }
-  };
-
-  class BRepMesh_IncrementalMeshWrapper {
-  public:
-    BRepMesh_IncrementalMeshWrapper(
-      const TopoDS_Shape& theShape,
-      const double theLinDeflection,
-      const bool isRelative,
-      const double theAngDeflection,
-      const bool isInParallel)
-    {
-      BRepMesh_IncrementalMesh aMesher(theShape, theLinDeflection, isRelative, theAngDeflection, isInParallel);
-      aMesher.Perform();
-    }
-  };
-
   class OCJS_ShapeHasher {
   public:
     static size_t HashCode(const TopoDS_Shape& shape, int) {

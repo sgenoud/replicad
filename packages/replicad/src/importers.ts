@@ -20,10 +20,10 @@ export async function importSTEP(STLBlob: Blob) {
   const bufferView = new Uint8Array(await STLBlob.arrayBuffer());
   oc.FS.writeFile(`/${fileName}`, bufferView);
 
-  const reader = r(new oc.STEPControl_Reader_1());
+  const reader = r(new oc.STEPControl_Reader());
   if (reader.ReadFile(fileName)) {
     oc.FS.unlink("/" + fileName);
-    reader.TransferRoots(r(new oc.Message_ProgressRange_1()));
+    reader.TransferRoots(r(new oc.Message_ProgressRange()));
     const stepShape = r(reader.OneShape());
 
     const shape = cast(stepShape);
@@ -57,17 +57,17 @@ export async function importSTL(STLBlob: Blob) {
   const reader = r(new oc.StlAPI_Reader());
   const readShape = r(new oc.TopoDS_Shell());
 
-  if (reader.Read_1(readShape, fileName)) {
+  if (reader.Read(readShape, fileName)) {
     oc.FS.unlink("/" + fileName);
 
     const shapeUpgrader = r(
-      new oc.ShapeUpgrade_UnifySameDomain_2(readShape, true, true, false)
+      new oc.ShapeUpgrade_UnifySameDomain(readShape, true, true, false)
     );
     shapeUpgrader.Build();
     const upgradedShape = r(shapeUpgrader.Shape());
 
-    const solidSTL = r(new oc.BRepBuilderAPI_MakeSolid_1());
-    solidSTL.Add(oc.TopoDS_Cast.Shell(upgradedShape));
+    const solidSTL = r(new oc.BRepBuilderAPI_MakeSolid());
+    solidSTL.Add(oc.TopoDS.Shell(upgradedShape));
     const asSolid = r(solidSTL.Solid());
 
     const shape = cast(asSolid);

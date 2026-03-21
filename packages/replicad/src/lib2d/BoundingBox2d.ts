@@ -55,16 +55,16 @@ export class BoundingBox2d extends WrappingObj<Bnd_Box2d> {
   }
 
   add(other: BoundingBox2d) {
-    this.wrapped.Add_1(other.wrapped);
+    this.wrapped.Add(other.wrapped);
   }
 
   isOut(other: BoundingBox2d): boolean {
-    return this.wrapped.IsOut_4(other.wrapped);
+    return this.wrapped.IsOut(other.wrapped);
   }
 
   containsPoint(other: Point2D): boolean {
     const r = GCWithScope();
     const point = r(pnt(other));
-    return !this.wrapped.IsOut_1(point);
+    return !this.wrapped.IsOut(point);
   }
 }

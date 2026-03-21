@@ -19,36 +19,36 @@ export function makeProjectedEdges(
   const oc = getOC();
   const r = GCWithScope();
 
-  const hiddenLineRemoval = r(new oc.HLRBRep_Algo_1());
-  hiddenLineRemoval.Add_2(shape.wrapped, 0);
+  const hiddenLineRemoval = r(new oc.HLRBRep_Algo());
+  hiddenLineRemoval.Add(shape.wrapped, 0);
 
-  const projector = r(new oc.HLRAlgo_Projector_2(camera.wrapped));
-  hiddenLineRemoval.Projector_1(projector);
+  const projector = r(new oc.HLRAlgo_Projector(camera.wrapped));
+  hiddenLineRemoval.Projector(projector);
 
   hiddenLineRemoval.Update();
-  hiddenLineRemoval.Hide_1();
+  hiddenLineRemoval.Hide();
 
   const hlrShapes = new oc.HLRBRep_HLRToShape(
-    new oc.Handle_HLRBRep_Algo_2(hiddenLineRemoval)
+    hiddenLineRemoval
   );
 
   const visible = [
-    ...getEdges(hlrShapes.VCompound_1()),
-    ...getEdges(hlrShapes.Rg1LineVCompound_1()),
-    ...getEdges(hlrShapes.OutLineVCompound_1()),
+    ...getEdges(hlrShapes.VCompound()),
+    ...getEdges(hlrShapes.Rg1LineVCompound()),
+    ...getEdges(hlrShapes.OutLineVCompound()),
   ];
 
-  visible.forEach((e) => oc.BRepLib.BuildCurves3d_2(e.wrapped));
+  visible.forEach((e) => oc.BRepLib.BuildCurves3d(e.wrapped));
 
   const hidden = withHiddenLines
     ? [
-        ...getEdges(hlrShapes.HCompound_1()),
-        ...getEdges(hlrShapes.Rg1LineHCompound_1()),
-        ...getEdges(hlrShapes.OutLineHCompound_1()),
+        ...getEdges(hlrShapes.HCompound()),
+        ...getEdges(hlrShapes.Rg1LineHCompound()),
+        ...getEdges(hlrShapes.OutLineHCompound()),
       ]
     : [];
 
-  hidden.forEach((e) => oc.BRepLib.BuildCurves3d_2(e.wrapped));
+  hidden.forEach((e) => oc.BRepLib.BuildCurves3d(e.wrapped));
 
   return { visible, hidden };
 }

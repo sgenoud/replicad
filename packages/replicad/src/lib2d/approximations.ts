@@ -22,7 +22,7 @@ export const approximateAsBSpline = (
   };
 
   const convert = r(
-    new oc.Geom2dConvert_ApproxCurve_2(
+    new oc.Geom2dConvert_ApproxCurve(
       adaptor.ShallowCopy(),
       tolerance,
       continuities[continuity],
@@ -39,16 +39,9 @@ export const BSplineToBezier = (adaptor: Geom2dAdaptor_Curve): Curve2D[] => {
     throw new Error("You can only convert a Bspline");
 
   const handle = adaptor.BSpline();
-  const firstParameter = adaptor.FirstParameter();
-  const lastParameter = adaptor.LastParameter();
 
   const oc = getOC();
-  const convert = new oc.Geom2dConvert_BSplineCurveToBezierCurve_2(
-    handle,
-    firstParameter,
-    lastParameter,
-    1e-9
-  );
+  const convert = new oc.Geom2dConvert_BSplineCurveToBezierCurve(handle);
 
   function* bezierCurves(): Generator<Curve2D> {
     const nArcs = convert.NbArcs();
@@ -84,14 +77,12 @@ export function approximateAsSvgCompatibleCurve(
   return curves.flatMap((curve) => {
     const adaptor = r(curve.adaptor());
     const curveType = findCurveType(adaptor.GetType());
-    const midpointParameter =
-      0.5 * (curve.firstParameter + curve.lastParameter);
 
     if (
       curveType === "ELLIPSE" ||
       (curveType === "CIRCLE" && samePoint(curve.firstPoint, curve.lastPoint))
     ) {
-      return curve.splitAt([midpointParameter]);
+      return curve.splitAt([0.5]);
     }
 
     if (["LINE", "ELLIPSE", "CIRCLE"].includes(curveType)) {
@@ -99,21 +90,17 @@ export function approximateAsSvgCompatibleCurve(
     }
 
     if (curveType === "BEZIER_CURVE") {
-      const b = adaptor.Bezier().get();
+      const b = adaptor.Bezier();
       const deg = b.Degree();
 
-      if (!b.IsRational() && [1, 2, 3].includes(deg)) {
+      if ([1, 2, 3].includes(deg)) {
         return curve;
       }
     }
 
     if (curveType === "BSPLINE_CURVE") {
-      const bspline = adaptor.BSpline().get();
-
-      if (!bspline.IsRational()) {
-        const c = BSplineToBezier(adaptor);
-        return approximateAsSvgCompatibleCurve(c, options);
-      }
+      const c = BSplineToBezier(adaptor);
+      return approximateAsSvgCompatibleCurve(c, options);
     }
 
     const bspline = approximateAsBSpline(

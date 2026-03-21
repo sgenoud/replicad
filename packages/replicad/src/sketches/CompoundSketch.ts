@@ -36,15 +36,15 @@ const guessFaceFromWires = (wires: Wire[]): Face => {
   );
   wires.forEach((wire, wireIndex) => {
     wire.edges.forEach((edge) => {
-      faceBuilder.Add_1(
+      faceBuilder.Add(
         edge.wrapped,
-        oc.GeomAbs_Shape.GeomAbs_C0 as any,
+        oc.GeomAbs_Shape.GeomAbs_C0,
         wireIndex === 0
       );
     });
   });
 
-  const progress = new oc.Message_ProgressRange_1();
+  const progress = new oc.Message_ProgressRange();
   faceBuilder.Build(progress);
   progress.delete();
   const newFace = cast(faceBuilder.Shape());
@@ -59,7 +59,7 @@ const guessFaceFromWires = (wires: Wire[]): Face => {
 
 const fixWire = (wire: Wire, baseFace: Face): Wire => {
   const oc = getOC();
-  const wireFixer = new oc.ShapeFix_Wire_2(
+  const wireFixer = new oc.ShapeFix_Wire(
     wire.wrapped,
     baseFace.wrapped,
     1e-9

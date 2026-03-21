@@ -184,7 +184,7 @@ export const iterTopo = function* iterTopo(
   topo: TopoEntity
 ): IterableIterator<TopoDS_Shape> {
   const oc = getOC();
-  const explorer = new oc.TopExp_Explorer_2(
+  const explorer = new oc.TopExp_Explorer(
     shape,
     asTopo(topo),
     asTopo("shape")
@@ -274,7 +274,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    */
   simplify(): this {
     const oc = getOC();
-    const shapeUpgrader = new oc.ShapeUpgrade_UnifySameDomain_2(
+    const shapeUpgrader = new oc.ShapeUpgrade_UnifySameDomain(
       this.wrapped,
       true,
       true,
@@ -420,12 +420,17 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   protected _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
-    new this.oc.BRepMesh_IncrementalMeshWrapper(
+    new this.oc.BRepMesh_IncrementalMesh(
       this.wrapped,
       tolerance,
       false,
       angularTolerance,
       false
+    );
+    this.oc.BRepLib.EnsureNormalConsistency(
+      this.wrapped,
+      angularTolerance,
+      true
     );
   }
 
@@ -510,42 +515,40 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
       ];
     };
 
-    const aLocation = r(new this.oc.TopLoc_Location_1());
+    const aLocation = r(new this.oc.TopLoc_Location());
 
     for (const face of this.faces) {
       const triangulation = r(
         this.oc.BRep_Tool.Triangulation(face.wrapped, aLocation, 0)
       );
 
-      if (triangulation.IsNull()) {
+      if (!triangulation || triangulation.isNull()) {
         continue;
       }
-      const tri = triangulation.get();
 
       for (const edge of face.edges) {
         r(edge);
         if (recordedEdges.has(edge.hashCode)) continue;
 
-        const edgeLoc = r(new this.oc.TopLoc_Location_1());
+        const edgeLoc = r(new this.oc.TopLoc_Location());
 
         const polygon = r(
-          this.oc.BRep_Tool.PolygonOnTriangulation_1(
+          this.oc.BRep_Tool.PolygonOnTriangulation(
             edge.wrapped,
             triangulation,
             edgeLoc
           )
         );
-        const poly = polygon?.get();
-        if (!poly || poly.NbNodes() === 0) {
+        if (!polygon || polygon.NbNodes() === 0) {
           continue;
         }
 
         const [recordPoint, done] = addEdge();
-        const nbEdgeNodes = poly.NbNodes();
+        const nbEdgeNodes = polygon.NbNodes();
 
         for (let i = 1; i <= nbEdgeNodes; i++) {
           const p = r(
-            r(tri.Node(poly.Node(i))).Transformed(
+            r(triangulation.Node(polygon.Node(i))).Transformed(
               edgeLoc.Transformation()
             )
           );
@@ -560,9 +563,9 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
       const edgeHash = edge.hashCode;
       if (recordedEdges.has(edgeHash)) continue;
 
-      const adaptorCurve = r(new this.oc.BRepAdaptor_Curve_2(edge.wrapped));
+      const adaptorCurve = r(new this.oc.BRepAdaptor_Curve(edge.wrapped));
       const tangDef = r(
-        new this.oc.GCPnts_TangentialDeflection_2(
+        new this.oc.GCPnts_TangentialDeflection(
           adaptorCurve,
           tolerance,
           angularTolerance,
@@ -591,12 +594,12 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    */
   blobSTEP(): Blob {
     const filename = "blob.step";
-    const writer = new this.oc.STEPControl_Writer_1();
+    const writer = new this.oc.STEPControl_Writer();
 
     this.oc.Interface_Static.SetIVal("write.step.schema", 5);
-    const progress = new this.oc.Message_ProgressRange_1();
+    const progress = new this.oc.Message_ProgressRange();
 
-    writer.Transfer_1(
+    writer.Transfer(
       this.wrapped,
       this.oc.STEPControl_StepModelType
         .STEPControl_AsIs as STEPControl_StepModelType,
@@ -709,7 +712,7 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   }
 
   get length(): number {
-    const properties = new this.oc.GProp_GProps_1();
+    const properties = new this.oc.GProp_GProps();
     this.oc.BRepGProp.LinearProperties(this.wrapped, properties, true, false);
 
     const length = properties.Mass();
@@ -718,7 +721,7 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   }
 
   get orientation(): "forward" | "backward" {
-    const orient = this.wrapped.Orientation_1();
+    const orient = this.wrapped.Orientation();
     if (orient === this.oc.TopAbs_Orientation.TopAbs_FORWARD) return "forward";
     return "backward";
   }
@@ -767,8 +770,8 @@ export class Curve extends WrappingObj<CurveLike> {
   tangentAt(position = 0.5): Vector {
     const pos = this._mapParameter(position);
 
-    const tmp = new this.oc.gp_Pnt_1();
-    const res = new this.oc.gp_Vec_1();
+    const tmp = new this.oc.gp_Pnt();
+    const res = new this.oc.gp_Vec();
 
     this.wrapped.D1(pos, tmp, res);
     const tangent = new Vector(res);
@@ -797,13 +800,13 @@ export class Curve extends WrappingObj<CurveLike> {
 
 export class Edge extends _1DShape<TopoDS_Edge> {
   protected _geomAdaptor(): BRepAdaptor_Curve {
-    return new this.oc.BRepAdaptor_Curve_2(this.wrapped);
+    return new this.oc.BRepAdaptor_Curve(this.wrapped);
   }
 }
 
 export class Wire extends _1DShape<TopoDS_Wire> {
   protected _geomAdaptor(): BRepAdaptor_CompCurve {
-    return new this.oc.BRepAdaptor_CompCurve_2(this.wrapped, false);
+    return new this.oc.BRepAdaptor_CompCurve(this.wrapped, false);
   }
 
   offset2D(
@@ -816,9 +819,9 @@ export class Wire extends _1DShape<TopoDS_Wire> {
       tangent: this.oc.GeomAbs_JoinType.GeomAbs_Tangent,
     };
 
-    const offsetter = new this.oc.BRepOffsetAPI_MakeOffset_3(
+    const offsetter = new this.oc.BRepOffsetAPI_MakeOffset(
       this.wrapped,
-      kinds[kind] as any,
+      kinds[kind],
       false
     );
     offsetter.Perform(offset, 0);
@@ -872,7 +875,7 @@ export class Face extends Shape<TopoDS_Face> {
   protected _geomAdaptor(): Adaptor3d_Surface {
     // BRepAdaptor_Surface extends Adaptor3d_Surface via GeomAdaptor_TransformedSurface
     // but the intermediate class is missing from the V8 d.ts, so we cast here
-    return new this.oc.BRepAdaptor_Surface_2(this.wrapped, false) as unknown as Adaptor3d_Surface;
+    return new this.oc.BRepAdaptor_Surface(this.wrapped, false) as unknown as Adaptor3d_Surface;
   }
 
   get surface(): Surface {
@@ -880,7 +883,7 @@ export class Face extends Shape<TopoDS_Face> {
   }
 
   get orientation(): "forward" | "backward" {
-    const orient = this.wrapped.Orientation_1();
+    const orient = this.wrapped.Orientation();
     if (orient === this.oc.TopAbs_Orientation.TopAbs_FORWARD) return "forward";
     return "backward";
   }
@@ -904,7 +907,7 @@ export class Face extends Shape<TopoDS_Face> {
     const vMax = { current: 0 };
 
     // @ts-expect-error missing type in oc
-    this.oc.BRepTools.UVBounds_1(this.wrapped, uMin, uMax, vMin, vMax);
+    this.oc.BRepTools.UVBounds(this.wrapped, uMin, uMax, vMin, vMax);
 
     return {
       uMin: uMin.current,
@@ -917,7 +920,7 @@ export class Face extends Shape<TopoDS_Face> {
   pointOnSurface(u: number, v: number): Vector {
     const { uMin, uMax, vMin, vMax } = this.UVBounds;
     const surface = this._geomAdaptor();
-    const p = new this.oc.gp_Pnt_1();
+    const p = new this.oc.gp_Pnt();
 
     const absoluteU = u * (uMax - uMin) + uMin;
     const absoluteV = v * (vMax - vMin) + vMin;
@@ -932,13 +935,13 @@ export class Face extends Shape<TopoDS_Face> {
 
   uvCoordinates(point: Point): [number, number] {
     const r = GCWithScope();
-    const surface = r(this.oc.BRep_Tool.Surface_2(this.wrapped));
+    const surface = r(this.oc.BRep_Tool.Surface(this.wrapped));
 
     const projectedPoint = r(
-      new this.oc.GeomAPI_ProjectPointOnSurf_2(
+      new this.oc.GeomAPI_ProjectPointOnSurf(
         r(asPnt(point)),
         surface,
-        this.oc.Extrema_ExtAlgo.Extrema_ExtAlgo_Grad as any
+        this.oc.Extrema_ExtAlgo.Extrema_ExtAlgo_Grad
       )
     );
 
@@ -964,10 +967,10 @@ export class Face extends Shape<TopoDS_Face> {
       [u, v] = this.uvCoordinates(locationVector);
     }
 
-    const p = r(new this.oc.gp_Pnt_1());
-    const vn = r(new this.oc.gp_Vec_1());
+    const p = r(new this.oc.gp_Pnt());
+    const vn = r(new this.oc.gp_Vec());
 
-    const props = r(new this.oc.BRepGProp_Face_2(this.wrapped, false));
+    const props = r(new this.oc.BRepGProp_Face(this.wrapped, false));
     props.Normal(u, v, p, vn);
 
     const normal = new Vector(vn);
@@ -975,8 +978,8 @@ export class Face extends Shape<TopoDS_Face> {
   }
 
   get center(): Vector {
-    const properties = new this.oc.GProp_GProps_1();
-    this.oc.BRepGProp.SurfaceProperties_2(this.wrapped, properties, 1e-7, true);
+    const properties = new this.oc.GProp_GProps();
+    this.oc.BRepGProp.SurfaceProperties(this.wrapped, properties, 1e-7, true);
 
     const center = new Vector(properties.CentreOfMass());
     properties.delete();
@@ -1003,12 +1006,12 @@ export class Face extends Shape<TopoDS_Face> {
   triangulation(index0 = 0): FaceTriangulation | null {
     const r = GCWithScope();
 
-    const aLocation = r(new this.oc.TopLoc_Location_1());
+    const aLocation = r(new this.oc.TopLoc_Location());
     const triangulation = r(
       this.oc.BRep_Tool.Triangulation(this.wrapped, aLocation, 0)
     );
 
-    if (triangulation.IsNull()) return null;
+    if (!triangulation || triangulation.isNull()) return null;
 
     const transformation = r(aLocation.Transformation());
 
@@ -1018,7 +1021,7 @@ export class Face extends Shape<TopoDS_Face> {
       verticesNormals: [],
     };
 
-    const tri = triangulation.get();
+    const tri = triangulation;
     const nbNodes = tri.NbNodes();
 
     // write vertex buffer
@@ -1035,15 +1038,11 @@ export class Face extends Shape<TopoDS_Face> {
     }
     triangulatedFace.verticesNormals = new Array(nbNodes * 3);
     for (let i = 1; i <= nbNodes; i++) {
-      const d = r(r(tri.Normal_1(i)).Transformed(transformation));
+      const d = r(r(tri.Normal(i)).Transformed(transformation));
       triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X();
       triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y();
       triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z();
     }
-
-    // set uvcoords buffers to NULL
-    // necessary for JoinPrimitive to be performed
-    // triangulatedFace.tex_coord = null;
 
     // write triangle buffer
     const orient = this.orientation;
@@ -1096,15 +1095,15 @@ export class _3DShape<Type extends TopoDS_Shape>
     }: { optimisation?: "none" | "commonFace" | "sameFace" } = {}
   ): Shape3D {
     const r = GCWithScope();
-    const progress = r(new this.oc.Message_ProgressRange_1());
+    const progress = r(new this.oc.Message_ProgressRange());
     const newBody = r(
-      new this.oc.BRepAlgoAPI_Fuse_3(this.wrapped, other.wrapped, progress)
+      new this.oc.BRepAlgoAPI_Fuse(this.wrapped, other.wrapped, progress)
     );
     if (optimisation === "commonFace") {
-      newBody.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueShift as any);
+      newBody.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueShift);
     }
     if (optimisation === "sameFace") {
-      newBody.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull as any);
+      newBody.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull);
     }
 
     newBody.Build(progress);
@@ -1127,15 +1126,15 @@ export class _3DShape<Type extends TopoDS_Shape>
     }: { optimisation?: "none" | "commonFace" | "sameFace" } = {}
   ): Shape3D {
     const r = GCWithScope();
-    const progress = r(new this.oc.Message_ProgressRange_1());
+    const progress = r(new this.oc.Message_ProgressRange());
     const cutter = r(
-      new this.oc.BRepAlgoAPI_Cut_3(this.wrapped, tool.wrapped, progress)
+      new this.oc.BRepAlgoAPI_Cut(this.wrapped, tool.wrapped, progress)
     );
     if (optimisation === "commonFace") {
-      cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueShift as any);
+      cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueShift);
     }
     if (optimisation === "sameFace") {
-      cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull as any);
+      cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull);
     }
     cutter.Build(progress);
     cutter.SimplifyResult(true, true, 1e-3);
@@ -1152,9 +1151,9 @@ export class _3DShape<Type extends TopoDS_Shape>
    */
   intersect(tool: AnyShape): Shape3D {
     const r = GCWithScope();
-    const progress = r(new this.oc.Message_ProgressRange_1());
+    const progress = r(new this.oc.Message_ProgressRange());
     const intersector = r(
-      new this.oc.BRepAlgoAPI_Common_3(this.wrapped, tool.wrapped, progress)
+      new this.oc.BRepAlgoAPI_Common(this.wrapped, tool.wrapped, progress)
     );
     intersector.Build(progress);
     intersector.SimplifyResult(true, true, 1e-3);
@@ -1256,13 +1255,13 @@ export class _3DShape<Type extends TopoDS_Shape>
     const r = GCWithScope();
 
     const filteredFaces = filter.find(this);
-    const facesToRemove = r(new this.oc.TopTools_ListOfShape_1());
+    const facesToRemove = r(new this.oc.TopTools_ListOfShape());
 
     filteredFaces.forEach((face: Face) => {
-      facesToRemove.Append_1(face.wrapped);
+      facesToRemove.Append(face.wrapped);
     });
 
-    const progress = r(new this.oc.Message_ProgressRange_1());
+    const progress = r(new this.oc.Message_ProgressRange());
     const shellBuilder = r(new this.oc.BRepOffsetAPI_MakeThickSolid());
 
     shellBuilder.MakeThickSolidByJoin(
@@ -1270,10 +1269,10 @@ export class _3DShape<Type extends TopoDS_Shape>
       facesToRemove,
       -thickness,
       tol,
-      this.oc.BRepOffset_Mode.BRepOffset_Skin as any,
+      this.oc.BRepOffset_Mode.BRepOffset_Skin,
       false,
       false,
-      this.oc.GeomAbs_JoinType.GeomAbs_Arc as any,
+      this.oc.GeomAbs_JoinType.GeomAbs_Arc,
       false,
       progress
     );
@@ -1353,7 +1352,7 @@ export class _3DShape<Type extends TopoDS_Shape>
     const filletBuilder = r(
       new this.oc.BRepFilletAPI_MakeFillet(
         this.wrapped,
-        this.oc.ChFi3d_FilletShape.ChFi3d_Rational as any
+        this.oc.ChFi3d_FilletShape.ChFi3d_Rational
       )
     );
 
@@ -1368,9 +1367,9 @@ export class _3DShape<Type extends TopoDS_Shape>
     const edgesFound = this._builderIter(
       config,
       (r, e) => {
-        if (isNumber(r)) return filletBuilder.Add_2(r, e);
+        if (isNumber(r)) return filletBuilder.Add(r, e);
         console.log(e);
-        return filletBuilder.Add_3(r[0], r[1], e);
+        return filletBuilder.Add(r[0], r[1], e);
       },
       isFilletRadius
     );
@@ -1418,14 +1417,14 @@ export class _3DShape<Type extends TopoDS_Shape>
     const edgesFound = this._builderIter(
       config,
       (r, e) => {
-        if (isNumber(r)) return chamferBuilder.Add_2(r, e);
+        if (isNumber(r)) return chamferBuilder.Add(r, e);
 
         const finder = new FaceFinder();
         const face = r.selectedFace(finder).find(this, { unique: true });
         if (!face) throw new Error("Could not find face for chamfer");
 
         if ("distances" in r) {
-          return chamferBuilder.Add_3(
+          return chamferBuilder.Add(
             r.distances[0] ?? 1,
             r.distances[1] ?? 1,
             e,
@@ -1519,18 +1518,17 @@ export function downcast(shape: TopoDS_Shape): GenericTopo {
   const oc = getOC();
   const ta = oc.TopAbs_ShapeEnum;
 
-  const CAST_MAP = new Map([
-    [ta.TopAbs_VERTEX, oc.TopoDS_Cast.Vertex],
-    [ta.TopAbs_EDGE, oc.TopoDS_Cast.Edge],
-    [ta.TopAbs_WIRE, oc.TopoDS_Cast.Wire],
-    [ta.TopAbs_FACE, oc.TopoDS_Cast.Face],
-    [ta.TopAbs_SHELL, oc.TopoDS_Cast.Shell],
-    [ta.TopAbs_SOLID, oc.TopoDS_Cast.Solid],
-    [ta.TopAbs_COMPSOLID, oc.TopoDS_Cast.CompSolid],
-    [ta.TopAbs_COMPOUND, oc.TopoDS_Cast.Compound],
+  const CAST_MAP = new Map<string, (s: TopoDS_Shape) => TopoDS_Shape>([
+    [ta.TopAbs_VERTEX, oc.TopoDS.Vertex],
+    [ta.TopAbs_EDGE, oc.TopoDS.Edge],
+    [ta.TopAbs_WIRE, oc.TopoDS.Wire],
+    [ta.TopAbs_FACE, oc.TopoDS.Face],
+    [ta.TopAbs_SHELL, oc.TopoDS.Shell],
+    [ta.TopAbs_SOLID, oc.TopoDS.Solid],
+    [ta.TopAbs_COMPOUND, oc.TopoDS.Compound],
   ]);
 
-  const myType = shapeType(shape);
+  const myType = shapeType(shape) as string;
   const caster = CAST_MAP.get(myType);
   if (!caster) throw new Error("Could not find a wrapper for this shape type");
   return caster(shape);
@@ -1540,8 +1538,7 @@ export function cast(shape: TopoDS_Shape): AnyShape {
   const oc = getOC();
   const ta = oc.TopAbs_ShapeEnum;
 
-  // @ts-expect-error forcing TS to work with occt weird types
-  const CAST_MAP = new Map([
+  const CAST_MAP = new Map<string, typeof Vertex | typeof Edge | typeof Wire | typeof Face | typeof Shell | typeof Solid | typeof CompSolid | typeof Compound>([
     [ta.TopAbs_VERTEX, Vertex],
     [ta.TopAbs_EDGE, Edge],
     [ta.TopAbs_WIRE, Wire],
@@ -1552,7 +1549,7 @@ export function cast(shape: TopoDS_Shape): AnyShape {
     [ta.TopAbs_COMPOUND, Compound],
   ]);
 
-  const Klass = CAST_MAP.get(shapeType(shape));
+  const Klass = CAST_MAP.get(shapeType(shape) as string);
 
   if (!Klass) throw new Error(`Could not find a wrapper for this shape type`);
   return new Klass(downcast(shape));

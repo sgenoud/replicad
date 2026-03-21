@@ -172,9 +172,9 @@ export default class Blueprint implements DrawingInterface {
     const edges = curvesAsEdgesOnFace(this.curves, face, scaleMode);
     const wire = assembleWire(edges);
 
-    oc.BRepLib.BuildCurves3d_2(wire.wrapped);
+    oc.BRepLib.BuildCurves3d(wire.wrapped);
 
-    const wireFixer = new oc.ShapeFix_Wire_2(wire.wrapped, face.wrapped, 1e-9);
+    const wireFixer = new oc.ShapeFix_Wire(wire.wrapped, face.wrapped, 1e-9);
     wireFixer.FixEdgeCurves();
     wireFixer.delete();
 
@@ -228,7 +228,7 @@ export default class Blueprint implements DrawingInterface {
     const hole = this.subFace(foundFace, origin);
 
     const maker = gc(
-      new oc.BRepFeat_MakeDPrism_1(
+      new oc.BRepFeat_MakeDPrism(
         shape.wrapped,
         hole.wrapped,
         foundFace.wrapped,
@@ -238,7 +238,7 @@ export default class Blueprint implements DrawingInterface {
       )
     );
     if (height) {
-      maker.Perform_1(height);
+      maker.Perform(height);
     } else {
       maker.PerformThruAll();
     }
@@ -289,7 +289,7 @@ export default class Blueprint implements DrawingInterface {
     if (!this.boundingBox.containsPoint(point)) return false;
 
     const oc = getOC();
-    const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
+    const intersector = new oc.Geom2dAPI_InterCurveCurve();
     const segment = make2dSegmentCurve(point, this.boundingBox.outsidePoint());
     let crossCounts = 0;
 
@@ -298,7 +298,7 @@ export default class Blueprint implements DrawingInterface {
 
     this.curves.forEach((c) => {
       if (c.boundingBox.isOut(segment.boundingBox)) return;
-      intersector.Init_1(segment.wrapped, c.wrapped, 1e-9);
+      intersector.Init(segment.wrapped, c.wrapped, 1e-9);
       crossCounts += intersector.NbPoints();
     });
 
@@ -313,7 +313,7 @@ export default class Blueprint implements DrawingInterface {
 
   intersects(other: Blueprint) {
     const oc = getOC();
-    const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
+    const intersector = new oc.Geom2dAPI_InterCurveCurve();
 
     if (this.boundingBox.isOut(other.boundingBox)) return false;
 
@@ -321,7 +321,7 @@ export default class Blueprint implements DrawingInterface {
       for (const otherCurve of other.curves) {
         if (myCurve.boundingBox.isOut(otherCurve.boundingBox)) continue;
 
-        intersector.Init_1(myCurve.wrapped, otherCurve.wrapped, 1e-9);
+        intersector.Init(myCurve.wrapped, otherCurve.wrapped, 1e-9);
         if (intersector.NbPoints() || intersector.NbSegments()) return true;
       }
     }

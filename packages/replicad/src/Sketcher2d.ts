@@ -11,8 +11,8 @@ import {
   GenericSketcher,
 } from "./sketcherlib";
 import {
-  Handle_Geom2d_Curve,
-  Handle_Geom_Surface,
+  Geom2d_Curve,
+  Geom_Surface,
 } from "replicad-opencascadejs";
 import {
   chamferCurves,
@@ -560,7 +560,7 @@ export class BaseSketcher2d {
 
     const mirroredCurves = this.pendingCurves.map(
       (c) =>
-        new Curve2D(c.innerCurve.Mirrored_2(mirrorAxis) as Handle_Geom2d_Curve)
+        new Curve2D(c.innerCurve.Mirrored(mirrorAxis) as Geom2d_Curve)
     );
     mirroredCurves.reverse();
     mirroredCurves.map((c) => c.reverse());
@@ -605,10 +605,10 @@ export default class FaceSketcher
     return [(u - uMin) / (uMax - uMin), (v - vMin) / (vMax - vMin)];
   }
 
-  _adaptSurface(): Handle_Geom_Surface {
+  _adaptSurface(): Geom_Surface {
     const oc = getOC();
     // CHECK THIS: return new oc.BRep_Tool.Surface_2(this.face.wrapped)
-    return oc.BRep_Tool.Surface_2(this.face.wrapped);
+    return oc.BRep_Tool.Surface(this.face.wrapped);
   }
 
   /**
@@ -623,12 +623,12 @@ export default class FaceSketcher
     const edges = this.pendingCurves.map((curve) => {
       return r(
         new Edge(
-          r(new oc.BRepBuilderAPI_MakeEdge_30(curve.wrapped, geomSurf)).Edge()
+          r(new oc.BRepBuilderAPI_MakeEdge(curve.wrapped, geomSurf)).Edge()
         )
       );
     });
     const wire = assembleWire(edges);
-    oc.BRepLib.BuildCurves3d_2(wire.wrapped);
+    oc.BRepLib.BuildCurves3d(wire.wrapped);
 
     gc();
     return wire;

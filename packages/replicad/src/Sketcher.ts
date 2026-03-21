@@ -391,11 +391,10 @@ export default class Sketcher implements GenericSketcher<Sketch> {
     } else if (previousEdge.geomType === "BEZIER_CURVE") {
       const rawCurve = (
         r(previousEdge.curve).wrapped as CurveLike & {
-          Bezier: () => { get(): Geom_BezierCurve };
+          Bezier: () => Geom_BezierCurve;
         }
       )
-        .Bezier()
-        .get();
+        .Bezier();
       const previousPole = r(new Vector(rawCurve.Pole(rawCurve.NbPoles() - 1)));
 
       startPoleDirection = r(this.pointer.sub(previousPole));

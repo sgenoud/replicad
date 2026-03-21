@@ -25,7 +25,7 @@ type Handle_Law_Function = ReturnType<Law_Function["Trim"]>;
 
 export const basicFaceExtrusion = (face: Face, extrusionVec: Vector): Solid => {
   const oc = getOC();
-  const solidBuilder = new oc.BRepPrimAPI_MakePrism_1(
+  const solidBuilder = new oc.BRepPrimAPI_MakePrism(
     face.wrapped,
     extrusionVec.wrapped,
     false,
@@ -45,7 +45,7 @@ export const revolution = (
   const oc = getOC();
   const ax = makeAx1(center, direction);
 
-  const revolBuilder = new oc.BRepPrimAPI_MakeRevol_1(
+  const revolBuilder = new oc.BRepPrimAPI_MakeRevol(
     face.wrapped,
     ax,
     angle * DEG2RAD,
@@ -106,27 +106,27 @@ function genericSweep(
       transformed: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_Transformed,
       round: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RoundCorner,
       right: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RightCorner,
-    }[transitionMode] as any;
+    }[transitionMode];
     if (mode) sweepBuilder.SetTransitionMode(mode);
   }
 
   if (support) {
-    sweepBuilder.SetMode_4(support);
+    sweepBuilder.SetMode(support);
   } else if (frenet) {
-    sweepBuilder.SetMode_1(frenet);
+    sweepBuilder.SetMode(frenet);
   }
   if (auxiliarySpine) {
-    sweepBuilder.SetMode_5(
+    sweepBuilder.SetMode(
       auxiliarySpine.wrapped,
       false,
-      oc.BRepFill_TypeOfContact.BRepFill_NoContact as any
+      oc.BRepFill_TypeOfContact.BRepFill_NoContact
     );
   }
 
-  if (!law) sweepBuilder.Add_1(wire.wrapped, !!withContact, withCorrection);
-  else sweepBuilder.SetLaw_1(wire.wrapped, law, !!withContact, withCorrection);
+  if (!law) sweepBuilder.Add(wire.wrapped, !!withContact, withCorrection);
+  else sweepBuilder.SetLaw(wire.wrapped, law, !!withContact, withCorrection);
 
-  const progress = new oc.Message_ProgressRange_1();
+  const progress = new oc.Message_ProgressRange();
   sweepBuilder.Build(progress);
   if (!shellMode) {
     sweepBuilder.MakeSolid();
@@ -165,7 +165,7 @@ const buildLawFromProfile = (
 
   if (profile === "s-curve") {
     law = new oc.Law_S();
-    law.Set_1(0, 1, extrusionLength, endFactor);
+    law.Set(0, 1, extrusionLength, endFactor);
   } else if (profile === "linear") {
     law = new oc.Law_Linear();
     law.Set(0, 1, extrusionLength, endFactor);
@@ -314,7 +314,7 @@ export const loft = (
     loftBuilder.AddVertex(r(makeVertex(endPoint)).wrapped);
   }
 
-  const progress = r(new oc.Message_ProgressRange_1());
+  const progress = r(new oc.Message_ProgressRange());
   loftBuilder.Build(progress);
   const shape = cast(loftBuilder.Shape());
   gc();

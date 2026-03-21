@@ -1,7 +1,7 @@
 {
   "schema": "wasm-build-provenance-v1",
-  "buildId": "20260306T140518-O3-noLTO-single",
-  "timestamp": "2026-03-06T14:05:18.847791+00:00",
+  "buildId": "20260321T002111-O3-noLTO-single",
+  "timestamp": "2026-03-21T00:21:11.386285+00:00",
   "toolchain": {
     "emscripten": "5.0.1",
     "llvm": "17",
@@ -10,7 +10,7 @@
   },
   "source": {
     "occtCommit": "48ebca0f70a5e4b936548b695bc3583363898da4",
-    "opencascadejsCommit": "5b06683336522f9c059f59bbdf714ef56f944fc4",
+    "opencascadejsCommit": "ffee9e700816344019e7f89632fa74c9120fb679",
     "filterPackagesHash": "8b12ca608181",
     "pinnedDeps": {
       "occt": {
@@ -28,29 +28,34 @@
       "emscripten": {
         "docker_digest": "sha256:c89732ef63a56de5a96395c5a8c1c7904f7420131a045406e6fedc4cbe1cc198",
         "emsdk_version": "5.0.1"
+      },
+      "doxygen": {
+        "version": "1.16.1"
       }
     }
   },
   "compilation": {
-    "cacheKey": "O3-noLTO-noExc-single-8b12ca60-48ebca",
+    "cacheKey": "O3-noLTO-wasmExc-single-8b12ca60-48ebca",
     "cacheHit": false,
     "optimization": "-O3",
     "lto": false,
-    "exceptions": "none",
+    "exceptions": "wasm-native",
     "threading": "single-threaded",
     "wasmOptLevel": "-O3",
     "emccCompileFlags": [
       "-O3",
-      "-sDISABLE_EXCEPTION_CATCHING=1"
+      "-fwasm-exceptions",
+      "-DOCCT_NO_DUMP",
+      "-UOCC_CONVERT_SIGNALS"
     ],
     "sourceFiles": 0,
     "bindingFiles": 0,
     "compileDuration_s": 0
   },
   "linking": {
-    "yamlConfig": "replicad_single.js",
-    "yamlConfigHash": "6e105f96bf0f",
-    "boundSymbols": 216,
+    "yamlConfig": "replicad_with_exceptions.js",
+    "yamlConfigHash": "a1a8a03d486d",
+    "boundSymbols": 218,
     "symbolList": [
       "Message_ProgressRange",
       "TColgp_Array1OfDir",
@@ -154,6 +159,7 @@
       "Poly_Triangle",
       "Poly_Triangulation",
       "Poly_PolygonOnTriangulation",
+      "Poly_MergeNodesTool",
       "BRep_Tool",
       "BRepLib",
       "BRepTools",
@@ -259,7 +265,8 @@
       "IFSelect_WorkSession",
       "XSControl_WorkSession",
       "STEPCAFControl_Writer",
-      "BRepMesh_IncrementalMeshWrapper",
+      "BRepMesh_DiscretRoot",
+      "BRepMesh_IncrementalMesh",
       "BRepToolsWrapper",
       "GeomToolsWrapper",
       "OCJS_ShapeHasher",
@@ -267,10 +274,11 @@
       "HLRBRep_Algo",
       "HLRBRep_HLRToShape",
       "HLRBRep_InternalAlgo",
-      "TopoDS_Cast"
+      "Standard_Failure"
     ],
     "emccFlags": [
-      "-flto",
+      "-fwasm-exceptions",
+      "-sEXPORT_EXCEPTION_HANDLING_HELPERS",
       "-sEXPORT_ES6=1",
       "-sMODULARIZE",
       "-sALLOW_MEMORY_GROWTH=1",
@@ -282,53 +290,49 @@
       "-sERROR_ON_UNDEFINED_SYMBOLS=0",
       "-Wl,--allow-undefined",
       "-sSTACK_SIZE=8388608",
-      "-O3"
+      "-O3",
+      "-g2"
     ],
-    "linkDuration_s": 2.5
+    "linkDuration_s": 33.5
   },
   "postProcessing": {
-    "wasmOptFlags": [
-      "-O3",
-      "--strip-debug",
-      "--strip-producers",
-      "--enable-mutable-globals",
-      "--enable-bulk-memory",
-      "--enable-sign-ext",
-      "--enable-nontrapping-float-to-int",
-      "--enable-exception-handling"
-    ],
-    "preOptSize": 9935,
-    "postOptSize": 9906,
-    "optReduction": "0.3%",
-    "wasmOptDuration_s": 0.1
+    "wasmOptFlags": [],
+    "preOptSize": 24522499,
+    "postOptSize": 24522499,
+    "optReduction": "0.0%",
+    "wasmOptDuration_s": 0
   },
   "output": {
     "replicad_single.wasm": {
-      "size": 9906,
-      "sha256": "1b572ff234875ec5"
+      "size": 20193052,
+      "sha256": "f70e00bfa5ab6464"
     },
     "replicad_with_exceptions.wasm": {
-      "size": 23569921,
-      "sha256": "062bf4ea533ffb1d"
+      "size": 24522499,
+      "sha256": "36bc68b7114c7454"
     },
     "replicad_single.js": {
-      "size": 63833
+      "size": 112664
     },
     "replicad_with_exceptions.js": {
-      "size": 54215
+      "size": 190948
+    },
+    "custom-wrappers.d.ts": {
+      "size": 647,
+      "lines": 22
     },
     "replicad_single.d.ts": {
-      "size": 319688,
-      "lines": 7979
+      "size": 965360,
+      "lines": 20987
     },
     "replicad_with_exceptions.d.ts": {
-      "size": 362779,
-      "lines": 8510
+      "size": 968336,
+      "lines": 21069
     }
   },
   "sections": {},
   "filtering": {
     "excludedPackages": []
   },
-  "totalDuration_s": 31
+  "totalDuration_s": 44
 }

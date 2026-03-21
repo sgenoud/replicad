@@ -57,17 +57,17 @@ export const make2dOffset = (
     }
 
     const oc = getOC();
-    const newCircle = new oc.gp_Circ2d_3(circle.Axis(), newRadius);
-    const newInnerCurve = new oc.Geom2d_Circle_1(newCircle);
+    const newCircle = new oc.gp_Circ2d(circle.Axis(), newRadius);
+    const newInnerCurve = new oc.Geom2d_Circle(newCircle);
     const newCurve = new oc.Geom2d_TrimmedCurve(
-      new oc.Handle_Geom2d_Curve_2(newInnerCurve),
+      newInnerCurve,
       curve.firstParameter,
       curve.lastParameter,
       true,
       true
     );
 
-    return new Curve2D(new oc.Handle_Geom2d_Curve_2(newCurve));
+    return new Curve2D(newCurve);
   }
 
   if (curveType === "LINE") {
@@ -85,9 +85,7 @@ export const make2dOffset = (
   const oc = getOC();
 
   const offsetCurve = new Curve2D(
-    new oc.Handle_Geom2d_Curve_2(
-      new oc.Geom2d_OffsetCurve_1(curve.wrapped, offset, true)
-    )
+    new oc.Geom2d_OffsetCurve(curve.wrapped, offset, true)
   );
 
   // While return the offset curve itself would be the more correct thing to do,

@@ -1,7 +1,7 @@
 import {
   Geom_CylindricalSurface,
   gp_GTrsf2d,
-  Handle_Geom_Surface,
+  Geom_Surface,
 } from "replicad-opencascadejs";
 
 import { GCWithScope, localGC, WrappingObj } from "./register";
@@ -26,7 +26,7 @@ export const curvesBoundingBox = (curves: Curve2D[]): BoundingBox2d => {
   const boundBox = new oc.Bnd_Box2d();
 
   curves.forEach((c) => {
-    oc.BndLib_Add2dCurve.Add_3(c.wrapped, 1e-6, boundBox);
+    oc.BndLib_Add2dCurve.Add(c.wrapped, 1e-6, boundBox);
   });
 
   return new BoundingBox2d(boundBox);
@@ -40,7 +40,7 @@ export function curvesAsEdgesOnPlane(curves: Curve2D[], plane: Plane) {
 
   const edges = curves.map((curve) => {
     const curve3d = oc.GeomLib.To3d(ax, curve.wrapped);
-    return new Edge(new oc.BRepBuilderAPI_MakeEdge_24(curve3d).Edge());
+    return new Edge(new oc.BRepBuilderAPI_MakeEdge(curve3d).Edge());
   });
 
   gc();
@@ -49,14 +49,14 @@ export function curvesAsEdgesOnPlane(curves: Curve2D[], plane: Plane) {
 
 export const curvesAsEdgesOnSurface = (
   curves: Curve2D[],
-  geomSurf: Handle_Geom_Surface
+  geomSurf: Geom_Surface
 ) => {
   const [r, gc] = localGC();
   const oc = getOC();
 
   const modifiedCurves = curves.map((curve) => {
     const edgeBuilder = r(
-      new oc.BRepBuilderAPI_MakeEdge_30(curve.wrapped, geomSurf)
+      new oc.BRepBuilderAPI_MakeEdge(curve.wrapped, geomSurf)
     );
     return new Edge(edgeBuilder.Edge());
   });
@@ -92,7 +92,7 @@ export const stretchTransform2d = (
 ): Transformation2D => {
   const oc = getOC();
   const axis = axis2d(origin, direction);
-  const transform = new oc.gp_GTrsf2d_1();
+  const transform = new oc.gp_GTrsf2d();
   transform.SetAffinity(axis, ratio);
 
   axis.delete();
@@ -105,10 +105,10 @@ export const translationTransform2d = (
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const rotation = new oc.gp_Trsf2d_1();
-  rotation.SetTranslation_1(r(vec(translation)));
+  const rotation = new oc.gp_Trsf2d();
+  rotation.SetTranslation(r(vec(translation)));
 
-  const transform = new oc.gp_GTrsf2d_2(rotation);
+  const transform = new oc.gp_GTrsf2d(rotation);
   gc();
   return new Transformation2D(transform);
 };
@@ -121,14 +121,14 @@ export const mirrorTransform2d = (
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const rotation = new oc.gp_Trsf2d_1();
+  const rotation = new oc.gp_Trsf2d();
   if (mode === "center") {
-    rotation.SetMirror_1(r(pnt(centerOrDirection)));
+    rotation.SetMirror(r(pnt(centerOrDirection)));
   } else {
-    rotation.SetMirror_2(r(axis2d(origin, centerOrDirection)));
+    rotation.SetMirror(r(axis2d(origin, centerOrDirection)));
   }
 
-  const transform = new oc.gp_GTrsf2d_2(rotation);
+  const transform = new oc.gp_GTrsf2d(rotation);
   gc();
   return new Transformation2D(transform);
 };
@@ -140,10 +140,10 @@ export const rotateTransform2d = (
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const rotation = new oc.gp_Trsf2d_1();
+  const rotation = new oc.gp_Trsf2d();
   rotation.SetRotation(r(pnt(center)), angle);
 
-  const transform = new oc.gp_GTrsf2d_2(rotation);
+  const transform = new oc.gp_GTrsf2d(rotation);
   gc();
   return new Transformation2D(transform);
 };
@@ -155,10 +155,10 @@ export const scaleTransform2d = (
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const scaling = new oc.gp_Trsf2d_1();
+  const scaling = new oc.gp_Trsf2d();
   scaling.SetScale(r(pnt(center)), scaleFactor);
 
-  const transform = new oc.gp_GTrsf2d_2(scaling);
+  const transform = new oc.gp_GTrsf2d(scaling);
   gc();
   return new Transformation2D(transform);
 };
@@ -166,11 +166,11 @@ export const scaleTransform2d = (
 export function faceRadius(face: Face): null | number {
   const oc = getOC();
   const [r, gc] = localGC();
-  const geomSurf = r(oc.BRep_Tool.Surface_2(face.wrapped));
+  const geomSurf = r(oc.BRep_Tool.Surface(face.wrapped));
 
   if (face.geomType !== "CYLINDRE") return null;
 
-  const cylinder = r((geomSurf.get() as Geom_CylindricalSurface).Cylinder());
+  const cylinder = r((geomSurf as Geom_CylindricalSurface).Cylinder());
   const radius = cylinder.Radius();
   gc();
   return radius;
@@ -186,7 +186,7 @@ export function curvesAsEdgesOnFace(
   const [r, gc] = localGC();
 
   const oc = getOC();
-  let geomSurf = r(oc.BRep_Tool.Surface_2(face.wrapped));
+  let geomSurf = r(oc.BRep_Tool.Surface(face.wrapped));
 
   const bounds = face.UVBounds;
 
@@ -200,9 +200,9 @@ export function curvesAsEdgesOnFace(
         "Only planar and cylidrical faces can be unwrapped for sketching"
       );
 
-    const cylinder = r((geomSurf.get() as Geom_CylindricalSurface).Cylinder());
+    const cylinder = r((geomSurf as Geom_CylindricalSurface).Cylinder());
     if (!cylinder.Direct()) {
-      geomSurf = geomSurf.get().UReversed();
+      geomSurf = geomSurf.UReversed();
     }
     const radius = cylinder.Radius();
     const affinity = stretchTransform2d(1 / radius, [0, 1]);
@@ -210,22 +210,22 @@ export function curvesAsEdgesOnFace(
   }
 
   if (scale === "bounds") {
-    transformation = r(new oc.gp_GTrsf2d_1());
+    transformation = r(new oc.gp_GTrsf2d());
     transformation.SetAffinity(uAxis, bounds.uMax - bounds.uMin);
 
     if (bounds.uMin !== 0) {
-      const translation = r(new oc.gp_GTrsf2d_1());
-      translation.SetTranslationPart(new oc.gp_XY_2(0, -bounds.uMin));
+      const translation = r(new oc.gp_GTrsf2d());
+      translation.SetTranslationPart(new oc.gp_XY(0, -bounds.uMin));
       transformation.Multiply(translation);
     }
 
-    const vTransformation = r(new oc.gp_GTrsf2d_1());
+    const vTransformation = r(new oc.gp_GTrsf2d());
     vTransformation.SetAffinity(vAxis, bounds.vMax - bounds.vMin);
     transformation.Multiply(vTransformation);
 
     if (bounds.vMin !== 0) {
-      const translation = r(new oc.gp_GTrsf2d_1());
-      translation.SetTranslationPart(r(new oc.gp_XY_2(0, -bounds.vMin)));
+      const translation = r(new oc.gp_GTrsf2d());
+      translation.SetTranslationPart(r(new oc.gp_XY(0, -bounds.vMin)));
       transformation.Multiply(translation);
     }
   }
@@ -241,7 +241,7 @@ export function edgeToCurve(e: Edge, face: Face): Curve2D {
   const oc = getOC();
   const r = GCWithScope();
 
-  const adaptor = r(new oc.BRepAdaptor_Curve2d_2(e.wrapped, face.wrapped));
+  const adaptor = r(new oc.BRepAdaptor_Curve2d(e.wrapped, face.wrapped));
 
   const trimmed = new oc.Geom2d_TrimmedCurve(
     adaptor.Curve(),
@@ -255,7 +255,7 @@ export function edgeToCurve(e: Edge, face: Face): Curve2D {
     trimmed.Reverse();
   }
 
-  return new Curve2D(new oc.Handle_Geom2d_Curve_2(trimmed));
+  return new Curve2D(trimmed);
 }
 
 const poles3dTo2d = (poles: any, register: <T extends Deletable>(value: T) => T) => {

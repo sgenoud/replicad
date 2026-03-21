@@ -1,8 +1,4 @@
-import {
-  Geom2dAdaptor_Curve,
-  Geom2d_Curve,
-  Handle_Geom2d_Curve,
-} from "replicad-opencascadejs";
+import { Geom2dAdaptor_Curve, Geom2d_Curve } from "replicad-opencascadejs";
 
 import { CurveType, findCurveType } from "../definitionMaps";
 import precisionRound from "../utils/precisionRound";
@@ -22,13 +18,10 @@ export function deserializeCurve2D(data: string): Curve2D {
   return new Curve2D(handle);
 }
 
-export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
+export class Curve2D extends WrappingObj<Geom2d_Curve> {
   _boundingBox: null | BoundingBox2d;
-  constructor(handle: Handle_Geom2d_Curve) {
-    const oc = getOC();
-    const inner = handle.get();
-
-    super(new oc.Handle_Geom2d_Curve_2(inner));
+  constructor(handle: Geom2d_Curve) {
+    super(handle);
 
     this._boundingBox = null;
   }
@@ -38,7 +31,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     const oc = getOC();
     const boundBox = new oc.Bnd_Box2d();
 
-    oc.BndLib_Add2dCurve.Add_3(this.wrapped, 1e-6, boundBox);
+    oc.BndLib_Add2dCurve.Add(this.wrapped, 1e-6, boundBox);
 
     this._boundingBox = new BoundingBox2d(boundBox);
     return this._boundingBox;
@@ -51,7 +44,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
   }
 
   get innerCurve(): Geom2d_Curve {
-    return this.wrapped.get();
+    return this.wrapped;
   }
 
   serialize(): string {
@@ -84,7 +77,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
 
   adaptor(): Geom2dAdaptor_Curve {
     const oc = getOC();
-    return new oc.Geom2dAdaptor_Curve_2(this.wrapped);
+    return new oc.Geom2dAdaptor_Curve(this.wrapped);
   }
 
   get geomType(): CurveType {
@@ -95,7 +88,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
   }
 
   clone(): Curve2D {
-    return new Curve2D(this.innerCurve.Copy() as Handle_Geom2d_Curve);
+    return new Curve2D(this.innerCurve.Copy() as Geom2d_Curve);
   }
 
   reverse(): void {
@@ -107,7 +100,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     const r = GCWithScope();
 
     const projector = r(
-      new oc.Geom2dAPI_ProjectPointOnCurve_2(r(pnt(point)), this.wrapped)
+      new oc.Geom2dAPI_ProjectPointOnCurve(r(pnt(point)), this.wrapped)
     );
 
     let curveToPoint = Infinity;
@@ -177,7 +170,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     let lowerDistanceParameter;
     try {
       const projector = r(
-        new oc.Geom2dAPI_ProjectPointOnCurve_2(r(pnt(point)), this.wrapped)
+        new oc.Geom2dAPI_ProjectPointOnCurve(r(pnt(point)), this.wrapped)
       );
       lowerDistance = projector.LowerDistance();
       lowerDistanceParameter = projector.LowerDistanceParameter();
@@ -215,8 +208,8 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
       param = paramLength * index + this.innerCurve.FirstParameter();
     }
 
-    const point = r(new oc.gp_Pnt2d_1());
-    const dir = r(new oc.gp_Vec2d_1());
+    const point = r(new oc.gp_Pnt2d());
+    const dir = r(new oc.gp_Vec2d());
 
     this.innerCurve.D1(param, point, dir);
 
@@ -266,24 +259,24 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
     ]).map(([first, last]) => {
       try {
         if (this.geomType === "BEZIER_CURVE") {
-          const curveCopy = new oc.Geom2d_BezierCurve_1(
-            r(this.adaptor()).Bezier().get().Poles_2()
+          const curveCopy = new oc.Geom2d_BezierCurve(
+            r(this.adaptor()).Bezier().Poles()
           );
           curveCopy.Segment(first, last);
-          return new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy));
+          return new Curve2D(curveCopy);
         }
         if (this.geomType === "BSPLINE_CURVE") {
-          const adapted = r(this.adaptor()).BSpline().get();
+          const adapted = r(this.adaptor()).BSpline();
 
-          const curveCopy = new oc.Geom2d_BSplineCurve_1(
-            adapted.Poles_2(),
-            adapted.Knots_2(),
-            adapted.Multiplicities_2(),
+          const curveCopy = new oc.Geom2d_BSplineCurve(
+            adapted.Poles(),
+            adapted.Knots(),
+            adapted.Multiplicities(),
             adapted.Degree(),
             adapted.IsPeriodic()
           );
           curveCopy.Segment(first, last, precision);
-          return new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy));
+          return new Curve2D(curveCopy);
         }
 
         const trimmed = new oc.Geom2d_TrimmedCurve(
@@ -293,7 +286,7 @@ export class Curve2D extends WrappingObj<Handle_Geom2d_Curve> {
           true,
           true
         );
-        return new Curve2D(new oc.Handle_Geom2d_Curve_2(trimmed));
+        return new Curve2D(trimmed);
       } catch (e) {
         throw new Error("Failed to split the curve");
       }

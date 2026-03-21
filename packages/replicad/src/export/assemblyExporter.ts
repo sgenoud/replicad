@@ -10,7 +10,7 @@ import { GCWithScope, WrappingObj } from "../register";
 
 const wrapString = (str: string): TCollection_ExtendedString => {
   const oc = getOC();
-  return new oc.TCollection_ExtendedString_2(str, true);
+  return new oc.TCollection_ExtendedString(str, true);
 };
 
 function parseSlice(hex: string, index: number): number {
@@ -31,7 +31,7 @@ const wrapColor = (hex: string, alpha = 1): Quantity_ColorRGBA => {
   const oc = getOC();
   const [r, g, b] = colorFromHex(hex);
 
-  return new oc.Quantity_ColorRGBA_5(r / 255, g / 255, b / 255, alpha);
+  return new oc.Quantity_ColorRGBA(r / 255, g / 255, b / 255, alpha);
 };
 
 export class AssemblyExporter extends WrappingObj<TDocStd_Document> {}
@@ -52,17 +52,17 @@ export function createAssembly(shapes: ShapeConfig[] = []): AssemblyExporter {
 
   const mainLabel = doc.Main();
 
-  const tool = oc.XCAFDoc_DocumentTool.ShapeTool(mainLabel).get();
-  const ctool = oc.XCAFDoc_DocumentTool.ColorTool(mainLabel).get();
+  const tool = oc.XCAFDoc_DocumentTool.ShapeTool(mainLabel);
+  const ctool = oc.XCAFDoc_DocumentTool.ColorTool(mainLabel);
 
   for (const { shape, name, color, alpha } of shapes) {
     const shapeNode = tool.NewShape();
 
     tool.SetShape(shapeNode, shape.wrapped);
 
-    oc.TDataStd_Name.Set_1(shapeNode, wrapString(name || uuidv()));
+    oc.TDataStd_Name.Set(shapeNode, wrapString(name || uuidv()));
 
-    ctool.SetColor_3(
+    ctool.SetColor(
       shapeNode,
       wrapColor(color || "#f00", alpha ?? 1),
       oc.XCAFDoc_ColorType.XCAFDoc_ColorSurf
@@ -97,7 +97,7 @@ export function exportSTEP(
 
   if (unit || modelUnit) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const dummy = r(new oc.STEPCAFControl_Writer_1());
+    const dummy = r(new oc.STEPCAFControl_Writer());
 
     oc.Interface_Static.SetCVal(
       "xstep.cascade.unit",
@@ -111,8 +111,8 @@ export function exportSTEP(
 
   const session = r(new oc.XSControl_WorkSession());
   const writer = r(
-    new oc.STEPCAFControl_Writer_2(
-      r(new oc.Handle_XSControl_WorkSession_2(session)),
+    new oc.STEPCAFControl_Writer(
+      session,
       false
     )
   );
@@ -124,12 +124,11 @@ export function exportSTEP(
   oc.Interface_Static.SetIVal("write.step.assembly", 2);
   oc.Interface_Static.SetIVal("write.step.schema", 5);
 
-  const progress = r(new oc.Message_ProgressRange_1());
+  const progress = r(new oc.Message_ProgressRange());
   writer.Transfer_1(
-    new oc.Handle_TDocStd_Document_2(doc.wrapped),
-    // @ts-expect-error the type system does not work for these
+    doc.wrapped,
     oc.STEPControl_StepModelType.STEPControl_AsIs,
-    null,
+    "",
     progress
   );
 
