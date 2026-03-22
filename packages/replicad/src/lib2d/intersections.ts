@@ -1,12 +1,10 @@
-import { Geom2dAPI_InterCurveCurve } from "replicad-opencascadejs";
-import { getOC } from "../oclib";
-import { Curve2D } from "./Curve2D";
-import { Point2D } from "./definitions";
-import { samePoint } from "./vectorOperations";
+import { Geom2dAPI_InterCurveCurve } from 'replicad-opencascadejs';
+import { getOC } from '../oclib';
+import { Curve2D } from './Curve2D';
+import { Point2D } from './definitions';
+import { samePoint } from './vectorOperations';
 
-function* pointsIteration(
-  intersector: Geom2dAPI_InterCurveCurve
-): Generator<Point2D> {
+function* pointsIteration(intersector: Geom2dAPI_InterCurveCurve): Generator<Point2D> {
   const nPoints = intersector.NbPoints();
   if (!nPoints) return;
 
@@ -16,9 +14,7 @@ function* pointsIteration(
   }
 }
 
-function* commonSegmentsIteration(
-  intersector: Geom2dAPI_InterCurveCurve
-): Generator<Curve2D> {
+function* commonSegmentsIteration(intersector: Geom2dAPI_InterCurveCurve): Generator<Curve2D> {
   const nSegments = intersector.NbSegments();
   if (!nSegments) return;
 
@@ -33,11 +29,7 @@ function* commonSegmentsIteration(
   }
 }
 
-export const intersectCurves = (
-  first: Curve2D,
-  second: Curve2D,
-  precision = 1e-9
-) => {
+export const intersectCurves = (first: Curve2D, second: Curve2D, precision = 1e-9) => {
   if (first.boundingBox.isOut(second.boundingBox))
     return { intersections: [], commonSegments: [], commonSegmentsPoints: [] };
 
@@ -54,7 +46,7 @@ export const intersectCurves = (
     commonSegments = Array.from(commonSegmentsIteration(intersector));
   } catch (e) {
     console.error(first, second, e);
-    throw new Error("Intersections failed between curves");
+    throw new Error('Intersections failed between curves');
   } finally {
     intersector.delete();
   }
@@ -65,15 +57,10 @@ export const intersectCurves = (
 
   if (segmentsAsPoints.length) {
     intersections.push(...segmentsAsPoints);
-    commonSegments = commonSegments.filter(
-      (c) => !samePoint(c.firstPoint, c.lastPoint, precision)
-    );
+    commonSegments = commonSegments.filter((c) => !samePoint(c.firstPoint, c.lastPoint, precision));
   }
 
-  const commonSegmentsPoints = commonSegments.flatMap((c) => [
-    c.firstPoint,
-    c.lastPoint,
-  ]);
+  const commonSegmentsPoints = commonSegments.flatMap((c) => [c.firstPoint, c.lastPoint]);
 
   return { intersections, commonSegments, commonSegmentsPoints };
 };
@@ -89,7 +76,7 @@ export const selfIntersections = (curve: Curve2D, precision = 1e-9) => {
 
     intersections = Array.from(pointsIteration(intersector));
   } catch (e) {
-    throw new Error("Self intersection failed");
+    throw new Error('Self intersection failed');
   } finally {
     intersector.delete();
   }
