@@ -1,7 +1,7 @@
 {
   "schema": "wasm-build-provenance-v1",
-  "buildId": "20260321T002111-O3-noLTO-single",
-  "timestamp": "2026-03-21T00:21:11.386285+00:00",
+  "buildId": "20260322T060706-O3-noLTO-single",
+  "timestamp": "2026-03-22T06:07:06.559312+00:00",
   "toolchain": {
     "emscripten": "5.0.1",
     "llvm": "17",
@@ -35,26 +35,27 @@
     }
   },
   "compilation": {
-    "cacheKey": "O3-noLTO-wasmExc-single-8b12ca60-48ebca",
+    "cacheKey": "O3-noLTO-noExc-single-8b12ca60-48ebca",
     "cacheHit": false,
     "optimization": "-O3",
     "lto": false,
-    "exceptions": "wasm-native",
+    "exceptions": "none",
     "threading": "single-threaded",
-    "wasmOptLevel": "-O3",
+    "wasmOptLevel": "-O4",
     "emccCompileFlags": [
       "-O3",
-      "-fwasm-exceptions",
+      "-sDISABLE_EXCEPTION_CATCHING=1",
       "-DOCCT_NO_DUMP",
-      "-UOCC_CONVERT_SIGNALS"
+      "-UOCC_CONVERT_SIGNALS",
+      "-msimd128"
     ],
     "sourceFiles": 0,
-    "bindingFiles": 0,
-    "compileDuration_s": 0
+    "bindingFiles": 4450,
+    "compileDuration_s": 1012
   },
   "linking": {
-    "yamlConfig": "replicad_with_exceptions.js",
-    "yamlConfigHash": "a1a8a03d486d",
+    "yamlConfig": "replicad_single.js",
+    "yamlConfigHash": "e7656ae3b490",
     "boundSymbols": 218,
     "symbolList": [
       "Message_ProgressRange",
@@ -277,8 +278,8 @@
       "Standard_Failure"
     ],
     "emccFlags": [
-      "-fwasm-exceptions",
-      "-sEXPORT_EXCEPTION_HANDLING_HELPERS",
+      "-sDISABLE_EXCEPTION_CATCHING=1",
+      "-sSUPPORT_LONGJMP=0",
       "-sEXPORT_ES6=1",
       "-sMODULARIZE",
       "-sALLOW_MEMORY_GROWTH=1",
@@ -290,43 +291,54 @@
       "-sERROR_ON_UNDEFINED_SYMBOLS=0",
       "-Wl,--allow-undefined",
       "-sSTACK_SIZE=8388608",
-      "-O3",
-      "-g2"
+      "-O3"
     ],
-    "linkDuration_s": 33.5
+    "linkDuration_s": 79.0
   },
   "postProcessing": {
-    "wasmOptFlags": [],
-    "preOptSize": 24522499,
-    "postOptSize": 24522499,
-    "optReduction": "0.0%",
-    "wasmOptDuration_s": 0
+    "wasmOptFlags": [
+      "-O4",
+      "--strip-debug",
+      "--strip-producers",
+      "--enable-mutable-globals",
+      "--enable-bulk-memory",
+      "--enable-sign-ext",
+      "--enable-nontrapping-float-to-int",
+      "--converge",
+      "--enable-exception-handling",
+      "--enable-simd",
+      "--enable-relaxed-simd"
+    ],
+    "preOptSize": 20161448,
+    "postOptSize": 20163258,
+    "optReduction": "-0.0%",
+    "wasmOptDuration_s": 100.6
   },
   "output": {
     "replicad_single.wasm": {
-      "size": 20193052,
-      "sha256": "f70e00bfa5ab6464"
+      "size": 20163258,
+      "sha256": "0a613250bacd2169"
     },
     "replicad_with_exceptions.wasm": {
-      "size": 24522499,
-      "sha256": "36bc68b7114c7454"
+      "size": 21756243,
+      "sha256": "aaa0aff5333021ad"
     },
     "replicad_single.js": {
-      "size": 112664
+      "size": 54212
     },
     "replicad_with_exceptions.js": {
-      "size": 190948
+      "size": 193766
     },
     "custom-wrappers.d.ts": {
       "size": 647,
       "lines": 22
     },
     "replicad_single.d.ts": {
-      "size": 965360,
-      "lines": 20987
+      "size": 969086,
+      "lines": 21041
     },
     "replicad_with_exceptions.d.ts": {
-      "size": 968336,
+      "size": 970340,
       "lines": 21069
     }
   },
@@ -334,5 +346,5 @@
   "filtering": {
     "excludedPackages": []
   },
-  "totalDuration_s": 44
+  "totalDuration_s": 1208
 }

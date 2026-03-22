@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-03-20T23:30:53Z",
-  "yaml_config": "custom_build_with_exceptions_v8.yml",
-  "yaml_hash": "1b287fed6192",
+  "timestamp": "2026-03-22T06:27:14Z",
+  "yaml_config": "custom_build_single_v8.yml",
+  "yaml_hash": "e7656ae3b490",
   "validation_passed": true,
   "symbols": {
     "requested": [
@@ -223,47 +223,36 @@
       "gp_XY",
       "gp_XYZ"
     ],
-    "compiled": 4448,
+    "compiled": 4452,
     "missing": [],
-    "extra_compiled": 4231,
+    "extra_compiled": 4235,
     "pass": true
   },
   "outputs": [
     {
-      "name": "replicad_with_exceptions.js",
-      "wasm_file": "replicad_with_exceptions.wasm",
+      "name": "replicad_single.js",
+      "wasm_file": "replicad_single.wasm",
       "wasm_exists": true,
-      "wasm_size": 21523102,
+      "wasm_size": 20163258,
       "js_exists": true,
-      "js_size": 113809,
+      "js_size": 54212,
       "pass": true
     }
   ],
   "binding_report": {
     "total": 4454,
-    "succeeded": 4446,
+    "succeeded": 4450,
     "cached": 0,
-    "failed": 8,
+    "failed": 4,
     "error_categories": {
-      "overload_resolution": 3,
       "compile_error": 2,
-      "template_error": 3
+      "template_error": 2
     },
     "failures": [
       {
-        "file": "XCAFDimTolObjects_DatumObject.cpp",
-        "error_type": "overload_resolution",
-        "message": "/Users/rifont/git/tau/repos/assimpjs/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/bind.h:390:9: error: no matching function for call to object of type 'std::function<void (XCAFDimTolObjects_DatumObject &, XCAFDimTolObjects_DatumModifWithValue &, emscripten::val)>'"
-      },
-      {
-        "file": "XCAFDimTolObjects_DimensionObject.cpp",
-        "error_type": "overload_resolution",
-        "message": "/Users/rifont/git/tau/repos/assimpjs/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/bind.h:377:13: error: no matching function for call to object of type 'std::function<bool (XCAFDimTolObjects_DimensionObject &, emscripten::val, XCAFDimTolObjects_DimensionFormVariance &, XCAFDimTolObjects_DimensionGrade &)>'"
-      },
-      {
         "file": "Message_ProgressScope.cpp",
         "error_type": "compile_error",
-        "message": "/Users/rifont/git/tau/repos/opencascade.js/build/bindings/FoundationClasses/TKernel/Message/Message_ProgressScope.hxx/Message_ProgressScope.cpp:4857:130: error: unknown type name 'NullString'"
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/build/bindings/FoundationClasses/TKernel/Message/Message_ProgressScope.hxx/Message_ProgressScope.cpp:4840:130: error: unknown type name 'NullString'"
       },
       {
         "file": "BOPTools_AlgoTools.cpp",
@@ -273,22 +262,12 @@
       {
         "file": "ShapeProcess.cpp",
         "error_type": "compile_error",
-        "message": "/Users/rifont/git/tau/repos/opencascade.js/build/bindings/ModelingAlgorithms/TKShHealing/ShapeProcess/ShapeProcess.hxx/ShapeProcess.cpp:4864:102: error: unknown type name 'OperationsFlags'; did you mean 'ShapeProcess::OperationsFlags'?"
-      },
-      {
-        "file": "ShapeProcess_ShapeContext.cpp",
-        "error_type": "overload_resolution",
-        "message": "/Users/rifont/git/tau/repos/assimpjs/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/bind.h:377:13: error: no matching function for call to object of type 'std::function<bool (ShapeProcess_ShapeContext &, emscripten::val, GeomAbs_Shape &)>'"
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/build/bindings/ModelingAlgorithms/TKShHealing/ShapeProcess/ShapeProcess.hxx/ShapeProcess.cpp:4856:102: error: unknown type name 'OperationsFlags'; did you mean 'ShapeProcess::OperationsFlags'?"
       },
       {
         "file": "BRepClass3d_SolidExplorer.cpp",
         "error_type": "template_error",
         "message": "/Users/rifont/git/tau/repos/assimpjs/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/wire.h:391:20: error: call to implicitly-deleted copy constructor of 'ActualT' (aka 'IntCurvesFace_Intersector')"
-      },
-      {
-        "file": "TopAbs.cpp",
-        "error_type": "template_error",
-        "message": "/Users/rifont/git/tau/repos/assimpjs/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/bind.h:352:16: error: non-const lvalue reference to type 'TopAbs_ShapeEnum' cannot bind to a temporary of type 'TopAbs_ShapeEnum'"
       }
     ]
   }

@@ -233,7 +233,7 @@ function initRuntime() {
   if (!Module["noFSInit"] && !FS.initialized) FS.init();
   TTY.init();
   // End ATINITS hooks
-  wasmExports["ca"]();
+  wasmExports["da"]();
   // Begin ATPOSTCTORS hooks
   FS.ignorePermissions = false;
 }
@@ -3303,6 +3303,133 @@ function ___syscall_stat64(path, buf) {
 
 var __abort_js = () => abort("");
 
+var structRegistrations = {};
+
+var runDestructors = destructors => {
+  while (destructors.length) {
+    var ptr = destructors.pop();
+    var del = destructors.pop();
+    del(ptr);
+  }
+};
+
+/** @suppress {globalThis} */ function readPointer(pointer) {
+  return this.fromWireType(HEAPU32[((pointer) >>> 2) >>> 0]);
+}
+
+var awaitingDependencies = {};
+
+var registeredTypes = {};
+
+var typeDependencies = {};
+
+var InternalError = class InternalError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "InternalError";
+  }
+};
+
+var throwInternalError = message => {
+  throw new InternalError(message);
+};
+
+var whenDependentTypesAreResolved = (myTypes, dependentTypes, getTypeConverters) => {
+  myTypes.forEach(type => typeDependencies[type] = dependentTypes);
+  function onComplete(typeConverters) {
+    var myTypeConverters = getTypeConverters(typeConverters);
+    if (myTypeConverters.length !== myTypes.length) {
+      throwInternalError("Mismatched type converter count");
+    }
+    for (var i = 0; i < myTypes.length; ++i) {
+      registerType(myTypes[i], myTypeConverters[i]);
+    }
+  }
+  var typeConverters = new Array(dependentTypes.length);
+  var unregisteredTypes = [];
+  var registered = 0;
+  for (let [i, dt] of dependentTypes.entries()) {
+    if (registeredTypes.hasOwnProperty(dt)) {
+      typeConverters[i] = registeredTypes[dt];
+    } else {
+      unregisteredTypes.push(dt);
+      if (!awaitingDependencies.hasOwnProperty(dt)) {
+        awaitingDependencies[dt] = [];
+      }
+      awaitingDependencies[dt].push(() => {
+        typeConverters[i] = registeredTypes[dt];
+        ++registered;
+        if (registered === unregisteredTypes.length) {
+          onComplete(typeConverters);
+        }
+      });
+    }
+  }
+  if (0 === unregisteredTypes.length) {
+    onComplete(typeConverters);
+  }
+};
+
+var __embind_finalize_value_object = function(structType) {
+  structType >>>= 0;
+  var reg = structRegistrations[structType];
+  delete structRegistrations[structType];
+  var rawConstructor = reg.rawConstructor;
+  var rawDestructor = reg.rawDestructor;
+  var fieldRecords = reg.fields;
+  var fieldTypes = fieldRecords.map(field => field.getterReturnType).concat(fieldRecords.map(field => field.setterArgumentType));
+  whenDependentTypesAreResolved([ structType ], fieldTypes, fieldTypes => {
+    var fields = {};
+    for (var [i, field] of fieldRecords.entries()) {
+      const getterReturnType = fieldTypes[i];
+      const getter = field.getter;
+      const getterContext = field.getterContext;
+      const setterArgumentType = fieldTypes[i + fieldRecords.length];
+      const setter = field.setter;
+      const setterContext = field.setterContext;
+      fields[field.fieldName] = {
+        read: ptr => getterReturnType.fromWireType(getter(getterContext, ptr)),
+        write: (ptr, o) => {
+          var destructors = [];
+          setter(setterContext, ptr, setterArgumentType.toWireType(destructors, o));
+          runDestructors(destructors);
+        },
+        optional: getterReturnType.optional
+      };
+    }
+    return [ {
+      name: reg.name,
+      fromWireType: ptr => {
+        var rv = {};
+        for (var i in fields) {
+          rv[i] = fields[i].read(ptr);
+        }
+        rawDestructor(ptr);
+        return rv;
+      },
+      toWireType: (destructors, o) => {
+        // todo: Here we have an opportunity for -O3 level "unsafe" optimizations:
+        // assume all fields are present without checking.
+        for (var fieldName in fields) {
+          if (!(fieldName in o) && !fields[fieldName].optional) {
+            throw new TypeError(`Missing field: "${fieldName}"`);
+          }
+        }
+        var ptr = rawConstructor();
+        for (fieldName in fields) {
+          fields[fieldName].write(ptr, o[fieldName]);
+        }
+        if (destructors !== null) {
+          destructors.push(rawDestructor, ptr);
+        }
+        return ptr;
+      },
+      readValueFromPointer: readPointer,
+      destructorFunction: rawDestructor
+    } ];
+  });
+};
+
 var AsciiToString = ptr => {
   ptr >>>= 0;
   var str = "";
@@ -3312,12 +3439,6 @@ var AsciiToString = ptr => {
     str += String.fromCharCode(ch);
   }
 };
-
-var awaitingDependencies = {};
-
-var registeredTypes = {};
-
-var typeDependencies = {};
 
 var BindingError = class BindingError extends Error {
   constructor(message) {
@@ -3783,10 +3904,6 @@ var embindRepr = v => {
   return ptr;
 }
 
-/** @suppress {globalThis} */ function readPointer(pointer) {
-  return this.fromWireType(HEAPU32[((pointer) >>> 2) >>> 0]);
-}
-
 var downcastPointer = (ptr, ptrClass, desiredClass) => {
   if (ptrClass === desiredClass) {
     return ptr;
@@ -3817,17 +3934,6 @@ var getBasestPointer = (class_, ptr) => {
 var getInheritedInstance = (class_, ptr) => {
   ptr = getBasestPointer(class_, ptr);
   return registeredInstances[ptr];
-};
-
-var InternalError = class InternalError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "InternalError";
-  }
-};
-
-var throwInternalError = message => {
-  throw new InternalError(message);
 };
 
 var makeClassHandle = (prototype, record) => {
@@ -4048,42 +4154,6 @@ var throwUnboundTypeError = (message, types) => {
   throw new UnboundTypeError(`${message}: ` + unboundTypes.map(getTypeName).join([ ", " ]));
 };
 
-var whenDependentTypesAreResolved = (myTypes, dependentTypes, getTypeConverters) => {
-  myTypes.forEach(type => typeDependencies[type] = dependentTypes);
-  function onComplete(typeConverters) {
-    var myTypeConverters = getTypeConverters(typeConverters);
-    if (myTypeConverters.length !== myTypes.length) {
-      throwInternalError("Mismatched type converter count");
-    }
-    for (var i = 0; i < myTypes.length; ++i) {
-      registerType(myTypes[i], myTypeConverters[i]);
-    }
-  }
-  var typeConverters = new Array(dependentTypes.length);
-  var unregisteredTypes = [];
-  var registered = 0;
-  for (let [i, dt] of dependentTypes.entries()) {
-    if (registeredTypes.hasOwnProperty(dt)) {
-      typeConverters[i] = registeredTypes[dt];
-    } else {
-      unregisteredTypes.push(dt);
-      if (!awaitingDependencies.hasOwnProperty(dt)) {
-        awaitingDependencies[dt] = [];
-      }
-      awaitingDependencies[dt].push(() => {
-        typeConverters[i] = registeredTypes[dt];
-        ++registered;
-        if (registered === unregisteredTypes.length) {
-          onComplete(typeConverters);
-        }
-      });
-    }
-  }
-  if (0 === unregisteredTypes.length) {
-    onComplete(typeConverters);
-  }
-};
-
 function __embind_register_class(rawType, rawPointerType, rawConstPointerType, baseClassRawType, getActualTypeSignature, getActualType, upcastSignature, upcast, downcastSignature, downcast, name, destructorSignature, rawDestructor) {
   rawType >>>= 0;
   rawPointerType >>>= 0;
@@ -4154,14 +4224,6 @@ function __embind_register_class(rawType, rawPointerType, rawConstPointerType, b
     return [ referenceConverter, pointerConverter, constPointerConverter ];
   });
 }
-
-var runDestructors = destructors => {
-  while (destructors.length) {
-    var ptr = destructors.pop();
-    var del = destructors.pop();
-    del(ptr);
-  }
-};
 
 function usesDestructorStack(argTypes) {
   // Skip return value at index 0 - it's not deleted here.
@@ -4969,6 +5031,43 @@ function __embind_register_std_wstring(rawType, charSize, name) {
   });
 }
 
+function __embind_register_value_object(rawType, name, constructorSignature, rawConstructor, destructorSignature, rawDestructor) {
+  rawType >>>= 0;
+  name >>>= 0;
+  constructorSignature >>>= 0;
+  rawConstructor >>>= 0;
+  destructorSignature >>>= 0;
+  rawDestructor >>>= 0;
+  structRegistrations[rawType] = {
+    name: AsciiToString(name),
+    rawConstructor: embind__requireFunction(constructorSignature, rawConstructor),
+    rawDestructor: embind__requireFunction(destructorSignature, rawDestructor),
+    fields: []
+  };
+}
+
+function __embind_register_value_object_field(structType, fieldName, getterReturnType, getterSignature, getter, getterContext, setterArgumentType, setterSignature, setter, setterContext) {
+  structType >>>= 0;
+  fieldName >>>= 0;
+  getterReturnType >>>= 0;
+  getterSignature >>>= 0;
+  getter >>>= 0;
+  getterContext >>>= 0;
+  setterArgumentType >>>= 0;
+  setterSignature >>>= 0;
+  setter >>>= 0;
+  setterContext >>>= 0;
+  structRegistrations[structType].fields.push({
+    fieldName: AsciiToString(fieldName),
+    getterReturnType,
+    getter: embind__requireFunction(getterSignature, getter),
+    getterContext,
+    setterArgumentType,
+    setter: embind__requireFunction(setterSignature, setter),
+    setterContext
+  });
+}
+
 var __embind_register_void = function(rawType, name) {
   rawType >>>= 0;
   name >>>= 0;
@@ -5528,33 +5627,6 @@ var getEnvStrings = () => {
   return getEnvStrings.strings;
 };
 
-function _environ_get(__environ, environ_buf) {
-  __environ >>>= 0;
-  environ_buf >>>= 0;
-  var bufSize = 0;
-  var envp = 0;
-  for (var string of getEnvStrings()) {
-    var ptr = environ_buf + bufSize;
-    HEAPU32[(((__environ) + (envp)) >>> 2) >>> 0] = ptr;
-    bufSize += stringToUTF8(string, ptr, Infinity) + 1;
-    envp += 4;
-  }
-  return 0;
-}
-
-function _environ_sizes_get(penviron_count, penviron_buf_size) {
-  penviron_count >>>= 0;
-  penviron_buf_size >>>= 0;
-  var strings = getEnvStrings();
-  HEAPU32[((penviron_count) >>> 2) >>> 0] = strings.length;
-  var bufSize = 0;
-  for (var string of strings) {
-    bufSize += lengthBytesUTF8(string) + 1;
-  }
-  HEAPU32[((penviron_buf_size) >>> 2) >>> 0] = bufSize;
-  return 0;
-}
-
 var runtimeKeepaliveCounter = 0;
 
 var keepRuntimeAlive = () => noExitRuntime || runtimeKeepaliveCounter > 0;
@@ -5772,79 +5844,80 @@ function OSD_MemInfo_getModuleHeapLength() {
 var ___getTypeName, _malloc, _free, _htons, ___trap, __emscripten_stack_restore, __emscripten_stack_alloc, _emscripten_stack_get_current, ___cxa_decrement_exception_refcount, ___cxa_increment_exception_refcount, ___thrown_object_from_unwind_exception, ___get_exception_message, memory, __indirect_function_table, ___cpp_exception, wasmMemory, wasmTable;
 
 function assignWasmExports(wasmExports) {
-  ___getTypeName = wasmExports["da"];
-  _malloc = wasmExports["fa"];
-  _free = wasmExports["ha"];
-  _htons = wasmExports["ia"];
-  ___trap = wasmExports["ja"];
-  __emscripten_stack_restore = wasmExports["ka"];
-  __emscripten_stack_alloc = wasmExports["la"];
-  _emscripten_stack_get_current = wasmExports["ma"];
-  ___cxa_decrement_exception_refcount = wasmExports["na"];
-  ___cxa_increment_exception_refcount = wasmExports["oa"];
-  ___thrown_object_from_unwind_exception = wasmExports["pa"];
-  ___get_exception_message = wasmExports["qa"];
-  memory = wasmMemory = wasmExports["ba"];
-  __indirect_function_table = wasmTable = wasmExports["ea"];
-  ___cpp_exception = wasmExports["ga"];
+  ___getTypeName = wasmExports["ea"];
+  _malloc = wasmExports["ga"];
+  _free = wasmExports["ia"];
+  _htons = wasmExports["ja"];
+  ___trap = wasmExports["ka"];
+  __emscripten_stack_restore = wasmExports["la"];
+  __emscripten_stack_alloc = wasmExports["ma"];
+  _emscripten_stack_get_current = wasmExports["na"];
+  ___cxa_decrement_exception_refcount = wasmExports["oa"];
+  ___cxa_increment_exception_refcount = wasmExports["pa"];
+  ___thrown_object_from_unwind_exception = wasmExports["qa"];
+  ___get_exception_message = wasmExports["ra"];
+  memory = wasmMemory = wasmExports["ca"];
+  __indirect_function_table = wasmTable = wasmExports["fa"];
+  ___cpp_exception = wasmExports["ha"];
 }
 
 var wasmImports = {
-  /** @export */ aa: OSD_MemInfo_getModuleHeapLength,
-  /** @export */ $: ___syscall_chmod,
-  /** @export */ _: ___syscall_faccessat,
-  /** @export */ x: ___syscall_fcntl64,
-  /** @export */ Z: ___syscall_fstat64,
-  /** @export */ Y: ___syscall_ioctl,
-  /** @export */ X: ___syscall_lstat64,
-  /** @export */ W: ___syscall_newfstatat,
-  /** @export */ C: ___syscall_openat,
-  /** @export */ V: ___syscall_stat64,
-  /** @export */ P: __abort_js,
-  /** @export */ A: __embind_register_bigint,
-  /** @export */ O: __embind_register_bool,
-  /** @export */ h: __embind_register_class,
+  /** @export */ ba: OSD_MemInfo_getModuleHeapLength,
+  /** @export */ aa: ___syscall_chmod,
+  /** @export */ $: ___syscall_faccessat,
+  /** @export */ y: ___syscall_fcntl64,
+  /** @export */ _: ___syscall_fstat64,
+  /** @export */ Z: ___syscall_ioctl,
+  /** @export */ Y: ___syscall_lstat64,
+  /** @export */ X: ___syscall_newfstatat,
+  /** @export */ E: ___syscall_openat,
+  /** @export */ W: ___syscall_stat64,
+  /** @export */ S: __abort_js,
+  /** @export */ h: __embind_finalize_value_object,
+  /** @export */ C: __embind_register_bigint,
+  /** @export */ R: __embind_register_bool,
+  /** @export */ j: __embind_register_class,
   /** @export */ e: __embind_register_class_class_function,
   /** @export */ d: __embind_register_class_constructor,
   /** @export */ a: __embind_register_class_function,
-  /** @export */ N: __embind_register_emval,
-  /** @export */ o: __embind_register_enum,
-  /** @export */ l: __embind_register_enum_value,
-  /** @export */ z: __embind_register_float,
-  /** @export */ y: __embind_register_function,
-  /** @export */ t: __embind_register_integer,
-  /** @export */ q: __embind_register_memory_view,
-  /** @export */ n: __embind_register_smart_ptr,
-  /** @export */ M: __embind_register_std_string,
-  /** @export */ v: __embind_register_std_wstring,
-  /** @export */ L: __embind_register_void,
-  /** @export */ K: __emscripten_lookup_name,
-  /** @export */ k: __emval_create_invoker,
+  /** @export */ Q: __embind_register_emval,
+  /** @export */ r: __embind_register_enum,
+  /** @export */ k: __embind_register_enum_value,
+  /** @export */ B: __embind_register_float,
+  /** @export */ A: __embind_register_function,
+  /** @export */ v: __embind_register_integer,
+  /** @export */ t: __embind_register_memory_view,
+  /** @export */ q: __embind_register_smart_ptr,
+  /** @export */ P: __embind_register_std_string,
+  /** @export */ w: __embind_register_std_wstring,
+  /** @export */ o: __embind_register_value_object,
+  /** @export */ g: __embind_register_value_object_field,
+  /** @export */ O: __embind_register_void,
+  /** @export */ N: __emscripten_lookup_name,
+  /** @export */ n: __emval_create_invoker,
   /** @export */ b: __emval_decref,
-  /** @export */ r: __emval_get_global,
+  /** @export */ u: __emval_get_global,
   /** @export */ c: __emval_get_module_property,
-  /** @export */ p: __emval_get_property,
-  /** @export */ m: __emval_incref,
-  /** @export */ g: __emval_instanceof,
-  /** @export */ j: __emval_invoke,
-  /** @export */ s: __emval_new_cstring,
-  /** @export */ i: __emval_run_destructors,
-  /** @export */ u: __emval_set_property,
+  /** @export */ s: __emval_get_property,
+  /** @export */ p: __emval_incref,
+  /** @export */ i: __emval_instanceof,
+  /** @export */ m: __emval_invoke,
+  /** @export */ z: __emval_new_cstring,
+  /** @export */ l: __emval_run_destructors,
+  /** @export */ M: __emval_set_property,
   /** @export */ f: __emval_typeof,
-  /** @export */ J: __localtime_js,
-  /** @export */ I: __tzset_js,
-  /** @export */ U: _clock_time_get,
-  /** @export */ H: _emscripten_date_now,
-  /** @export */ G: _emscripten_get_callstack,
-  /** @export */ F: _emscripten_get_heap_max,
-  /** @export */ E: _emscripten_resize_heap,
-  /** @export */ T: _environ_get,
-  /** @export */ S: _environ_sizes_get,
-  /** @export */ D: _exit,
-  /** @export */ w: _fd_close,
-  /** @export */ R: _fd_read,
-  /** @export */ Q: _fd_seek,
-  /** @export */ B: _fd_write
+  /** @export */ L: __localtime_js,
+  /** @export */ K: __tzset_js,
+  /** @export */ V: _clock_time_get,
+  /** @export */ J: _emscripten_date_now,
+  /** @export */ I: _emscripten_get_callstack,
+  /** @export */ H: _emscripten_get_heap_max,
+  /** @export */ G: _emscripten_resize_heap,
+  /** @export */ F: _exit,
+  /** @export */ x: _fd_close,
+  /** @export */ U: _fd_read,
+  /** @export */ T: _fd_seek,
+  /** @export */ D: _fd_write
 };
 
 // Argument name here must shadow the `wasmExports` global so
@@ -5855,10 +5928,10 @@ function applySignatureConversions(wasmExports) {
   wasmExports = Object.assign({}, wasmExports);
   var makeWrapper_pp = f => a0 => f(a0) >>> 0;
   var makeWrapper_p = f => () => f() >>> 0;
-  wasmExports["da"] = makeWrapper_pp(wasmExports["da"]);
-  wasmExports["fa"] = makeWrapper_pp(wasmExports["fa"]);
-  wasmExports["la"] = makeWrapper_pp(wasmExports["la"]);
-  wasmExports["ma"] = makeWrapper_p(wasmExports["ma"]);
+  wasmExports["ea"] = makeWrapper_pp(wasmExports["ea"]);
+  wasmExports["ga"] = makeWrapper_pp(wasmExports["ga"]);
+  wasmExports["ma"] = makeWrapper_pp(wasmExports["ma"]);
+  wasmExports["na"] = makeWrapper_p(wasmExports["na"]);
   return wasmExports;
 }
 

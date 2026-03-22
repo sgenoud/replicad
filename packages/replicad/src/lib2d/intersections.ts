@@ -22,29 +22,14 @@ function* commonSegmentsIteration(
   const nSegments = intersector.NbSegments();
   if (!nSegments) return;
 
-  const oc = getOC();
-
   for (let i = 1; i <= nSegments; i++) {
-    const ax1 = new oc.gp_Ax2d();
-    const ax2 = new oc.gp_Ax2d();
-    const h1 = new oc.Geom2d_Line(ax1);
-    const h2 = new oc.Geom2d_Line(ax2);
     try {
-      // There seem to be a bug in occt where it returns segments but fails to
-      // fetch them.
-      intersector.Segment(i, h1, h2);
+      const { Curve1, Curve2 } = intersector.Segment(i);
+      Curve2.delete();
+      yield new Curve2D(Curve1);
     } catch (e) {
-      h1.delete();
-      h2.delete();
-      ax1.delete();
-      ax2.delete();
       continue;
     }
-
-    yield new Curve2D(h1);
-    h2.delete();
-    ax1.delete();
-    ax2.delete();
   }
 }
 

@@ -118,7 +118,7 @@ export declare class Quantity_Color {
   /**
    * Returns the percentage change of contrast and intensity between this and another color. <DC> and <DI> are percentages, either positive or negative. The calculation is with respect to this color. If <DC> is positive then <me> is more contrasty. If <DI> is positive then <me> is more intense.
    */
-  Delta(theColor: Quantity_Color, DC: number, DI: number): void;
+  Delta(theColor: Quantity_Color): { DC: number; DI: number };
   /**
    * Returns the value of the perceptual difference between this color and theOther, computed using the CIEDE2000 formula. The difference is in range [0, 100.], with 1 approximately corresponding to the minimal perceivable difference (usually difference 5 or greater is needed for the difference to be recognizable in practice).
    */
@@ -129,7 +129,7 @@ export declare class Quantity_Color {
   static StringName(theColor: Quantity_NameOfColor): string;
   static ColorFromHex(theHexColorString: string, theColor: Quantity_Color): boolean;
   static ColorToHex(theColor: Quantity_Color, theToPrefixHash: boolean): XCAFDoc_PartId;
-  static Color2argb(theColor: Quantity_Color, theARGB: number): void;
+  static Color2argb(theColor: Quantity_Color, theARGB: number): { theARGB: number };
   static Argb2color(theARGB: number, theColor: Quantity_Color): void;
   static Convert_LinearRGB_To_sRGB(theLinearValue: number): number;
   static Convert_LinearRGB_To_sRGB_1(theLinearValue: number): number;
@@ -139,8 +139,8 @@ export declare class Quantity_Color {
   static Convert_sRGB_To_LinearRGB_2(thesRGBValue: number): number;
   static Convert_LinearRGB_To_sRGB_approx22(theLinearValue: number): number;
   static Convert_sRGB_To_LinearRGB_approx22(thesRGBValue: number): number;
-  static HlsRgb(theH: number, theL: number, theS: number, theR: number, theG: number, theB: number): void;
-  static RgbHls(theR: number, theG: number, theB: number, theH: number, theL: number, theS: number): void;
+  static HlsRgb(theH: number, theL: number, theS: number, theR: number, theG: number, theB: number): { theR: number; theG: number; theB: number };
+  static RgbHls(theR: number, theG: number, theB: number, theH: number, theL: number, theS: number): { theH: number; theL: number; theS: number };
   static Epsilon(): number;
   static SetEpsilon(theEpsilon: number): void;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -264,6 +264,58 @@ export declare class Standard_Transient {
   IncrementRefCounter(): void;
   DecrementRefCounter(): number;
   Delete(): void;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
+ * Forms the root of the entire exception hierarchy. Inherits from std::exception and implements what() interface.
+ */
+export declare class Standard_Failure {
+  /**
+   * Creates a status object of type "Failure".
+   */
+  constructor();
+  /**
+   * Copy constructor.
+   */
+  constructor(theOther: Standard_Failure);
+  /**
+   * Copy constructor.
+   */
+  constructor(theMessage: string);
+  /**
+   * Creates a status object of type "Failure" with message and stack trace.
+   * @param theMessage exception description
+   * @param theStackTrace stack trace string
+   */
+  constructor(theMessage: string, theStackTrace: string);
+  /**
+   * Returns error message (implements std::exception interface). Returns empty string "" if no message was set.
+   */
+  what(): string;
+  /**
+   * Returns error message.
+   * @deprecated
+   */
+  GetMessageString(): string;
+  /**
+   * Returns the exception type name. Default implementation returns "Standard_Failure". Derived classes override this to return their own type name.
+   */
+  ExceptionType(): string;
+  /**
+   * Returns the stack trace string (empty string if not available).
+   */
+  GetStackString(): string;
+  /**
+   * Returns the default length of stack trace to be captured by Standard_Failure constructor; 0 by default meaning no stack trace.
+   */
+  static DefaultStackTraceLength(): number;
+  /**
+   * Sets default length of stack trace to be captured by Standard_Failure constructor.
+   */
+  static SetDefaultStackTraceLength(theNbStackTraces: number): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -999,7 +1051,7 @@ export declare class gp_Circ2d {
   /**
    * Returns the normalized coefficients from the implicit equation of the circle : theA * (X**2) + theB * (Y**2) + 2*theC*(X*Y) + 2*theD*X + 2*theE*Y + theF = 0.0.
    */
-  Coefficients(theA: number, theB: number, theC: number, theD: number, theE: number, theF: number): void;
+  Coefficients(): { theA: number; theB: number; theC: number; theD: number; theE: number; theF: number };
   /**
    * Does <me> contain theP ? Returns True if the distance between theP and any point on the circumference of the circle is lower of equal to <theLinearTolerance>.
    */
@@ -1147,7 +1199,7 @@ export declare class gp_Vec {
   /**
    * For this vector returns its three coordinates theXv, theYv, and theZv inline.
    */
-  Coord(theXv: number, theYv: number, theZv: number): void;
+  Coord(): { theXv: number; theYv: number; theZv: number };
   /**
    * For this vector, returns its X coordinate.
    */
@@ -1389,7 +1441,7 @@ export declare class gp_Elips2d {
   /**
    * Returns the coefficients of the implicit equation of the ellipse. theA * (X**2) + theB * (Y**2) + 2*theC*(X*Y) + 2*theD*X + 2*theE*Y + theF = 0.
    */
-  Coefficients(theA: number, theB: number, theC: number, theD: number, theE: number, theF: number): void;
+  Coefficients(): { theA: number; theB: number; theC: number; theD: number; theE: number; theF: number };
   /**
    * This directrix is the line normal to the XAxis of the ellipse in the local plane (Z = 0) at a distance d = MajorRadius / e from the center of the ellipse, where e is the eccentricity of the ellipse. This line is parallel to the "YAxis". The intersection point between directrix1 and the "XAxis" is the location point of the directrix1. This point is on the positive side of the "XAxis".
    */
@@ -1568,7 +1620,7 @@ export declare class gp_GTrsf2d {
   /**
    * Applies this transformation to the coordinates:
    */
-  Transforms(theX: number, theY: number): void;
+  Transforms(): { theX: number; theY: number };
   Transformed(theCoord: gp_XY): gp_XY;
   /**
    * Converts this transformation into a gp_Trsf2d transformation. Exceptions Standard_ConstructionError if this transformation cannot be converted, i.e. if its form is gp_Other.
@@ -1808,7 +1860,7 @@ export declare class gp_Trsf {
   /**
    * Returns the boolean True if there is non-zero rotation. In the presence of rotation, the output parameters store the axis and the angle of rotation. The method always returns positive value "theAngle", i.e., 0. < theAngle <= PI. Note that this rotation is defined only by the vectorial part of the transformation; generally you would need to check also the translational part to obtain the axis (gp_Ax1) of rotation.
    */
-  GetRotation(theAxis: gp_XYZ, theAngle: number): boolean;
+  GetRotation(theAxis: gp_XYZ): { result: boolean; theAngle: number };
   /**
    * Returns quaternion representing rotational part of the transformation.
    */
@@ -1844,7 +1896,7 @@ export declare class gp_Trsf {
    * Computes the following composition of transformations <me> * <me> * .......* <me>, theN time. if theN = 0 <me> = Identity if theN < 0 <me> = <me>.Inverse() ........... <me>.Inverse().
    */
   Powered(theN: number): gp_Trsf;
-  Transforms(theX: number, theY: number, theZ: number): void;
+  Transforms(): { theX: number; theY: number; theZ: number };
   /**
    * Transformation of a triplet XYZ with a Trsf.
    */
@@ -1901,7 +1953,7 @@ export declare class gp_Pnt {
   /**
    * For this point gives its three coordinates theXp, theYp and theZp.
    */
-  Coord(theXp: number, theYp: number, theZp: number): void;
+  Coord(): { theXp: number; theYp: number; theZp: number };
   /**
    * For this point, returns its three coordinates as a XYZ object.
    */
@@ -2447,7 +2499,7 @@ export declare class gp_Pnt2d {
   /**
    * For this point returns its two coordinates as a number pair.
    */
-  Coord(theXp: number, theYp: number): void;
+  Coord(): { theXp: number; theYp: number };
   /**
    * For this point, returns its two coordinates as a number pair.
    */
@@ -2555,7 +2607,7 @@ export declare class gp_XY {
   /**
    * For this number pair, returns its coordinates X and Y.
    */
-  Coord(theX: number, theY: number): void;
+  Coord(): { theX: number; theY: number };
   ChangeCoord(theIndex: number): number;
   /**
    * Returns the X coordinate of this number pair.
@@ -2704,7 +2756,7 @@ export declare class gp_Dir {
   /**
    * Returns for the unit vector its three coordinates theXv, theYv, and theZv.
    */
-  Coord(theXv: number, theYv: number, theZv: number): void;
+  Coord(): { theXv: number; theYv: number; theZv: number };
   /**
    * Returns the X coordinate for a unit vector.
    */
@@ -2980,7 +3032,7 @@ export declare class gp_XYZ {
    * returns the coordinate of range theIndex : theIndex = 1 => X is returned theIndex = 2 => Y is returned theIndex = 3 => Z is returned
    */
   Coord(theIndex: number): number;
-  Coord(theX: number, theY: number, theZ: number): void;
+  Coord(): { theX: number; theY: number; theZ: number };
   ChangeCoord(theIndex: number): number;
   /**
    * Returns a const ptr to coordinates location. Is useful for algorithms, but DOES NOT PERFORM ANY CHECKS!
@@ -3144,7 +3196,7 @@ export declare class gp_Cylinder {
   /**
    * Computes the coefficients of the implicit equation of the quadric in the absolute cartesian coordinate system : theA1.X**2 + theA2.Y**2 + theA3.Z**2 + 2.(theB1.X.Y + theB2.X.Z + theB3.Y.Z) + 2.(theC1.X + theC2.Y + theC3.Z) + theD = 0.0.
    */
-  Coefficients(theA1: number, theA2: number, theA3: number, theB1: number, theB2: number, theB3: number, theC1: number, theC2: number, theC3: number, theD: number): void;
+  Coefficients(): { theA1: number; theA2: number; theA3: number; theB1: number; theB2: number; theB3: number; theC1: number; theC2: number; theC3: number; theD: number };
   /**
    * Returns the "Location" point of the cylinder.
    */
@@ -3261,7 +3313,7 @@ export declare class gp_Dir2d {
   /**
    * For this unit vector returns its two coordinates theXv and theYv. Raises OutOfRange if theIndex != {1, 2}.
    */
-  Coord(theXv: number, theYv: number): void;
+  Coord(): { theXv: number; theYv: number };
   /**
    * For this unit vector, returns its X coordinate.
    */
@@ -3607,7 +3659,7 @@ export declare class gp_Sphere {
   /**
    * Computes the coefficients of the implicit equation of the quadric in the absolute cartesian coordinates system :
    */
-  Coefficients(theA1: number, theA2: number, theA3: number, theB1: number, theB2: number, theB3: number, theC1: number, theC2: number, theC3: number, theD: number): void;
+  Coefficients(): { theA1: number; theA2: number; theA3: number; theB1: number; theB2: number; theB3: number; theC1: number; theC2: number; theC3: number; theD: number };
   /**
    * Reverses the U parametrization of the sphere reversing the YAxis.
    */
@@ -3740,7 +3792,7 @@ export declare class gp_Vec2d {
   /**
    * For this vector, returns its two coordinates theXv and theYv.
    */
-  Coord(theXv: number, theYv: number): void;
+  Coord(): { theXv: number; theYv: number };
   /**
    * For this vector, returns its X coordinate.
    */
@@ -3986,7 +4038,7 @@ export declare class gp_Trsf2d {
    * Computes the following composition of transformations <me> * <me> * .......* <me>, theN time. if theN = 0 <me> = Identity if theN < 0 <me> = <me>.Inverse() ........... <me>.Inverse().
    */
   Powered(theN: number): gp_Trsf2d;
-  Transforms(theX: number, theY: number): void;
+  Transforms(): { theX: number; theY: number };
   /**
    * Transforms a doublet XY with a Trsf2d.
    */
@@ -4094,7 +4146,7 @@ export declare class gp_GTrsf {
   /**
    * Transforms a triplet XYZ with a GTrsf.
    */
-  Transforms(theX: number, theY: number, theZ: number): void;
+  Transforms(): { theX: number; theY: number; theZ: number };
   Trsf(): gp_Trsf;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -5059,7 +5111,7 @@ export declare class Poly_Triangle {
   /**
    * Returns the node indices of this triangle.
    */
-  Get(theN1: number, theN2: number, theN3: number): void;
+  Get(): { theN1: number; theN2: number; theN3: number };
   /**
    * Get the node of given Index. Raises OutOfRange from Standard if Index is not in 1,2,3.
    */
@@ -5120,7 +5172,7 @@ export declare class TDF_Attribute extends Standard_Transient {
   /**
    * Finds an associated attribute of <me>, according to <anID>. the returned <anAttribute> is a valid one. The method returns True if found, False otherwise. A removed attribute cannot be found using this method.
    */
-  FindAttribute(anID: Standard_GUID, anAttribute: TDF_Attribute): boolean;
+  FindAttribute(anID: Standard_GUID): { result: boolean; anAttribute: TDF_Attribute };
   /**
    * Adds an Attribute <other> to the label of <me>. Raises if there is already one of the same GUID than <other>.
    */
@@ -5298,11 +5350,11 @@ export declare class TDF_Label {
   /**
    * Finds an attribute of the current label, according to <anID>. If anAttribute is not a valid one, false is returned.
    */
-  FindAttribute(anID: Standard_GUID, anAttribute: TDF_Attribute): boolean;
+  FindAttribute(anID: Standard_GUID): { result: boolean; anAttribute: TDF_Attribute };
   /**
    * Finds an attribute of the current label, according to <anID> and <aTransaction>. This attribute has/had to be a valid one for the given transaction index. So, this attribute is not necessarily a valid one.
    */
-  FindAttribute(anID: Standard_GUID, aTransaction: number, anAttribute: TDF_Attribute): boolean;
+  FindAttribute(anID: Standard_GUID, aTransaction: number): { result: boolean; anAttribute: TDF_Attribute };
   /**
    * Returns true if <me> or a DESCENDANT of <me> owns attributes not yet available in transaction 0. It means at least one of their attributes is new, modified or deleted.
    */
@@ -5674,7 +5726,7 @@ export declare class CDM_Document extends Standard_Transient {
   /**
    * This method can be redefined to extract another document in a different format. For example, to extract a Shape from an applicative document.
    */
-  GetAlternativeDocument(aFormat: TCollection_ExtendedString, anAlternativeDocument: CDM_Document): boolean;
+  GetAlternativeDocument(aFormat: TCollection_ExtendedString): { result: boolean; anAlternativeDocument: CDM_Document };
   /**
    * Creates a reference from this document to {anOtherDocument}. Returns a reference identifier. This reference identifier is unique in the document and will not be used for the next references, even after the storing of the document. If there is already a reference between the two documents, the reference is not created, but its reference identifier is returned.
    */
@@ -6261,11 +6313,11 @@ export declare class Law_Composite extends Law_Function {
   /**
    * Returns the value and the first derivative at parameter X.
    */
-  D1(X: number, F: number, D: number): void;
+  D1(X: number, F: number, D: number): { F: number; D: number };
   /**
    * Returns the value, first and second derivatives at parameter X.
    */
-  D2(X: number, F: number, D: number, D2: number): void;
+  D2(X: number, F: number, D: number, D2: number): { F: number; D: number; D2: number };
   /**
    * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the Law is not Cn.
    */
@@ -6273,7 +6325,7 @@ export declare class Law_Composite extends Law_Function {
   /**
    * Returns the parametric bounds of the function.
    */
-  Bounds(PFirst: number, PLast: number): void;
+  Bounds(PFirst: number, PLast: number): { PFirst: number; PLast: number };
   /**
    * Returns the elementary function of the composite used to compute at parameter W.
    */
@@ -6337,11 +6389,11 @@ export declare class Law_BSpFunc extends Law_Function {
   /**
    * Returns the value F and the first derivative D of the function at the point of parameter X.
    */
-  D1(X: number, F: number, D: number): void;
+  D1(X: number, F: number, D: number): { F: number; D: number };
   /**
    * Returns the value, first and second derivatives at parameter X.
    */
-  D2(X: number, F: number, D: number, D2: number): void;
+  D2(X: number, F: number, D: number, D2: number): { F: number; D: number; D2: number };
   /**
    * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the Law is not Cn.
    */
@@ -6349,7 +6401,7 @@ export declare class Law_BSpFunc extends Law_Function {
   /**
    * Returns the parametric bounds of the function.
    */
-  Bounds(PFirst: number, PLast: number): void;
+  Bounds(PFirst: number, PLast: number): { PFirst: number; PLast: number };
   Curve(): Law_BSpline;
   SetCurve(C: Law_BSpline): void;
   static get_type_name(): string;
@@ -6415,11 +6467,11 @@ export declare class Law_Linear extends Law_Function {
   /**
    * Returns the value F and the first derivative D of this function at the point of parameter X.
    */
-  D1(X: number, F: number, D: number): void;
+  D1(X: number, F: number, D: number): { F: number; D: number };
   /**
    * Returns the value, first and second derivatives at parameter X.
    */
-  D2(X: number, F: number, D: number, D2: number): void;
+  D2(X: number, F: number, D: number, D2: number): { F: number; D: number; D2: number };
   /**
    * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the Law is not Cn.
    */
@@ -6427,7 +6479,7 @@ export declare class Law_Linear extends Law_Function {
   /**
    * Returns the parametric bounds of the function.
    */
-  Bounds(PFirst: number, PLast: number): void;
+  Bounds(PFirst: number, PLast: number): { PFirst: number; PLast: number };
   static get_type_name(): string;
   static get_type_descriptor(): Standard_Type;
   DynamicType(): Standard_Type;
@@ -6456,11 +6508,11 @@ export declare class Law_Function extends Standard_Transient {
   /**
    * Returns the value F and the first derivative D of the function at the point of parameter X.
    */
-  D1(X: number, F: number, D: number): void;
+  D1(X: number, F: number, D: number): { F: number; D: number };
   /**
    * Returns the value, first and second derivatives at parameter X.
    */
-  D2(X: number, F: number, D: number, D2: number): void;
+  D2(X: number, F: number, D: number, D2: number): { F: number; D: number; D2: number };
   /**
    * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the Law is not Cn.
    */
@@ -6468,7 +6520,7 @@ export declare class Law_Function extends Standard_Transient {
   /**
    * Returns the parametric bounds of the function.
    */
-  Bounds(PFirst: number, PLast: number): void;
+  Bounds(PFirst: number, PLast: number): { PFirst: number; PLast: number };
   static get_type_name(): string;
   static get_type_descriptor(): Standard_Type;
   DynamicType(): Standard_Type;
@@ -6524,7 +6576,7 @@ export declare class Geom2dAPI_InterCurveCurve {
   /**
    * Use this syntax only to get solutions of tangential intersection between two curves. Output values Curve1 and Curve2 are the intersection segments on the first curve and on the second curve accordingly. Parameter Index defines a number of computed solution. An intersection segment is a portion of an initial curve limited by two points. The distance from each point of this segment to the other curve is less or equal to the tolerance value assigned at the time of construction or in function Init (this value is defaulted to 1.0e-6). Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbSegments ], where NbSegments is the number of computed tangential intersections. Standard_NullObject if the algorithm is initialized for the computing of self-intersections on a curve.
    */
-  Segment(Index: number, Curve1: Geom2d_Curve, Curve2: Geom2d_Curve): void;
+  Segment(Index: number): { Curve1: Geom2d_Curve; Curve2: Geom2d_Curve };
   /**
    * return the algorithmic object from Intersection.
    */
@@ -6573,7 +6625,7 @@ export declare class Geom2dAPI_ProjectPointOnCurve {
   /**
    * Returns the parameter on the curve of a point which is the orthogonal projection. Index is a number of a computed projected point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
    */
-  Parameter(Index: number, U: number): void;
+  Parameter(Index: number): { U: number };
   /**
    * Computes the distance between the point and its computed orthogonal projection on the curve. Index is a number of computed projected point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
    */
@@ -6618,7 +6670,7 @@ export declare class Geom2dAPI_ExtremaCurveCurve {
   /**
    * Returns the parameters U1 of the point on the first curve and U2 of the point on the second curve, which are the ends of the extremum of index Index computed by this algorithm. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbExtrema ], where NbExtrema is the number of extrema computed by this algorithm.
    */
-  Parameters(Index: number, U1: number, U2: number): void;
+  Parameters(Index: number): { U1: number; U2: number };
   /**
    * Computes the distance between the end points of the extremum of index Index computed by this algorithm. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbExtrema ], where NbExtrema is the number of extrema computed by this algorithm.
    */
@@ -6630,7 +6682,7 @@ export declare class Geom2dAPI_ExtremaCurveCurve {
   /**
    * Returns the parameters U1 of the point on the first curve and U2 of the point on the second curve, which are the ends of the shortest extremum computed by this algorithm. Exceptions StdFail_NotDone if this algorithm fails.
    */
-  LowerDistanceParameters(U1: number, U2: number): void;
+  LowerDistanceParameters(): { U1: number; U2: number };
   /**
    * Computes the distance between the end points of the shortest extremum computed by this algorithm. Exceptions - StdFail_NotDone if this algorithm fails.
    */
@@ -6958,7 +7010,7 @@ export declare class GeomAPI_ProjectPointOnSurf {
   /**
    * Returns the parameters (U,V) on the surface of the orthogonal projection. Index is a number of a computed point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
    */
-  Parameters(Index: number, U: number, V: number): void;
+  Parameters(Index: number): { U: number; V: number };
   /**
    * Computes the distance between the point and its orthogonal projection on the surface. Index is a number of a computed point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
    */
@@ -6970,7 +7022,7 @@ export declare class GeomAPI_ProjectPointOnSurf {
   /**
    * Returns the parameters (U,V) on the surface of the nearest computed orthogonal projection of the point. Exceptions StdFail_NotDone if projection fails.
    */
-  LowerDistanceParameters(U: number, V: number): void;
+  LowerDistanceParameters(): { U: number; V: number };
   /**
    * Computes the distance between the point and its nearest orthogonal projection on the surface. Exceptions StdFail_NotDone if projection fails.
    */
@@ -7672,11 +7724,11 @@ export declare class HLRAlgo_Projector {
   /**
    * Transform and apply perspective if needed.
    */
-  Project(P: gp_Pnt, D1: gp_Vec, Pout: gp_Pnt2d, D1out: gp_Vec2d): void;
+  Project(P: gp_Pnt): { X: number; Y: number; Z: number };
   /**
    * Transform and apply perspective if needed.
    */
-  Project_2(P: gp_Pnt, X: number, Y: number, Z: number): void;
+  Project(P: gp_Pnt, D1: gp_Vec, Pout: gp_Pnt2d, D1out: gp_Vec2d): void;
   /**
    * return a line going through the eye towards the 2d point <X,Y>.
    */
@@ -7970,7 +8022,7 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
   /**
    * returns the Weights associed to the criterium used in the optimization.
    */
-  CriteriumWeight(W1: number, W2: number, W3: number): void;
+  CriteriumWeight(): { W1: number; W2: number; W3: number };
   /**
    * This is called by Shape(). It does nothing but may be redefined.
    */
@@ -8322,19 +8374,19 @@ export declare class BRepExtrema_DistShapeShape {
   /**
    * gives the corresponding parameter t if the Nth solution is situated on an Edge of the first shape
    */
-  ParOnEdgeS1(N: number, t: number): void;
+  ParOnEdgeS1(N: number): { t: number };
   /**
    * gives the corresponding parameter t if the Nth solution is situated on an Edge of the first shape
    */
-  ParOnEdgeS2(N: number, t: number): void;
+  ParOnEdgeS2(N: number): { t: number };
   /**
    * gives the corresponding parameters (U,V) if the Nth solution is situated on an face of the first shape
    */
-  ParOnFaceS1(N: number, u: number, v: number): void;
+  ParOnFaceS1(N: number): { u: number; v: number };
   /**
    * gives the corresponding parameters (U,V) if the Nth solution is situated on an Face of the second shape
    */
-  ParOnFaceS2(N: number, u: number, v: number): void;
+  ParOnFaceS2(N: number): { u: number; v: number };
   /**
    * Sets unused parameter Obsolete.
    */
@@ -9152,7 +9204,7 @@ export declare class BRepLib {
   /**
    * Builds pcurve of edge on face if the surface is plane, but does not update the edge. The output are the pcurve and the flag telling that pcurve was built.
    */
-  static BuildPCurveForEdgeOnPlane(theE: TopoDS_Edge, theF: TopoDS_Face, aC2D: Geom2d_Curve, bToUpdate: boolean): void;
+  static BuildPCurveForEdgeOnPlane(theE: TopoDS_Edge, theF: TopoDS_Face, bToUpdate: boolean): { aC2D: Geom2d_Curve; bToUpdate: boolean };
   /**
    * Checks if the edge has a Tolerance smaller than MaxToleranceToCheck if so it will compute the radius of the cylindrical pipe surface that MinToleranceRequest is the minimum tolerance before it is useful to start testing. Usually it should be around 10e-5 contains all the curve representation of the edge returns True if the Edge tolerance had to be updated.
    */
@@ -9172,11 +9224,11 @@ export declare class BRepLib {
   /**
    * Computes new 2d curve(s) for the edge <theEdge> to have the same parameter as the 3d curve. The algorithm is not done if the flag SameParameter was True on the Edge. theNewTol is a new tolerance of vertices of the input edge (not applied inside the algorithm, but pre-computed). If IsUseOldEdge is true then the input edge will be modified, otherwise the new copy of input edge will be created. Returns the new edge as a result, can be ignored if IsUseOldEdge is true.
    */
-  static SameParameter(S: TopoDS_Shape, theReshaper: BRepTools_ReShape, Tolerance: number, forced: boolean): void;
+  static SameParameter(theEdge: TopoDS_Edge, theTolerance: number, theNewTol: number, IsUseOldEdge: boolean): { result: TopoDS_Edge; theNewTol: number };
   /**
    * Computes new 2d curve(s) for all the edges of  to have the same parameter as the 3d curve. The algorithm is not done if the flag SameParameter was True on an Edge. theReshaper is used to record the modifications of input shape  to prevent any modifications on the shape itself. Thus the input shape (and its subshapes) will not be modified, instead the reshaper will contain a modified empty-copies of original subshapes as substitutions.
    */
-  static SameParameter_2(theEdge: TopoDS_Edge, theTolerance: number, theNewTol: number, IsUseOldEdge: boolean): TopoDS_Edge;
+  static SameParameter(S: TopoDS_Shape, theReshaper: BRepTools_ReShape, Tolerance: number, forced: boolean): void;
   /**
    * Replaces tolerance of FACE EDGE VERTEX by the tolerance Max of their connected handling shapes. It is not necessary to use this call after SameParameter. (called in).
    */
@@ -9228,15 +9280,15 @@ export declare class BRepLib {
   /**
    * Calculates the bounding sphere around the set of vertexes from the theLV list. Returns the center (theNewCenter) and the radius (theNewTol) of this sphere. This can be used to construct the new vertex which covers the given set of other vertices.
    */
-  static BoundingVertex(theLV: TopTools_ListOfShape, theNewCenter: gp_Pnt, theNewTol: number): void;
+  static BoundingVertex(theLV: TopTools_ListOfShape, theNewCenter: gp_Pnt, theNewTol: number): { theNewTol: number };
   /**
    * For an edge defined by 3d curve and tolerance and vertices defined by points, parameters on curve and tolerances, finds a range of curve between vertices not covered by vertices tolerances. Returns false if there is no such range. Otherwise, sets theFirst and theLast as its bounds.
    */
-  static FindValidRange(theCurve: Adaptor3d_Curve, theTolE: number, theParV1: number, thePntV1: gp_Pnt, theTolV1: number, theParV2: number, thePntV2: gp_Pnt, theTolV2: number, theFirst: number, theLast: number): boolean;
+  static FindValidRange(theCurve: Adaptor3d_Curve, theTolE: number, theParV1: number, thePntV1: gp_Pnt, theTolV1: number, theParV2: number, thePntV2: gp_Pnt, theTolV2: number, theFirst: number, theLast: number): { result: boolean; theFirst: number; theLast: number };
   /**
    * Finds a range of 3d curve of the edge not covered by vertices tolerances. Returns false if there is no such range. Otherwise, sets theFirst and theLast as its bounds.
    */
-  static FindValidRange(theEdge: TopoDS_Edge, theFirst: number, theLast: number): boolean;
+  static FindValidRange(theEdge: TopoDS_Edge, theFirst: number, theLast: number): { result: boolean; theFirst: number; theLast: number };
   /**
    * Enlarges the face on the given value.
    * @param theF The face to extend
@@ -9342,7 +9394,7 @@ export declare class BRepGProp_Face {
   /**
    * Returns the parametric bounds of the Face.
    */
-  Bounds(U1: number, U2: number, V1: number, V2: number): void;
+  Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
    * Computes the point of parameter U, V on the Face  and the normal to the face at this point.
    */
@@ -9366,11 +9418,11 @@ export declare class BRepGProp_Face {
   /**
    * Returns an array of U knots of the face. The first and last elements of the array will be theUMin and theUMax. The middle elements will be the U Knots of the face greater then theUMin and lower then theUMax in increasing order. If the face is not a BSpline, the array initialized with theUMin and theUMax only.
    */
-  GetUKnots(theUMin: number, theUMax: number, theUKnots: TColStd_HArray1OfReal): void;
+  GetUKnots(theUMin: number, theUMax: number): { theUKnots: TColStd_HArray1OfReal };
   /**
    * Returns an array of combination of T knots of the arc and V knots of the face. The first and last elements of the array will be theTMin and theTMax. The middle elements will be the Knots of the arc and the values of parameters of arc on which the value points have V coordinates close to V knots of face. All the parameter will be greater then theTMin and lower then theTMax in increasing order. If the face is not a BSpline, the array initialized with theTMin and theTMax only.
    */
-  GetTKnots(theTMin: number, theTMax: number, theTKnots: TColStd_HArray1OfReal): void;
+  GetTKnots(theTMin: number, theTMax: number): { theTKnots: TColStd_HArray1OfReal };
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -9429,7 +9481,7 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
    * Sets the distances Dis1 and Dis2 which give the parameters of the chamfer along the contour of index IC generated using the Add function in the internal data structure of this algorithm. The face F identifies the side where Dis1 is measured. Warning Nothing is done if either the edge E or the face F does not belong to the initial shape.
    */
   SetDist(Dis: number, IC: number, F: TopoDS_Face): void;
-  GetDist(IC: number, Dis: number): void;
+  GetDist(IC: number): { Dis: number };
   /**
    * Sets the distances Dis1 and Dis2 which give the parameters of the chamfer along the contour of index IC generated using the Add function in the internal data structure of this algorithm. The face F identifies the side where Dis1 is measured. Warning Nothing is done if either the edge E or the face F does not belong to the initial shape.
    */
@@ -9437,7 +9489,7 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
   /**
    * Returns the distances Dis1 and Dis2 which give the parameters of the chamfer along the contour of index IC in the internal data structure of this algorithm. Warning -1. is returned if IC is outside the bounds of the table of contours.
    */
-  Dists(IC: number, Dis1: number, Dis2: number): void;
+  Dists(IC: number): { Dis1: number; Dis2: number };
   /**
    * Adds a fillet contour in the builder (builds a contour of tangent edges to <E> and sets the distance <Dis1> and angle <Angle> ( parameters of the chamfer ) ).
    */
@@ -9449,7 +9501,7 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
   /**
    * gives the distances <Dis> and <Angle> of the fillet contour of index <IC> in the DS
    */
-  GetDistAngle(IC: number, Dis: number, Angle: number): void;
+  GetDistAngle(IC: number): { Dis: number; Angle: number };
   /**
    * Sets the mode of chamfer.
    */
@@ -9624,7 +9676,7 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
    * Returns the radius of the fillet along the edge E of the contour of index IC in the internal data structure of this algorithm. Warning.
    */
   Radius(IC: number, E: TopoDS_Edge): number;
-  GetBounds(IC: number, E: TopoDS_Edge, F: number, L: number): boolean;
+  GetBounds(IC: number, E: TopoDS_Edge, F: number, L: number): { result: boolean; F: number; L: number };
   GetLaw(IC: number, E: TopoDS_Edge): Law_Function;
   SetLaw(IC: number, E: TopoDS_Edge, L: Law_Function): void;
   /**
@@ -11246,7 +11298,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * returns the parameter normalized within the period if the surface is periodic : otherwise does not do anything
    */
-  PeriodicNormalization(U: number, V: number): void;
+  PeriodicNormalization(): { U: number; V: number };
   /**
    * Assigns the knot of index Index in the knots table in the corresponding parametric direction to be the origin of this periodic BSpline surface. As a consequence, the knots and poles tables are modified. Exceptions Standard_NoSuchObject if this BSpline surface is not periodic in the given parametric direction. Standard_DomainError if Index is outside the bounds of the knots table in the given parametric direction.
    */
@@ -11366,11 +11418,11 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * Locates the parametric value U in the sequence of UKnots. If "WithKnotRepetition" is True we consider the knot's representation with repetition of multiple knot value, otherwise we consider the knot's representation with no repetition of multiple knot values. UKnots (I1) <= U <= UKnots (I2) . if I1 = I2 U is a knot value (the tolerance criterion ParametricTolerance is used). . if I1 < 1 => U < UKnots(1) - std::abs(ParametricTolerance) . if I2 > NbUKnots => U > UKnots(NbUKnots)+std::abs(ParametricTolerance).
    */
-  LocateU(U: number, ParametricTolerance: number, I1: number, I2: number, WithKnotRepetition: boolean): void;
+  LocateU(U: number, ParametricTolerance: number, WithKnotRepetition: boolean): { I1: number; I2: number };
   /**
    * Locates the parametric value V in the sequence of knots. If "WithKnotRepetition" is True we consider the knot's representation with repetition of multiple knot value, otherwise we consider the knot's representation with no repetition of multiple knot values. VKnots (I1) <= V <= VKnots (I2) . if I1 = I2 V is a knot value (the tolerance criterion ParametricTolerance is used). . if I1 < 1 => V < VKnots(1) - std::abs(ParametricTolerance) . if I2 > NbVKnots => V > VKnots(NbVKnots)+std::abs(ParametricTolerance) poles insertion and removing The following methods are available only if the surface is Uniform or QuasiUniform in the considered direction The knot repartition is modified.
    */
-  LocateV(V: number, ParametricTolerance: number, I1: number, I2: number, WithKnotRepetition: boolean): void;
+  LocateV(V: number, ParametricTolerance: number, WithKnotRepetition: boolean): { I1: number; I2: number };
   /**
    * Substitutes the pole of range (UIndex, VIndex) with P. If the surface is rational the weight of range (UIndex, VIndex) is not modified.
    */
@@ -11410,7 +11462,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * Move a point with parameter U and V to P. given u,v as parameters) to reach a new position UIndex1, UIndex2, VIndex1, VIndex2: indicates the poles which can be moved if Problem in BSplineBasis calculation, no change for the curve and UFirstIndex, VLastIndex = 0 VFirstIndex, VLastIndex = 0.
    */
-  MovePoint(U: number, V: number, P: gp_Pnt, UIndex1: number, UIndex2: number, VIndex1: number, VIndex2: number, UFirstIndex: number, ULastIndex: number, VFirstIndex: number, VLastIndex: number): void;
+  MovePoint(U: number, V: number, P: gp_Pnt, UIndex1: number, UIndex2: number, VIndex1: number, VIndex2: number, UFirstIndex: number, ULastIndex: number, VFirstIndex: number, VLastIndex: number): { UFirstIndex: number; ULastIndex: number; VFirstIndex: number; VLastIndex: number };
   /**
    * Returns true if the first control points row and the last control points row are identical. The tolerance criterion is Resolution from package gp.
    */
@@ -11446,7 +11498,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * Returns the parametric bounds of the surface. Warnings : These parametric values are the bounds of the array of knots UKnots and VKnots only if the first knots and the last knots have a multiplicity equal to UDegree + 1 or VDegree + 1.
    */
-  Bounds(U1: number, U2: number, V1: number, V2: number): void;
+  Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
    * Returns the continuity of the surface : C0 : only geometric continuity, C1 : continuity of the first derivative all along the Surface, C2 : continuity of the second derivative all along the Surface, C3 : continuity of the third derivative all along the Surface, CN : the order of continuity is infinite. A B-spline surface is infinitely continuously differentiable for the couple of parameters U, V such that U != UKnots(i) and V != VKnots(i). The continuity of the surface at a knot value depends on the multiplicity of this knot. Example : If the surface is C1 in the V direction and C2 in the U direction this function returns Shape = C1.
    */
@@ -11670,7 +11722,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * Computes two tolerance values for this BSpline surface, based on the given tolerance in 3D space Tolerance3D. The tolerances computed are:
    */
-  Resolution(Tolerance3D: number, UTolerance: number, VTolerance: number): void;
+  Resolution(Tolerance3D: number, UTolerance: number, VTolerance: number): { UTolerance: number; VTolerance: number };
   /**
    * Creates a new object which is a copy of this BSpline surface.
    */
@@ -11783,7 +11835,7 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   /**
    * returns the parameter normalized within the period if the curve is periodic : otherwise does not do anything
    */
-  PeriodicNormalization(U: number): void;
+  PeriodicNormalization(): { U: number };
   /**
    * Changes this BSpline curve into a periodic curve. To become periodic, the curve must first be closed. Next, the knot sequence must be periodic. For this, FirstUKnotIndex and LastUKnotIndex are used to compute I1 and I2, the indexes in the knots array of the knots corresponding to the first and last parameters of this BSpline curve. The period is therefore: Knots(I2) - Knots(I1). Consequently, the knots and poles tables are modified. Exceptions Standard_ConstructionError if this BSpline curve is not closed.
    */
@@ -11815,11 +11867,11 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   /**
    * Moves the point of parameter U of this BSpline curve to P. Index1 and Index2 are the indexes in the table of poles of this BSpline curve of the first and last poles designated to be moved. FirstModifiedPole and LastModifiedPole are the indexes of the first and last poles which are effectively modified. In the event of incompatibility between Index1, Index2 and the value U:
    */
-  MovePoint(U: number, P: gp_Pnt, Index1: number, Index2: number, FirstModifiedPole: number, LastModifiedPole: number): void;
+  MovePoint(U: number, P: gp_Pnt, Index1: number, Index2: number, FirstModifiedPole: number, LastModifiedPole: number): { FirstModifiedPole: number; LastModifiedPole: number };
   /**
    * Move a point with parameter U to P. and makes it tangent at U be Tangent. StartingCondition = -1 means first can move EndingCondition = -1 means last point can move StartingCondition = 0 means the first point cannot move EndingCondition = 0 means the last point cannot move StartingCondition = 1 means the first point and tangent cannot move EndingCondition = 1 means the last point and tangent cannot move and so forth ErrorStatus != 0 means that there are not enough degree of freedom with the constrain to deform the curve accordingly.
    */
-  MovePointAndTangent(U: number, P: gp_Pnt, Tangent: gp_Vec, Tolerance: number, StartingCondition: number, EndingCondition: number, ErrorStatus: number): void;
+  MovePointAndTangent(U: number, P: gp_Pnt, Tangent: gp_Vec, Tolerance: number, StartingCondition: number, EndingCondition: number, ErrorStatus: number): { ErrorStatus: number };
   /**
    * Returns the continuity of the curve, the curve is at least C0. Raised if N < 0.
    */
@@ -11941,7 +11993,7 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   /**
    * Locates the parametric value U in the sequence of knots. If "WithKnotRepetition" is True we consider the knot's representation with repetition of multiple knot value, otherwise we consider the knot's representation with no repetition of multiple knot values. Knots (I1) <= U <= Knots (I2) . if I1 = I2 U is a knot value (the tolerance criterion ParametricTolerance is used). . if I1 < 1 => U < Knots (1) - std::abs(ParametricTolerance) . if I2 > NbKnots => U > Knots (NbKnots) + std::abs(ParametricTolerance).
    */
-  LocateU(U: number, ParametricTolerance: number, I1: number, I2: number, WithKnotRepetition: boolean): void;
+  LocateU(U: number, ParametricTolerance: number, WithKnotRepetition: boolean): { I1: number; I2: number };
   /**
    * Returns the multiplicity of the knots of range Index. Raised if Index < 1 or Index > NbKnots.
    */
@@ -12008,7 +12060,7 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   /**
    * Computes for this BSpline curve the parametric tolerance UTolerance for a given 3D tolerance Tolerance3D. If f(t) is the equation of this BSpline curve, UTolerance ensures that: | t1 - t0| < Utolerance ===> |f(t1) - f(t0)| < Tolerance3D.
    */
-  Resolution(Tolerance3D: number, UTolerance: number): void;
+  Resolution(Tolerance3D: number, UTolerance: number): { UTolerance: number };
   /**
    * Creates a new object which is a copy of this BSpline curve.
    */
@@ -12064,11 +12116,11 @@ export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
   /**
    * Returns the parametric bounds U1, U2, V1 and V2 of this sphere. For a sphere: U1 = 0, U2 = 2*PI, V1 = -PI/2, V2 = PI/2.
    */
-  Bounds(U1: number, U2: number, V1: number, V2: number): void;
+  Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
    * Returns the coefficients of the implicit equation of the quadric in the absolute cartesian coordinates system : These coefficients are normalized. A1.X**2 + A2.Y**2 + A3.Z**2 + 2.(B1.X.Y + B2.X.Z + B3.Y.Z) + 2.(C1.X + C2.Y + C3.Z) + D = 0.0.
    */
-  Coefficients(A1: number, A2: number, A3: number, B1: number, B2: number, B3: number, C1: number, C2: number, C3: number, D: number): void;
+  Coefficients(): { A1: number; A2: number; A3: number; B1: number; B2: number; B3: number; C1: number; C2: number; C3: number; D: number };
   /**
    * Computes the coefficients of the implicit equation of this quadric in the absolute Cartesian coordinate system: A1.X**2 + A2.Y**2 + A3.Z**2 + 2.(B1.X.Y + B2.X.Z + B3.Y.Z) + 2.(C1.X + C2.Y + C3.Z) + D = 0.0 An implicit normalization is applied (i.e. A1 = A2 = 1. in the local coordinate system of this sphere).
    */
@@ -12322,7 +12374,7 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   /**
    * Computes for this Bezier curve the parametric tolerance UTolerance for a given 3D tolerance Tolerance3D. If f(t) is the equation of this Bezier curve, UTolerance ensures that: |t1-t0| < UTolerance ===> |f(t1)-f(t0)| < Tolerance3D.
    */
-  Resolution(Tolerance3D: number, UTolerance: number): void;
+  Resolution(Tolerance3D: number, UTolerance: number): { UTolerance: number };
   /**
    * Creates a new object which is a copy of this Bezier curve.
    */
@@ -12438,7 +12490,7 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
   /**
    * Computes the parameters on the transformed surface for the transform of the point of parameters U,V on <me>.
    */
-  TransformParameters(U: number, V: number, T: gp_Trsf): void;
+  TransformParameters(T: gp_Trsf): { U: number; V: number };
   /**
    * Returns a 2d transformation used to find the new parameters of a point on the transformed surface.
    */
@@ -12446,11 +12498,11 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
   /**
    * The CylindricalSurface is infinite in the V direction so V1 = Realfirst, V2 = RealLast from package Standard. U1 = 0 and U2 = 2*PI.
    */
-  Bounds(U1: number, U2: number, V1: number, V2: number): void;
+  Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
    * Returns the coefficients of the implicit equation of the quadric in the absolute cartesian coordinate system : These coefficients are normalized.
    */
-  Coefficients(A1: number, A2: number, A3: number, B1: number, B2: number, B3: number, C1: number, C2: number, C3: number, D: number): void;
+  Coefficients(): { A1: number; A2: number; A3: number; B1: number; B2: number; B3: number; C1: number; C2: number; C3: number; D: number };
   /**
    * Returns the radius of this cylinder.
    */
@@ -12546,7 +12598,7 @@ export declare class Geom_Surface extends Geom_Geometry {
   /**
    * Computes the parameters on the transformed surface for the transform of the point of parameters U,V on <me>.
    */
-  TransformParameters(U: number, V: number, T: gp_Trsf): void;
+  TransformParameters(T: gp_Trsf): { U: number; V: number };
   /**
    * Returns a 2d transformation used to find the new parameters of a point on the transformed surface.
    */
@@ -12554,7 +12606,7 @@ export declare class Geom_Surface extends Geom_Geometry {
   /**
    * Returns the parametric bounds U1, U2, V1 and V2 of this surface. If the surface is infinite, this function can return a value equal to Precision::Infinite: instead of double::LastReal.
    */
-  Bounds(U1: number, U2: number, V1: number, V2: number): void;
+  Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
    * Checks whether this surface is closed in the u parametric direction. Returns true if, in the u parametric direction: taking uFirst and uLast as the parametric bounds in the u parametric direction, for each parameter v, the distance between the points P(uFirst, v) and P(uLast, v) is less than or equal to gp::Resolution().
    */
@@ -12862,7 +12914,7 @@ export declare class GProp_GProps {
   /**
    * Returns Ix, Iy, Iz, the static moments of inertia of the current system; i.e. the moments of inertia about the three axes of the Cartesian coordinate system.
    */
-  StaticMoments(Ix: number, Iy: number, Iz: number): void;
+  StaticMoments(): { Ix: number; Iy: number; Iz: number };
   /**
    * computes the moment of inertia of the material system about the axis A.
    */
@@ -12987,7 +13039,7 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   /**
    * Computes the parameter normalized within the "first" period of this BSpline curve, if it is periodic: the returned value is in the range Param1 and Param1 + Period, where:
    */
-  PeriodicNormalization(U: number): void;
+  PeriodicNormalization(): { U: number };
   /**
    * Changes this BSpline curve into a periodic curve. To become periodic, the curve must first be closed. Next, the knot sequence must be periodic. For this, FirstUKnotIndex and LastUKnotIndex are used to compute I1 and I2, the indexes in the knots array of the knots corresponding to the first and last parameters of this BSpline curve. The period is therefore Knot(I2) - Knot(I1). Consequently, the knots and poles tables are modified. Exceptions Standard_ConstructionError if this BSpline curve is not closed.
    */
@@ -13015,11 +13067,11 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   /**
    * Moves the point of parameter U of this BSpline curve to P. Index1 and Index2 are the indexes in the table of poles of this BSpline curve of the first and last poles designated to be moved. FirstModifiedPole and LastModifiedPole are the indexes of the first and last poles, which are effectively modified. In the event of incompatibility between Index1, Index2 and the value U:
    */
-  MovePoint(U: number, P: gp_Pnt2d, Index1: number, Index2: number, FirstModifiedPole: number, LastModifiedPole: number): void;
+  MovePoint(U: number, P: gp_Pnt2d, Index1: number, Index2: number, FirstModifiedPole: number, LastModifiedPole: number): { FirstModifiedPole: number; LastModifiedPole: number };
   /**
    * Move a point with parameter U to P. and makes it tangent at U be Tangent. StartingCondition = -1 means first can move EndingCondition = -1 means last point can move StartingCondition = 0 means the first point cannot move EndingCondition = 0 means the last point cannot move StartingCondition = 1 means the first point and tangent cannot move EndingCondition = 1 means the last point and tangent cannot move and so forth ErrorStatus != 0 means that there are not enough degree of freedom with the constrain to deform the curve accordingly.
    */
-  MovePointAndTangent(U: number, P: gp_Pnt2d, Tangent: gp_Vec2d, Tolerance: number, StartingCondition: number, EndingCondition: number, ErrorStatus: number): void;
+  MovePointAndTangent(U: number, P: gp_Pnt2d, Tangent: gp_Vec2d, Tolerance: number, StartingCondition: number, EndingCondition: number, ErrorStatus: number): { ErrorStatus: number };
   /**
    * Returns true if the degree of continuity of this BSpline curve is at least N. A BSpline curve is at least GeomAbs_C0. Exceptions Standard_RangeError if N is negative.
    */
@@ -13141,7 +13193,7 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   /**
    * Locates the parametric value U in the sequence of knots. If "WithKnotRepetition" is True we consider the knot's representation with repetition of multiple knot value, otherwise we consider the knot's representation with no repetition of multiple knot values. Knots (I1) <= U <= Knots (I2) . if I1 = I2 U is a knot value (the tolerance criterion ParametricTolerance is used). . if I1 < 1 => U < Knots (1) - std::abs(ParametricTolerance) . if I2 > NbKnots => U > Knots (NbKnots) + std::abs(ParametricTolerance).
    */
-  LocateU(U: number, ParametricTolerance: number, I1: number, I2: number, WithKnotRepetition: boolean): void;
+  LocateU(U: number, ParametricTolerance: number, WithKnotRepetition: boolean): { I1: number; I2: number };
   /**
    * Returns the multiplicity of the knots of range Index. Raised if Index < 1 or Index > NbKnots.
    */
@@ -13208,7 +13260,7 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   /**
    * Computes for this BSpline curve the parametric tolerance UTolerance for a given tolerance Tolerance3D (relative to dimensions in the plane). If f(t) is the equation of this BSpline curve, UTolerance ensures that: | t1 - t0| < Utolerance ===> |f(t1) - f(t0)| < ToleranceUV.
    */
-  Resolution(ToleranceUV: number, UTolerance: number): void;
+  Resolution(ToleranceUV: number, UTolerance: number): { UTolerance: number };
   /**
    * Creates a new object which is a copy of this BSpline curve.
    */
@@ -13976,7 +14028,7 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   /**
    * Computes for this Bezier curve the parametric tolerance UTolerance for a given tolerance Tolerance3D (relative to dimensions in the plane). If f(t) is the equation of this Bezier curve, UTolerance ensures that | t1 - t0| < Utolerance ===> |f(t1) - f(t0)| < ToleranceUV.
    */
-  Resolution(ToleranceUV: number, UTolerance: number): void;
+  Resolution(ToleranceUV: number, UTolerance: number): { UTolerance: number };
   /**
    * Creates a new object which is a copy of this Bezier curve.
    */
@@ -14486,27 +14538,27 @@ export declare class Geom2dConvert {
   /**
    * This Method concatenates G1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatG1(ArrayOfCurves: Geom2d_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ArrayOfConcatenated: Geom2d_BSplineCurve, ClosedFlag: boolean, ClosedTolerance: number): void;
+  static ConcatG1(ArrayOfCurves: Geom2d_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ClosedFlag: boolean, ClosedTolerance: number): { ArrayOfConcatenated: Geom2d_BSplineCurve; ClosedFlag: boolean };
   /**
    * This Method concatenates C1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatC1(ArrayOfCurves: Geom2d_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ArrayOfIndices: TColStd_HArray1OfInteger, ArrayOfConcatenated: Geom2d_BSplineCurve, ClosedFlag: boolean, ClosedTolerance: number): void;
+  static ConcatC1(ArrayOfCurves: Geom2d_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ClosedFlag: boolean, ClosedTolerance: number): { ArrayOfIndices: TColStd_HArray1OfInteger; ArrayOfConcatenated: Geom2d_BSplineCurve; ClosedFlag: boolean };
   /**
    * This Method concatenates C1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatC1(ArrayOfCurves: Geom2d_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ArrayOfIndices: TColStd_HArray1OfInteger, ArrayOfConcatenated: Geom2d_BSplineCurve, ClosedFlag: boolean, ClosedTolerance: number, AngularTolerance: number): void;
+  static ConcatC1(ArrayOfCurves: Geom2d_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ClosedFlag: boolean, ClosedTolerance: number, AngularTolerance: number): { ArrayOfIndices: TColStd_HArray1OfInteger; ArrayOfConcatenated: Geom2d_BSplineCurve; ClosedFlag: boolean };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns a new BSpline which could still be C0. tolerance is a geometrical tolerance.
    */
-  static C0BSplineToC1BSplineCurve(BS: Geom2d_BSplineCurve, Tolerance: number): void;
+  static C0BSplineToC1BSplineCurve(Tolerance: number): { BS: Geom2d_BSplineCurve };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns an array of BSpline C1. Tolerance is a geometrical tolerance.
    */
-  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom2d_BSplineCurve, tabBS: Geom2d_BSplineCurve, Tolerance: number): void;
+  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom2d_BSplineCurve, Tolerance: number): { tabBS: Geom2d_BSplineCurve };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns an array of BSpline C1. tolerance is a geometrical tolerance.
    */
-  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom2d_BSplineCurve, tabBS: Geom2d_BSplineCurve, AngularTolerance: number, Tolerance: number): void;
+  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom2d_BSplineCurve, AngularTolerance: number, Tolerance: number): { tabBS: Geom2d_BSplineCurve };
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -14561,33 +14613,33 @@ export declare class GeomLib {
   /**
    * Make the curve Curve2dPtr have the imposed range First to List the most economic way, that is if it can change the range without changing the nature of the curve it will try to do that. Otherwise it will produce a Bspline curve that has the required range.
    */
-  static SameRange(Tolerance: number, Curve2dPtr: Geom2d_Curve, First: number, Last: number, RequestedFirst: number, RequestedLast: number, NewCurve2dPtr: Geom2d_Curve): void;
-  static BuildCurve3d(Tolerance: number, CurvePtr: Adaptor3d_CurveOnSurface, FirstParameter: number, LastParameter: number, NewCurvePtr: Geom_Curve, MaxDeviation: number, AverageDeviation: number, Continuity: GeomAbs_Shape, MaxDegree: number, MaxSegment: number): void;
-  static AdjustExtremity(Curve: Geom_BoundedCurve, P1: gp_Pnt, P2: gp_Pnt, T1: gp_Vec, T2: gp_Vec): void;
+  static SameRange(Tolerance: number, Curve2dPtr: Geom2d_Curve, First: number, Last: number, RequestedFirst: number, RequestedLast: number): { NewCurve2dPtr: Geom2d_Curve };
+  static BuildCurve3d(Tolerance: number, CurvePtr: Adaptor3d_CurveOnSurface, FirstParameter: number, LastParameter: number, MaxDeviation: number, AverageDeviation: number, Continuity: GeomAbs_Shape, MaxDegree: number, MaxSegment: number): { NewCurvePtr: Geom_Curve; MaxDeviation: number; AverageDeviation: number };
+  static AdjustExtremity(P1: gp_Pnt, P2: gp_Pnt, T1: gp_Vec, T2: gp_Vec): { Curve: Geom_BoundedCurve };
   /**
    * Extends the bounded curve Curve to the point Point. The extension is built:
    */
-  static ExtendCurveToPoint(Curve: Geom_BoundedCurve, Point: gp_Pnt, Cont: number, After: boolean): void;
+  static ExtendCurveToPoint(Point: gp_Pnt, Cont: number, After: boolean): { Curve: Geom_BoundedCurve };
   /**
    * Extends the bounded surface Surf along one of its boundaries. The chord length of the extension is equal to Length. The direction of the extension is given as:
    */
-  static ExtendSurfByLength(Surf: Geom_BoundedSurface, Length: number, Cont: number, InU: boolean, After: boolean): void;
+  static ExtendSurfByLength(Length: number, Cont: number, InU: boolean, After: boolean): { Surf: Geom_BoundedSurface };
   /**
    * Compute axes of inertia, of some points <Axe>.Location() is the BaryCentre <Axe>.XDirection is the axe of upper inertia <Axe>.Direction is the Normal to the average plane IsSingular is True if points are on line Tol is used to determine singular cases.
    */
-  static AxeOfInertia(Points: TColgp_Array1OfPnt, Axe: gp_Ax2, IsSingular: boolean, Tol: number): void;
+  static AxeOfInertia(Points: TColgp_Array1OfPnt, Axe: gp_Ax2, IsSingular: boolean, Tol: number): { IsSingular: boolean };
   /**
    * Compute principale axes of inertia, and dispersion value of some points.
    */
-  static Inertia(Points: TColgp_Array1OfPnt, Bary: gp_Pnt, XDir: gp_Dir, YDir: gp_Dir, Xgap: number, YGap: number, ZGap: number): void;
+  static Inertia(Points: TColgp_Array1OfPnt, Bary: gp_Pnt, XDir: gp_Dir, YDir: gp_Dir, Xgap: number, YGap: number, ZGap: number): { Xgap: number; YGap: number; ZGap: number };
   /**
    * Warning! This assume that the InParameter is an increasing sequence of real number and it will not check for that : Unpredictable result can happen if this is not satisfied. It is the caller responsibility to check for that property.
    */
-  static RemovePointsFromArray(NumPoints: number, InParameters: TColStd_Array1OfReal, OutParameters: TColStd_HArray1OfReal): void;
+  static RemovePointsFromArray(NumPoints: number, InParameters: TColStd_Array1OfReal): { OutParameters: TColStd_HArray1OfReal };
   /**
    * this makes sure that there is at least MinNumPoints in OutParameters taking into account the parameters in the InParameters array provided those are in order, that is the sequence of real in the InParameter is strictly non decreasing
    */
-  static DensifyArray1OfReal(MinNumPoints: number, InParameters: TColStd_Array1OfReal, OutParameters: TColStd_HArray1OfReal): void;
+  static DensifyArray1OfReal(MinNumPoints: number, InParameters: TColStd_Array1OfReal): { OutParameters: TColStd_HArray1OfReal };
   /**
    * This method fuse intervals Interval1 and Interval2 with specified Confusion.
    * @param Interval1 first interval to fuse
@@ -14600,15 +14652,15 @@ export declare class GeomLib {
   /**
    * this will compute the maximum distance at the parameters given in the Parameters array by evaluating each parameter the two curves and taking the maximum of the evaluated distance
    */
-  static EvalMaxParametricDistance(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: number, Parameters: TColStd_Array1OfReal, MaxDistance: number): void;
+  static EvalMaxParametricDistance(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: number, Parameters: TColStd_Array1OfReal, MaxDistance: number): { MaxDistance: number };
   /**
    * this will compute the maximum distance at the parameters given in the Parameters array by projecting from the Curve to the reference curve and taking the minimum distance Than the maximum will be taken on those minimas.
    */
-  static EvalMaxDistanceAlongParameter(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: number, Parameters: TColStd_Array1OfReal, MaxDistance: number): void;
+  static EvalMaxDistanceAlongParameter(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: number, Parameters: TColStd_Array1OfReal, MaxDistance: number): { MaxDistance: number };
   /**
    * Cancel,on the boundaries,the denominator first derivative in the directions wished by the user and set its value to 1.
    */
-  static CancelDenominatorDerivative(BSurf: Geom_BSplineSurface, UDirection: boolean, VDirection: boolean): void;
+  static CancelDenominatorDerivative(UDirection: boolean, VDirection: boolean): { BSurf: Geom_BSplineSurface };
   /**
    * Estimate surface normal at the given (U, V) point.
    * @param theSurf input surface
@@ -14621,7 +14673,7 @@ export declare class GeomLib {
   /**
    * This method defines if opposite boundaries of surface coincide with given tolerance.
    */
-  static IsClosed(S: Geom_Surface, Tol: number, isUClosed: boolean, isVClosed: boolean): void;
+  static IsClosed(S: Geom_Surface, Tol: number, isUClosed: boolean, isVClosed: boolean): { isUClosed: boolean; isVClosed: boolean };
   /**
    * Returns true if the poles of U1 isoline and the poles of U2 isoline of surface are identical according to tolerance criterion. For rational surfaces Weights(i)*Poles(i) are checked.
    */
@@ -14646,7 +14698,7 @@ export declare class GeomLib {
    * @param theIsForward Flag indicating forward parameterization on a isoline.
    * @returns true when 2d curve is a line and false otherwise.
    */
-  static isIsoLine(theC2D: Adaptor2d_Curve2d, theIsU: boolean, theParam: number, theIsForward: boolean): boolean;
+  static isIsoLine(theC2D: Adaptor2d_Curve2d, theIsU: boolean, theParam: number, theIsForward: boolean): { result: boolean; theIsU: boolean; theParam: number; theIsForward: boolean };
   /**
    * Builds 3D curve for a isoline. This method takes corresponding isoline from the input surface.
    * @param theC2D Trimmed curve to be approximated.
@@ -15183,27 +15235,27 @@ export declare class GeomConvert {
   /**
    * This Method concatenates G1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatG1(ArrayOfCurves: Geom_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ArrayOfConcatenated: Geom_BSplineCurve, ClosedFlag: boolean, ClosedTolerance: number): void;
+  static ConcatG1(ArrayOfCurves: Geom_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ClosedFlag: boolean, ClosedTolerance: number): { ArrayOfConcatenated: Geom_BSplineCurve; ClosedFlag: boolean };
   /**
    * This Method concatenates C1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatC1(ArrayOfCurves: Geom_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ArrayOfIndices: TColStd_HArray1OfInteger, ArrayOfConcatenated: Geom_BSplineCurve, ClosedFlag: boolean, ClosedTolerance: number): void;
+  static ConcatC1(ArrayOfCurves: Geom_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ClosedFlag: boolean, ClosedTolerance: number): { ArrayOfIndices: TColStd_HArray1OfInteger; ArrayOfConcatenated: Geom_BSplineCurve; ClosedFlag: boolean };
   /**
    * This Method concatenates C1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatC1(ArrayOfCurves: Geom_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ArrayOfIndices: TColStd_HArray1OfInteger, ArrayOfConcatenated: Geom_BSplineCurve, ClosedFlag: boolean, ClosedTolerance: number, AngularTolerance: number): void;
+  static ConcatC1(ArrayOfCurves: Geom_BSplineCurve, ArrayOfToler: TColStd_Array1OfReal, ClosedFlag: boolean, ClosedTolerance: number, AngularTolerance: number): { ArrayOfIndices: TColStd_HArray1OfInteger; ArrayOfConcatenated: Geom_BSplineCurve; ClosedFlag: boolean };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns a new BSpline which could still be C0. tolerance is a geometrical tolerance. The Angular toleranceis in radians and measures the angle of the tangents on the left and on the right to decide if the curve is G1 or not at a given point.
    */
-  static C0BSplineToC1BSplineCurve(BS: Geom_BSplineCurve, tolerance: number, AngularTolerance: number): void;
+  static C0BSplineToC1BSplineCurve(tolerance: number, AngularTolerance: number): { BS: Geom_BSplineCurve };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns an array of BSpline C1. tolerance is a geometrical tolerance.
    */
-  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom_BSplineCurve, tabBS: Geom_BSplineCurve, tolerance: number): void;
+  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom_BSplineCurve, tolerance: number): { tabBS: Geom_BSplineCurve };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns an array of BSpline C1. tolerance is a geometrical tolerance : it allows for the maximum deformation The Angular tolerance is in radians and measures the angle of the tangents on the left and on the right to decide if the curve is C1 or not at a given point.
    */
-  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom_BSplineCurve, tabBS: Geom_BSplineCurve, AngularTolerance: number, tolerance: number): void;
+  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom_BSplineCurve, AngularTolerance: number, tolerance: number): { tabBS: Geom_BSplineCurve };
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -15547,15 +15599,15 @@ export declare class BRepTools {
   /**
    * Returns in UMin, UMax, VMin, VMax the bounding values in the parametric space of F.
    */
-  static UVBounds(F: TopoDS_Face, UMin: number, UMax: number, VMin: number, VMax: number): void;
+  static UVBounds(F: TopoDS_Face, UMin: number, UMax: number, VMin: number, VMax: number): { UMin: number; UMax: number; VMin: number; VMax: number };
   /**
    * Returns in UMin, UMax, VMin, VMax the bounding values of the wire in the parametric space of F.
    */
-  static UVBounds_2(F: TopoDS_Face, W: TopoDS_Wire, UMin: number, UMax: number, VMin: number, VMax: number): void;
+  static UVBounds(F: TopoDS_Face, W: TopoDS_Wire, UMin: number, UMax: number, VMin: number, VMax: number): { UMin: number; UMax: number; VMin: number; VMax: number };
   /**
    * Returns in UMin, UMax, VMin, VMax the bounding values of the edge in the parametric space of F.
    */
-  static UVBounds_3(F: TopoDS_Face, E: TopoDS_Edge, UMin: number, UMax: number, VMin: number, VMax: number): void;
+  static UVBounds(F: TopoDS_Face, E: TopoDS_Edge, UMin: number, UMax: number, VMin: number, VMax: number): { UMin: number; UMax: number; VMin: number; VMax: number };
   /**
    * Adds to the box  the bounding values in the parametric space of F.
    */
@@ -15690,7 +15742,7 @@ export declare class BRepTools {
   /**
    * Detect closedness of face in U and V directions.
    */
-  static DetectClosedness(theFace: TopoDS_Face, theUclosed: boolean, theVclosed: boolean): void;
+  static DetectClosedness(theFace: TopoDS_Face, theUclosed: boolean, theVclosed: boolean): { theUclosed: boolean; theVclosed: boolean };
   /**
    * Writes the shape to the stream in an ASCII format TopTools_FormatVersion_VERSION_1. This alias writes shape with triangulation data.
    * @param theShape the shape to write
@@ -15802,11 +15854,11 @@ export declare class BRep_Tool {
   /**
    * Returns the 3D curve of the edge. May be a Null handle. Returns in <L> the location for the curve. In <First> and <Last> the parameter range.
    */
-  static Curve(E: TopoDS_Edge, L: TopLoc_Location, First: number, Last: number): Geom_Curve;
+  static Curve(E: TopoDS_Edge, L: TopLoc_Location, First: number, Last: number): { result: Geom_Curve; First: number; Last: number };
   /**
    * Returns the 3D curve of the edge. May be a Null handle. In <First> and <Last> the parameter range. It can be a copy if there is a Location.
    */
-  static Curve(E: TopoDS_Edge, First: number, Last: number): Geom_Curve;
+  static Curve(E: TopoDS_Edge, First: number, Last: number): { result: Geom_Curve; First: number; Last: number };
   /**
    * Returns the 3D polygon of the edge. May be a Null handle. Returns in <L> the location for the polygon.
    */
@@ -15814,23 +15866,23 @@ export declare class BRep_Tool {
   /**
    * Returns the curve associated to the edge in the parametric space of the face. Returns a NULL handle if this curve does not exist. Returns in <First> and <Last> the parameter range. If the surface is a plane the curve can be not stored but created a new each time. The flag pointed by <theIsStored> serves to indicate storage status. It is valued if the pointer is non-null.
    */
-  static CurveOnSurface(E: TopoDS_Edge, F: TopoDS_Face, First: number, Last: number, theIsStored: boolean): Geom2d_Curve;
+  static CurveOnSurface(E: TopoDS_Edge, F: TopoDS_Face, First: number, Last: number, theIsStored: boolean): { result: Geom2d_Curve; First: number; Last: number };
   /**
    * Returns the curve associated to the edge in the parametric space of the surface. Returns a NULL handle if this curve does not exist. Returns in <First> and <Last> the parameter range. If the surface is a plane the curve can be not stored but created a new each time. The flag pointed by <theIsStored> serves to indicate storage status. It is valued if the pointer is non-null.
    */
-  static CurveOnSurface_2(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number, theIsStored: boolean): Geom2d_Curve;
+  static CurveOnSurface(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number, theIsStored: boolean): { result: Geom2d_Curve; First: number; Last: number };
   /**
    * Returns in , , <L> a 2d curve, a surface and a location for the edge <E>.  and  are null if the edge has no curve on surface. Returns in <First> and <Last> the parameter range.
    */
-  static CurveOnSurface_3(E: TopoDS_Edge, C: Geom2d_Curve, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number): void;
+  static CurveOnSurface(E: TopoDS_Edge, L: TopLoc_Location, First: number, Last: number): { C: Geom2d_Curve; S: Geom_Surface; First: number; Last: number };
   /**
    * Returns in , , <L> the 2d curve, the surface and the location for the edge <E> of rank <Index>.  and  are null if the index is out of range. Returns in <First> and <Last> the parameter range.
    */
-  static CurveOnSurface(E: TopoDS_Edge, C: Geom2d_Curve, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number, Index: number): void;
+  static CurveOnSurface(E: TopoDS_Edge, L: TopLoc_Location, First: number, Last: number, Index: number): { C: Geom2d_Curve; S: Geom_Surface; First: number; Last: number };
   /**
    * For the planar surface builds the 2d curve for the edge by projection of the edge on plane. Returns a NULL handle if the surface is not planar or the projection failed.
    */
-  static CurveOnPlane(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number): Geom2d_Curve;
+  static CurveOnPlane(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number): { result: Geom2d_Curve; First: number; Last: number };
   /**
    * Returns the polygon associated to the edge in the parametric space of the face. Returns a NULL handle if this polygon does not exist.
    */
@@ -15842,11 +15894,11 @@ export declare class BRep_Tool {
   /**
    * Returns in , , <L> a 2d curve, a surface and a location for the edge <E>.  and  are null if the edge has no polygon on surface.
    */
-  static PolygonOnSurface(E: TopoDS_Edge, C: Poly_Polygon2D, S: Geom_Surface, L: TopLoc_Location): void;
+  static PolygonOnSurface(E: TopoDS_Edge, L: TopLoc_Location): { C: Poly_Polygon2D; S: Geom_Surface };
   /**
    * Returns in , , <L> the 2d curve, the surface and the location for the edge <E> of rank <Index>.  and  are null if the index is out of range.
    */
-  static PolygonOnSurface(E: TopoDS_Edge, C: Poly_Polygon2D, S: Geom_Surface, L: TopLoc_Location, Index: number): void;
+  static PolygonOnSurface(E: TopoDS_Edge, L: TopLoc_Location, Index: number): { C: Poly_Polygon2D; S: Geom_Surface };
   /**
    * Returns the polygon associated to the edge in the parametric space of the face. Returns a NULL handle if this polygon does not exist.
    */
@@ -15854,11 +15906,11 @@ export declare class BRep_Tool {
   /**
    * Returns in.
    */
-  static PolygonOnTriangulation(E: TopoDS_Edge, P: Poly_PolygonOnTriangulation, T: Poly_Triangulation, L: TopLoc_Location): void;
+  static PolygonOnTriangulation(E: TopoDS_Edge, L: TopLoc_Location): { P: Poly_PolygonOnTriangulation; T: Poly_Triangulation };
   /**
    * Returns in.
    */
-  static PolygonOnTriangulation(E: TopoDS_Edge, P: Poly_PolygonOnTriangulation, T: Poly_Triangulation, L: TopLoc_Location, Index: number): void;
+  static PolygonOnTriangulation(E: TopoDS_Edge, L: TopLoc_Location, Index: number): { P: Poly_PolygonOnTriangulation; T: Poly_Triangulation };
   /**
    * Returns the SameParameter flag for the edge.
    */
@@ -15874,15 +15926,15 @@ export declare class BRep_Tool {
   /**
    * Gets the range of the 3d curve.
    */
-  static Range(E: TopoDS_Edge, First: number, Last: number): void;
+  static Range(E: TopoDS_Edge, First: number, Last: number): { First: number; Last: number };
   /**
    * Gets the range of the edge on the pcurve on the surface.
    */
-  static Range(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number): void;
+  static Range(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number): { First: number; Last: number };
   /**
    * Gets the range of the edge on the pcurve on the face.
    */
-  static Range(E: TopoDS_Edge, F: TopoDS_Face, First: number, Last: number): void;
+  static Range(E: TopoDS_Edge, F: TopoDS_Face, First: number, Last: number): { First: number; Last: number };
   /**
    * Gets the UV locations of the extremities of the edge.
    */
@@ -15938,11 +15990,11 @@ export declare class BRep_Tool {
    * @param theParam calculated parameter on the curve
    * @returns TRUE if done
    */
-  static Parameter(V: TopoDS_Vertex, E: TopoDS_Edge, F: TopoDS_Face): number;
+  static Parameter(theV: TopoDS_Vertex, theE: TopoDS_Edge, theParam: number): { result: boolean; theParam: number };
   /**
    * Returns the parameters of the vertex on the pcurve of the edge on the face.
    */
-  static Parameter_1(theV: TopoDS_Vertex, theE: TopoDS_Edge, theParam: number): boolean;
+  static Parameter(V: TopoDS_Vertex, E: TopoDS_Edge, F: TopoDS_Face): number;
   /**
    * Returns the parameters of the vertex on the pcurve of the edge on the surface.
    */
@@ -16039,7 +16091,7 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
   /**
    * returns an edge and one parameter on them corresponding to the parameter U.
    */
-  Edge(U: number, E: TopoDS_Edge, UonE: number): void;
+  Edge(U: number, E: TopoDS_Edge): { UonE: number };
   FirstParameter(): number;
   LastParameter(): number;
   Continuity(): GeomAbs_Shape;
@@ -16580,7 +16632,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Gives an Integer Limit (upper if <max> True, lower if <max> False). Returns True if this limit is defined, False else (in that case, gives the natural limit for Integer).
    */
-  IntegerLimit(max: boolean, val: number): boolean;
+  IntegerLimit(max: boolean): { result: boolean; val: number };
   /**
    * Sets a Real limit (included) to <val>, the upper limit if <max> is True, the lower limit if <max> is False.
    */
@@ -16588,7 +16640,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Gives an Real Limit (upper if <max> True, lower if <max> False). Returns True if this limit is defined, False else (in that case, gives the natural limit for Real).
    */
-  RealLimit(max: boolean, val: number): boolean;
+  RealLimit(max: boolean): { result: boolean; val: number };
   /**
    * Sets (Clears if <def> empty) a unit definition, as an equation of dimensions. TypedValue just records this definition, does not exploit it, to be done as required by user applications.
    */
@@ -16612,7 +16664,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Gives the Enum definitions : start value, end value, match status. Returns True for an Enum, False else.
    */
-  EnumDef(startcase: number, endcase: number, match: boolean): boolean;
+  EnumDef(): { result: boolean; startcase: number; endcase: number; match: boolean };
   /**
    * Returns the value of an enumerative definition, from its rank Empty string if out of range or not an Enum.
    */
@@ -16700,7 +16752,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Same as ObjectValue, but avoids DownCast : the receiving variable is directly loaded. It is assumed that it complies with the definition of ObjectType ! Otherwise, big trouble.
    */
-  GetObjectValue(val: Standard_Transient): void;
+  GetObjectValue(): { val: Standard_Transient };
   /**
    * Changes the value as Transient Object, only for Object/Entity Returns False if DynamicType does not satisfy ObjectType Can be redefined to be managed (in a subclass).
    */
@@ -16939,7 +16991,7 @@ export declare class XSControl_Reader {
   /**
    * Gives statistics about Transfer.
    */
-  GetStatsTransfer(list: Standard_Transient, nbMapped: number, nbWithResult: number, nbWithFail: number): void;
+  GetStatsTransfer(list: Standard_Transient): { nbMapped: number; nbWithResult: number; nbWithFail: number };
   /**
    * Sets parameters for shape processing.
    * @param theParameters the parameters for shape processing.
@@ -17677,11 +17729,11 @@ export declare class STEPCAFControl_Writer {
   /**
    * Returns data on external file by its original label Returns False if no external file with given name is read.
    */
-  ExternFile(theLabel: TDF_Label, theExtFile: STEPCAFControl_ExternFile): boolean;
+  ExternFile(theLabel: TDF_Label): { result: boolean; theExtFile: STEPCAFControl_ExternFile };
   /**
    * Returns data on external file by its name Returns False if no external file with given name is read.
    */
-  ExternFile_2(theName: string, theExtFile: STEPCAFControl_ExternFile): boolean;
+  ExternFile_2(theName: string): { result: boolean; theExtFile: STEPCAFControl_ExternFile };
   /**
    * Returns basic reader for root file.
    */
@@ -18136,11 +18188,11 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Returns value of current internal unit for the document converted to base unit type.
    */
-  static GetLengthUnit(theDoc: TDocStd_Document, theResut: number, theBaseUnit: UnitsMethods_LengthUnit): boolean;
+  static GetLengthUnit(theDoc: TDocStd_Document, theResut: number, theBaseUnit: UnitsMethods_LengthUnit): { result: boolean; theResut: number };
   /**
    * Returns value of current internal unit for the document in meter.
    */
-  static GetLengthUnit(theDoc: TDocStd_Document, theResut: number): boolean;
+  static GetLengthUnit(theDoc: TDocStd_Document, theResut: number): { result: boolean; theResut: number };
   /**
    * Sets value of current internal unit to the document in meter.
    */
@@ -18384,11 +18436,11 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   /**
    * Sets the SHUO structure between upper_usage and next_usage create multy-level (if number of labels > 2) SHUO from first to last Initialise out <MainSHUOAttr> by main upper_usage SHUO attribute. Returns FALSE if some of labels in not component label.
    */
-  SetSHUO(Labels: TDF_Label, MainSHUOAttr: XCAFDoc_GraphNode): boolean;
+  SetSHUO(Labels: TDF_Label): { result: boolean; MainSHUOAttr: XCAFDoc_GraphNode };
   /**
    * Returns founded SHUO GraphNode attribute <aSHUOAttr> Returns false in other case.
    */
-  static GetSHUO(SHUOLabel: TDF_Label, aSHUOAttr: XCAFDoc_GraphNode): boolean;
+  static GetSHUO(SHUOLabel: TDF_Label): { result: boolean; aSHUOAttr: XCAFDoc_GraphNode };
   /**
    * Returns founded SHUO GraphNodes of indicated component Returns false in other case.
    */
@@ -18424,7 +18476,7 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   /**
    * Searches the SHUO by labels of components from upper_usage component to next_usage Returns null attribute if no SHUO found.
    */
-  static FindSHUO(Labels: TDF_Label, theSHUOAttr: XCAFDoc_GraphNode): boolean;
+  static FindSHUO(Labels: TDF_Label): { result: boolean; theSHUOAttr: XCAFDoc_GraphNode };
   /**
    * Sets location to the shape label If label is reference -> changes location attribute If label is free shape -> creates reference with location to it.
    * @param theShapeLabel the shape label to change location
@@ -20628,6 +20680,7 @@ export namespace ShapeUpgrade {
 }
 
 export namespace Standard {
+  export type Failure = Standard_Failure;
   export type Transient = Standard_Transient;
 }
 
@@ -20754,6 +20807,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Quantity_ColorRGBA: typeof Quantity_ColorRGBA;
   NCollection_BaseList: typeof NCollection_BaseList;
   Standard_Transient: typeof Standard_Transient;
+  Standard_Failure: typeof Standard_Failure;
   Precision: typeof Precision;
   TCollection_ExtendedString: typeof TCollection_ExtendedString;
   TopLoc_Location: typeof TopLoc_Location;

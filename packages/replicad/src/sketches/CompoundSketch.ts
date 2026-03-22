@@ -1,12 +1,7 @@
-import {
-  compoundShapes,
-  addHolesInFace,
-  makeSolid,
-  makeFace,
-} from "../shapeHelpers";
-import Sketch from "./Sketch";
+import { compoundShapes, addHolesInFace, makeSolid, makeFace } from '../shapeHelpers';
+import Sketch from './Sketch';
 
-import { Point, Vector } from "../geom.js";
+import { Point, Vector } from '../geom.js';
 import {
   basicFaceExtrusion,
   complexExtrude,
@@ -14,33 +9,18 @@ import {
   revolution,
   ExtrusionProfile,
   LoftConfig,
-} from "../addThickness.js";
-import { SketchInterface } from "./lib.js";
-import { cast, Face, Shape3D, Shell, Wire } from "../shapes.js";
-import { getOC } from "../oclib.js";
+} from '../addThickness.js';
+import { SketchInterface } from './lib.js';
+import { cast, Face, Shape3D, Shell, Wire } from '../shapes.js';
+import { getOC } from '../oclib.js';
 
 const guessFaceFromWires = (wires: Wire[]): Face => {
   const oc = getOC();
 
-  const faceBuilder = new oc.BRepOffsetAPI_MakeFilling(
-    3,
-    15,
-    2,
-    false,
-    1e-5,
-    1e-4,
-    1e-2,
-    0.1,
-    8,
-    9
-  );
+  const faceBuilder = new oc.BRepOffsetAPI_MakeFilling(3, 15, 2, false, 1e-5, 1e-4, 1e-2, 0.1, 8, 9);
   wires.forEach((wire, wireIndex) => {
     wire.edges.forEach((edge) => {
-      faceBuilder.Add(
-        edge.wrapped,
-        oc.GeomAbs_Shape.GeomAbs_C0,
-        wireIndex === 0
-      );
+      faceBuilder.Add(edge.wrapped, oc.GeomAbs_Shape.GeomAbs_C0, wireIndex === 0);
     });
   });
 
@@ -52,18 +32,14 @@ const guessFaceFromWires = (wires: Wire[]): Face => {
   faceBuilder.delete();
 
   if (!(newFace instanceof Face)) {
-    throw new Error("Failed to create a face");
+    throw new Error('Failed to create a face');
   }
   return newFace;
 };
 
 const fixWire = (wire: Wire, baseFace: Face): Wire => {
   const oc = getOC();
-  const wireFixer = new oc.ShapeFix_Wire(
-    wire.wrapped,
-    baseFace.wrapped,
-    1e-9
-  );
+  const wireFixer = new oc.ShapeFix_Wire(wire.wrapped, baseFace.wrapped, 1e-9);
   wireFixer.FixEdgeCurves();
   wireFixer.delete();
   return wire;
@@ -86,7 +62,7 @@ const faceFromWires = (wires: Wire[]): Face => {
 
 const solidFromShellGenerator = (
   sketches: Sketch[],
-  shellGenerator: (sketch: Sketch) => [Shell, Wire, Wire]
+  shellGenerator: (sketch: Sketch) => [Shell, Wire, Wire],
 ): Shape3D => {
   const shells: Shell[] = [];
   const startWires: Wire[] = [];
@@ -141,7 +117,7 @@ export default class CompoundSketch implements SketchInterface {
     const baseFace = this.outerSketch.face();
     const newFace = addHolesInFace(
       baseFace,
-      this.innerSketches.map((s) => s.wire)
+      this.innerSketches.map((s) => s.wire),
     );
 
     return newFace;
@@ -159,23 +135,15 @@ export default class CompoundSketch implements SketchInterface {
       extrusionProfile?: ExtrusionProfile;
       twistAngle?: number;
       origin?: Point;
-    } = {}
+    } = {},
   ): Shape3D {
-    const extrusionVec = new Vector(
-      extrusionDirection || this.outerSketch.defaultDirection
-    )
+    const extrusionVec = new Vector(extrusionDirection || this.outerSketch.defaultDirection)
       .normalized()
       .multiply(extrusionDistance);
 
     if (extrusionProfile && !twistAngle) {
       const solid = solidFromShellGenerator(this.sketches, (sketch: Sketch) =>
-        complexExtrude(
-          sketch.wire,
-          origin || this.outerSketch.defaultOrigin,
-          extrusionVec,
-          extrusionProfile,
-          true
-        )
+        complexExtrude(sketch.wire, origin || this.outerSketch.defaultOrigin, extrusionVec, extrusionProfile, true),
       );
       return solid;
     }
@@ -188,8 +156,8 @@ export default class CompoundSketch implements SketchInterface {
           origin || this.outerSketch.defaultOrigin,
           extrusionVec,
           extrusionProfile,
-          true
-        )
+          true,
+        ),
       );
       return solid;
     }
@@ -203,30 +171,18 @@ export default class CompoundSketch implements SketchInterface {
    * Revolves the drawing on an axis (defined by its direction and an origin
    * (defaults to the sketch origin)
    */
-  revolve(
-    revolutionAxis?: Point,
-    { origin, angle }: { origin?: Point; angle?: number } = {}
-  ): Shape3D {
-    const solid = revolution(
-      this.face(),
-      origin || this.outerSketch.defaultOrigin,
-      revolutionAxis,
-      angle
-    );
+  revolve(revolutionAxis?: Point, { origin }: { origin?: Point } = {}): Shape3D {
+    const solid = revolution(this.face(), origin || this.outerSketch.defaultOrigin, revolutionAxis);
     return solid;
   }
 
   loftWith(otherCompound: this, loftConfig: LoftConfig): Shape3D {
     if (this.sketches.length !== otherCompound.sketches.length)
-      throw new Error(
-        "You need to loft with another compound with the same number of sketches"
-      );
+      throw new Error('You need to loft with another compound with the same number of sketches');
 
     const shells: Array<Shell | Face> = this.sketches.map((base, cIndex) => {
       const outer = otherCompound.sketches[cIndex];
-      return base
-        .clone()
-        .loftWith(outer.clone(), { ruled: loftConfig.ruled }, true);
+      return base.clone().loftWith(outer.clone(), { ruled: loftConfig.ruled }, true);
     });
 
     const baseFace = this.face().clone();
