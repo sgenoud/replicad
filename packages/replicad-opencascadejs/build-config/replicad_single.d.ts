@@ -6214,21 +6214,6 @@ export declare class BRepAlgoAPI_Algo extends BRepBuilderAPI_MakeShape {
    * Returns a shape built by the shape construction algorithm. Does not check if the shape is built.
    */
   Shape(): TopoDS_Shape;
-  /**
-   * Clears all warnings and errors, and any data cached by the algorithm. User defined options are not cleared.
-   */
-  Clear(): void;
-  ClearWarnings(): void;
-  FuzzyValue(): number;
-  GetReport(): Message_Report;
-  HasError(theType: Standard_Type): boolean;
-  HasErrors(): boolean;
-  HasWarning(theType: Standard_Type): boolean;
-  HasWarnings(): boolean;
-  RunParallel(): boolean;
-  SetFuzzyValue(theFuzz: number): void;
-  SetRunParallel(theFlag: boolean): void;
-  SetUseOBB(theUseOBB: boolean): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;

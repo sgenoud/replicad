@@ -233,7 +233,11 @@ mainBuild:
     - -sERROR_ON_UNDEFINED_SYMBOLS=0
     - -Wl,--allow-undefined
     - -sSTACK_SIZE=8388608
-    - -O3
+    - -sWASM_BIGINT
+    - -sEVAL_CTORS=2
+    - -msimd128
+    - -mrelaxed-simd
+    - -O4
 additionalCppCode: |
   class OCJS_ShapeHasher {
   public:
