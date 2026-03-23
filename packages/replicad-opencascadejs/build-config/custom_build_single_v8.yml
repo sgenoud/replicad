@@ -237,7 +237,7 @@ mainBuild:
     - -sEVAL_CTORS=2
     - -msimd128
     - -mrelaxed-simd
-    - -O4
+    - -O3
 additionalCppCode: |
   class OCJS_ShapeHasher {
   public:
