@@ -65,6 +65,31 @@ const main = ({ draw }) => draw()
     expect(output).toContain("stroke-dasharray=");
   }, 60000);
 
+  test("keeps projected contours as separate svg paths", async () => {
+    const workdir = await mkdtemp(join(tmpdir(), "replicad-cli-project-paths-"));
+    const input = join(workdir, "project-paths.js");
+
+    await writeFile(
+      input,
+      `
+const main = ({ drawRoundedRectangle, makeCylinder }) =>
+  drawRoundedRectangle(30, 20)
+    .sketchOnPlane()
+    .extrude(10)
+    .cut(makeCylinder(4, 10));
+      `.trimStart(),
+      "utf8"
+    );
+
+    const result = runCli(["-p", input]);
+
+    expect(result.status).toBe(0);
+    expect(result.stderr).toBe("");
+
+    const output = await readFile(join(workdir, "project-paths.svg"), "utf8");
+    expect(output.match(/<path\b/g)?.length ?? 0).toBeGreaterThan(1);
+  }, 60000);
+
   test("supports manifold-backed meshShape output", async () => {
     const workdir = await mkdtemp(join(tmpdir(), "replicad-cli-meshshape-"));
     const input = join(workdir, "mesh-shape.js");

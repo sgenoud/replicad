@@ -36,7 +36,7 @@ import { makeProjectedEdges } from "./projection/makeProjectedEdges";
 import offset, { Offset2DConfig } from "./blueprints/offset";
 import { CornerFinder } from "./finders/cornerFinder";
 import { fillet2D, chamfer2D } from "./blueprints/customCorners";
-import { edgeToCurve } from "./curves";
+import { edgeToCurve, edgeToCurveOnPlane } from "./curves";
 import { BSplineApproximationConfig } from "./shapeHelpers";
 import { approximateForSVG } from "./blueprints/approximations";
 import { SingleFace } from "./finders";
@@ -487,7 +487,13 @@ const edgesToDrawing = (edges: Edge[]): Drawing => {
     drawRectangle(1000, 1000).sketchOnPlane() as Sketch
   ).face();
 
-  const curves = edges.map((e) => edgeToCurve(e, planeFace));
+  const curves = edges.map((e) => {
+    try {
+      return edgeToCurveOnPlane(e);
+    } catch (_error) {
+      return edgeToCurve(e, planeFace);
+    }
+  });
   const stitchedCurves = stitchCurves(curves).map((s) => new Blueprint(s));
   if (stitchedCurves.length === 0) return new Drawing();
   if (stitchedCurves.length === 1) return new Drawing(stitchedCurves[0]);

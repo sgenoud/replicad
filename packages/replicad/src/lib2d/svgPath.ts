@@ -2,11 +2,10 @@ import { Geom2dAdaptor_Curve, gp_Pnt2d } from "replicad-opencascadejs";
 import { RAD2DEG } from "../constants";
 import { findCurveType } from "../definitionMaps";
 import { getOC } from "../oclib";
-import round2 from "../utils/round2";
 import round5 from "../utils/round5";
 import { Point2D } from "./definitions";
 
-const fromPnt = (pnt: gp_Pnt2d) => `${round2(pnt.X())} ${round2(pnt.Y())}`;
+const fromPnt = (pnt: gp_Pnt2d) => `${round5(pnt.X())} ${round5(pnt.Y())}`;
 
 export const adaptedCurveToPathElem = (
   adaptor: Geom2dAdaptor_Curve,
