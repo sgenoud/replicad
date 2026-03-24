@@ -72,6 +72,7 @@ export interface EvaluatorService {
     shapeId?: string,
     meshConfig?: GenericRecord
   ) => Promise<any[]>;
+  getShapeEntries: (shapeId?: string) => any[];
   loadFont: (
     fontData: string | ArrayBuffer,
     fontName?: string,

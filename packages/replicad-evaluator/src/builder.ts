@@ -271,6 +271,13 @@ try {
     );
   };
 
+  const getShapeEntries = (shapeId = "defaultShape") => {
+    if (!shapesMemory[shapeId]) {
+      throw new Error(`Shape ${shapeId} not computed yet`);
+    }
+    return shapesMemory[shapeId];
+  };
+
   const loadFont = async (
     fontData: string | ArrayBuffer,
     fontName?: string,
@@ -321,6 +328,7 @@ try {
     extractDefaultParams: extractDefaultParamsFromCode,
     extractDefaultName: extractDefaultNameFromCode,
     exportShape,
+    getShapeEntries,
     loadFont,
     faceInfo,
     edgeInfo,

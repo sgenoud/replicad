@@ -1,0 +1,54 @@
+{
+  "name": "replicad-cli",
+  "version": "0.21.1",
+  "description": "Command line interface for evaluating and exporting replicad models",
+  "keywords": [
+    "cad",
+    "cli",
+    "replicad",
+    "step",
+    "stl"
+  ],
+  "author": "Steve Genoud <steve@sgenoud.com>",
+  "homepage": "https://replicad.xyz",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgenoud/replicad.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sgenoud/replicad/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "replicad": "./bin/replicad-cli.js",
+    "replicad-cli": "./bin/replicad-cli.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "scripts": {
+    "build": "node --check bin/replicad-cli.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "commander": "^14.0.1",
+    "jszip": "^3.10.1",
+    "manifold-3d": "^3.0.1",
+    "replicad": "workspace:^",
+    "replicad-evaluator": "workspace:^",
+    "replicad-opencascadejs": "workspace:^",
+    "tsx": "^4.20.6"
+  },
+  "devDependencies": {
+    "vitest": "^0.28.3"
+  }
+}
