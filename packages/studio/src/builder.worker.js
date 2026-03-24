@@ -1,14 +1,12 @@
 import { expose } from "comlink";
 import * as replicad from "replicad";
+import { createBuilder } from "replicad-evaluator/builder";
+import { createBrowserCodeEvaluator } from "replicad-evaluator/evaluate/browser";
 import { getManifoldModule, setWasmUrl } from "manifold-3d/lib/wasm.js";
 import manifoldWasmUrl from "manifold-3d/manifold.wasm?url";
 
 import initOpenCascade from "./initOCSingle.js";
 import initOpenCascadeWithExceptions from "./initOCWithExceptions.js";
-import { StudioHelper } from "./utils/StudioHelper";
-import { runInContext, buildModuleEvaluator } from "./vm";
-
-import { renderOutput, ShapeStandardizer } from "./utils/renderOutput";
 
 self.replicad = replicad;
 
@@ -35,108 +33,6 @@ async function ensureReplicadReady() {
   }
   return oc;
 }
-
-export function runInContextAsOC(code, context = {}) {
-  const editedText = `
-${code}
-let dp = {}
-try {
-  dp = defaultParams;
-} catch (e) {}
-return main(replicad, __inputParams || dp)
-  `;
-
-  return runInContext(editedText, context);
-}
-
-async function runAsFunction(code, params) {
-  const oc = await ensureReplicadReady();
-
-  return runInContextAsOC(code, {
-    oc,
-    replicad,
-    __inputParams: params,
-  });
-}
-
-export async function runAsModule(code, params) {
-  await ensureReplicadReady();
-  const module = await buildModuleEvaluator(code);
-
-  if (module.default) return module.default(params || module.defaultParams);
-  return module.main(replicad, params || module.defaultParams || {});
-}
-
-const runCode = async (code, params) => {
-  if (code.match(/^\s*export\s+/m)) {
-    return runAsModule(code, params);
-  }
-  return runAsFunction(code, params);
-};
-
-const extractDefaultParamsFromCode = async (code) => {
-  if (code.match(/^\s*export\s+/m)) {
-    await ensureReplicadReady();
-    const module = await buildModuleEvaluator(code);
-    return module.defaultParams || null;
-  }
-
-  const editedText = `
-${code}
-try {
-  return defaultParams;
-} catch (e) {
-  return null;
-}
-  `;
-
-  try {
-    return runInContext(editedText, {});
-  } catch (e) {
-    return {};
-  }
-};
-
-const extractDefaultNameFromCode = async (code) => {
-  if (code.match(/^\s*export\s+/m)) {
-    await ensureReplicadReady();
-    const module = await buildModuleEvaluator(code);
-    return module.defaultName;
-  }
-
-  const editedText = `
-${code}
-try {
-  return defaultName;
-} catch (e) {
-  return;
-}
-  `;
-
-  try {
-    return runInContext(editedText, {});
-  } catch (e) {
-    return;
-  }
-};
-
-const computeLabels = async (code, params) => {
-  if (!code.match(/^\s*export\s+/m)) return [];
-  await ensureReplicadReady();
-  const module = await buildModuleEvaluator(code);
-  if (!replicad.getFont())
-    await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
-
-  const labels = module.labels?.(params || module.defaultParams || {}) || [];
-
-  return labels.filter((labelConfig) => {
-    return (
-      labelConfig && labelConfig.label && labelConfig.from && labelConfig.to
-    );
-  });
-};
-
-const SHAPES_MEMORY = {};
 
 const ocVersions = {
   withExceptions: null,
@@ -175,146 +71,31 @@ async function toggleExceptions() {
 
 disableExceptions();
 
-const formatException = (oc, e) => {
-  let message = "error";
-
-  if (typeof e === "number") {
-    if (oc.OCJS) {
-      const error = oc.OCJS.getStandard_FailureData(e);
-      message = error.GetMessageString();
-    } else {
-      message = `Kernel error ${e}`;
-    }
-  } else {
-    message = e.message;
-    console.error(e);
-  }
-
-  return {
-    error: true,
-    message,
-    stack: e.stack,
-  };
-};
-
-const buildShapesFromCode = async (code, params) => {
-  const oc = await ensureReplicadReady();
-  if (!replicad.getFont())
-    await replicad.loadFont("/fonts/HKGrotesk-Regular.ttf");
-
-  let shapes;
-  let defaultName;
-  const helper = new StudioHelper();
-  const standardizer = new ShapeStandardizer();
-
-  try {
-    self.$ = helper;
-    self.registerShapeStandardizer =
-      standardizer.registerAdapter.bind(standardizer);
-    shapes = await runCode(code, params);
-    defaultName = code && (await extractDefaultNameFromCode(code));
-  } catch (e) {
-    return formatException(oc, e);
-  }
-
-  return renderOutput(
-    shapes,
-    standardizer,
-    (shapes) => {
-      const editedShapes = helper.apply(shapes);
-      SHAPES_MEMORY.defaultShape = shapes;
-      return editedShapes;
-    },
-    defaultName
-  );
-};
-
-const isMeshShape = (shape) => shape instanceof replicad.MeshShape;
-
-const buildBlob = (
-  shape,
-  fileType,
-  meshConfig = {
-    tolerance: 0.01,
-    angularTolerance: 30,
-  }
-) => {
-  if (fileType === "stl") return shape.blobSTL(meshConfig);
-  if (fileType === "stl-binary")
-    return shape.blobSTL({ ...meshConfig, binary: true });
-  if (fileType === "step") return shape.blobSTEP();
-  throw new Error(`Filetype "${fileType}" unknown for export.`);
-};
-const exportShape = async (
-  fileType = "stl",
-  shapeId = "defaultShape",
-  meshConfig
-) => {
-  if (!SHAPES_MEMORY[shapeId])
-    throw new Error(`Shape ${shapeId} not computed yet`);
-
-  const isStepExport =
-    fileType === "step" || fileType === "step-assembly";
-  const exportableShapes = isStepExport
-    ? SHAPES_MEMORY[shapeId].filter(({ shape }) => !isMeshShape(shape))
-    : SHAPES_MEMORY[shapeId];
-
-  if (isStepExport && exportableShapes.length === 0) {
-    throw new Error(
-      "STEP export is not supported for mesh shapes. No exportable shapes found."
-    );
-  }
-
-  if (fileType === "step-assembly") {
-    return [
-      {
-        blob: replicad.exportSTEP(exportableShapes),
-        name: shapeId,
-      },
-    ];
-  }
-  return exportableShapes.map(({ shape, name }) => ({
-    blob: buildBlob(shape, fileType, meshConfig),
-    name,
-  }));
-};
-
-const loadFont = async (fontData, fontName, forceUpdate = false) => {
-  await ensureReplicadReady();
-  await replicad.loadFont(fontData, fontName, forceUpdate);
-};
-
-const faceInfo = (subshapeIndex, faceIndex, shapeId = "defaultShape") => {
-  const face = SHAPES_MEMORY[shapeId]?.[subshapeIndex]?.shape.faces[faceIndex];
-  if (!face) return null;
-  return {
-    type: face.geomType,
-    center: face.center.toTuple(),
-    normal: face.normalAt().normalize().toTuple(),
-  };
-};
-
-const edgeInfo = (subshapeIndex, edgeIndex, shapeId = "defaultShape") => {
-  const edge = SHAPES_MEMORY[shapeId]?.[subshapeIndex]?.shape.edges[edgeIndex];
-  if (!edge) return null;
-  return {
-    type: edge.geomType,
-    start: edge.startPoint.toTuple(),
-    end: edge.endPoint.toTuple(),
-    direction: edge.tangentAt().normalize().toTuple(),
-  };
-};
+const evaluator = createBuilder({
+  codeEvaluator: createBrowserCodeEvaluator(),
+  runtime: async () => {
+    const [oc, manifold] = await Promise.all([OC, MANIFOLD]);
+    return {
+      replicad,
+      oc,
+      manifold,
+      fontPath: "/fonts/HKGrotesk-Regular.ttf",
+    };
+  },
+});
 
 const service = {
   ready: () => ensureReplicadReady().then(() => true),
-  buildShapesFromCode,
-  loadFont,
-  computeLabels,
-  extractDefaultParamsFromCode,
-  extractDefaultNameFromCode,
-  exportShape,
-  edgeInfo,
-  faceInfo,
+  buildShapesFromCode: (...args) => evaluator.buildShapesFromCode(...args),
+  loadFont: (...args) => evaluator.loadFont(...args),
+  computeLabels: (...args) => evaluator.computeLabels(...args),
+  extractDefaultParamsFromCode: (...args) =>
+    evaluator.extractDefaultParamsFromCode(...args),
+  extractDefaultNameFromCode: (...args) =>
+    evaluator.extractDefaultNameFromCode(...args),
+  exportShape: (...args) => evaluator.exportShape(...args),
+  edgeInfo: (...args) => evaluator.edgeInfo(...args),
+  faceInfo: (...args) => evaluator.faceInfo(...args),
   toggleExceptions,
   exceptionsEnabled: () => ocVersions.current === "withExceptions",
 };

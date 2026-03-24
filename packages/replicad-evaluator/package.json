@@ -1,0 +1,47 @@
+{
+  "name": "replicad-evaluator",
+  "version": "0.21.1",
+  "description": "Portable code evaluation and shape building for replicad",
+  "author": "Steve Genoud <steve@sgenoud.com>",
+  "homepage": "https://replicad.xyz",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./builder": {
+      "types": "./src/builder.ts",
+      "import": "./src/builder.ts"
+    },
+    "./evaluate/browser": {
+      "types": "./src/evaluate/browser.ts",
+      "import": "./src/evaluate/browser.ts"
+    }
+  },
+  "peerDependencies": {
+    "replicad": "workspace:^"
+  },
+  "dependencies": {
+    "@rollup/browser": "^4.52.5",
+    "parse-css-color": "^0.2.1",
+    "rollup": "^4.52.5",
+    "rollup-plugin-external-globals": "^0.13.0",
+    "sucrase": "^3.35.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "typescript": "5.1.6",
+    "vite": "^4.5.5",
+    "vite-plugin-dts": "^3.5.2",
+    "vitest": "^0.28.3"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run"
+  }
+}

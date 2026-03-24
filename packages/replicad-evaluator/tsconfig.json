@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "es2022",
+    "module": "es2022",
+    "strict": true,
+    "lib": ["es2022", "dom"],
+    "preserveSymlinks": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"]
+  },
+  "include": ["src", "__tests__"]
+}

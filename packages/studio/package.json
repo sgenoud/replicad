@@ -53,6 +53,7 @@
     "react-router-dom": "^5.3.4",
     "react-use-rect": "^2.0.6",
     "replicad": "workspace:^",
+    "replicad-evaluator": "workspace:^",
     "replicad-opencascadejs": "workspace:^",
     "replicad-threejs-helper": "workspace:^",
     "styled-components": "^5.3.11",
