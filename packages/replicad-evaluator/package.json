@@ -1,6 +1,6 @@
 {
   "name": "replicad-evaluator",
-  "version": "0.21.1",
+  "version": "0.22.0",
   "description": "Portable code evaluation and shape building for replicad",
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "https://replicad.xyz",

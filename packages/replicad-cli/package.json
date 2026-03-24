@@ -1,6 +1,6 @@
 {
   "name": "replicad-cli",
-  "version": "0.21.1",
+  "version": "0.22.0",
   "description": "Command line interface for evaluating and exporting replicad models",
   "keywords": [
     "cad",
