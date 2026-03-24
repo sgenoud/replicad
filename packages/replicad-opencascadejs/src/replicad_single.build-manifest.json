@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-03-23T11:18:16Z",
+  "timestamp": "2026-03-23T19:59:08Z",
   "yaml_config": "custom_build_single_v8.yml",
-  "yaml_hash": "b7cda539a10f",
+  "yaml_hash": "56ebf5e02f21",
   "validation_passed": true,
   "symbols": {
     "requested": [
@@ -223,9 +223,9 @@
       "gp_XY",
       "gp_XYZ"
     ],
-    "compiled": 4456,
+    "compiled": 4268,
     "missing": [],
-    "extra_compiled": 4239,
+    "extra_compiled": 4051,
     "pass": true
   },
   "outputs": [
@@ -233,16 +233,16 @@
       "name": "replicad_single.js",
       "wasm_file": "replicad_single.wasm",
       "wasm_exists": true,
-      "wasm_size": 20256682,
+      "wasm_size": 19010278,
       "js_exists": true,
       "js_size": 54212,
       "pass": true
     }
   ],
   "binding_report": {
-    "total": 4454,
-    "succeeded": 0,
-    "cached": 4454,
+    "total": 4266,
+    "succeeded": 4266,
+    "cached": 0,
     "failed": 0,
     "error_categories": {},
     "failures": []
