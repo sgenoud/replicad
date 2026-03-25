@@ -95,23 +95,23 @@ export class BaseSketcher2d {
 
   /**
    * Returns the current pen angle in degrees
-   * 
+   *
    * The angle represents the tangent direction at the current pen position,
    * based on the last drawing operation (line, arc, bezier, etc.).
    * Returns 0 if nothing has been drawn yet.
-   * 
+   *
    * @category Drawing State
-   * 
-   * Added By Ben Harper 5/12/2025 to solve issue with being unable to draw a line perpendicular 
-   * to the tangent extension at the end of a .tangentArc() that did not finish at a known angle. 
+   *
+   * Added By Ben Harper 5/12/2025 to solve issue with being unable to draw a line perpendicular
+   * to the tangent extension at the end of a .tangentArc() that did not finish at a known angle.
    */
   get penAngle(): number {
     if (this.pendingCurves.length === 0) return 0;
-    
+
     const lastCurve = this.pendingCurves[this.pendingCurves.length - 1];
     const [dx, dy] = lastCurve.tangentAt(1);
     const angleInRadians = Math.atan2(dy, dx);
-    
+
     return angleInRadians * RAD2DEG;
   }
 
@@ -511,7 +511,7 @@ export class BaseSketcher2d {
    */
   customCorner(
     radius: number | ((first: Curve2D, second: Curve2D) => Curve2D[]),
-    mode: "fillet" | "chamfer" = "fillet"
+    mode: "fillet" | "chamfer" | "dogbone" = "fillet"
   ) {
     if (!this.pendingCurves.length)
       throw new Error("You need a curve defined to fillet the angle");
