@@ -242,6 +242,20 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   /**
+   * Asserts that this shape is a 3D shape (Shell, Solid, CompSolid, or
+   * Compound) and returns it typed as Shape3D. Throws if the shape is not 3D.
+   *
+   * Useful for chaining after operations that return a generic shape type.
+   *
+   */
+  asShape3D(): Shape3D {
+    if (isShape3D(this as unknown as AnyShape)) {
+      return this as unknown as Shape3D;
+    }
+    throw new Error("Shape is not a 3D shape");
+  }
+
+  /**
    * Simplifies the shape by removing unnecessary edges and faces
    */
   simplify(): this {
