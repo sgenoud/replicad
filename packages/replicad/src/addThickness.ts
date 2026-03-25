@@ -58,6 +58,55 @@ export const revolution = (
   return shape;
 };
 
+/**
+ * Apply a draft (taper) angle to all planar faces of a shape along a pull direction.
+ *
+ * @param shape - The shape to draft
+ * @param angle - Draft angle in degrees (positive = taper inward)
+ * @param direction - Pull direction (default: Z-up)
+ */
+export const draft = (
+  shape: Shape3D,
+  angle: number,
+  direction: Point = [0, 0, 1]
+): Shape3D => {
+  const oc = getOC();
+  const dir = new oc.gp_Dir_4(direction[0], direction[1], direction[2]);
+  const draftBuilder = new oc.BRepOffsetAPI_DraftAngle(shape.wrapped);
+
+  const explorer = new oc.TopExp_Explorer_2(
+    shape.wrapped,
+    oc.TopAbs_ShapeEnum.TopAbs_FACE as any,
+    oc.TopAbs_ShapeEnum.TopAbs_SHAPE as any
+  );
+
+  while (explorer.More()) {
+    const face = oc.TopoDS.Face_1(explorer.Current());
+    try {
+      draftBuilder.Add(face, dir, angle * DEG2RAD, oc.TopAbs_Orientation.TopAbs_FORWARD);
+    } catch {
+      // Skip faces that can't be drafted (non-planar, etc.)
+    }
+    explorer.Next();
+  }
+
+  draftBuilder.Build(new oc.Message_ProgressRange_1());
+  if (!draftBuilder.IsDone()) {
+    dir.delete();
+    explorer.delete();
+    draftBuilder.delete();
+    throw new Error("Draft operation failed");
+  }
+
+  const result = cast(draftBuilder.Shape());
+  dir.delete();
+  explorer.delete();
+  draftBuilder.delete();
+
+  if (!isShape3D(result)) throw new Error("Draft did not produce a 3D shape");
+  return result;
+};
+
 export interface GenericSweepConfig {
   frenet?: boolean;
   auxiliarySpine?: Wire | Edge;

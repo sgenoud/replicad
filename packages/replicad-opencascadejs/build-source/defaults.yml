@@ -229,6 +229,7 @@
     - symbol: BRepOffsetAPI_MakePipe
     - symbol: BRepOffsetAPI_MakePipeShell
     - symbol: BRepOffsetAPI_MakeFilling
+    - symbol: BRepOffsetAPI_DraftAngle
     - symbol: BRepOffset_Mode
     - symbol: BRepFilletAPI_LocalOperation
     - symbol: BRepFilletAPI_MakeFillet
