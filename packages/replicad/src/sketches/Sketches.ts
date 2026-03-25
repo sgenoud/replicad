@@ -55,7 +55,7 @@ export default class Sketches {
    * Revolves the drawing on an axis (defined by its direction and an origin
    * (defaults to the sketch origin)
    */
-  revolve(revolutionAxis?: Point, config?: { origin?: Point }): AnyShape {
+  revolve(revolutionAxis?: Point, config?: { origin?: Point; angle?: number }): AnyShape {
     return compoundShapes(
       this.sketches.map((s) => s.revolve(revolutionAxis, config))
     );
