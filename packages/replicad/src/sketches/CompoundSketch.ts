@@ -205,12 +205,13 @@ export default class CompoundSketch implements SketchInterface {
    */
   revolve(
     revolutionAxis?: Point,
-    { origin }: { origin?: Point } = {}
+    { origin, angle }: { origin?: Point; angle?: number } = {}
   ): Shape3D {
     const solid = revolution(
       this.face(),
       origin || this.outerSketch.defaultOrigin,
-      revolutionAxis
+      revolutionAxis,
+      angle
     );
     return solid;
   }

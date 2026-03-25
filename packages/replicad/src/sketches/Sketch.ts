@@ -120,13 +120,14 @@ export default class Sketch implements SketchInterface {
    */
   revolve(
     revolutionAxis?: Point,
-    { origin }: { origin?: Point } = {}
+    { origin, angle }: { origin?: Point; angle?: number } = {}
   ): Shape3D {
     const face = makeFace(this.wire);
     const solid = revolution(
       face,
       origin || this.defaultOrigin,
-      revolutionAxis
+      revolutionAxis,
+      angle
     );
     face.delete();
     this.delete();
