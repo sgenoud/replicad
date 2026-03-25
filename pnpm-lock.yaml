@@ -123,7 +123,7 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       replicad:
-        specifier: ^0.22.0
+        specifier: ^0.22.1
         version: link:../replicad
       replicad-opencascadejs:
         specifier: ^0.22.0
