@@ -91,11 +91,22 @@ export default observer(function EditorPane() {
       },
     ];
 
+    const diagnosticsOptions = {
+      // 2307: "Cannot find module" - suppress for URL imports handled at runtime
+      diagnosticCodesToIgnore: [2792],
+    };
+
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
     monaco.languages.typescript.javascriptDefaults.setExtraLibs(extraLibs);
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(
+      diagnosticsOptions
+    );
 
     monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
     monaco.languages.typescript.typescriptDefaults.setExtraLibs(extraLibs);
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions(
+      diagnosticsOptions
+    );
   };
 
   React.useEffect(() => {

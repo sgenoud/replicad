@@ -45,7 +45,9 @@ export function rewriteReplicadImports(code: string) {
   transformed = transformed.replace(
     /import\s+{([^}]+)}\s+from\s+["']replicad["'];?/g,
     (_match, namedImports) => {
-      return `const { ${rewriteNamedImports(namedImports)} } = globalThis.replicad;`;
+      return `const { ${rewriteNamedImports(
+        namedImports
+      )} } = globalThis.replicad;`;
     }
   );
 
