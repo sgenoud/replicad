@@ -10,6 +10,7 @@ import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker"
 import prettier from "prettier/esm/standalone";
 import prettierPluginBabel from "prettier/esm/parser-babel";
 import prettierEspree from "prettier/esm/parser-espree";
+import prettierPluginTypescript from "prettier/esm/parser-typescript";
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -29,9 +30,14 @@ self.MonacoEnvironment = {
   },
 };
 
-const formatWithPrettier = (value) => {
-  console.log("yeah", prettier);
+const formatWithPrettier = (value, language) => {
   try {
+    if (language === "typescript") {
+      return prettier.format(value, {
+        parser: "typescript",
+        plugins: [prettierPluginTypescript],
+      });
+    }
     return prettier.format(value, {
       parser: "babel",
       plugins: [prettierPluginBabel, prettierEspree],
@@ -44,11 +50,21 @@ const formatWithPrettier = (value) => {
 
 monaco.languages.registerDocumentFormattingEditProvider("javascript", {
   provideDocumentFormattingEdits: (model) => {
-    console.log("mmm");
     return [
       {
         range: model.getFullModelRange(),
-        text: formatWithPrettier(model.getValue()),
+        text: formatWithPrettier(model.getValue(), "javascript"),
+      },
+    ];
+  },
+});
+
+monaco.languages.registerDocumentFormattingEditProvider("typescript", {
+  provideDocumentFormattingEdits: (model) => {
+    return [
+      {
+        range: model.getFullModelRange(),
+        text: formatWithPrettier(model.getValue(), "typescript"),
       },
     ];
   },

@@ -4,9 +4,16 @@ import codeInit, { exportCode } from "./codeInit";
 
 const REFRESH_RATE = 1000;
 
+const storedLanguage = localStorage.getItem("editorLanguage") || "javascript";
+
 export default types.optional(
   types
-    .model("CodeState", {})
+    .model("CodeState", {
+      language: types.optional(
+        types.enumeration(["javascript", "typescript"]),
+        storedLanguage
+      ),
+    })
     .views((self) => ({
       get current() {
         return getRoot(self).config.code;
@@ -22,6 +29,10 @@ export default types.optional(
         if (save) {
           localStorage.setItem("script", newCode);
         }
+      },
+      setLanguage(newLanguage) {
+        self.language = newLanguage;
+        localStorage.setItem("editorLanguage", newLanguage);
       },
       init: flow(function* () {
         const code = yield codeInit();
@@ -71,6 +82,13 @@ export default types.optional(
             if (!newFileHandle) return;
             fileHandle.set(newFileHandle);
             interval.set(setInterval(read, REFRESH_RATE));
+
+            const name = newFileHandle.name || "";
+            if (name.endsWith(".ts") || name.endsWith(".tsx")) {
+              self.setLanguage("typescript");
+            } else if (name.endsWith(".js") || name.endsWith(".jsx")) {
+              self.setLanguage("javascript");
+            }
           },
           stopListening() {
             clearInterval(interval.get());

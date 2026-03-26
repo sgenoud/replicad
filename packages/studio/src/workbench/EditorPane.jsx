@@ -11,7 +11,7 @@ import Splitter, { GutterTheme, SplitDirection } from "@devbookhq/splitter";
 import "./loadMonaco";
 import useEditorStore from "../visualiser/editor/useEditorStore";
 import downloadCode from "../utils/downloadCode";
-import { HeaderButton } from "./panes";
+import { HeaderButton, HeaderSelect } from "./panes";
 import Download from "../icons/Download";
 import Share from "../icons/Share";
 import LoadingScreen from "../components/LoadingScreen";
@@ -68,10 +68,16 @@ const RightAligned = styled.div`
 
 export default observer(function EditorPane() {
   const store = useEditorStore();
+  const editorRef = React.useRef(null);
+  const monacoRef = React.useRef(null);
 
-  const handleEditorDidMount = (_, monaco) => {
-    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-    monaco.languages.typescript.javascriptDefaults.setExtraLibs([
+  const language = store.code.language;
+
+  const handleEditorDidMount = (editor, monaco) => {
+    editorRef.current = editor;
+    monacoRef.current = monaco;
+
+    const extraLibs = [
       {
         content: `declare module 'replicad' { ${replicadTypes} }`,
       },
@@ -83,8 +89,24 @@ export default observer(function EditorPane() {
   }
 `,
       },
-    ]);
+    ];
+
+    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
+    monaco.languages.typescript.javascriptDefaults.setExtraLibs(extraLibs);
+
+    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
+    monaco.languages.typescript.typescriptDefaults.setExtraLibs(extraLibs);
   };
+
+  React.useEffect(() => {
+    const editor = editorRef.current;
+    const monaco = monacoRef.current;
+    if (!editor || !monaco) return;
+    const model = editor.getModel();
+    if (model) {
+      monaco.editor.setModelLanguage(model, language);
+    }
+  }, [language]);
 
   if (!store.code.initialized) return <LoadingScreen />;
 
@@ -97,7 +119,7 @@ export default observer(function EditorPane() {
         initialSizes={store.error ? [75, 25] : [100]}
       >
         <Editor
-          defaultLanguage="javascript"
+          defaultLanguage={language}
           defaultValue={store.code.current}
           theme="vs-dark"
           height="100%"
@@ -178,6 +200,15 @@ export const EditorButtons = observer(() => {
 
   return (
     <>
+      <HeaderSelect
+        value={store.code.language}
+        onChange={(e) => store.code.setLanguage(e.target.value)}
+        title="Editor language"
+      >
+        <option value="javascript">js</option>
+        <option value="typescript">ts</option>
+      </HeaderSelect>
+
       {filePickerSupported && (
         <>
           <HeaderButton onClick={toggleAutoload} title="Toggle autoreload">
