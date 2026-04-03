@@ -5,6 +5,7 @@ import {
 } from "replicad-opencascadejs";
 
 import { GCWithScope, localGC, WrappingObj } from "./register";
+import type { Deletable } from "./register";
 import { getOC } from "./oclib.js";
 import { findCurveType } from "./definitionMaps";
 
@@ -257,7 +258,7 @@ export function edgeToCurve(e: Edge, face: Face): Curve2D {
   return new Curve2D(new oc.Handle_Geom2d_Curve_2(trimmed));
 }
 
-const poles3dTo2d = (poles: any, register: <T>(value: T) => T) => {
+const poles3dTo2d = (poles: any, register: <T extends Deletable>(value: T) => T) => {
   const oc = getOC();
   const poles2d = register(
     new oc.TColgp_Array1OfPnt2d_2(poles.Lower(), poles.Upper())
@@ -278,7 +279,7 @@ const direction3dTo2d = (direction: any): Point2D => [
   direction.Y(),
 ];
 
-const axis3dTo2d = (axis: any, register: <T>(value: T) => T) => {
+const axis3dTo2d = (axis: any, register: <T extends Deletable>(value: T) => T) => {
   const oc = getOC();
 
   const location = register(axis.Location());

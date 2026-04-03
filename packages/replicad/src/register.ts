@@ -1,7 +1,7 @@
 import { getOC } from "./oclib";
 import { OpenCascadeInstance } from "replicad-opencascadejs";
 
-interface Deletable {
+export interface Deletable {
   delete: () => void;
 }
 
