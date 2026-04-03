@@ -50,6 +50,9 @@ export const HeaderButton = styled.button`
 
 export const HeaderSelect = styled.select`
   margin-right: 1.5em;
+  padding: 0 0.4em;
+  height: 100%;
+  font-size: 0.8em;
 
   color: #d4d4d4;
 
@@ -68,9 +71,7 @@ export const PaneHeader = styled.div`
   padding: 0.2em 2rem;
   box-shadow: rgb(0 0 0 / 35%) 0px -6px 12px 3px inset;
 
-  & * {
-    font-size: calc(var(--pane-header-height) * 0.6);
-  }
+  font-size: calc(var(--pane-header-height) * 0.6);
 
   &:after {
     content: "";
