@@ -1454,6 +1454,32 @@ export declare type BRepOffset_Mode = {
   BRepOffset_RectoVerso: {};
 }
 
+export declare class BRepOffsetAPI_DraftAngle extends BRepBuilderAPI_ModifyShape {
+  Clear(): void;
+  Init(S: TopoDS_Shape): void;
+  Add(F: TopoDS_Face, Direction: gp_Dir, Angle: Standard_Real, NeutralPlane: gp_Pln, Flag: Standard_Boolean): void;
+  AddDone(): Standard_Boolean;
+  Remove(F: TopoDS_Face): void;
+  ProblematicShape(): TopoDS_Shape;
+  Status(): Draft_ErrorStatus;
+  ConnectedFaces(F: TopoDS_Face): TopTools_ListOfShape;
+  ModifiedFaces(): TopTools_ListOfShape;
+  Build(theRange: Message_ProgressRange): void;
+  CorrectWires(): void;
+  Generated(S: TopoDS_Shape): TopTools_ListOfShape;
+  Modified(S: TopoDS_Shape): TopTools_ListOfShape;
+  ModifiedShape(S: TopoDS_Shape): TopoDS_Shape;
+  delete(): void;
+}
+
+  export declare class BRepOffsetAPI_DraftAngle_1 extends BRepOffsetAPI_DraftAngle {
+    constructor();
+  }
+
+  export declare class BRepOffsetAPI_DraftAngle_2 extends BRepOffsetAPI_DraftAngle {
+    constructor(S: TopoDS_Shape);
+  }
+
 export declare class BRepOffsetAPI_MakeFilling extends BRepBuilderAPI_MakeShape {
   constructor(Degree: Graphic3d_ZLayerId, NbPtsOnCur: Graphic3d_ZLayerId, NbIter: Graphic3d_ZLayerId, Anisotropie: Standard_Boolean, Tol2d: Standard_Real, Tol3d: Standard_Real, TolAng: Standard_Real, TolCurv: Standard_Real, MaxDeg: Graphic3d_ZLayerId, MaxSegments: Graphic3d_ZLayerId)
   SetConstrParam(Tol2d: Standard_Real, Tol3d: Standard_Real, TolAng: Standard_Real, TolCurv: Standard_Real): void;
@@ -7535,6 +7561,63 @@ export declare class gp_GTrsf2d {
     constructor(theM: gp_Mat2d, theV: gp_XY);
   }
 
+export declare class gp_Pln {
+  Coefficients(theA: Standard_Real, theB: Standard_Real, theC: Standard_Real, theD: Standard_Real): void;
+  SetAxis(theA1: gp_Ax1): void;
+  SetLocation(theLoc: gp_Pnt): void;
+  SetPosition(theA3: gp_Ax3): void;
+  UReverse(): void;
+  VReverse(): void;
+  Direct(): Standard_Boolean;
+  Axis(): gp_Ax1;
+  Location(): gp_Pnt;
+  Position(): gp_Ax3;
+  Distance_1(theP: gp_Pnt): Standard_Real;
+  Distance_2(theL: gp_Lin): Standard_Real;
+  Distance_3(theOther: gp_Pln): Standard_Real;
+  SquareDistance_1(theP: gp_Pnt): Standard_Real;
+  SquareDistance_2(theL: gp_Lin): Standard_Real;
+  SquareDistance_3(theOther: gp_Pln): Standard_Real;
+  XAxis(): gp_Ax1;
+  YAxis(): gp_Ax1;
+  Contains_1(theP: gp_Pnt, theLinearTolerance: Standard_Real): Standard_Boolean;
+  Contains_2(theL: gp_Lin, theLinearTolerance: Standard_Real, theAngularTolerance: Standard_Real): Standard_Boolean;
+  Mirror_1(theP: gp_Pnt): void;
+  Mirrored_1(theP: gp_Pnt): gp_Pln;
+  Mirror_2(theA1: gp_Ax1): void;
+  Mirrored_2(theA1: gp_Ax1): gp_Pln;
+  Mirror_3(theA2: gp_Ax2): void;
+  Mirrored_3(theA2: gp_Ax2): gp_Pln;
+  Rotate(theA1: gp_Ax1, theAng: Standard_Real): void;
+  Rotated(theA1: gp_Ax1, theAng: Standard_Real): gp_Pln;
+  Scale(theP: gp_Pnt, theS: Standard_Real): void;
+  Scaled(theP: gp_Pnt, theS: Standard_Real): gp_Pln;
+  Transform(theT: gp_Trsf): void;
+  Transformed(theT: gp_Trsf): gp_Pln;
+  Translate_1(theV: gp_Vec): void;
+  Translated_1(theV: gp_Vec): gp_Pln;
+  Translate_2(theP1: gp_Pnt, theP2: gp_Pnt): void;
+  Translated_2(theP1: gp_Pnt, theP2: gp_Pnt): gp_Pln;
+  DumpJson(theOStream: Standard_OStream, theDepth: Graphic3d_ZLayerId): void;
+  delete(): void;
+}
+
+  export declare class gp_Pln_1 extends gp_Pln {
+    constructor();
+  }
+
+  export declare class gp_Pln_2 extends gp_Pln {
+    constructor(theA3: gp_Ax3);
+  }
+
+  export declare class gp_Pln_3 extends gp_Pln {
+    constructor(theP: gp_Pnt, theV: gp_Dir);
+  }
+
+  export declare class gp_Pln_4 extends gp_Pln {
+    constructor(theA: Standard_Real, theB: Standard_Real, theC: Standard_Real, theD: Standard_Real);
+  }
+
 export declare class gp_Pnt {
   SetCoord_1(theIndex: Graphic3d_ZLayerId, theXi: Standard_Real): void;
   SetCoord_2(theXp: Standard_Real, theYp: Standard_Real, theZp: Standard_Real): void;
@@ -8376,6 +8459,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepMesh_IncrementalMesh_2: typeof BRepMesh_IncrementalMesh_2;
   BRepMesh_IncrementalMesh_3: typeof BRepMesh_IncrementalMesh_3;
   BRepOffset_Mode: BRepOffset_Mode;
+  BRepOffsetAPI_DraftAngle: typeof BRepOffsetAPI_DraftAngle;
+  BRepOffsetAPI_DraftAngle_1: typeof BRepOffsetAPI_DraftAngle_1;
+  BRepOffsetAPI_DraftAngle_2: typeof BRepOffsetAPI_DraftAngle_2;
   BRepOffsetAPI_MakeFilling: typeof BRepOffsetAPI_MakeFilling;
   BRepOffsetAPI_MakeOffset: typeof BRepOffsetAPI_MakeOffset;
   BRepOffsetAPI_MakeOffset_1: typeof BRepOffsetAPI_MakeOffset_1;
@@ -9011,6 +9097,11 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   gp_GTrsf2d_1: typeof gp_GTrsf2d_1;
   gp_GTrsf2d_2: typeof gp_GTrsf2d_2;
   gp_GTrsf2d_3: typeof gp_GTrsf2d_3;
+  gp_Pln: typeof gp_Pln;
+  gp_Pln_1: typeof gp_Pln_1;
+  gp_Pln_2: typeof gp_Pln_2;
+  gp_Pln_3: typeof gp_Pln_3;
+  gp_Pln_4: typeof gp_Pln_4;
   gp_Pnt: typeof gp_Pnt;
   gp_Pnt_1: typeof gp_Pnt_1;
   gp_Pnt_2: typeof gp_Pnt_2;

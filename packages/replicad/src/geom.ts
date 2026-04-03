@@ -10,6 +10,7 @@ import {
   gp_XYZ,
   gp_Dir,
   gp_Pnt,
+  gp_Pln,
   OpenCascadeInstance,
   gp_Trsf,
   TopoDS_Shape,
@@ -49,6 +50,19 @@ export const makeAx3 = (center: Point, dir: Point, xDir?: Point): gp_Ax3 => {
   direction.delete();
   return axis;
 };
+
+export function makePln(origin: Point, dir: Point): gp_Pln {
+  const orig = asPnt(origin);
+  const direction = asDir(dir);
+
+  const oc = getOC();
+  const pln = new oc.gp_Pln_3(orig, direction);
+
+  orig.delete();
+  direction.delete();
+
+  return pln;
+}
 
 export const makeAx2 = (center: Point, dir: Point, xDir?: Point): gp_Ax2 => {
   const oc = getOC();

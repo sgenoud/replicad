@@ -26,6 +26,7 @@ mainBuild:
   - symbol: gp_Ax2
   - symbol: gp_Ax3
   - symbol: gp_Circ
+  - symbol: gp_Pln
   - symbol: gp_Elips
   - symbol: gp_Cylinder
   - symbol: gp_Sphere
@@ -203,6 +204,7 @@ mainBuild:
   - symbol: BRepPrimAPI_MakeSphere
   - symbol: BRepPrimAPI_MakeTorus
   - symbol: BRepPrimAPI_MakeRevolution
+  - symbol: BRepOffsetAPI_DraftAngle
   - symbol: BRepOffsetAPI_ThruSections
   - symbol: BRepOffsetAPI_MakeThickSolid
   - symbol: BRepOffsetAPI_MakeOffset

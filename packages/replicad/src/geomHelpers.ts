@@ -28,6 +28,8 @@ export const makePlaneFromFace = (
 };
 
 function makePlane(plane: Plane): Plane;
+function makePlane(plane: PlaneName): Plane;
+function makePlane(plane: Plane | PlaneName): Plane;
 function makePlane(plane?: PlaneName, origin?: Point | number): Plane;
 function makePlane(
   plane: Plane | PlaneName = "XY",
