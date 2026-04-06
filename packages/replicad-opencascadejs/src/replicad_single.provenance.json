@@ -1,7 +1,7 @@
 {
   "schema": "wasm-build-provenance-v1",
-  "buildId": "20260323T151419-O3-noLTO-single",
-  "timestamp": "2026-03-23T15:14:19.657798+00:00",
+  "buildId": "20260324T055420-O3-noLTO-single",
+  "timestamp": "2026-03-24T05:54:20.635694+00:00",
   "toolchain": {
     "emscripten": "5.0.1",
     "llvm": "17",
@@ -10,7 +10,7 @@
   },
   "source": {
     "occtCommit": "48ebca0f70a5e4b936548b695bc3583363898da4",
-    "opencascadejsCommit": "ecbe987cd2e536e32c44a93af22eb4f9551d2f44",
+    "opencascadejsCommit": "9f217d182c6d42cf8c1fa914920be442c5740841",
     "filterPackagesHash": "8b12ca608181",
     "pinnedDeps": {
       "occt": {
@@ -55,8 +55,8 @@
   },
   "linking": {
     "yamlConfig": "replicad_single.js",
-    "yamlConfigHash": "56ebf5e02f21",
-    "boundSymbols": 218,
+    "yamlConfigHash": "334f988937ff",
+    "boundSymbols": 219,
     "symbolList": [
       "Message_ProgressRange",
       "TColgp_Array1OfDir",
@@ -246,6 +246,7 @@
       "XSControl_Reader",
       "StlAPI_Reader",
       "StlAPI",
+      "Geom2dConvert_ApproxCurve",
       "Geom2dConvert_BSplineCurveToBezierCurve",
       "ShapeUpgrade_UnifySameDomain",
       "TDF_Attribute",
@@ -278,8 +279,8 @@
       "Standard_Failure"
     ],
     "emccFlags": [
-      "-sDISABLE_EXCEPTION_CATCHING=1",
-      "-sSUPPORT_LONGJMP=0",
+      "-fwasm-exceptions",
+      "-sEXPORT_EXCEPTION_HANDLING_HELPERS",
       "-sEXPORT_ES6=1",
       "-sMODULARIZE",
       "-sALLOW_MEMORY_GROWTH=1",
@@ -297,7 +298,7 @@
       "-mrelaxed-simd",
       "-O3"
     ],
-    "linkDuration_s": 60.3
+    "linkDuration_s": 45.4
   },
   "postProcessing": {
     "wasmOptFlags": [
@@ -310,32 +311,31 @@
       "--enable-nontrapping-float-to-int",
       "--traps-never-happen",
       "--converge",
-      "--closed-world",
       "--enable-exception-handling",
       "--enable-simd",
       "--enable-relaxed-simd"
     ],
-    "preOptSize": 20164198,
-    "postOptSize": 19010278,
-    "optReduction": "5.7%",
-    "wasmOptDuration_s": 83.2
+    "preOptSize": 22581467,
+    "postOptSize": 22559969,
+    "optReduction": "0.1%",
+    "wasmOptDuration_s": 86.0
   },
   "output": {
     "replicad_single.wasm": {
-      "size": 19010278,
-      "sha256": "8caa293fe37f98ca"
+      "size": 22559969,
+      "sha256": "6edc60f8b6fe1009"
     },
     "replicad_single.js": {
-      "size": 54212
+      "size": 56357
     },
     "replicad_single.d.ts": {
-      "size": 968575,
-      "lines": 21026
+      "size": 1650691,
+      "lines": 40417
     }
   },
   "sections": {},
   "filtering": {
     "excludedPackages": []
   },
-  "totalDuration_s": 992
+  "totalDuration_s": 148
 }
