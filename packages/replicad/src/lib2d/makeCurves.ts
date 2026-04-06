@@ -249,7 +249,7 @@ export const make2dBezierCurve = (
   const [r, gc] = localGC();
 
   const arrayOfPoints = r(
-    new oc.TColgp_Array1OfPnt2d(1, controls.length + 2)
+    new oc.NCollection_Array1_gp_Pnt2d(1, controls.length + 2)
   );
   arrayOfPoints.SetValue(1, r(pnt(startPoint)));
 
@@ -296,7 +296,7 @@ export function make2dInerpolatedBSplineCurve(
   const r = GCWithScope();
   const oc = getOC();
 
-  const pnts = r(new oc.TColgp_Array1OfPnt2d(1, points.length));
+  const pnts = r(new oc.NCollection_Array1_gp_Pnt2d(1, points.length));
 
   points.forEach((point, index) => {
     pnts.SetValue(index + 1, r(pnt(point)));

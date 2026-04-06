@@ -19,7 +19,7 @@ import {
   GeomAPI_PointsToBSpline,
   gp_GTrsf,
   gp_Pnt,
-  TColgp_Array2OfPnt,
+  NCollection_Array2_gp_Pnt,
 } from "replicad-opencascadejs";
 
 export const makeLine = (v1: Point, v2: Point): Edge => {
@@ -180,7 +180,7 @@ export const makeBSplineApproximation = function makeBSplineApproximation(
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const pnts = r(new oc.TColgp_Array1OfPnt(1, points.length));
+  const pnts = r(new oc.NCollection_Array1_gp_Pnt(1, points.length));
 
   points.forEach((point, index) => {
     pnts.SetValue(index + 1, r(asPnt(point)));
@@ -227,7 +227,7 @@ export const makeBSplineApproximation = function makeBSplineApproximation(
 
 export const makeBezierCurve = (points: Point[]): Edge => {
   const oc = getOC();
-  const arrayOfPoints = new oc.TColgp_Array1OfPnt(1, points.length);
+  const arrayOfPoints = new oc.NCollection_Array1_gp_Pnt(1, points.length);
   points.forEach((p, i) => {
     arrayOfPoints.SetValue(i + 1, asPnt(p));
   });
@@ -438,14 +438,14 @@ class EllpsoidTransform extends WrappingObj<gp_GTrsf> {
   }
 }
 
-function convertToJSArray(arrayOfPoints: TColgp_Array2OfPnt): gp_Pnt[][] {
+function convertToJSArray(arrayOfPoints: NCollection_Array2_gp_Pnt): gp_Pnt[][] {
   const newArray = [];
 
   for (let r = arrayOfPoints.LowerRow(); r <= arrayOfPoints.UpperRow(); r++) {
     const row: gp_Pnt[] = [];
     newArray.push(row);
     for (let c = arrayOfPoints.LowerCol(); c <= arrayOfPoints.UpperCol(); c++) {
-      // @ts-expect-error Value binding missing from TColgp_Array2OfPnt d.ts
+      // @ts-expect-error Value binding missing from NCollection_Array2 d.ts
       const pnt: gp_Pnt = arrayOfPoints.Value(r, c);
       row.push(pnt);
     }

@@ -1072,7 +1072,7 @@ export class _3DShape<Type extends TopoDS_Shape>
     const r = GCWithScope();
 
     const filteredFaces = filter.find(this);
-    const facesToRemove = r(new this.oc.TopTools_ListOfShape());
+    const facesToRemove = r(new this.oc.NCollection_List_TopoDS_Shape());
 
     filteredFaces.forEach((face: Face) => {
       facesToRemove.Append(face.wrapped);
