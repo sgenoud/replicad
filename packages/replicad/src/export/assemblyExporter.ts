@@ -125,7 +125,7 @@ export function exportSTEP(
   oc.Interface_Static.SetIVal("write.step.schema", 5);
 
   const progress = r(new oc.Message_ProgressRange());
-  writer.Transfer_1(
+  writer.Transfer(
     doc.wrapped,
     oc.STEPControl_StepModelType.STEPControl_AsIs,
     "",
