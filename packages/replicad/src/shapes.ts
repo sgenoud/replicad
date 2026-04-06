@@ -346,7 +346,6 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
   protected _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
     new this.oc.BRepMesh_IncrementalMesh(this.wrapped, tolerance, false, angularTolerance, false);
-    this.oc.BRepLib.EnsureNormalConsistency(this.wrapped, angularTolerance, true);
   }
 
   /**
@@ -782,7 +781,7 @@ export class Face extends Shape<TopoDS_Face> {
   }
 
   get UVBounds(): { uMin: number; uMax: number; vMin: number; vMax: number } {
-    const result = this.oc.BRepTools.UVBounds(this.wrapped, 0, 0, 0, 0);
+    const result = this.oc.BRepTools.UVBounds(this.wrapped);
     return {
       uMin: result.UMin,
       uMax: result.UMax,
@@ -897,19 +896,21 @@ export class Face extends Shape<TopoDS_Face> {
       triangulatedFace.vertices[(i - 1) * 3 + 2] = p.Z();
     }
 
+    const orient = this.orientation;
+    const normalSign = orient === 'backward' ? -1 : 1;
+
     if (!tri.HasNormals()) {
       tri.ComputeNormals();
     }
     triangulatedFace.verticesNormals = new Array(nbNodes * 3);
     for (let i = 1; i <= nbNodes; i++) {
       const d = r(r(tri.Normal(i)).Transformed(transformation));
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X();
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y();
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z();
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X() * normalSign;
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y() * normalSign;
+      triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z() * normalSign;
     }
 
     // write triangle buffer
-    const orient = this.orientation;
     const nbTriangles = tri.NbTriangles();
     triangulatedFace.trianglesIndexes = new Array(nbTriangles * 3);
     let validFaceTriCount = 0;
