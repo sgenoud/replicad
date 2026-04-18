@@ -1,6 +1,5 @@
 import {
   Geom2dAPI_PointsToBSpline,
-  Geom2d_Curve,
   Geom2d_TrimmedCurve,
 } from "replicad-opencascadejs";
 import { getOC } from "../oclib.js";
@@ -37,7 +36,7 @@ export const make2dSegmentCurve = (
   const [r, gc] = localGC();
 
   const segment = r(
-    new oc.GCE2d_MakeSegment(r(pnt(startPoint)), r(pnt(endPoint)))
+    new oc.GC_MakeSegment2d(r(pnt(startPoint)), r(pnt(endPoint)))
   ).Value();
   const curve = new Curve2D(segment);
 
@@ -69,7 +68,7 @@ export const make2dThreePointArc = (
   const [r, gc] = localGC();
 
   const segment = r(
-    new oc.GCE2d_MakeArcOfCircle(
+    new oc.GC_MakeArcOfCircle2d(
       r(pnt(startPoint)),
       r(pnt(midPoint)),
       r(pnt(endPoint))
@@ -109,7 +108,7 @@ export const make2dTangentArc = (
   const [r, gc] = localGC();
 
   const segment = r(
-    new oc.GCE2d_MakeArcOfCircle(
+    new oc.GC_MakeArcOfCircle2d(
       r(pnt(startPoint)),
       r(vec(tangent)),
       r(pnt(endPoint))
@@ -147,11 +146,11 @@ export const make2dCircle = (
   const [r, gc] = localGC();
 
   const segment = r(
-    new oc.GCE2d_MakeCircle(r(pnt(center)), radius, true)
+    new oc.GC_MakeCircle2d(r(pnt(center)), radius, true)
   ).Value();
   gc();
 
-  return new Curve2D(segment as unknown as Geom2d_Curve);
+  return new Curve2D(segment);
 };
 
 /**
@@ -185,10 +184,10 @@ export const make2dEllipse = (
     )
   );
 
-  const segment = r(new oc.GCE2d_MakeEllipse(ellipse)).Value();
+  const segment = r(new oc.GC_MakeEllipse2d(ellipse)).Value();
   gc();
 
-  return new Curve2D(segment as unknown as Geom2d_Curve);
+  return new Curve2D(segment);
 };
 
 /**
@@ -222,7 +221,7 @@ export const make2dEllipseArc = (
   );
 
   const segment = r(
-    new oc.GCE2d_MakeArcOfEllipse(ellipse, startAngle, endAngle, direct)
+    new oc.GC_MakeArcOfEllipse2d(ellipse, startAngle, endAngle, direct)
   ).Value();
   gc();
 
