@@ -345,6 +345,9 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   protected _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
+    // Clean mesh to allow for coarser tolerance meshing to supercede the mesh living in WASM memory.
+    // Without this, coarser tolerance meshing can return a mesh with finer tolerances due to OCCT caching of meshes.
+    this.oc.BRepTools.Clean(this.wrapped, false);
     new this.oc.BRepMesh_IncrementalMesh(this.wrapped, tolerance, false, angularTolerance, false);
   }
 
