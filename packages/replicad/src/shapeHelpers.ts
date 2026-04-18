@@ -98,7 +98,7 @@ export const makeHelix = (
   const uStop = geomLine.Value(
     nTurns * Math.sqrt((2 * Math.PI) ** 2 + pitch ** 2)
   );
-  const geomSeg = r(new oc.GCE2d_MakeSegment(uStart, uStop));
+  const geomSeg = r(new oc.GC_MakeSegment2d(uStart, uStop));
 
   // We do not GC this surface (or it can break for some reason)
   const geomSurf = new oc.Geom_CylindricalSurface(
