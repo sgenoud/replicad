@@ -316,12 +316,11 @@ mainBuild:
     - symbol: gp_Ax22d
     - symbol: gp_Circ2d
     - symbol: gp_Elips2d
-    - symbol: GCE2d_Root
-    - symbol: GCE2d_MakeSegment
-    - symbol: GCE2d_MakeArcOfCircle
-    - symbol: GCE2d_MakeArcOfEllipse
-    - symbol: GCE2d_MakeCircle
-    - symbol: GCE2d_MakeEllipse
+    - symbol: GC_MakeSegment2d
+    - symbol: GC_MakeArcOfCircle2d
+    - symbol: GC_MakeArcOfEllipse2d
+    - symbol: GC_MakeCircle2d
+    - symbol: GC_MakeEllipse2d
     - symbol: GeomLib
     - symbol: gp_Trsf2d
     - symbol: gp_GTrsf2d
@@ -380,6 +379,7 @@ mainBuild:
     - symbol: GC_Root
     - symbol: GCPnts_TangentialDeflection
     - symbol: GeomAdaptor_TransformedSurface
+    - symbol: GeomAdaptor_TransformedCurve
     - symbol: BRepAdaptor_Surface
     - symbol: BRepAdaptor_Curve
     - symbol: Adaptor3d_Curve
@@ -476,11 +476,18 @@ mainBuild:
     - symbol: IFSelect_WorkSession
     - symbol: XSControl_WorkSession
     - symbol: STEPCAFControl_Writer
+    - symbol: XCAFDoc_MaterialTool
+    - symbol: XCAFDoc_Material
+    - symbol: TCollection_HAsciiString
     - symbol: BRepMesh_DiscretRoot
     - symbol: BRepMesh_IncrementalMesh
     - symbol: BRepToolsWrapper
     - symbol: GeomToolsWrapper
     - symbol: OCJS_ShapeHasher
+    - symbol: ReplicadMeshData
+    - symbol: ReplicadMeshExtractor
+    - symbol: ReplicadEdgeMeshData
+    - symbol: ReplicadEdgeMeshExtractor
     - symbol: HLRAlgo_Projector
     - symbol: HLRBRep_Algo
     - symbol: HLRBRep_HLRToShape
@@ -495,7 +502,7 @@ mainBuild:
     - -sALLOW_MEMORY_GROWTH=1
     - -sINITIAL_MEMORY=100MB
     - -sMAXIMUM_MEMORY=4GB
-    - -sEXPORTED_RUNTIME_METHODS=["FS"]
+    - -sEXPORTED_RUNTIME_METHODS=["FS","HEAP32","HEAPU32","HEAPF32","wasmMemory"]
     - --no-entry
     - --emit-symbol-map
     - -sERROR_ON_UNDEFINED_SYMBOLS=0
@@ -507,6 +514,14 @@ mainBuild:
     - -mrelaxed-simd
     - -O3
 additionalCppCode: |
+  #include <BRepLProp_SLProps.hxx>
+  #include <BRepAdaptor_Surface.hxx>
+  #include <Precision.hxx>
+  #include <BRepAdaptor_Curve.hxx>
+  #include <GCPnts_TangentialDeflection.hxx>
+  #include <NCollection_Map.hxx>
+  #include <NCollection_Array1.hxx>
+
   class OCJS_ShapeHasher {
   public:
     static size_t HashCode(const TopoDS_Shape& shape, int) {
@@ -545,5 +560,391 @@ additionalCppCode: |
       opencascade::handle<Geom2d_Curve> geometry;
       GeomTools::Read(geometry, iss);
       return geometry;
+    }
+  };
+
+  class ReplicadMeshData {
+  public:
+    ReplicadMeshData()
+      : verticesPtr_(nullptr), normalsPtr_(nullptr),
+        trianglesPtr_(nullptr), faceGroupsPtr_(nullptr),
+        verticesSize_(0), normalsSize_(0),
+        trianglesSize_(0), faceGroupsSize_(0) {}
+
+    ~ReplicadMeshData() {
+      std::free(verticesPtr_);
+      std::free(normalsPtr_);
+      std::free(trianglesPtr_);
+      std::free(faceGroupsPtr_);
+    }
+
+    ReplicadMeshData(const ReplicadMeshData& other)
+      : verticesPtr_(other.verticesPtr_), normalsPtr_(other.normalsPtr_),
+        trianglesPtr_(other.trianglesPtr_), faceGroupsPtr_(other.faceGroupsPtr_),
+        verticesSize_(other.verticesSize_), normalsSize_(other.normalsSize_),
+        trianglesSize_(other.trianglesSize_), faceGroupsSize_(other.faceGroupsSize_) {
+      auto& m = const_cast<ReplicadMeshData&>(other);
+      m.verticesPtr_ = nullptr;
+      m.normalsPtr_ = nullptr;
+      m.trianglesPtr_ = nullptr;
+      m.faceGroupsPtr_ = nullptr;
+    }
+
+    int getVerticesPtr() const  { return static_cast<int>(reinterpret_cast<uintptr_t>(verticesPtr_)); }
+    int getNormalsPtr() const   { return static_cast<int>(reinterpret_cast<uintptr_t>(normalsPtr_)); }
+    int getTrianglesPtr() const { return static_cast<int>(reinterpret_cast<uintptr_t>(trianglesPtr_)); }
+    int getFaceGroupsPtr() const { return static_cast<int>(reinterpret_cast<uintptr_t>(faceGroupsPtr_)); }
+
+    int getVerticesSize() const   { return verticesSize_; }
+    int getNormalsSize() const    { return normalsSize_; }
+    int getTrianglesSize() const  { return trianglesSize_; }
+    int getFaceGroupsSize() const { return faceGroupsSize_; }
+
+  private:
+    float*    verticesPtr_;
+    float*    normalsPtr_;
+    uint32_t* trianglesPtr_;
+    int32_t*  faceGroupsPtr_;
+
+    int verticesSize_;
+    int normalsSize_;
+    int trianglesSize_;
+    int faceGroupsSize_;
+
+    friend class ReplicadMeshExtractor;
+  };
+
+  class ReplicadMeshExtractor {
+  public:
+    static ReplicadMeshData extract(
+      const TopoDS_Shape& shape,
+      double tolerance,
+      double angularTolerance,
+      bool skipNormals
+    ) {
+      BRepTools::Clean(shape, Standard_False);
+      BRepMesh_IncrementalMesh mesher(shape, tolerance, Standard_False, angularTolerance, Standard_False);
+
+      int totalNodes = 0;
+      int totalTriangles = 0;
+      int totalFaces = 0;
+
+      for (TopExp_Explorer ex(shape, TopAbs_FACE); ex.More(); ex.Next()) {
+        TopLoc_Location loc;
+        Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(
+          TopoDS::Face(ex.Current()), loc);
+        if (tri.IsNull()) continue;
+        totalNodes += tri->NbNodes();
+        totalTriangles += tri->NbTriangles();
+        totalFaces++;
+      }
+
+      ReplicadMeshData result;
+
+      result.verticesSize_ = totalNodes * 3;
+      result.verticesPtr_ = static_cast<float*>(
+        std::malloc(result.verticesSize_ * sizeof(float)));
+      if (!result.verticesPtr_ && result.verticesSize_ > 0) throw std::bad_alloc();
+
+      if (!skipNormals) {
+        result.normalsSize_ = totalNodes * 3;
+        result.normalsPtr_ = static_cast<float*>(
+          std::malloc(result.normalsSize_ * sizeof(float)));
+        if (!result.normalsPtr_ && result.normalsSize_ > 0) throw std::bad_alloc();
+      }
+
+      result.trianglesSize_ = totalTriangles * 3;
+      result.trianglesPtr_ = static_cast<uint32_t*>(
+        std::malloc(result.trianglesSize_ * sizeof(uint32_t)));
+      if (!result.trianglesPtr_ && result.trianglesSize_ > 0) throw std::bad_alloc();
+
+      result.faceGroupsSize_ = totalFaces * 3;
+      result.faceGroupsPtr_ = static_cast<int32_t*>(
+        std::malloc(result.faceGroupsSize_ * sizeof(int32_t)));
+      if (!result.faceGroupsPtr_ && result.faceGroupsSize_ > 0) throw std::bad_alloc();
+
+      int vertexOffset = 0;
+      int triOffset = 0;
+      int faceGroupIdx = 0;
+
+      for (TopExp_Explorer ex(shape, TopAbs_FACE); ex.More(); ex.Next()) {
+        const TopoDS_Face& face = TopoDS::Face(ex.Current());
+        TopLoc_Location loc;
+        Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(face, loc);
+        if (tri.IsNull()) continue;
+
+        const gp_Trsf& trsf = loc.Transformation();
+        int nbNodes = tri->NbNodes();
+        int nbTri = tri->NbTriangles();
+
+        for (int i = 1; i <= nbNodes; i++) {
+          gp_Pnt p = tri->Node(i).Transformed(trsf);
+          int base = (vertexOffset + i - 1) * 3;
+          result.verticesPtr_[base + 0] = static_cast<float>(p.X());
+          result.verticesPtr_[base + 1] = static_cast<float>(p.Y());
+          result.verticesPtr_[base + 2] = static_cast<float>(p.Z());
+        }
+
+        bool isReversed = (face.Orientation() == TopAbs_REVERSED);
+
+        if (!skipNormals) {
+          // Align with OCCT RWMesh_FaceIterator::initFace() pattern:
+          // strip orientation to FORWARD then clear location.
+          TopoDS_Face faceFwd = TopoDS::Face(face.Oriented(TopAbs_FORWARD));
+          faceFwd.Location(TopLoc_Location());
+
+          TopLoc_Location surfLoc;
+          bool hasSurface = !BRep_Tool::Surface(faceFwd, surfLoc).IsNull();
+
+          if (hasSurface) {
+            BRepAdaptor_Surface adaptor(faceFwd, Standard_False);
+            BRepLProp_SLProps slProps(adaptor, 1, 1e-12);
+
+            for (int i = 1; i <= nbNodes; i++) {
+              gp_Dir d(0, 0, 1);
+              if (tri->HasUVNodes()) {
+                gp_Pnt2d uv = tri->UVNode(i);
+                slProps.SetParameters(uv.X(), uv.Y());
+                if (slProps.IsNormalDefined()) {
+                  d = slProps.Normal();
+                }
+              }
+              d.Transform(trsf);
+              if (isReversed) {
+                d.Reverse();
+              }
+              int base = (vertexOffset + i - 1) * 3;
+              result.normalsPtr_[base + 0] = static_cast<float>(d.X());
+              result.normalsPtr_[base + 1] = static_cast<float>(d.Y());
+              result.normalsPtr_[base + 2] = static_cast<float>(d.Z());
+            }
+          } else {
+            for (int i = 1; i <= nbNodes; i++) {
+              int base = (vertexOffset + i - 1) * 3;
+              result.normalsPtr_[base + 0] = 0.0f;
+              result.normalsPtr_[base + 1] = 0.0f;
+              result.normalsPtr_[base + 2] = 1.0f;
+            }
+          }
+        }
+
+        bool isMirrored = (trsf.VectorialPart().Determinant() < 0.0);
+
+        int faceTriStart = triOffset;
+        for (int t = 1; t <= nbTri; t++) {
+          const Poly_Triangle& triangle = tri->Triangle(t);
+          int n1 = triangle.Value(1);
+          int n2 = triangle.Value(2);
+          int n3 = triangle.Value(3);
+
+          if (isReversed ^ isMirrored) {
+            int tmp = n2;
+            n2 = n3;
+            n3 = tmp;
+          }
+
+          result.trianglesPtr_[triOffset + 0] = static_cast<uint32_t>(n1 - 1 + vertexOffset);
+          result.trianglesPtr_[triOffset + 1] = static_cast<uint32_t>(n2 - 1 + vertexOffset);
+          result.trianglesPtr_[triOffset + 2] = static_cast<uint32_t>(n3 - 1 + vertexOffset);
+          triOffset += 3;
+        }
+
+        int faceHash = static_cast<int>(TopTools_ShapeMapHasher{}(face) % 2147483647);
+        result.faceGroupsPtr_[faceGroupIdx + 0] = faceTriStart;
+        result.faceGroupsPtr_[faceGroupIdx + 1] = (triOffset - faceTriStart);
+        result.faceGroupsPtr_[faceGroupIdx + 2] = faceHash;
+        faceGroupIdx += 3;
+
+        vertexOffset += nbNodes;
+      }
+
+      return result;
+    }
+  };
+
+  class ReplicadEdgeMeshData {
+  public:
+    ReplicadEdgeMeshData()
+      : linesPtr_(nullptr), edgeGroupsPtr_(nullptr),
+        linesSize_(0), edgeGroupsSize_(0) {}
+
+    ~ReplicadEdgeMeshData() {
+      std::free(linesPtr_);
+      std::free(edgeGroupsPtr_);
+    }
+
+    ReplicadEdgeMeshData(const ReplicadEdgeMeshData& other)
+      : linesPtr_(other.linesPtr_), edgeGroupsPtr_(other.edgeGroupsPtr_),
+        linesSize_(other.linesSize_), edgeGroupsSize_(other.edgeGroupsSize_) {
+      auto& m = const_cast<ReplicadEdgeMeshData&>(other);
+      m.linesPtr_ = nullptr;
+      m.edgeGroupsPtr_ = nullptr;
+    }
+
+    int getLinesPtr() const { return static_cast<int>(reinterpret_cast<uintptr_t>(linesPtr_)); }
+    int getLinesSize() const { return linesSize_; }
+    int getEdgeGroupsPtr() const { return static_cast<int>(reinterpret_cast<uintptr_t>(edgeGroupsPtr_)); }
+    int getEdgeGroupsSize() const { return edgeGroupsSize_; }
+
+  private:
+    float*   linesPtr_;
+    int32_t* edgeGroupsPtr_;
+    int linesSize_;
+    int edgeGroupsSize_;
+
+    friend class ReplicadEdgeMeshExtractor;
+  };
+
+  class ReplicadEdgeMeshExtractor {
+  public:
+    static ReplicadEdgeMeshData extract(
+      const TopoDS_Shape& shape,
+      double tolerance,
+      double angularTolerance
+    ) {
+      BRepMesh_IncrementalMesh mesher(shape, tolerance, Standard_False, angularTolerance, Standard_False);
+
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> seenEdges;
+
+      int totalSegments = 0;
+      int totalEdges = 0;
+
+      for (TopExp_Explorer faceEx(shape, TopAbs_FACE); faceEx.More(); faceEx.Next()) {
+        const TopoDS_Face& face = TopoDS::Face(faceEx.Current());
+        TopLoc_Location faceLoc;
+        Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(face, faceLoc);
+        if (tri.IsNull()) continue;
+
+        for (TopExp_Explorer edgeEx(face, TopAbs_EDGE); edgeEx.More(); edgeEx.Next()) {
+          const TopoDS_Edge& edge = TopoDS::Edge(edgeEx.Current());
+          if (seenEdges.Contains(edge)) continue;
+
+          TopLoc_Location edgeLoc;
+          Handle(Poly_PolygonOnTriangulation) polygon =
+            BRep_Tool::PolygonOnTriangulation(edge, tri, edgeLoc);
+          if (polygon.IsNull()) continue;
+
+          seenEdges.Add(edge);
+          int nNodes = polygon->Nodes().Length();
+          if (nNodes < 2) continue;
+          totalSegments += (nNodes - 1);
+          totalEdges++;
+        }
+      }
+
+      struct CurveTessInfo { TopoDS_Edge edge; int nbPts; };
+      std::vector<CurveTessInfo> curveEdges;
+
+      for (TopExp_Explorer edgeEx(shape, TopAbs_EDGE); edgeEx.More(); edgeEx.Next()) {
+        const TopoDS_Edge& edge = TopoDS::Edge(edgeEx.Current());
+        if (seenEdges.Contains(edge)) continue;
+        seenEdges.Add(edge);
+
+        BRepAdaptor_Curve adaptor(edge);
+        GCPnts_TangentialDeflection tangDef(adaptor, tolerance, angularTolerance, 2, 1e-9, 1e-7);
+        int nbPts = tangDef.NbPoints();
+        if (nbPts < 2) continue;
+
+        totalSegments += (nbPts - 1);
+        totalEdges++;
+        curveEdges.push_back({edge, nbPts});
+      }
+
+      ReplicadEdgeMeshData result;
+
+      result.linesSize_ = totalSegments * 6;
+      if (result.linesSize_ > 0) {
+        result.linesPtr_ = static_cast<float*>(std::malloc(result.linesSize_ * sizeof(float)));
+        if (!result.linesPtr_) throw std::bad_alloc();
+      }
+
+      result.edgeGroupsSize_ = totalEdges * 3;
+      if (result.edgeGroupsSize_ > 0) {
+        result.edgeGroupsPtr_ = static_cast<int32_t*>(std::malloc(result.edgeGroupsSize_ * sizeof(int32_t)));
+        if (!result.edgeGroupsPtr_) throw std::bad_alloc();
+      }
+
+      int lineOffset = 0;
+      int groupOffset = 0;
+      seenEdges.Clear();
+
+      for (TopExp_Explorer faceEx(shape, TopAbs_FACE); faceEx.More(); faceEx.Next()) {
+        const TopoDS_Face& face = TopoDS::Face(faceEx.Current());
+        TopLoc_Location faceLoc;
+        Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(face, faceLoc);
+        if (tri.IsNull()) continue;
+
+        for (TopExp_Explorer edgeEx(face, TopAbs_EDGE); edgeEx.More(); edgeEx.Next()) {
+          const TopoDS_Edge& edge = TopoDS::Edge(edgeEx.Current());
+          if (seenEdges.Contains(edge)) continue;
+
+          TopLoc_Location edgeLoc;
+          Handle(Poly_PolygonOnTriangulation) polygon =
+            BRep_Tool::PolygonOnTriangulation(edge, tri, edgeLoc);
+          if (polygon.IsNull()) continue;
+
+          seenEdges.Add(edge);
+          const NCollection_Array1<Standard_Integer>& nodes = polygon->Nodes();
+          if (nodes.Length() < 2) continue;
+
+          int lineStart = lineOffset / 3;
+          int pointCount = 0;
+          const gp_Trsf& trsf = edgeLoc.Transformation();
+
+          gp_Pnt prevPt;
+          bool hasPrev = false;
+
+          for (int i = nodes.Lower(); i <= nodes.Upper(); i++) {
+            gp_Pnt p = tri->Node(nodes.Value(i)).Transformed(trsf);
+            if (hasPrev) {
+              result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.X());
+              result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.Y());
+              result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.Z());
+              result.linesPtr_[lineOffset++] = static_cast<float>(p.X());
+              result.linesPtr_[lineOffset++] = static_cast<float>(p.Y());
+              result.linesPtr_[lineOffset++] = static_cast<float>(p.Z());
+              pointCount += 2;
+            }
+            prevPt = p;
+            hasPrev = true;
+          }
+
+          result.edgeGroupsPtr_[groupOffset++] = lineStart;
+          result.edgeGroupsPtr_[groupOffset++] = pointCount;
+          result.edgeGroupsPtr_[groupOffset++] = static_cast<int>(TopTools_ShapeMapHasher{}(edge) % 2147483647);
+        }
+      }
+
+      for (const auto& info : curveEdges) {
+        BRepAdaptor_Curve adaptor(info.edge);
+        GCPnts_TangentialDeflection tangDef(adaptor, tolerance, angularTolerance, 2, 1e-9, 1e-7);
+
+        int lineStart = lineOffset / 3;
+        int pointCount = 0;
+
+        gp_Pnt prevPt;
+        bool hasPrev = false;
+
+        for (int j = 1; j <= info.nbPts; j++) {
+          gp_Pnt p = tangDef.Value(j);
+          if (hasPrev) {
+            result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.X());
+            result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.Y());
+            result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.Z());
+            result.linesPtr_[lineOffset++] = static_cast<float>(p.X());
+            result.linesPtr_[lineOffset++] = static_cast<float>(p.Y());
+            result.linesPtr_[lineOffset++] = static_cast<float>(p.Z());
+            pointCount += 2;
+          }
+          prevPt = p;
+          hasPrev = true;
+        }
+
+        result.edgeGroupsPtr_[groupOffset++] = lineStart;
+        result.edgeGroupsPtr_[groupOffset++] = pointCount;
+        result.edgeGroupsPtr_[groupOffset++] = static_cast<int>(TopTools_ShapeMapHasher{}(info.edge) % 2147483647);
+      }
+
+      return result;
     }
   };

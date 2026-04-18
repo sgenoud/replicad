@@ -358,27 +358,48 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    * @category Shape Export
    */
   mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): ShapeMesh {
-    this._mesh({ tolerance, angularTolerance });
-    let triangles: number[] = [];
-    let vertices: number[] = [];
-    let normals: number[] = [];
+    const raw = this.oc.ReplicadMeshExtractor.extract(
+      this.wrapped,
+      tolerance,
+      angularTolerance,
+      false,
+    );
+
+    // Take fresh typed-array views off the live WebAssembly.Memory buffer AFTER
+    // extract() has returned. extract() may trigger memory.grow() which detaches
+    // any previously-cached HEAP* views; reading wasmMemory.buffer here is
+    // guaranteed to return the current backing ArrayBuffer.
+    const buffer = this.oc.wasmMemory.buffer;
+    const heapF32 = new Float32Array(buffer);
+    const heapU32 = new Uint32Array(buffer);
+    const heapI32 = new Int32Array(buffer);
+
+    const vertices = Array.from(
+      heapF32.subarray(raw.getVerticesPtr() / 4, raw.getVerticesPtr() / 4 + raw.getVerticesSize()),
+    );
+    const normals = Array.from(
+      heapF32.subarray(raw.getNormalsPtr() / 4, raw.getNormalsPtr() / 4 + raw.getNormalsSize()),
+    );
+    const trianglesRaw = heapU32.subarray(
+      raw.getTrianglesPtr() / 4,
+      raw.getTrianglesPtr() / 4 + raw.getTrianglesSize(),
+    );
+    const triangles = Array.from(trianglesRaw);
+
+    const groupsRaw = heapI32.subarray(
+      raw.getFaceGroupsPtr() / 4,
+      raw.getFaceGroupsPtr() / 4 + raw.getFaceGroupsSize(),
+    );
     const faceGroups: { start: number; count: number; faceId: number }[] = [];
-
-    for (const face of this.faces) {
-      const tri = face.triangulation(vertices.length / 3);
-
-      if (!tri) continue;
-      const { trianglesIndexes, vertices: faceVertices, verticesNormals } = tri;
-
+    for (let i = 0; i < groupsRaw.length; i += 3) {
       faceGroups.push({
-        start: triangles.length,
-        count: trianglesIndexes.length,
-        faceId: face.hashCode,
+        start: groupsRaw[i],
+        count: groupsRaw[i + 1],
+        faceId: groupsRaw[i + 2],
       });
-      triangles = triangles.concat(trianglesIndexes);
-      vertices = vertices.concat(faceVertices);
-      normals = normals.concat(verticesNormals);
     }
+
+    raw.delete();
 
     return {
       triangles,
@@ -398,87 +419,34 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     lines: number[];
     edgeGroups: { start: number; count: number; edgeId: number }[];
   } {
-    const r = GCWithScope();
-    const recordedEdges = new Set();
-    const lines: number[] = [];
+    const raw = this.oc.ReplicadEdgeMeshExtractor.extract(
+      this.wrapped,
+      tolerance,
+      angularTolerance,
+    );
+
+    // Take fresh views off wasmMemory.buffer after extract() returns; see the
+    // equivalent comment in mesh() for the detachment rationale.
+    const buffer = this.oc.wasmMemory.buffer;
+    const heapF32 = new Float32Array(buffer);
+    const heapI32 = new Int32Array(buffer);
+
+    const lines = Array.from(heapF32.subarray(raw.getLinesPtr() / 4, raw.getLinesPtr() / 4 + raw.getLinesSize()));
+
+    const groupsRaw = heapI32.subarray(
+      raw.getEdgeGroupsPtr() / 4,
+      raw.getEdgeGroupsPtr() / 4 + raw.getEdgeGroupsSize(),
+    );
     const edgeGroups: { start: number; count: number; edgeId: number }[] = [];
-
-    const addEdge = (): [(p: gp_Pnt) => void, (h: number) => void] => {
-      const start = lines.length;
-      let previousPoint: null | number[] = null;
-
-      return [
-        (p: gp_Pnt) => {
-          if (previousPoint) {
-            lines.push(...previousPoint);
-            previousPoint = [p.X(), p.Y(), p.Z()];
-            lines.push(...previousPoint);
-          } else {
-            // The first element should start after the previous point has been
-            // initialized
-            previousPoint = [p.X(), p.Y(), p.Z()];
-          }
-        },
-
-        (edgeHash: number) => {
-          edgeGroups.push({
-            start: start / 3,
-            count: (lines.length - start) / 3,
-            edgeId: edgeHash,
-          });
-
-          recordedEdges.add(edgeHash);
-        },
-      ];
-    };
-
-    const aLocation = r(new this.oc.TopLoc_Location());
-
-    for (const face of this.faces) {
-      const triangulation = r(this.oc.BRep_Tool.Triangulation(face.wrapped, aLocation, 0));
-
-      if (!triangulation || triangulation.isNull()) {
-        continue;
-      }
-
-      for (const edge of face.edges) {
-        r(edge);
-        if (recordedEdges.has(edge.hashCode)) continue;
-
-        const edgeLoc = r(new this.oc.TopLoc_Location());
-
-        const polygon = r(this.oc.BRep_Tool.PolygonOnTriangulation(edge.wrapped, triangulation, edgeLoc));
-        if (!polygon || polygon.NbNodes() === 0) {
-          continue;
-        }
-
-        const [recordPoint, done] = addEdge();
-        const nbEdgeNodes = polygon.NbNodes();
-
-        for (let i = 1; i <= nbEdgeNodes; i++) {
-          const p = r(r(triangulation.Node(polygon.Node(i))).Transformed(edgeLoc.Transformation()));
-          recordPoint(p);
-        }
-        done(edge.hashCode);
-      }
+    for (let i = 0; i < groupsRaw.length; i += 3) {
+      edgeGroups.push({
+        start: groupsRaw[i],
+        count: groupsRaw[i + 1],
+        edgeId: groupsRaw[i + 2],
+      });
     }
 
-    for (const edge of this.edges) {
-      r(edge);
-      const edgeHash = edge.hashCode;
-      if (recordedEdges.has(edgeHash)) continue;
-
-      const adaptorCurve = r(new this.oc.BRepAdaptor_Curve(edge.wrapped));
-      const tangDef = r(
-        new this.oc.GCPnts_TangentialDeflection(adaptorCurve, tolerance, angularTolerance, 2, 1e-9, 1e-7),
-      );
-      const [recordPoint, done] = addEdge();
-      for (let j = 0; j < tangDef.NbPoints(); j++) {
-        const p = r(tangDef.Value(j + 1).Transformed(aLocation.Transformation()));
-        recordPoint(p);
-      }
-      done(edgeHash);
-    }
+    raw.delete();
 
     return { lines, edgeGroups };
   }
@@ -497,7 +465,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
     writer.Transfer(
       this.wrapped,
-      this.oc.STEPControl_StepModelType.STEPControl_AsIs as STEPControl_StepModelType,
+      this.oc.STEPControl_StepModelType.STEPControl_AsIs,
       true,
       progress,
     );
@@ -756,9 +724,7 @@ export class Surface extends WrappingObj<Adaptor3d_Surface> {
 
 export class Face extends Shape<TopoDS_Face> {
   protected _geomAdaptor(): Adaptor3d_Surface {
-    // BRepAdaptor_Surface extends Adaptor3d_Surface via GeomAdaptor_TransformedSurface
-    // but the intermediate class is missing from the V8 d.ts, so we cast here
-    return new this.oc.BRepAdaptor_Surface(this.wrapped, false) as unknown as Adaptor3d_Surface;
+    return new this.oc.BRepAdaptor_Surface(this.wrapped, false);
   }
 
   get surface(): Surface {
