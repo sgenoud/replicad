@@ -1,7 +1,7 @@
 {
   "schema": "wasm-build-provenance-v1",
-  "buildId": "20260324T055420-O3-noLTO-single",
-  "timestamp": "2026-03-24T05:54:20.635694+00:00",
+  "buildId": "20260418T022956-O3-noLTO-single",
+  "timestamp": "2026-04-18T02:29:56.967234+00:00",
   "toolchain": {
     "emscripten": "5.0.1",
     "llvm": "17",
@@ -9,13 +9,13 @@
     "python": "3.14.3"
   },
   "source": {
-    "occtCommit": "48ebca0f70a5e4b936548b695bc3583363898da4",
-    "opencascadejsCommit": "9f217d182c6d42cf8c1fa914920be442c5740841",
+    "occtCommit": "0ebbbedb239d6fffb7e1c8c2d36970a3ab1d9300",
+    "opencascadejsCommit": "b3b3330a9e154b1f52ccbec900dec2cf0e80553d",
     "filterPackagesHash": "8b12ca608181",
     "pinnedDeps": {
       "occt": {
-        "commit": "48ebca0f70a5e4b936548b695bc3583363898da4",
-        "version": "V8_0_0_rc4 (master tip)"
+        "commit": "0ebbbedb239d6fffb7e1c8c2d36970a3ab1d9300",
+        "version": "V8_0_0_rc5"
       },
       "rapidjson": {
         "commit": "24b5e7a8b27f42fa16b96fc70aade9106cf7102f",
@@ -30,21 +30,22 @@
         "emsdk_version": "5.0.1"
       },
       "doxygen": {
-        "version": "1.16.1"
+        "version": "1.16.1",
+        "commit": "669aeeefca743c148e2d935b3d3c69535c7491e6"
       }
     }
   },
   "compilation": {
-    "cacheKey": "O3-noLTO-noExc-single-8b12ca60-48ebca",
+    "cacheKey": "O3-noLTO-wasmExc-single-8b12ca60-0ebbbe",
     "cacheHit": false,
     "optimization": "-O3",
     "lto": false,
-    "exceptions": "none",
+    "exceptions": "wasm-native",
     "threading": "single-threaded",
     "wasmOptLevel": "-O4",
     "emccCompileFlags": [
       "-O3",
-      "-sDISABLE_EXCEPTION_CATCHING=1",
+      "-fwasm-exceptions",
       "-DOCCT_NO_DUMP",
       "-UOCC_CONVERT_SIGNALS",
       "-msimd128"
@@ -55,8 +56,8 @@
   },
   "linking": {
     "yamlConfig": "replicad_single.js",
-    "yamlConfigHash": "334f988937ff",
-    "boundSymbols": 219,
+    "yamlConfigHash": "a2a39c6565a8",
+    "boundSymbols": 226,
     "symbolList": [
       "Message_ProgressRange",
       "TColgp_Array1OfDir",
@@ -107,12 +108,11 @@
       "gp_Ax22d",
       "gp_Circ2d",
       "gp_Elips2d",
-      "GCE2d_Root",
-      "GCE2d_MakeSegment",
-      "GCE2d_MakeArcOfCircle",
-      "GCE2d_MakeArcOfEllipse",
-      "GCE2d_MakeCircle",
-      "GCE2d_MakeEllipse",
+      "GC_MakeSegment2d",
+      "GC_MakeArcOfCircle2d",
+      "GC_MakeArcOfEllipse2d",
+      "GC_MakeCircle2d",
+      "GC_MakeEllipse2d",
       "GeomLib",
       "gp_Trsf2d",
       "gp_GTrsf2d",
@@ -171,6 +171,7 @@
       "GC_Root",
       "GCPnts_TangentialDeflection",
       "GeomAdaptor_TransformedSurface",
+      "GeomAdaptor_TransformedCurve",
       "BRepAdaptor_Surface",
       "BRepAdaptor_Curve",
       "Adaptor3d_Curve",
@@ -267,11 +268,18 @@
       "IFSelect_WorkSession",
       "XSControl_WorkSession",
       "STEPCAFControl_Writer",
+      "XCAFDoc_MaterialTool",
+      "XCAFDoc_Material",
+      "TCollection_HAsciiString",
       "BRepMesh_DiscretRoot",
       "BRepMesh_IncrementalMesh",
       "BRepToolsWrapper",
       "GeomToolsWrapper",
       "OCJS_ShapeHasher",
+      "ReplicadMeshData",
+      "ReplicadMeshExtractor",
+      "ReplicadEdgeMeshData",
+      "ReplicadEdgeMeshExtractor",
       "HLRAlgo_Projector",
       "HLRBRep_Algo",
       "HLRBRep_HLRToShape",
@@ -286,7 +294,7 @@
       "-sALLOW_MEMORY_GROWTH=1",
       "-sINITIAL_MEMORY=100MB",
       "-sMAXIMUM_MEMORY=4GB",
-      "-sEXPORTED_RUNTIME_METHODS=[\"FS\"]",
+      "-sEXPORTED_RUNTIME_METHODS=[\"FS\",\"HEAP32\",\"HEAPU32\",\"HEAPF32\",\"wasmMemory\"]",
       "--no-entry",
       "--emit-symbol-map",
       "-sERROR_ON_UNDEFINED_SYMBOLS=0",
@@ -298,7 +306,7 @@
       "-mrelaxed-simd",
       "-O3"
     ],
-    "linkDuration_s": 45.4
+    "linkDuration_s": 48.0
   },
   "postProcessing": {
     "wasmOptFlags": [
@@ -315,27 +323,27 @@
       "--enable-simd",
       "--enable-relaxed-simd"
     ],
-    "preOptSize": 22581467,
-    "postOptSize": 22559969,
+    "preOptSize": 22738445,
+    "postOptSize": 22716604,
     "optReduction": "0.1%",
-    "wasmOptDuration_s": 86.0
+    "wasmOptDuration_s": 81.6
   },
   "output": {
     "replicad_single.wasm": {
-      "size": 22559969,
-      "sha256": "6edc60f8b6fe1009"
+      "size": 22716604,
+      "sha256": "b7d956f1ba2c15d3"
     },
     "replicad_single.js": {
-      "size": 56357
+      "size": 56399
     },
     "replicad_single.d.ts": {
-      "size": 1650691,
-      "lines": 40417
+      "size": 1618307,
+      "lines": 40811
     }
   },
   "sections": {},
   "filtering": {
     "excludedPackages": []
   },
-  "totalDuration_s": 148
+  "totalDuration_s": 1042
 }

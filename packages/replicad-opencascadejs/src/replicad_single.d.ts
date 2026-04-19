@@ -42,27 +42,27 @@ export declare class Quantity_Color {
   /**
    * Creates the color from enumeration value.
    */
-  constructor(theName: Quantity_NameOfColor);
+  constructor(theName: unknown);
   /**
    * Creates a color according to the definition system theType. Throws exception if values are out of range.
    */
-  constructor(theC1: number, theC2: number, theC3: number, theType: Quantity_TypeOfColor);
+  constructor(theC1: number, theC2: number, theC3: number, theType: unknown);
   /**
    * Returns the name of the nearest color from the Quantity_NameOfColor enumeration.
    */
-  Name(): Quantity_NameOfColor;
+  Name(): unknown;
   /**
    * Returns the color from Quantity_NameOfColor enumeration nearest to specified RGB values.
    */
-  static Name(theR: number, theG: number, theB: number): Quantity_NameOfColor;
+  static Name(theR: number, theG: number, theB: number): unknown;
   /**
    * Updates the color from specified named color.
    */
-  SetValues(theName: Quantity_NameOfColor): void;
+  SetValues(theName: unknown): void;
   /**
    * Updates a color according to the mode specified by theType. Throws exception if values are out of range.
    */
-  SetValues(theC1: number, theC2: number, theC3: number, theType: Quantity_TypeOfColor): void;
+  SetValues(theC1: number, theC2: number, theC3: number, theType: unknown): void;
   /**
    * Return the color as vector of 3 float elements.
    */
@@ -126,9 +126,9 @@ export declare class Quantity_Color {
   /**
    * Returns the name of the color identified by the given Quantity_NameOfColor enumeration value.
    */
-  static StringName(theColor: Quantity_NameOfColor): string;
+  static StringName(theColor: unknown): string;
   static ColorFromHex(theHexColorString: string, theColor: Quantity_Color): boolean;
-  static ColorToHex(theColor: Quantity_Color, theToPrefixHash: boolean): XCAFDoc_PartId;
+  static ColorToHex(theColor: Quantity_Color, theToPrefixHash: boolean): unknown;
   static Color2argb(theColor: Quantity_Color): { theARGB: number };
   static Argb2color(theARGB: number, theColor: Quantity_Color): void;
   static Convert_LinearRGB_To_sRGB(theLinearValue: number): number;
@@ -218,7 +218,7 @@ export declare class Quantity_ColorRGBA {
   /**
    * Returns hex sRGBA string in format "#RRGGBBAA".
    */
-  static ColorToHex(theColor: Quantity_ColorRGBA, theToPrefixHash: boolean): XCAFDoc_PartId;
+  static ColorToHex(theColor: Quantity_ColorRGBA, theToPrefixHash: boolean): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -230,7 +230,7 @@ export declare class NCollection_BaseList {
   /**
    * Returns attached allocator.
    */
-  Allocator(): NCollection_BaseAllocator;
+  Allocator(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -253,11 +253,11 @@ export declare class Standard_Transient {
    */
   constructor(a0: Standard_Transient);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
-  IsInstance(theType: Standard_Type): boolean;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  IsInstance(theType: unknown): boolean;
   IsInstance(theTypeName: string): boolean;
-  IsKind(theType: Standard_Type): boolean;
+  IsKind(theType: unknown): boolean;
   IsKind(theTypeName: string): boolean;
   This(): Standard_Transient;
   GetRefCount(): number;
@@ -453,7 +453,7 @@ export declare class TCollection_ExtendedString {
    * Initializes an ExtendedString with another ExtendedString.
    * @param theString the string to copy from
    */
-  constructor(theString: XCAFDoc_PartId);
+  constructor(theString: unknown);
   /**
    * Creation by converting a CString to an extended string. If theIsMultiByte is true then the string is treated as having UTF-8 coding. If it is not a UTF-8 then theIsMultiByte is ignored and each character is copied to ExtCharacter.
    * @param theString the C string to convert
@@ -465,12 +465,27 @@ export declare class TCollection_ExtendedString {
    * @param theString the ASCII string to convert
    * @param theIsMultiByte flag indicating UTF-8 coding
    */
-  constructor(theString: XCAFDoc_PartId, theIsMultiByte: boolean);
+  constructor(theString: unknown, theIsMultiByte: boolean);
   /**
    * Appends the other extended string to this extended string. Note that this method is an alias of operator +=.
    * @param theOther the string to append
    */
   AssignCat(theOther: TCollection_ExtendedString): void;
+  /**
+   * Appends the integer value to this extended string.
+   * @param theOther the integer to append
+   */
+  AssignCat(theOther: number): void;
+  /**
+   * Appends the utf16 char to this extended string.
+   * @param theChar the character to append
+   */
+  AssignCat(theChar: string): void;
+  /**
+   * Appends the real value to this extended string.
+   * @param theOther the real value to append
+   */
+  AssignCat(theOther: number): void;
   /**
    * Appends the utf16 char to this extended string.
    * @param theChar the character to append
@@ -484,7 +499,7 @@ export declare class TCollection_ExtendedString {
    * Appends the char16_t string to this extended string.
    * @param theString the string to append
    */
-  AssignCat_4(theString: string): void;
+  AssignCat_7(theString: string): void;
   /**
    * Core implementation: Appends char16_t string (pointer and length) to this extended string. This is the primary implementation that all other AssignCat overloads redirect to.
    * @param theString pointer to the string to append
@@ -494,6 +509,28 @@ export declare class TCollection_ExtendedString {
   /**
    * Concatenates char16_t string and returns a new string.
    * @param theOther the null-terminated string to append
+   * @returns new string with theOther appended
+   */
+  Cat(theOther: number): TCollection_ExtendedString;
+  /**
+   * Appends the integer value to this string and returns a new string.
+   * @param theOther the integer to append
+   * @returns new string with integer appended
+   */
+  Cat(theOther: number): TCollection_ExtendedString;
+  /**
+   * Appends a single extended (char16_t) character to this string and returns a new string.
+   * @param theChar the extended character to append
+   */
+  Cat(theChar: string): TCollection_ExtendedString;
+  /**
+   * Appends a single extended (char16_t) character to this string and returns a new string.
+   * @param theChar the extended character to append
+   */
+  Cat(theChar: string): TCollection_ExtendedString;
+  /**
+   * Appends the other extended string to this string and returns a new string.
+   * @param theOther the string to append
    * @returns new string with theOther appended
    */
   Cat(theOther: TCollection_ExtendedString): TCollection_ExtendedString;
@@ -815,7 +852,7 @@ export declare class TCollection_ExtendedString {
    * Returns a hashed value for the extended string. Note: if string is ASCII, the computed value is the same as the value computed with the HashCode function on a TCollection_AsciiString string composed with equivalent ASCII characters.
    * @returns a computed hash code
    */
-  HashCode(): size_t;
+  HashCode(): number;
   /**
    * Returns a const reference to a single shared empty string instance. This method provides access to a static empty string to avoid creating temporary empty strings. Use this method instead of constructing empty strings when you need a const reference.
    * @returns const reference to static empty string
@@ -922,6 +959,271 @@ export declare class TCollection_ExtendedString {
 }
 
 /**
+ * A variable-length sequence of ASCII characters (normal 8-bit character type). It provides editing operations with built-in memory management to make HAsciiString objects easier to use than ordinary character arrays. HAsciiString objects are handles to strings.
+ */
+export declare class TCollection_HAsciiString extends Standard_Transient {
+  /**
+   * Initializes a HAsciiString to an empty AsciiString.
+   */
+  constructor();
+  /**
+   * Initializes a HAsciiString with a CString.
+   */
+  constructor(message: string);
+  /**
+   * Initializes a HAsciiString with a single character.
+   */
+  constructor(aChar: string);
+  /**
+   * Initializes a HAsciiString with an integer value.
+   */
+  constructor(value: number);
+  /**
+   * Initializes a HAsciiString with a real value.
+   */
+  constructor(value: number);
+  /**
+   * Initializes a HAsciiString with a AsciiString.
+   */
+  constructor(aString: unknown);
+  /**
+   * Initializes a HAsciiString with a AsciiString.
+   */
+  constructor(aString: TCollection_HAsciiString);
+  /**
+   * Initializes a HAsciiString with <length> space allocated. and filled with <filler>.This is useful for buffers.
+   */
+  constructor(length: number, filler: string);
+  /**
+   * Initializes a HAsciiString with a HExtendedString. If replaceNonAscii is non-null character, it will be used in place of any non-ascii character found in the source string. Otherwise, creates UTF-8 unicode string.
+   */
+  constructor(aString: unknown, replaceNonAscii: string);
+  /**
+   * Appends <other> to me.
+   */
+  AssignCat(other: string): void;
+  /**
+   * Appends <other> to me. Example: aString = aString + anotherString.
+   */
+  AssignCat(other: TCollection_HAsciiString): void;
+  /**
+   * Converts the first character into its corresponding upper-case character and the other characters into lowercase. Example: before me = "hellO " after me = "Hello ".
+   */
+  Capitalize(): void;
+  /**
+   * Creates a new string by concatenation of this ASCII string and the other ASCII string. Example: aString = aString + anotherString aString = aString + "Dummy" aString contains "I say " aString = aString + "Hello " + "Dolly" gives "I say Hello Dolly" Warning: To catenate more than one CString, you must put a String before. So the following example is WRONG ! aString = "Hello " + "Dolly" THIS IS NOT ALLOWED This rule is applicable to AssignCat (operator +=) too.
+   */
+  Cat(other: string): TCollection_HAsciiString;
+  /**
+   * Creates a new string by concatenation of this ASCII string and the other ASCII string. Example: aString = aString + anotherString.
+   */
+  Cat(other: TCollection_HAsciiString): TCollection_HAsciiString;
+  /**
+   * Modifies this ASCII string so that its length becomes equal to Width and the new characters are equal to Filler. New characters are added both at the beginning and at the end of this string. If Width is less than the length of this ASCII string, nothing happens. Example occ::handle<TCollection_HAsciiString> myAlphabet = new TCollection_HAsciiString ("abcdef"); myAlphabet->Center(9,' '); assert ( !strcmp( myAlphabet->ToCString(), " abcdef ") );.
+   */
+  Center(Width: number, Filler: string): void;
+  /**
+   * Replaces all characters equal to aChar by NewChar in this ASCII string. The substitution is case sensitive if CaseSensitive is true (default value). If you do not use the default case sensitive option, it does not matter whether aChar is upper-case or not. Example occ::handle<TCollection_HAsciiString> myMistake = new TCollection_HAsciiString ("Hather"); myMistake->ChangeAll('H','F'); assert ( !strcmp( myMistake->ToCString(), "Father") );.
+   */
+  ChangeAll(aChar: string, NewChar: string, CaseSensitive: boolean): void;
+  /**
+   * Removes all characters contained in <me>. This produces an empty HAsciiString.
+   */
+  Clear(): void;
+  /**
+   * Returns the index of the first character of <me> that is present in <Set>. The search begins to the index FromIndex and ends to the the index ToIndex. Returns zero if failure. Raises an exception if FromIndex or ToIndex is out of range Example: before me = "aabAcAa", S = "Aa", FromIndex = 1, Toindex = 7 after me = "aabAcAa" returns 1.
+   */
+  FirstLocationInSet(Set: TCollection_HAsciiString, FromIndex: number, ToIndex: number): number;
+  /**
+   * Returns the index of the first character of <me> that is not present in the set <Set>. The search begins to the index FromIndex and ends to the the index ToIndex in <me>. Returns zero if failure. Raises an exception if FromIndex or ToIndex is out of range. Example: before me = "aabAcAa", S = "Aa", FromIndex = 1, Toindex = 7 after me = "aabAcAa" returns 3.
+   */
+  FirstLocationNotInSet(Set: TCollection_HAsciiString, FromIndex: number, ToIndex: number): number;
+  /**
+   * Insert a Character at position <where>. Example: aString contains "hy not ?" aString.Insert(1,'W'); gives "Why not ?" aString contains "Wh" aString.Insert(3,'y'); gives "Why" aString contains "Way" aString.Insert(2,'h'); gives "Why".
+   */
+  Insert(where: number, what: string): void;
+  /**
+   * Insert a HAsciiString at position <where>.
+   */
+  Insert(where: number, what: string): void;
+  /**
+   * Insert a HAsciiString at position <where>.
+   */
+  Insert(where: number, what: TCollection_HAsciiString): void;
+  /**
+   * Inserts the other ASCII string a after a specific index in the string <me> Example: before me = "cde" , Index = 0 , other = "ab" after me = "abcde" , other = "ab".
+   */
+  InsertAfter(Index: number, other: TCollection_HAsciiString): void;
+  /**
+   * Inserts the other ASCII string a before a specific index in the string <me> Raises an exception if Index is out of bounds Example: before me = "cde" , Index = 1 , other = "ab" after me = "abcde" , other = "ab".
+   */
+  InsertBefore(Index: number, other: TCollection_HAsciiString): void;
+  /**
+   * Returns True if the string <me> contains zero character.
+   */
+  IsEmpty(): boolean;
+  /**
+   * Returns TRUE if <me> is 'ASCII' less than <other>.
+   */
+  IsLess(other: TCollection_HAsciiString): boolean;
+  /**
+   * Returns TRUE if <me> is 'ASCII' greater than <other>.
+   */
+  IsGreater(other: TCollection_HAsciiString): boolean;
+  /**
+   * Converts a HAsciiString containing a numeric expression to an Integer. Example: "215" returns 215.
+   */
+  IntegerValue(): number;
+  /**
+   * Returns True if the string contains an integer value.
+   */
+  IsIntegerValue(): boolean;
+  /**
+   * Returns True if the string contains a real value.
+   */
+  IsRealValue(): boolean;
+  /**
+   * Returns True if the string contains only ASCII characters between ' ' and '~'. This means no control character and no extended ASCII code.
+   */
+  IsAscii(): boolean;
+  /**
+   * Returns True if the string S not contains same characters than the string <me>.
+   */
+  IsDifferent(S: TCollection_HAsciiString): boolean;
+  /**
+   * Returns True if the string S contains same characters than the string <me>.
+   */
+  IsSameString(S: TCollection_HAsciiString): boolean;
+  /**
+   * Returns True if the string S contains same characters than the string <me>.
+   */
+  IsSameString(S: TCollection_HAsciiString, CaseSensitive: boolean): boolean;
+  /**
+   * Removes all space characters in the beginning of the string.
+   */
+  LeftAdjust(): void;
+  /**
+   * Left justify. Length becomes equal to Width and the new characters are equal to Filler if Width < Length nothing happens Raises an exception if Width is less than zero Example: before me = "abcdef" , Width = 9 , Filler = ' ' after me = "abcdef   ".
+   */
+  LeftJustify(Width: number, Filler: string): void;
+  /**
+   * Returns number of characters in <me>. This is the same functionality as 'strlen' in C.
+   */
+  Length(): number;
+  /**
+   * returns an index in the string <me> of the first occurrence of the string S in the string <me> from the starting index FromIndex to the ending index ToIndex returns zero if failure Raises an exception if FromIndex or ToIndex is out of range. Example: before me = "aabAaAa", S = "Aa", FromIndex = 1, ToIndex = 7 after me = "aabAaAa" returns 4
+   */
+  Location(other: TCollection_HAsciiString, FromIndex: number, ToIndex: number): number;
+  /**
+   * Returns the index of the nth occurrence of the character C in the string <me> from the starting index FromIndex to the ending index ToIndex. Returns zero if failure. Raises an exception if FromIndex or ToIndex is out of range Example: before me = "aabAa", N = 3, C = 'a', FromIndex = 1, ToIndex = 5 after me = "aabAa" returns 5.
+   */
+  Location(N: number, C: string, FromIndex: number, ToIndex: number): number;
+  /**
+   * Converts <me> to its lower-case equivalent.
+   */
+  LowerCase(): void;
+  /**
+   * Inserts the other string at the beginning of the string <me> Example: before me = "cde" , S = "ab" after me = "abcde" , S = "ab".
+   */
+  Prepend(other: TCollection_HAsciiString): void;
+  /**
+   * Converts a string containing a numeric expression to a Real. Example: "215" returns 215.0. "3.14159267" returns 3.14159267.
+   */
+  RealValue(): number;
+  /**
+   * Remove all the occurrences of the character C in the string Example: before me = "HellLLo", C = 'L' , CaseSensitive = True after me = "Hello".
+   */
+  RemoveAll(C: string, CaseSensitive: boolean): void;
+  /**
+   * Removes every <what> characters from <me>.
+   */
+  RemoveAll(what: string): void;
+  /**
+   * Erases <ahowmany> characters from position <where>, <where> included. Example: aString contains "Hello" aString.Erase(2,2) erases 2 characters from position 1 This gives "Hlo".
+   */
+  Remove(where: number, ahowmany: number): void;
+  /**
+   * Removes all space characters at the end of the string.
+   */
+  RightAdjust(): void;
+  /**
+   * Right justify. Length becomes equal to Width and the new characters are equal to Filler if Width < Length nothing happens Raises an exception if Width is less than zero Example: before me = "abcdef" , Width = 9 , Filler = ' ' after me = "   abcdef".
+   */
+  RightJustify(Width: number, Filler: string): void;
+  /**
+   * Searches a CString in <me> from the beginning and returns position of first item <what> matching. It returns -1 if not found. Example: aString contains "Sample single test" aString.Search("le") returns 5.
+   */
+  Search(what: string): number;
+  /**
+   * Searches a String in <me> from the beginning and returns position of first item <what> matching. it returns -1 if not found.
+   */
+  Search(what: TCollection_HAsciiString): number;
+  /**
+   * Searches a CString in a String from the end and returns position of first item <what> matching. It returns -1 if not found. Example: aString contains "Sample single test" aString.SearchFromEnd("le") returns 12.
+   */
+  SearchFromEnd(what: string): number;
+  /**
+   * Searches a HAsciiString in another HAsciiString from the end and returns position of first item <what> matching. It returns -1 if not found.
+   */
+  SearchFromEnd(what: TCollection_HAsciiString): number;
+  /**
+   * Replaces one character in the string at position <where>. If <where> is less than zero or greater than the length of <me> an exception is raised. Example: aString contains "Garbake" astring.Replace(6,'g') gives <me> = "Garbage".
+   */
+  SetValue(where: number, what: string): void;
+  /**
+   * Replaces a part of <me> in the string at position <where>. If <where> is less than zero or greater than the length of <me> an exception is raised. Example: aString contains "Garbake" astring.Replace(6,'g') gives <me> = "Garbage".
+   */
+  SetValue(where: number, what: string): void;
+  /**
+   * Replaces a part of <me> by another string.
+   */
+  SetValue(where: number, what: TCollection_HAsciiString): void;
+  /**
+   * Splits a HAsciiString into two sub-strings. Example: aString contains "abcdefg" aString.Split(3) gives <me> = "abc" and returns "defg".
+   */
+  Split(where: number): TCollection_HAsciiString;
+  /**
+   * Creation of a sub-string of the string <me>. The sub-string starts to the index Fromindex and ends to the index ToIndex. Raises an exception if ToIndex or FromIndex is out of bounds Example: before me = "abcdefg", ToIndex=3, FromIndex=6 after me = "abcdefg" returns "cdef".
+   */
+  SubString(FromIndex: number, ToIndex: number): TCollection_HAsciiString;
+  /**
+   * Returns pointer to string (char *) This is useful for some casual manipulations Because this "char *" is 'const', you can't modify its contents.
+   */
+  ToCString(): string;
+  /**
+   * Extracts <whichone> token from <me>. By default, the <separators> is set to space and tabulation. By default, the token extracted is the first one (whichone = 1). <separators> contains all separators you need. If no token indexed by <whichone> is found, it returns an empty String. Example: aString contains "This is a     message" aString.Token() returns "This" aString.Token(" ",4) returns "message" aString.Token(" ",2) returns "is" aString.Token(" ",9) returns "" Other separators than space character and tabulation are allowed aString contains "1234; test:message   , value" aString.Token("; :,",4) returns "value" aString.Token("; :,",2) returns "test".
+   */
+  Token(separators: string, whichone: number): TCollection_HAsciiString;
+  /**
+   * Truncates <me> to <ahowmany> characters. Example: me = "Hello Dolly" -> Trunc(3) -> me = "Hel".
+   */
+  Trunc(ahowmany: number): void;
+  /**
+   * Converts <me> to its upper-case equivalent.
+   */
+  UpperCase(): void;
+  /**
+   * Length of the string ignoring all spaces (' ') and the control character at the end.
+   */
+  UsefullLength(): number;
+  /**
+   * Returns character at position <where> in <me>. If <where> is less than zero or greater than the length of <me>, an exception is raised. Example: aString contains "Hello" aString.Value(2) returns 'e'.
+   */
+  Value(where: number): string;
+  /**
+   * Returns the field myString.
+   */
+  String(): unknown;
+  IsSameState(other: TCollection_HAsciiString): boolean;
+  static get_type_name(): string;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
  * A Location is a composite transition. It comprises a series of elementary reference coordinates, i.e. objects of type TopLoc_Datum3D, and the powers to which these objects are raised.
  */
 export declare class TopLoc_Location {
@@ -940,7 +1242,7 @@ export declare class TopLoc_Location {
   /**
    * Constructs the local coordinate system object defined by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
    */
-  constructor(D: TopLoc_Datum3D);
+  constructor(D: unknown);
   /**
    * Returns true if this location is equal to the Identity transformation.
    */
@@ -952,7 +1254,7 @@ export declare class TopLoc_Location {
   /**
    * Returns the first elementary datum of the Location. Use the NextLocation function recursively to access the other data comprising this location. Exceptions Standard_NoSuchObject if this location is empty.
    */
-  FirstDatum(): TopLoc_Datum3D;
+  FirstDatum(): unknown;
   /**
    * Returns the power elevation of the first elementary datum. Exceptions Standard_NoSuchObject if this location is empty.
    */
@@ -989,7 +1291,7 @@ export declare class TopLoc_Location {
    * Returns a hashed value for this local coordinate system. This value is used, with map tables, to store and retrieve the object easily.
    * @returns a computed hash code
    */
-  HashCode(): size_t;
+  HashCode(): number;
   /**
    * Returns true if this location and the location Other have the same elementary data, i.e. contain the same series of TopLoc_Datum3D and respective powers. This method is an alias for operator ==.
    */
@@ -1556,7 +1858,7 @@ export declare class gp_GTrsf2d {
   /**
    * Creates a transformation based on the matrix theM and the vector theV where theM defines the vectorial part of the transformation, and theV the translation part.
    */
-  constructor(theM: gp_Mat2d, theV: gp_XY);
+  constructor(theM: unknown, theV: gp_XY);
   /**
    * Changes this transformation into an affinity of ratio theRatio with respect to the axis theA. Note: An affinity is a point-by-point transformation that transforms any point P into a point P' such that if H is the orthogonal projection of P on the axis theA, the vectors HP and HP' satisfy: HP' = theRatio * HP.
    */
@@ -1576,7 +1878,7 @@ export declare class gp_GTrsf2d {
   /**
    * Replaces the vectorial part of this transformation by theMatrix.
    */
-  SetVectorialPart(theMatrix: gp_Mat2d): void;
+  SetVectorialPart(theMatrix: unknown): void;
   /**
    * Returns true if the determinant of the vectorial part of this transformation is negative.
    */
@@ -1588,7 +1890,7 @@ export declare class gp_GTrsf2d {
   /**
    * Returns the nature of the transformation. It can be an identity transformation, a rotation, a translation, a mirror transformation (relative to a point or axis), a scaling transformation, a compound transformation or some other type of transformation.
    */
-  Form(): gp_TrsfForm;
+  Form(): unknown;
   /**
    * Returns the translation part of the GTrsf2d.
    */
@@ -1596,7 +1898,7 @@ export declare class gp_GTrsf2d {
   /**
    * Computes the vectorial part of the GTrsf2d. The returned Matrix is a 2*2 matrix.
    */
-  VectorialPart(): gp_Mat2d;
+  VectorialPart(): unknown;
   /**
    * Returns the coefficients of the global matrix of transformation. Raised OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3.
    */
@@ -1799,11 +2101,11 @@ export declare class gp_Trsf {
   /**
    * Changes the transformation into a rotation defined by quaternion. Note that rotation is performed around origin, i.e. no translation is involved.
    */
-  SetRotation(theR: gp_Quaternion): void;
+  SetRotation(theR: unknown): void;
   /**
    * Replaces the rotation part with specified quaternion.
    */
-  SetRotationPart(theR: gp_Quaternion): void;
+  SetRotationPart(theR: unknown): void;
   /**
    * Changes the transformation into a scale. theP is the center of the scale and theS is the scaling value. Raises ConstructionError If <theS> is null.
    */
@@ -1823,7 +2125,7 @@ export declare class gp_Trsf {
   /**
    * Sets transformation by directly specified rotation and translation.
    */
-  SetTransformation(R: gp_Quaternion, theT: gp_Vec): void;
+  SetTransformation(R: unknown, theT: gp_Vec): void;
   /**
    * Changes the transformation into a translation. theV is the vector of the translation.
    */
@@ -1840,7 +2142,7 @@ export declare class gp_Trsf {
    * Modifies the scale factor. Raises ConstructionError If theS is null.
    */
   SetScaleFactor(theS: number): void;
-  SetForm(theP: gp_TrsfForm): void;
+  SetForm(theP: unknown): void;
   /**
    * Sets the coefficients of the transformation. The transformation of the point x,y,z is the point x',y',z' with :
    */
@@ -1852,7 +2154,7 @@ export declare class gp_Trsf {
   /**
    * Returns the nature of the transformation. It can be: an identity transformation, a rotation, a translation, a mirror transformation (relative to a point, an axis or a plane), a scaling transformation, or a compound transformation.
    */
-  Form(): gp_TrsfForm;
+  Form(): unknown;
   /**
    * Returns the scale factor.
    */
@@ -1868,15 +2170,15 @@ export declare class gp_Trsf {
   /**
    * Returns quaternion representing rotational part of the transformation.
    */
-  GetRotation(): gp_Quaternion;
+  GetRotation(): unknown;
   /**
    * Returns the vectorial part of the transformation. It is a 3*3 matrix which includes the scale factor.
    */
-  VectorialPart(): gp_Mat;
+  VectorialPart(): unknown;
   /**
    * Computes the homogeneous vectorial part of the transformation. It is a 3*3 matrix which doesn't include the scale factor. In other words, the vectorial part of this transformation is equal to its homogeneous vectorial part, multiplied by the scale factor. The coefficients of this matrix must be multiplied by the scale factor to obtain the coefficients of the transformation.
    */
-  HVectorialPart(): gp_Mat;
+  HVectorialPart(): unknown;
   /**
    * Returns the coefficients of the transformation's matrix. It is a 3 rows * 4 columns matrix. This coefficient includes the scale factor. Raises OutOfRanged if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4.
    */
@@ -1951,17 +2253,21 @@ export declare class gp_Pnt {
    */
   SetXYZ(theCoord: gp_XYZ): void;
   /**
-   * Returns the coordinate of corresponding to the value of theIndex : theIndex = 1 => X is returned theIndex = 2 => Y is returned theIndex = 3 => Z is returned Raises OutOfRange if theIndex != {1, 2, 3}. Raised if theIndex != {1, 2, 3}.
-   */
-  Coord(theIndex: number): number;
-  /**
    * For this point gives its three coordinates theXp, theYp and theZp.
    */
   Coord(): { theXp: number; theYp: number; theZp: number };
   /**
+   * For this point gives its three coordinates theXp, theYp and theZp.
+   */
+  Coord_2(): { theXp: number; theYp: number; theZp: number };
+  /**
    * For this point, returns its three coordinates as a XYZ object.
    */
-  Coord(): gp_XYZ;
+  Coord_3(): gp_XYZ;
+  /**
+   * Returns the coordinate of corresponding to the value of theIndex : theIndex = 1 => X is returned theIndex = 2 => Y is returned theIndex = 3 => Z is returned Raises OutOfRange if theIndex != {1, 2, 3}. Raised if theIndex != {1, 2, 3}.
+   */
+  Coord(theIndex: number): number;
   /**
    * For this point, returns its X coordinate.
    */
@@ -2497,17 +2803,21 @@ export declare class gp_Pnt2d {
    */
   SetXY(theCoord: gp_XY): void;
   /**
-   * Returns the coordinate of range theIndex : theIndex = 1 => X is returned theIndex = 2 => Y is returned Raises OutOfRange if theIndex != {1, 2}.
-   */
-  Coord(theIndex: number): number;
-  /**
    * For this point returns its two coordinates as a number pair.
    */
   Coord(): { theXp: number; theYp: number };
   /**
+   * For this point returns its two coordinates as a number pair.
+   */
+  Coord_2(): { theXp: number; theYp: number };
+  /**
    * For this point, returns its two coordinates as a number pair.
    */
-  Coord(): gp_XY;
+  Coord_3(): gp_XY;
+  /**
+   * Returns the coordinate of range theIndex : theIndex = 1 => X is returned theIndex = 2 => Y is returned Raises OutOfRange if theIndex != {1, 2}.
+   */
+  Coord(theIndex: number): number;
   /**
    * For this point, returns its X coordinate.
    */
@@ -2667,13 +2977,13 @@ export declare class gp_XY {
   /**
    * <me> = theMatrix * <me>
    */
-  Multiply(theMatrix: gp_Mat2d): void;
+  Multiply(theMatrix: unknown): void;
   Multiplied(theScalar: number): gp_XY;
   Multiplied(theOther: gp_XY): gp_XY;
   /**
    * New = theMatrix * <me>.
    */
-  Multiplied(theMatrix: gp_Mat2d): gp_XY;
+  Multiplied(theMatrix: unknown): gp_XY;
   Normalize(): void;
   Normalized(): gp_XY;
   Reverse(): void;
@@ -3108,13 +3418,13 @@ export declare class gp_XYZ {
   /**
    * <me> = theMatrix * <me>
    */
-  Multiply(theMatrix: gp_Mat): void;
+  Multiply(theMatrix: unknown): void;
   Multiplied(theScalar: number): gp_XYZ;
   Multiplied(theOther: gp_XYZ): gp_XYZ;
   /**
    * New = theMatrix * <me>.
    */
-  Multiplied(theMatrix: gp_Mat): gp_XYZ;
+  Multiplied(theMatrix: unknown): gp_XYZ;
   Normalize(): void;
   Normalized(): gp_XYZ;
   Reverse(): void;
@@ -3530,7 +3840,7 @@ export declare class gp_Circ {
  */
 export declare class gp_Ax2d {
   /**
-   * Creates an axis object representing X axis of the reference co-ordinate system.
+   * Creates an axis object representing X axis of the reference coordinate system.
    */
   constructor();
   /**
@@ -3995,7 +4305,7 @@ export declare class gp_Trsf2d {
   /**
    * Returns the nature of the transformation. It can be an identity transformation, a rotation, a translation, a mirror (relative to a point or an axis), a scaling transformation, or a compound transformation.
    */
-  Form(): gp_TrsfForm;
+  Form(): unknown;
   /**
    * Returns the scale factor.
    */
@@ -4007,11 +4317,11 @@ export declare class gp_Trsf2d {
   /**
    * Returns the vectorial part of the transformation. It is a 2*2 matrix which includes the scale factor.
    */
-  VectorialPart(): gp_Mat2d;
+  VectorialPart(): unknown;
   /**
    * Returns the homogeneous vectorial part of the transformation. It is a 2*2 matrix which doesn't include the scale factor. The coefficients of this matrix must be multiplied by the scale factor to obtain the coefficients of the transformation.
    */
-  HVectorialPart(): gp_Mat2d;
+  HVectorialPart(): unknown;
   /**
    * Returns the angle corresponding to the rotational component of the transformation matrix (operation opposite to SetRotation()).
    */
@@ -4068,7 +4378,7 @@ export declare class gp_GTrsf {
   /**
    * Creates a transformation based on the matrix theM and the vector theV where theM defines the vectorial part of the transformation, and V the translation part, or.
    */
-  constructor(theM: gp_Mat, theV: gp_XYZ);
+  constructor(theM: unknown, theV: gp_XYZ);
   /**
    * Changes this transformation into an affinity of ratio theRatio with respect to the axis theA1. Note: an affinity is a point-by-point transformation that transforms any point P into a point P' such that if H is the orthogonal projection of P on the axis theA1 or the plane A2, the vectors HP and HP' satisfy: HP' = theRatio * HP.
    */
@@ -4084,7 +4394,7 @@ export declare class gp_GTrsf {
   /**
    * Replaces the vectorial part of this transformation by theMatrix.
    */
-  SetVectorialPart(theMatrix: gp_Mat): void;
+  SetVectorialPart(theMatrix: unknown): void;
   /**
    * Replaces the translation part of this transformation by the coordinates of the number triple theCoord.
    */
@@ -4104,7 +4414,7 @@ export declare class gp_GTrsf {
   /**
    * Returns the nature of the transformation. It can be an identity transformation, a rotation, a translation, a mirror transformation (relative to a point, an axis or a plane), a scaling transformation, a compound transformation or some other type of transformation.
    */
-  Form(): gp_TrsfForm;
+  Form(): unknown;
   /**
    * verify and set the shape of the GTrsf Other or CompoundTrsf Ex :
    */
@@ -4116,7 +4426,7 @@ export declare class gp_GTrsf {
   /**
    * Computes the vectorial part of the GTrsf. The returned Matrix is a 3*3 matrix.
    */
-  VectorialPart(): gp_Mat;
+  VectorialPart(): unknown;
   /**
    * Returns the coefficients of the global matrix of transformation. Raises OutOfRange if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4.
    */
@@ -4213,9 +4523,6 @@ export declare const GeomAbs_Shape: {
  * Describes a bounding box in 2D space. A bounding box is parallel to the axes of the coordinates system. If it is finite, it is defined by the two intervals:
  */
 export declare class Bnd_Box2d {
-  /**
-   * Creates an empty 2D bounding box. The constructed box is qualified Void. Its gap is null.
-   */
   constructor();
   /**
    * Sets this bounding box so that it covers the whole 2D space, i.e. it is infinite in all directions.
@@ -4336,7 +4643,7 @@ export declare class Bnd_Box2d {
   /**
    * Returns True if the line doesn't intersect the box.
    */
-  IsOut(theL: gp_Lin2d): boolean;
+  IsOut(theL: unknown): boolean;
   /**
    * Returns True if <Box2d> is out <me>.
    */
@@ -4565,11 +4872,11 @@ export declare class Bnd_Box {
   /**
    * Returns False if the line intersects the box.
    */
-  IsOut(L: gp_Lin): boolean;
+  IsOut(L: unknown): boolean;
   /**
    * Returns False if the plane intersects the box.
    */
-  IsOut(P: gp_Pln): boolean;
+  IsOut(P: unknown): boolean;
   /**
    * Returns False if the <Box> intersects or is inside <me>.
    */
@@ -4657,8 +4964,8 @@ export declare class Poly_PolygonOnTriangulation extends Standard_Transient {
    */
   constructor(Nodes: NCollection_Array1_int, Parameters: NCollection_Array1_double);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Creates a copy of current polygon.
    */
@@ -4726,8 +5033,8 @@ export declare class Poly_MergeNodesTool extends Standard_Transient {
    */
   constructor(theSmoothAngle: number, theMergeTolerance?: number, theNbFacets?: number);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Merge nodes of existing mesh and return the new mesh.
    * @param theTris triangulation to add
@@ -4802,12 +5109,12 @@ export declare class Poly_MergeNodesTool extends Standard_Transient {
    * Add new triangle.
    * @param theElemNodes 3 element nodes
    */
-  AddTriangle(theElemNodes: gp_XYZ[3]): void;
+  AddTriangle(theElemNodes: [gp_XYZ, gp_XYZ, gp_XYZ]): void;
   /**
    * Add new quad.
    * @param theElemNodes 4 element nodes
    */
-  AddQuad(theElemNodes: gp_XYZ[4]): void;
+  AddQuad(theElemNodes: [gp_XYZ, gp_XYZ, gp_XYZ, gp_XYZ]): void;
   /**
    * Add new triangle or quad.
    * @param theElemNodes element nodes
@@ -4893,8 +5200,8 @@ export declare class Poly_Triangulation extends Standard_Transient {
    */
   constructor(theNbNodes: number, theNbTriangles: number, theHasUVNodes: boolean, theHasNormals?: boolean);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Creates full copy of current triangulation.
    */
@@ -4910,11 +5217,11 @@ export declare class Poly_Triangulation extends Standard_Transient {
   /**
    * Returns initial set of parameters used to generate this triangulation.
    */
-  Parameters(): Poly_TriangulationParameters;
+  Parameters(): unknown;
   /**
    * Updates initial set of parameters used to generate this triangulation.
    */
-  Parameters(theParams: Poly_TriangulationParameters): void;
+  Parameters(theParams: unknown): void;
   /**
    * Clears internal arrays of nodes and all attributes.
    */
@@ -4990,11 +5297,11 @@ export declare class Poly_Triangulation extends Standard_Transient {
   /**
    * Returns mesh purpose bits.
    */
-  MeshPurpose(): Poly_MeshPurpose;
+  MeshPurpose(): number;
   /**
    * Sets mesh purpose bits.
    */
-  SetMeshPurpose(thePurpose: Poly_MeshPurpose): void;
+  SetMeshPurpose(thePurpose: number): void;
   /**
    * Returns cached min - max range of triangulation data, which is VOID by default (e.g, no cached information).
    */
@@ -5081,15 +5388,15 @@ export declare class Poly_Triangulation extends Standard_Transient {
   /**
    * Returns an internal array of nodes. Node()/SetNode() should be used instead in portable code.
    */
-  InternalNodes(): Poly_ArrayOfNodes;
+  InternalNodes(): unknown;
   /**
    * Returns an internal array of UV nodes. UBNode()/SetUVNode() should be used instead in portable code.
    */
-  InternalUVNodes(): Poly_ArrayOfUVNodes;
+  InternalUVNodes(): unknown;
   /**
    * Return an internal array of normals. Normal()/SetNormal() should be used instead in portable code.
    */
-  InternalNormals(): NCollection_Array1_NCollection_Vec3_float;
+  InternalNormals(): unknown;
   SetNormals(theNormals: NCollection_HArray1_float): void;
   Triangles(): NCollection_Array1_Poly_Triangle;
   ChangeTriangles(): NCollection_Array1_Poly_Triangle;
@@ -5097,8 +5404,8 @@ export declare class Poly_Triangulation extends Standard_Transient {
   NbDeferredNodes(): number;
   NbDeferredTriangles(): number;
   HasDeferredData(): boolean;
-  LoadDeferredData(theFileSystem: OSD_FileSystem): boolean;
-  DetachedLoadDeferredData(theFileSystem: OSD_FileSystem): Poly_Triangulation;
+  LoadDeferredData(theFileSystem: unknown): boolean;
+  DetachedLoadDeferredData(theFileSystem: unknown): Poly_Triangulation;
   UnloadDeferredData(): boolean;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -5149,11 +5456,11 @@ export declare class TDF_Attribute extends Standard_Transient {
   /**
    * Returns the ID of the attribute.
    */
-  ID(): Standard_GUID;
+  ID(): unknown;
   /**
    * Sets specific ID of the attribute (supports several attributes of one type at the same label feature).
    */
-  SetID(a0: Standard_GUID): void;
+  SetID(a0: unknown): void;
   /**
    * Sets default ID defined in nested class (to be used for attributes having User ID feature).
    */
@@ -5185,11 +5492,11 @@ export declare class TDF_Attribute extends Standard_Transient {
   /**
    * Returns true if it exists an associated attribute of <me> with <anID> as ID.
    */
-  IsAttribute(anID: Standard_GUID): boolean;
+  IsAttribute(anID: unknown): boolean;
   /**
    * Finds an associated attribute of <me>, according to <anID>. the returned <anAttribute> is a valid one. The method returns True if found, False otherwise. A removed attribute cannot be found using this method.
    */
-  FindAttribute(anID: Standard_GUID): { result: boolean; anAttribute: TDF_Attribute };
+  FindAttribute(anID: unknown): { result: boolean; anAttribute: TDF_Attribute };
   /**
    * Adds an Attribute <other> to the label of <me>. Raises if there is already one of the same GUID than <other>.
    */
@@ -5197,7 +5504,7 @@ export declare class TDF_Attribute extends Standard_Transient {
   /**
    * Forgets the Attribute of GUID <aguid> associated to the label of <me>. Be careful that if <me> is the attribute of <guid>, <me> will have a null label after this call. If the attribute doesn't exist returns False. Otherwise returns True.
    */
-  ForgetAttribute(aguid: Standard_GUID): boolean;
+  ForgetAttribute(aguid: unknown): boolean;
   /**
    * Forgets all the attributes attached to the label of <me>. Does it on the sub-labels if <clearChildren> is set to true. Of course, this method is compatible with Transaction & Delta mechanisms. Be careful that if <me> will have a null label after this call.
    */
@@ -5225,11 +5532,11 @@ export declare class TDF_Attribute extends Standard_Transient {
   /**
    * Something to do before applying <anAttDelta>. The returned status says if AfterUndo has been performed (true) or if this callback must be called once again further (false). If <forceIt> is set to true, the method MUST perform and return true. Does nothing by default and returns true.
    */
-  BeforeUndo(anAttDelta: TDF_AttributeDelta, forceIt: boolean): boolean;
+  BeforeUndo(anAttDelta: unknown, forceIt: boolean): boolean;
   /**
    * Something to do after applying <anAttDelta>. The returned status says if AfterUndo has been performed (true) or if this callback must be called once again further (false). If <forceIt> is set to true, the method MUST perform and return true. Does nothing by default and returns true.
    */
-  AfterUndo(anAttDelta: TDF_AttributeDelta, forceIt: boolean): boolean;
+  AfterUndo(anAttDelta: unknown, forceIt: boolean): boolean;
   /**
    * A callback. By default does nothing. It is called by TDF_Data::CommitTransaction() method.
    */
@@ -5253,27 +5560,27 @@ export declare class TDF_Attribute extends Standard_Transient {
   /**
    * Makes an AttributeDelta because <me> appeared. The only known use of a redefinition of this method is to return a null handle (no delta).
    */
-  DeltaOnAddition(): TDF_DeltaOnAddition;
+  DeltaOnAddition(): unknown;
   /**
    * Makes an AttributeDelta because <me> has been forgotten.
    */
-  DeltaOnForget(): TDF_DeltaOnForget;
+  DeltaOnForget(): unknown;
   /**
    * Makes an AttributeDelta because <me> has been resumed.
    */
-  DeltaOnResume(): TDF_DeltaOnResume;
+  DeltaOnResume(): unknown;
   /**
    * Makes a DeltaOnModification between <me> and.
    */
-  DeltaOnModification(anOldAttribute: TDF_Attribute): TDF_DeltaOnModification;
+  DeltaOnModification(anOldAttribute: TDF_Attribute): unknown;
   /**
    * Applies a DeltaOnModification to <me>.
    */
-  DeltaOnModification(aDelta: TDF_DeltaOnModification): void;
+  DeltaOnModification(aDelta: unknown): void;
   /**
    * Makes a DeltaOnRemoval on <me> because <me> has disappeared from the DS.
    */
-  DeltaOnRemoval(): TDF_DeltaOnRemoval;
+  DeltaOnRemoval(): unknown;
   /**
    * Returns an new empty attribute from the good end type. It is used by the copy algorithm.
    */
@@ -5281,18 +5588,18 @@ export declare class TDF_Attribute extends Standard_Transient {
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
    */
-  Paste(intoAttribute: TDF_Attribute, aRelocationTable: TDF_RelocationTable): void;
+  Paste(intoAttribute: TDF_Attribute, aRelocationTable: unknown): void;
   /**
    * Adds the first level referenced attributes and labels to <aDataSet>.
    */
-  References(aDataSet: TDF_DataSet): void;
+  References(aDataSet: unknown): void;
   /**
    * Forgets the attribute. <aTransaction> is the current transaction in which the forget is done. A forgotten attribute is also flagged not "Valid".
    */
   Forget(aTransaction: number): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -5313,7 +5620,7 @@ export declare class TDF_Label {
   /**
    * Returns the Data owning <me>.
    */
-  Data(): TDF_Data;
+  Data(): unknown;
   /**
    * Returns the tag of the label. This is the integer assigned randomly to a label in a data framework. This integer is used to identify this label in an entry.
    */
@@ -5343,7 +5650,7 @@ export declare class TDF_Label {
   /**
    * Returns true if <me> owns an attribute with <anID> as ID.
    */
-  IsAttribute(anID: Standard_GUID): boolean;
+  IsAttribute(anID: unknown): boolean;
   /**
    * Adds an Attribute to the current label. Raises if there is already one.
    */
@@ -5355,7 +5662,7 @@ export declare class TDF_Label {
   /**
    * Forgets the Attribute of GUID <aguid> from the current label. If the attribute doesn't exist returns False. Otherwise returns True.
    */
-  ForgetAttribute(aguid: Standard_GUID): boolean;
+  ForgetAttribute(aguid: unknown): boolean;
   /**
    * Forgets all the attributes. Does it on also on the sub-labels if <clearChildren> is set to true. Of course, this method is compatible with Transaction & Delta mechanisms.
    */
@@ -5367,11 +5674,11 @@ export declare class TDF_Label {
   /**
    * Finds an attribute of the current label, according to <anID>. If anAttribute is not a valid one, false is returned.
    */
-  FindAttribute(anID: Standard_GUID): { result: boolean; anAttribute: TDF_Attribute };
+  FindAttribute(anID: unknown): { result: boolean; anAttribute: TDF_Attribute };
   /**
    * Finds an attribute of the current label, according to <anID> and <aTransaction>. This attribute has/had to be a valid one for the given transaction index. So, this attribute is not necessarily a valid one.
    */
-  FindAttribute(anID: Standard_GUID, aTransaction: number): { result: boolean; anAttribute: TDF_Attribute };
+  FindAttribute(anID: unknown, aTransaction: number): { result: boolean; anAttribute: TDF_Attribute };
   /**
    * Returns true if <me> or a DESCENDANT of <me> owns attributes not yet available in transaction 0. It means at least one of their attributes is new, modified or deleted.
    */
@@ -5438,15 +5745,15 @@ export declare class TDF_Label {
  */
 export declare class TDataStd_Name extends TDataStd_GenericExtString {
   constructor();
-  static GetID(): Standard_GUID;
+  static GetID(): unknown;
   /**
    * Creates (if does not exist) and sets the name in the name attribute. from any label <L> search in father labels (L is not concerned) the first name attribute. if found set it in <father>.
    */
-  static Set(label: TDF_Label, string: TCollection_ExtendedString): TDataStd_Name;
+  static Set(label: TDF_Label, string_: TCollection_ExtendedString): TDataStd_Name;
   /**
    * Finds, or creates, a Name attribute with explicit user defined <guid> and sets <string>. The Name attribute is returned.
    */
-  static Set(label: TDF_Label, guid: Standard_GUID, string: TCollection_ExtendedString): TDataStd_Name;
+  static Set(label: TDF_Label, guid: unknown, string_: TCollection_ExtendedString): TDataStd_Name;
   /**
    * Sets  as name. Raises if  is not a valid name.
    */
@@ -5454,14 +5761,14 @@ export declare class TDataStd_Name extends TDataStd_GenericExtString {
   /**
    * Sets the explicit user defined GUID to the attribute.
    */
-  SetID(guid: Standard_GUID): void;
+  SetID(guid: unknown): void;
   /**
    * Sets default GUID for the attribute.
    */
   SetID(): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   NewEmpty(): TDF_Attribute;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -5479,10 +5786,10 @@ export declare class TDataStd_GenericEmpty extends TDF_Attribute {
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
    */
-  Paste(a0: TDF_Attribute, a1: TDF_RelocationTable): void;
+  Paste(a0: TDF_Attribute, a1: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -5499,7 +5806,11 @@ export declare class TDataStd_GenericExtString extends TDF_Attribute {
   /**
    * Sets the explicit user defined GUID to the attribute.
    */
-  SetID(guid: Standard_GUID): void;
+  SetID(guid: unknown): void;
+  /**
+   * Sets the explicit user defined GUID to the attribute.
+   */
+  SetID(): void;
   /**
    * Returns the name contained in this name attribute.
    */
@@ -5507,7 +5818,7 @@ export declare class TDataStd_GenericExtString extends TDF_Attribute {
   /**
    * Returns the ID of the attribute.
    */
-  ID(): Standard_GUID;
+  ID(): unknown;
   /**
    * Restores the backuped contents from <anAttribute> into this one. It is used when aborting a transaction.
    */
@@ -5515,10 +5826,10 @@ export declare class TDataStd_GenericExtString extends TDF_Attribute {
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
    */
-  Paste(into: TDF_Attribute, RT: TDF_RelocationTable): void;
+  Paste(into: TDF_Attribute, RT: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -5564,8 +5875,8 @@ export declare class TDocStd_Document extends CDM_Document {
    * returns the OS path of the file, in which one <me> is saved. Raise an exception if <me> is not saved.
    */
   GetPath(): TCollection_ExtendedString;
-  SetData(data: TDF_Data): void;
-  GetData(): TDF_Data;
+  SetData(data: unknown): void;
+  GetData(): unknown;
   /**
    * Returns the main label in this data framework. By definition, this is the label with the entry 0:1.
    */
@@ -5589,7 +5900,7 @@ export declare class TDocStd_Document extends CDM_Document {
   /**
    * Returns the labels which have been modified in this document.
    */
-  GetModified(): NCollection_Map_TDF_Label;
+  GetModified(): unknown;
   /**
    * Launches a new command. This command may be undone.
    */
@@ -5642,8 +5953,8 @@ export declare class TDocStd_Document extends CDM_Document {
    * Will REDO one step, returns False if no redo was done (Redos == 0). Otherwise, true is returned, and one step in the list of redoes is done again.
    */
   Redo(): boolean;
-  GetUndos(): NCollection_List_handle_TDF_Delta;
-  GetRedos(): NCollection_List_handle_TDF_Delta;
+  GetUndos(): unknown;
+  GetRedos(): unknown;
   /**
    * Removes the first undo in the list of document undos. It is used in the application when the undo limit is exceed.
    */
@@ -5659,7 +5970,7 @@ export declare class TDocStd_Document extends CDM_Document {
   /**
    * Set modifications on labels impacted by external references to the entry. The document becomes invalid and must be recomputed.
    */
-  UpdateReferences(aDocEntry: XCAFDoc_PartId): void;
+  UpdateReferences(aDocEntry: unknown): void;
   /**
    * Recompute if the document was not valid and propagate the recorded modification.
    */
@@ -5703,18 +6014,18 @@ export declare class TDocStd_Document extends CDM_Document {
   /**
    * Returns version of the format to be used to store the document.
    */
-  StorageFormatVersion(): TDocStd_FormatVersion;
+  StorageFormatVersion(): unknown;
   /**
    * Sets version of the format to be used to store the document.
    */
-  ChangeStorageFormatVersion(theVersion: TDocStd_FormatVersion): void;
+  ChangeStorageFormatVersion(theVersion: unknown): void;
   /**
    * Returns current storage format version of the document.
    */
-  static CurrentStorageFormatVersion(): TDocStd_FormatVersion;
+  static CurrentStorageFormatVersion(): unknown;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -5748,8 +6059,8 @@ export declare class CDM_Document extends Standard_Transient {
    * Creates a reference from this document to {anOtherDocument}. Returns a reference identifier. This reference identifier is unique in the document and will not be used for the next references, even after the storing of the document. If there is already a reference between the two documents, the reference is not created, but its reference identifier is returned.
    */
   CreateReference(anOtherDocument: CDM_Document): number;
-  CreateReference(aMetaData: CDM_MetaData, aReferenceIdentifier: number, anApplication: CDM_Application, aToDocumentVersion: number, UseStorageConfiguration: boolean): void;
-  CreateReference(aMetaData: CDM_MetaData, anApplication: CDM_Application, aDocumentVersion: number, UseStorageConfiguration: boolean): number;
+  CreateReference(aMetaData: unknown, aReferenceIdentifier: number, anApplication: unknown, aToDocumentVersion: number, UseStorageConfiguration: boolean): void;
+  CreateReference(aMetaData: unknown, anApplication: unknown, aDocumentVersion: number, UseStorageConfiguration: boolean): number;
   /**
    * Removes the reference between the From Document and the To Document identified by a reference identifier.
    */
@@ -5849,9 +6160,9 @@ export declare class CDM_Document extends Standard_Transient {
   /**
    * associates database information to a document which has been stored. The name of the document is now the name which has beenused to store the data.
    */
-  SetMetaData(aMetaData: CDM_MetaData): void;
+  SetMetaData(aMetaData: unknown): void;
   UnsetIsStored(): void;
-  MetaData(): CDM_MetaData;
+  MetaData(): unknown;
   Folder(): TCollection_ExtendedString;
   /**
    * defines the folder in which the object should be stored.
@@ -5899,10 +6210,10 @@ export declare class CDM_Document extends Standard_Transient {
    * returns true if the document corresponding to the given reference has been retrieved and opened. Otherwise returns false. This method does not retrieve the referenced document
    */
   IsOpened(aReferenceIdentifier: number): boolean;
-  Open(anApplication: CDM_Application): void;
-  CanClose(): CDM_CanCloseStatus;
+  Open(anApplication: unknown): void;
+  CanClose(): unknown;
   Close(): void;
-  Application(): CDM_Application;
+  Application(): unknown;
   /**
    * A referenced document may indicate through this virtual method that it does not allow the closing of aDocument which it references through the reference aReferenceIdentifier. By default returns true.
    */
@@ -5912,12 +6223,12 @@ export declare class CDM_Document extends Standard_Transient {
    */
   CloseReference(aDocument: CDM_Document, aReferenceIdentifier: number): void;
   ReferenceCounter(): number;
-  Reference(aReferenceIdentifier: number): CDM_Reference;
+  Reference(aReferenceIdentifier: number): unknown;
   SetModifications(Modifications: number): void;
   SetReferenceCounter(aReferenceCounter: number): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -6021,12 +6332,12 @@ export declare class NCollection_Array1_StepShape_ShapeDimensionRepresentationIt
    */
   constructor(theOther: NCollection_Array1_StepShape_ShapeDimensionRepresentationItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepShape_ShapeDimensionRepresentationItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepShape_ShapeDimensionRepresentationItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepShape_ShapeDimensionRepresentationItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -6055,22 +6366,22 @@ export declare class NCollection_Array1_StepShape_ShapeDimensionRepresentationIt
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepShape_ShapeDimensionRepresentationItem): NCollection_Array1_StepShape_ShapeDimensionRepresentationItem;
-  First(): StepShape_ShapeDimensionRepresentationItem;
-  ChangeFirst(): StepShape_ShapeDimensionRepresentationItem;
-  Last(): StepShape_ShapeDimensionRepresentationItem;
-  ChangeLast(): StepShape_ShapeDimensionRepresentationItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepShape_ShapeDimensionRepresentationItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepShape_ShapeDimensionRepresentationItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepShape_ShapeDimensionRepresentationItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -6102,12 +6413,12 @@ export declare class NCollection_Array1_StepShape_GeometricSetSelect {
    */
   constructor(theOther: NCollection_Array1_StepShape_GeometricSetSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepShape_GeometricSetSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepShape_GeometricSetSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepShape_GeometricSetSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -6136,22 +6447,22 @@ export declare class NCollection_Array1_StepShape_GeometricSetSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepShape_GeometricSetSelect): NCollection_Array1_StepShape_GeometricSetSelect;
-  First(): StepShape_GeometricSetSelect;
-  ChangeFirst(): StepShape_GeometricSetSelect;
-  Last(): StepShape_GeometricSetSelect;
-  ChangeLast(): StepShape_GeometricSetSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepShape_GeometricSetSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepShape_GeometricSetSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepShape_GeometricSetSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -6198,7 +6509,7 @@ export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingIn
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_CameraModelD3MultiClippingInterectionSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -6206,7 +6517,7 @@ export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingIn
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_CameraModelD3MultiClippingInterectionSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -6216,14 +6527,14 @@ export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingIn
    */
   ChangeArray1(): NCollection_Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData {
   /**
    * Empty constructor.
    */
@@ -6231,7 +6542,7 @@ export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData extends NColl
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -6269,11 +6580,11 @@ export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData extends NColl
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -6289,7 +6600,7 @@ export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData extends NColl
   /**
    * Append one item.
    */
-  Append(theItem: RWGltf_GltfPrimArrayData): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -6297,7 +6608,7 @@ export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData extends NColl
   /**
    * Prepend one item.
    */
-  Prepend(theItem: RWGltf_GltfPrimArrayData): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -6305,7 +6616,7 @@ export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData extends NColl
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: RWGltf_GltfPrimArrayData): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -6317,7 +6628,7 @@ export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData extends NColl
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: RWGltf_GltfPrimArrayData): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -6325,31 +6636,31 @@ export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData extends NColl
   /**
    * First item access.
    */
-  First(): RWGltf_GltfPrimArrayData;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): RWGltf_GltfPrimArrayData;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): RWGltf_GltfPrimArrayData;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): RWGltf_GltfPrimArrayData;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): RWGltf_GltfPrimArrayData;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): RWGltf_GltfPrimArrayData;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: RWGltf_GltfPrimArrayData): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -6390,8 +6701,15 @@ export declare class NCollection_HArray2_gp_XYZ {
    */
   ChangeArray2(): NCollection_Array2_gp_XYZ;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_CompoundId {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -6407,12 +6725,12 @@ export declare class NCollection_Array1_StepAP214_DateAndTimeItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_DateAndTimeItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_DateAndTimeItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_DateAndTimeItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_DateAndTimeItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -6441,22 +6759,22 @@ export declare class NCollection_Array1_StepAP214_DateAndTimeItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_DateAndTimeItem): NCollection_Array1_StepAP214_DateAndTimeItem;
-  First(): StepAP214_DateAndTimeItem;
-  ChangeFirst(): StepAP214_DateAndTimeItem;
-  Last(): StepAP214_DateAndTimeItem;
-  ChangeLast(): StepAP214_DateAndTimeItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_DateAndTimeItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_DateAndTimeItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_DateAndTimeItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -6473,6 +6791,20 @@ export declare class NCollection_Array1_StepAP214_DateAndTimeItem {
    */
   Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   IsDeletable(): boolean;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_EdgeDef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_CoEdgeId {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -6503,7 +6835,7 @@ export declare class NCollection_HArray1_StepVisual_PresentationStyleSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_PresentationStyleSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -6511,7 +6843,7 @@ export declare class NCollection_HArray1_StepVisual_PresentationStyleSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_PresentationStyleSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -6521,8 +6853,8 @@ export declare class NCollection_HArray1_StepVisual_PresentationStyleSelect {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_PresentationStyleSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -6560,7 +6892,7 @@ export declare class NCollection_HArray1_StepVisual_BoxCharacteristicSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_BoxCharacteristicSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -6568,7 +6900,7 @@ export declare class NCollection_HArray1_StepVisual_BoxCharacteristicSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_BoxCharacteristicSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -6578,14 +6910,22 @@ export declare class NCollection_HArray1_StepVisual_BoxCharacteristicSelect {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_BoxCharacteristicSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class ReplicadMeshExtractor {
+  constructor();
+  static extract(shape: TopoDS_Shape, tolerance: number, angularTolerance: number, skipNormals: boolean): ReplicadMeshData;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -6601,7 +6941,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopT
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -6609,7 +6949,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopT
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -6624,28 +6964,28 @@ export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopT
    * @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
    * @returns true if Key was not bound already
    */
-  Bind(theKey: TopoDS_Shape, theItem: RWMesh_NodeAttributes): boolean;
+  Bind(theKey: TopoDS_Shape, theItem: unknown): boolean;
   /**
    * Bound binds Item to Key in map.
    * @param theKey key to add/update
    * @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
    * @returns pointer to modifiable Item
    */
-  Bound(theKey: TopoDS_Shape, theItem: RWMesh_NodeAttributes): RWMesh_NodeAttributes;
+  Bound(theKey: TopoDS_Shape, theItem: unknown): unknown;
   /**
    * TryBind binds Item to Key in map only if Key is not yet bound.
    * @param theKey key to add
    * @param theItem item to bind if Key is not yet bound
    * @returns true if Key was newly bound, false if Key already existed (no replacement)
    */
-  TryBind(theKey: TopoDS_Shape, theItem: RWMesh_NodeAttributes): boolean;
+  TryBind(theKey: TopoDS_Shape, theItem: unknown): boolean;
   /**
    * TryBound binds Item to Key in map only if Key is not yet bound.
    * @param theKey key to add
    * @param theItem item to bind if Key is not yet bound
    * @returns reference to existing or newly bound Item
    */
-  TryBound(theKey: TopoDS_Shape, theItem: RWMesh_NodeAttributes): RWMesh_NodeAttributes;
+  TryBound(theKey: TopoDS_Shape, theItem: unknown): unknown;
   /**
    * IsBound.
    */
@@ -6657,15 +6997,15 @@ export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopT
   /**
    * Seek returns pointer to Item by Key. Returns NULL is Key was not bound.
    */
-  Seek(theKey: TopoDS_Shape): RWMesh_NodeAttributes;
+  Seek(theKey: TopoDS_Shape): unknown;
   /**
    * ChangeSeek returns modifiable pointer to Item by Key. Returns NULL is Key was not bound.
    */
-  ChangeSeek(theKey: TopoDS_Shape): RWMesh_NodeAttributes;
+  ChangeSeek(theKey: TopoDS_Shape): unknown;
   /**
    * ChangeFind returns modifiable Item by Key. Raises if Key was not bound.
    */
-  ChangeFind(theKey: TopoDS_Shape): RWMesh_NodeAttributes;
+  ChangeFind(theKey: TopoDS_Shape): unknown;
   /**
    * Clear data. If doReleaseMemory is false then the table of buckets is not released and will be reused.
    */
@@ -6673,7 +7013,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopT
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -6696,7 +7036,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopT
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -6712,7 +7052,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopT
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
 export declare class NCollection_List_BOPTools_ConnexityBlock extends NCollection_BaseList {
@@ -6723,7 +7063,7 @@ export declare class NCollection_List_BOPTools_ConnexityBlock extends NCollectio
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -6731,13 +7071,13 @@ export declare class NCollection_List_BOPTools_ConnexityBlock extends NCollectio
   /**
    * Move constructor.
    */
-  constructor(theInitList: BOPTools_ConnexityBlock[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: BOPTools_ConnexityBlock[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -6749,19 +7089,19 @@ export declare class NCollection_List_BOPTools_ConnexityBlock extends NCollectio
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): BOPTools_ConnexityBlock;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): BOPTools_ConnexityBlock;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: BOPTools_ConnexityBlock): BOPTools_ConnexityBlock;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -6769,7 +7109,7 @@ export declare class NCollection_List_BOPTools_ConnexityBlock extends NCollectio
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: BOPTools_ConnexityBlock): BOPTools_ConnexityBlock;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -6816,7 +7156,7 @@ export declare class NCollection_HArray1_StepAP203_PersonOrganizationItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_PersonOrganizationItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -6824,7 +7164,7 @@ export declare class NCollection_HArray1_StepAP203_PersonOrganizationItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_PersonOrganizationItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -6834,8 +7174,8 @@ export declare class NCollection_HArray1_StepAP203_PersonOrganizationItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_PersonOrganizationItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -6866,7 +7206,7 @@ export declare class NCollection_HArray1_StepAP214_DocumentReferenceItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_DocumentReferenceItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -6874,7 +7214,7 @@ export declare class NCollection_HArray1_StepAP214_DocumentReferenceItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_DocumentReferenceItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -6884,14 +7224,14 @@ export declare class NCollection_HArray1_StepAP214_DocumentReferenceItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_DocumentReferenceItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntTools_CommonPrt extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntTools_CommonPrt {
   /**
    * Empty constructor.
    */
@@ -6899,7 +7239,7 @@ export declare class NCollection_Sequence_IntTools_CommonPrt extends NCollection
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -6937,11 +7277,11 @@ export declare class NCollection_Sequence_IntTools_CommonPrt extends NCollection
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -6957,7 +7297,7 @@ export declare class NCollection_Sequence_IntTools_CommonPrt extends NCollection
   /**
    * Append one item.
    */
-  Append(theItem: IntTools_CommonPrt): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -6965,7 +7305,7 @@ export declare class NCollection_Sequence_IntTools_CommonPrt extends NCollection
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntTools_CommonPrt): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -6973,7 +7313,7 @@ export declare class NCollection_Sequence_IntTools_CommonPrt extends NCollection
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntTools_CommonPrt): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -6985,7 +7325,7 @@ export declare class NCollection_Sequence_IntTools_CommonPrt extends NCollection
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntTools_CommonPrt): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -6993,31 +7333,31 @@ export declare class NCollection_Sequence_IntTools_CommonPrt extends NCollection
   /**
    * First item access.
    */
-  First(): IntTools_CommonPrt;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntTools_CommonPrt;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntTools_CommonPrt;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntTools_CommonPrt;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntTools_CommonPrt;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntTools_CommonPrt;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntTools_CommonPrt): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -7048,7 +7388,7 @@ export declare class NCollection_HArray1_StepAP203_SpecifiedItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_SpecifiedItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -7056,7 +7396,7 @@ export declare class NCollection_HArray1_StepAP203_SpecifiedItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_SpecifiedItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -7066,8 +7406,8 @@ export declare class NCollection_HArray1_StepAP203_SpecifiedItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_SpecifiedItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -7083,12 +7423,12 @@ export declare class NCollection_Array1_Plate_PinpointConstraint {
    */
   constructor(theOther: NCollection_Array1_Plate_PinpointConstraint);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: Plate_PinpointConstraint, theLower: number, theUpper: number);
-  constructor(theBegin: Plate_PinpointConstraint, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: Plate_PinpointConstraint): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -7117,22 +7457,22 @@ export declare class NCollection_Array1_Plate_PinpointConstraint {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_Plate_PinpointConstraint): NCollection_Array1_Plate_PinpointConstraint;
-  First(): Plate_PinpointConstraint;
-  ChangeFirst(): Plate_PinpointConstraint;
-  Last(): Plate_PinpointConstraint;
-  ChangeLast(): Plate_PinpointConstraint;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): Plate_PinpointConstraint;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): Plate_PinpointConstraint;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: Plate_PinpointConstraint): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -7161,7 +7501,7 @@ export declare class NCollection_Vector_BOPDS_InterfEF {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntPatch_Point extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntPatch_Point {
   /**
    * Empty constructor.
    */
@@ -7169,11 +7509,11 @@ export declare class NCollection_Sequence_IntPatch_Point extends NCollection_Bas
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
-  constructor(theOther: any);
+  constructor(theOther: unknown);
   /**
    * Number of items.
    */
@@ -7207,15 +7547,15 @@ export declare class NCollection_Sequence_IntPatch_Point extends NCollection_Bas
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
-  Assign(theOther: any): any;
+  Assign(theOther: unknown): unknown;
   /**
    * Remove one item.
    */
@@ -7227,67 +7567,67 @@ export declare class NCollection_Sequence_IntPatch_Point extends NCollection_Bas
   /**
    * Append one item.
    */
-  Append(theItem: IntPatch_Point): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
-  Append(theSeq: any): void;
+  Append(theSeq: unknown): void;
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntPatch_Point): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
-  Prepend(theSeq: any): void;
+  Prepend(theSeq: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntPatch_Point): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theSeq: any): void;
+  InsertBefore(theIndex: number, theSeq: unknown): void;
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theSeq: any): void;
+  InsertAfter(theIndex: number, theSeq: unknown): void;
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntPatch_Point): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
-  Split(theIndex: number, theSeq: any): void;
+  Split(theIndex: number, theSeq: unknown): void;
   /**
    * First item access.
    */
-  First(): IntPatch_Point;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntPatch_Point;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntPatch_Point;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntPatch_Point;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntPatch_Point;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntPatch_Point;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntPatch_Point): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -7312,12 +7652,12 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingUni
    */
   constructor(theOther: NCollection_Array1_StepVisual_CameraModelD3MultiClippingUnionSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_CameraModelD3MultiClippingUnionSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_CameraModelD3MultiClippingUnionSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_CameraModelD3MultiClippingUnionSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -7346,22 +7686,22 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingUni
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_CameraModelD3MultiClippingUnionSelect): NCollection_Array1_StepVisual_CameraModelD3MultiClippingUnionSelect;
-  First(): StepVisual_CameraModelD3MultiClippingUnionSelect;
-  ChangeFirst(): StepVisual_CameraModelD3MultiClippingUnionSelect;
-  Last(): StepVisual_CameraModelD3MultiClippingUnionSelect;
-  ChangeLast(): StepVisual_CameraModelD3MultiClippingUnionSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_CameraModelD3MultiClippingUnionSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_CameraModelD3MultiClippingUnionSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_CameraModelD3MultiClippingUnionSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -7383,7 +7723,7 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingUni
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntTools_PntOn2Faces extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntTools_PntOn2Faces {
   /**
    * Empty constructor.
    */
@@ -7391,7 +7731,7 @@ export declare class NCollection_Sequence_IntTools_PntOn2Faces extends NCollecti
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -7429,11 +7769,11 @@ export declare class NCollection_Sequence_IntTools_PntOn2Faces extends NCollecti
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -7449,7 +7789,7 @@ export declare class NCollection_Sequence_IntTools_PntOn2Faces extends NCollecti
   /**
    * Append one item.
    */
-  Append(theItem: IntTools_PntOn2Faces): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -7457,7 +7797,7 @@ export declare class NCollection_Sequence_IntTools_PntOn2Faces extends NCollecti
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntTools_PntOn2Faces): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -7465,7 +7805,7 @@ export declare class NCollection_Sequence_IntTools_PntOn2Faces extends NCollecti
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntTools_PntOn2Faces): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -7477,7 +7817,7 @@ export declare class NCollection_Sequence_IntTools_PntOn2Faces extends NCollecti
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntTools_PntOn2Faces): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -7485,31 +7825,31 @@ export declare class NCollection_Sequence_IntTools_PntOn2Faces extends NCollecti
   /**
    * First item access.
    */
-  First(): IntTools_PntOn2Faces;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntTools_PntOn2Faces;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntTools_PntOn2Faces;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntTools_PntOn2Faces;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntTools_PntOn2Faces;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntTools_PntOn2Faces;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntTools_PntOn2Faces): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -7558,8 +7898,8 @@ export declare class NCollection_HArray1_gp_Pnt2d {
    */
   ChangeArray1(): NCollection_Array1_gp_Pnt2d;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -7575,12 +7915,12 @@ export declare class NCollection_Array1_StepAP214_OrganizationItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_OrganizationItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_OrganizationItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_OrganizationItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_OrganizationItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -7609,22 +7949,22 @@ export declare class NCollection_Array1_StepAP214_OrganizationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_OrganizationItem): NCollection_Array1_StepAP214_OrganizationItem;
-  First(): StepAP214_OrganizationItem;
-  ChangeFirst(): StepAP214_OrganizationItem;
-  Last(): StepAP214_OrganizationItem;
-  ChangeLast(): StepAP214_OrganizationItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_OrganizationItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_OrganizationItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_OrganizationItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -7671,7 +8011,7 @@ export declare class NCollection_HArray1_ChFiDS_CircSection {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: ChFiDS_CircSection);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -7679,7 +8019,7 @@ export declare class NCollection_HArray1_ChFiDS_CircSection {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: ChFiDS_CircSection, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -7689,8 +8029,8 @@ export declare class NCollection_HArray1_ChFiDS_CircSection {
    */
   ChangeArray1(): NCollection_Array1_ChFiDS_CircSection;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -7721,7 +8061,7 @@ export declare class NCollection_HArray1_StepAP203_WorkItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_WorkItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -7729,7 +8069,7 @@ export declare class NCollection_HArray1_StepAP203_WorkItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_WorkItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -7739,8 +8079,8 @@ export declare class NCollection_HArray1_StepAP203_WorkItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_WorkItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -7835,7 +8175,7 @@ export declare class NCollection_List_IntTools_CurveRangeSample extends NCollect
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -7843,13 +8183,13 @@ export declare class NCollection_List_IntTools_CurveRangeSample extends NCollect
   /**
    * Move constructor.
    */
-  constructor(theInitList: IntTools_CurveRangeSample[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: IntTools_CurveRangeSample[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -7861,19 +8201,19 @@ export declare class NCollection_List_IntTools_CurveRangeSample extends NCollect
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): IntTools_CurveRangeSample;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): IntTools_CurveRangeSample;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: IntTools_CurveRangeSample): IntTools_CurveRangeSample;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -7881,7 +8221,7 @@ export declare class NCollection_List_IntTools_CurveRangeSample extends NCollect
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: IntTools_CurveRangeSample): IntTools_CurveRangeSample;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -7903,7 +8243,7 @@ export declare class NCollection_List_IntTools_CurveRangeSample extends NCollect
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_TCollection_ExtendedString extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_TCollection_ExtendedString {
   /**
    * Empty constructor.
    */
@@ -7911,7 +8251,7 @@ export declare class NCollection_Sequence_TCollection_ExtendedString extends NCo
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -7949,11 +8289,11 @@ export declare class NCollection_Sequence_TCollection_ExtendedString extends NCo
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -8060,7 +8400,7 @@ export declare class NCollection_HArray1_StepShape_ValueQualifier {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepShape_ValueQualifier);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -8068,7 +8408,7 @@ export declare class NCollection_HArray1_StepShape_ValueQualifier {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepShape_ValueQualifier, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -8078,8 +8418,8 @@ export declare class NCollection_HArray1_StepShape_ValueQualifier {
    */
   ChangeArray1(): NCollection_Array1_StepShape_ValueQualifier;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8110,7 +8450,7 @@ export declare class NCollection_HArray1_StepVisual_TextOrCharacter {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_TextOrCharacter);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -8118,7 +8458,7 @@ export declare class NCollection_HArray1_StepVisual_TextOrCharacter {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_TextOrCharacter, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -8128,8 +8468,8 @@ export declare class NCollection_HArray1_StepVisual_TextOrCharacter {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_TextOrCharacter;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8178,8 +8518,8 @@ export declare class NCollection_HArray1_bool {
    */
   ChangeArray1(): any;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8210,7 +8550,7 @@ export declare class NCollection_HArray1_StepAP203_StartRequestItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_StartRequestItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -8218,7 +8558,7 @@ export declare class NCollection_HArray1_StepAP203_StartRequestItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_StartRequestItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -8228,8 +8568,8 @@ export declare class NCollection_HArray1_StepAP203_StartRequestItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_StartRequestItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8270,8 +8610,8 @@ export declare class NCollection_HArray2_gp_Pnt2d {
    */
   ChangeArray2(): NCollection_Array2_gp_Pnt2d;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8302,7 +8642,7 @@ export declare class NCollection_HArray1_StepVisual_AnnotationPlaneElement {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_AnnotationPlaneElement);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -8310,7 +8650,7 @@ export declare class NCollection_HArray1_StepVisual_AnnotationPlaneElement {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_AnnotationPlaneElement, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -8320,8 +8660,8 @@ export declare class NCollection_HArray1_StepVisual_AnnotationPlaneElement {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_AnnotationPlaneElement;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8335,7 +8675,7 @@ export declare class NCollection_List_double extends NCollection_BaseList {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -8349,7 +8689,7 @@ export declare class NCollection_List_double extends NCollection_BaseList {
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: number[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: number[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -8361,7 +8701,7 @@ export declare class NCollection_List_double extends NCollection_BaseList {
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
@@ -8428,7 +8768,7 @@ export declare class NCollection_HArray1_StepVisual_LayeredItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_LayeredItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -8436,7 +8776,7 @@ export declare class NCollection_HArray1_StepVisual_LayeredItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_LayeredItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -8446,8 +8786,8 @@ export declare class NCollection_HArray1_StepVisual_LayeredItem {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_LayeredItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8461,7 +8801,7 @@ export declare class NCollection_List_BOPAlgo_CheckResult extends NCollection_Ba
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -8469,13 +8809,13 @@ export declare class NCollection_List_BOPAlgo_CheckResult extends NCollection_Ba
   /**
    * Move constructor.
    */
-  constructor(theInitList: BOPAlgo_CheckResult[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: BOPAlgo_CheckResult[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -8487,19 +8827,19 @@ export declare class NCollection_List_BOPAlgo_CheckResult extends NCollection_Ba
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): BOPAlgo_CheckResult;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): BOPAlgo_CheckResult;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: BOPAlgo_CheckResult): BOPAlgo_CheckResult;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -8507,7 +8847,7 @@ export declare class NCollection_List_BOPAlgo_CheckResult extends NCollection_Ba
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: BOPAlgo_CheckResult): BOPAlgo_CheckResult;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -8554,7 +8894,7 @@ export declare class NCollection_HArray1_StepAP203_ClassifiedItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_ClassifiedItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -8562,7 +8902,7 @@ export declare class NCollection_HArray1_StepAP203_ClassifiedItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_ClassifiedItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -8572,8 +8912,8 @@ export declare class NCollection_HArray1_StepAP203_ClassifiedItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_ClassifiedItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8591,7 +8931,7 @@ export declare class NCollection_HArray1_uint8_t {
    * Copy constructor from array.
    * @param theOther the array to copy from
    */
-  constructor(theOther: NCollection_Array1_uint8_t);
+  constructor(theOther: any);
   /**
    * Constructor with bounds.
    * @param theLower lower bound of the array
@@ -8604,7 +8944,7 @@ export declare class NCollection_HArray1_uint8_t {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: uint8_t);
+  constructor(theLower: number, theUpper: number, theValue: number);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -8612,18 +8952,18 @@ export declare class NCollection_HArray1_uint8_t {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: uint8_t, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: number, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
-  Array1(): NCollection_Array1_uint8_t;
+  Array1(): any;
   /**
    * Returns mutable reference to the underlying array.
    */
-  ChangeArray1(): NCollection_Array1_uint8_t;
+  ChangeArray1(): any;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8639,12 +8979,12 @@ export declare class NCollection_Array1_StepVisual_AnnotationPlaneElement {
    */
   constructor(theOther: NCollection_Array1_StepVisual_AnnotationPlaneElement);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_AnnotationPlaneElement, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_AnnotationPlaneElement, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_AnnotationPlaneElement): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -8673,22 +9013,22 @@ export declare class NCollection_Array1_StepVisual_AnnotationPlaneElement {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_AnnotationPlaneElement): NCollection_Array1_StepVisual_AnnotationPlaneElement;
-  First(): StepVisual_AnnotationPlaneElement;
-  ChangeFirst(): StepVisual_AnnotationPlaneElement;
-  Last(): StepVisual_AnnotationPlaneElement;
-  ChangeLast(): StepVisual_AnnotationPlaneElement;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_AnnotationPlaneElement;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_AnnotationPlaneElement;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_AnnotationPlaneElement): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -8705,6 +9045,13 @@ export declare class NCollection_Array1_StepVisual_AnnotationPlaneElement {
    */
   Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   IsDeletable(): boolean;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_SolidId {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8753,8 +9100,8 @@ export declare class NCollection_HArray1_Poly_Triangle {
    */
   ChangeArray1(): NCollection_Array1_Poly_Triangle;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -8770,12 +9117,12 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignDateAndTimeItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignDateAndTimeItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_AutoDesignDateAndTimeItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -8804,22 +9151,22 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem): NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem;
-  First(): StepAP214_AutoDesignDateAndTimeItem;
-  ChangeFirst(): StepAP214_AutoDesignDateAndTimeItem;
-  Last(): StepAP214_AutoDesignDateAndTimeItem;
-  ChangeLast(): StepAP214_AutoDesignDateAndTimeItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_AutoDesignDateAndTimeItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_AutoDesignDateAndTimeItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_AutoDesignDateAndTimeItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -8841,7 +9188,7 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_gp_Pnt extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_gp_Pnt {
   /**
    * Empty constructor.
    */
@@ -8849,7 +9196,7 @@ export declare class NCollection_Sequence_gp_Pnt extends NCollection_BaseSequenc
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -8887,11 +9234,11 @@ export declare class NCollection_Sequence_gp_Pnt extends NCollection_BaseSequenc
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -8983,12 +9330,12 @@ export declare class NCollection_Array1_StepAP214_ExternalIdentificationItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_ExternalIdentificationItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_ExternalIdentificationItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_ExternalIdentificationItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_ExternalIdentificationItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -9017,22 +9364,22 @@ export declare class NCollection_Array1_StepAP214_ExternalIdentificationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_ExternalIdentificationItem): NCollection_Array1_StepAP214_ExternalIdentificationItem;
-  First(): StepAP214_ExternalIdentificationItem;
-  ChangeFirst(): StepAP214_ExternalIdentificationItem;
-  Last(): StepAP214_ExternalIdentificationItem;
-  ChangeLast(): StepAP214_ExternalIdentificationItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_ExternalIdentificationItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_ExternalIdentificationItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_ExternalIdentificationItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -9134,13 +9481,25 @@ export declare class NCollection_Array2_TopoDS_Shape {
    */
   Assign(theOther: NCollection_Array2_TopoDS_Shape): NCollection_Array2_TopoDS_Shape;
   /**
+   * Assignment.
+   */
+  Assign(theOther: unknown): unknown;
+  /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
    */
   Move(theOther: NCollection_Array2_TopoDS_Shape): NCollection_Array2_TopoDS_Shape;
   /**
+   * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
+   */
+  Move(theOther: unknown): unknown;
+  /**
    * SetValue.
    */
   SetValue(theRow: number, theCol: number, theItem: TopoDS_Shape): void;
+  /**
+   * SetValue.
+   */
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -9151,6 +9510,11 @@ export declare class NCollection_Array2_TopoDS_Shape {
    */
   Resize(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
   /**
+   * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
+   * @param theToCopyData flag to copy existing data into new array
+   */
+  Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
+  /**
    * Resizes the array preserving 2D element layout. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols) elements from the top-left corner of the old array to the top-left corner of the new, preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
    * @param theRowUpper new upper Row of array
@@ -9159,6 +9523,13 @@ export declare class NCollection_Array2_TopoDS_Shape {
    * @param theToCopyData flag to copy existing data into new array
    */
   ResizeWithTrim(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_CompSolidDef {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -9207,8 +9578,8 @@ export declare class NCollection_HArray1_gp_Pnt {
    */
   ChangeArray1(): NCollection_Array1_gp_Pnt;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -9222,7 +9593,7 @@ export declare class NCollection_List_IntTools_SurfaceRangeSample extends NColle
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -9230,13 +9601,13 @@ export declare class NCollection_List_IntTools_SurfaceRangeSample extends NColle
   /**
    * Move constructor.
    */
-  constructor(theInitList: IntTools_SurfaceRangeSample[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: IntTools_SurfaceRangeSample[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -9248,19 +9619,19 @@ export declare class NCollection_List_IntTools_SurfaceRangeSample extends NColle
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): IntTools_SurfaceRangeSample;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): IntTools_SurfaceRangeSample;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: IntTools_SurfaceRangeSample): IntTools_SurfaceRangeSample;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -9268,7 +9639,7 @@ export declare class NCollection_List_IntTools_SurfaceRangeSample extends NColle
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: IntTools_SurfaceRangeSample): IntTools_SurfaceRangeSample;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -9290,7 +9661,7 @@ export declare class NCollection_List_IntTools_SurfaceRangeSample extends NColle
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif {
   /**
    * Empty constructor.
    */
@@ -9298,7 +9669,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif exten
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -9336,11 +9707,11 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif exten
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -9356,7 +9727,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif exten
   /**
    * Append one item.
    */
-  Append(theItem: XCAFDimTolObjects_DimensionModif): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -9364,7 +9735,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif exten
   /**
    * Prepend one item.
    */
-  Prepend(theItem: XCAFDimTolObjects_DimensionModif): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -9372,7 +9743,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif exten
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: XCAFDimTolObjects_DimensionModif): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -9384,7 +9755,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif exten
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: XCAFDimTolObjects_DimensionModif): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -9392,31 +9763,31 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif exten
   /**
    * First item access.
    */
-  First(): XCAFDimTolObjects_DimensionModif;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): XCAFDimTolObjects_DimensionModif;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): XCAFDimTolObjects_DimensionModif;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): XCAFDimTolObjects_DimensionModif;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): XCAFDimTolObjects_DimensionModif;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): XCAFDimTolObjects_DimensionModif;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: XCAFDimTolObjects_DimensionModif): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -9447,7 +9818,7 @@ export declare class NCollection_HArray1_StepVisual_TessellatedEdgeOrVertex {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_TessellatedEdgeOrVertex);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -9455,7 +9826,7 @@ export declare class NCollection_HArray1_StepVisual_TessellatedEdgeOrVertex {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_TessellatedEdgeOrVertex, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -9465,8 +9836,8 @@ export declare class NCollection_HArray1_StepVisual_TessellatedEdgeOrVertex {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_TessellatedEdgeOrVertex;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -9497,7 +9868,7 @@ export declare class NCollection_HArray1_StepAP214_SecurityClassificationItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_SecurityClassificationItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -9505,7 +9876,7 @@ export declare class NCollection_HArray1_StepAP214_SecurityClassificationItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_SecurityClassificationItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -9515,8 +9886,8 @@ export declare class NCollection_HArray1_StepAP214_SecurityClassificationItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_SecurityClassificationItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -9547,7 +9918,7 @@ export declare class NCollection_HArray1_StepShape_GeometricSetSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepShape_GeometricSetSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -9555,7 +9926,7 @@ export declare class NCollection_HArray1_StepShape_GeometricSetSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepShape_GeometricSetSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -9565,8 +9936,8 @@ export declare class NCollection_HArray1_StepShape_GeometricSetSelect {
    */
   ChangeArray1(): NCollection_Array1_StepShape_GeometricSetSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -9615,8 +9986,8 @@ export declare class NCollection_HArray1_gp_Vec {
    */
   ChangeArray1(): NCollection_Array1_gp_Vec;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -9632,12 +10003,12 @@ export declare class NCollection_Array1_StepAP214_DocumentReferenceItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_DocumentReferenceItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_DocumentReferenceItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_DocumentReferenceItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_DocumentReferenceItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -9666,22 +10037,22 @@ export declare class NCollection_Array1_StepAP214_DocumentReferenceItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_DocumentReferenceItem): NCollection_Array1_StepAP214_DocumentReferenceItem;
-  First(): StepAP214_DocumentReferenceItem;
-  ChangeFirst(): StepAP214_DocumentReferenceItem;
-  Last(): StepAP214_DocumentReferenceItem;
-  ChangeLast(): StepAP214_DocumentReferenceItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_DocumentReferenceItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_DocumentReferenceItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_DocumentReferenceItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -9713,12 +10084,12 @@ export declare class NCollection_Array1_StepAP203_ApprovedItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_ApprovedItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_ApprovedItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_ApprovedItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_ApprovedItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -9747,22 +10118,22 @@ export declare class NCollection_Array1_StepAP203_ApprovedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_ApprovedItem): NCollection_Array1_StepAP203_ApprovedItem;
-  First(): StepAP203_ApprovedItem;
-  ChangeFirst(): StepAP203_ApprovedItem;
-  Last(): StepAP203_ApprovedItem;
-  ChangeLast(): StepAP203_ApprovedItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_ApprovedItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_ApprovedItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_ApprovedItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -9792,7 +10163,7 @@ export declare class NCollection_List_BOPDS_Pave extends NCollection_BaseList {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -9800,13 +10171,13 @@ export declare class NCollection_List_BOPDS_Pave extends NCollection_BaseList {
   /**
    * Move constructor.
    */
-  constructor(theInitList: BOPDS_Pave[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: BOPDS_Pave[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -9818,19 +10189,19 @@ export declare class NCollection_List_BOPDS_Pave extends NCollection_BaseList {
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): BOPDS_Pave;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): BOPDS_Pave;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: BOPDS_Pave): BOPDS_Pave;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -9838,7 +10209,7 @@ export declare class NCollection_List_BOPDS_Pave extends NCollection_BaseList {
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: BOPDS_Pave): BOPDS_Pave;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -9870,12 +10241,12 @@ export declare class NCollection_Array1_gp_Lin {
    */
   constructor(theOther: NCollection_Array1_gp_Lin);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: gp_Lin, theLower: number, theUpper: number);
-  constructor(theBegin: gp_Lin, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: gp_Lin): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -9904,22 +10275,22 @@ export declare class NCollection_Array1_gp_Lin {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_Lin): NCollection_Array1_gp_Lin;
-  First(): gp_Lin;
-  ChangeFirst(): gp_Lin;
-  Last(): gp_Lin;
-  ChangeLast(): gp_Lin;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): gp_Lin;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): gp_Lin;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: gp_Lin): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -9941,6 +10312,13 @@ export declare class NCollection_Array1_gp_Lin {
   [Symbol.dispose](): void;
 }
 
+export declare class NCollection_Vector_BRepGraph_ShellId {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
 /**
  * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
  */
@@ -9951,12 +10329,12 @@ export declare class NCollection_Array1_StepAP203_CertifiedItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_CertifiedItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_CertifiedItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_CertifiedItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_CertifiedItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -9985,22 +10363,22 @@ export declare class NCollection_Array1_StepAP203_CertifiedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_CertifiedItem): NCollection_Array1_StepAP203_CertifiedItem;
-  First(): StepAP203_CertifiedItem;
-  ChangeFirst(): StepAP203_CertifiedItem;
-  Last(): StepAP203_CertifiedItem;
-  ChangeLast(): StepAP203_CertifiedItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_CertifiedItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_CertifiedItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_CertifiedItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -10022,7 +10400,7 @@ export declare class NCollection_Array1_StepAP203_CertifiedItem {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntSurf_PathPoint extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntSurf_PathPoint {
   /**
    * Empty constructor.
    */
@@ -10030,11 +10408,11 @@ export declare class NCollection_Sequence_IntSurf_PathPoint extends NCollection_
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
-  constructor(theOther: any);
+  constructor(theOther: unknown);
   /**
    * Number of items.
    */
@@ -10068,15 +10446,15 @@ export declare class NCollection_Sequence_IntSurf_PathPoint extends NCollection_
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
-  Assign(theOther: any): any;
+  Assign(theOther: unknown): unknown;
   /**
    * Remove one item.
    */
@@ -10088,67 +10466,67 @@ export declare class NCollection_Sequence_IntSurf_PathPoint extends NCollection_
   /**
    * Append one item.
    */
-  Append(theItem: IntSurf_PathPoint): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
-  Append(theSeq: any): void;
+  Append(theSeq: unknown): void;
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntSurf_PathPoint): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
-  Prepend(theSeq: any): void;
+  Prepend(theSeq: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntSurf_PathPoint): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theSeq: any): void;
+  InsertBefore(theIndex: number, theSeq: unknown): void;
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theSeq: any): void;
+  InsertAfter(theIndex: number, theSeq: unknown): void;
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntSurf_PathPoint): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
-  Split(theIndex: number, theSeq: any): void;
+  Split(theIndex: number, theSeq: unknown): void;
   /**
    * First item access.
    */
-  First(): IntSurf_PathPoint;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntSurf_PathPoint;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntSurf_PathPoint;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntSurf_PathPoint;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntSurf_PathPoint;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntSurf_PathPoint;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntSurf_PathPoint): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -10179,7 +10557,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignGeneralOrgItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_AutoDesignGeneralOrgItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -10187,7 +10565,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignGeneralOrgItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_AutoDesignGeneralOrgItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -10197,8 +10575,8 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignGeneralOrgItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -10229,7 +10607,7 @@ export declare class NCollection_HArray1_StepVisual_FillStyleSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_FillStyleSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -10237,7 +10615,7 @@ export declare class NCollection_HArray1_StepVisual_FillStyleSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_FillStyleSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -10247,8 +10625,8 @@ export declare class NCollection_HArray1_StepVisual_FillStyleSelect {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_FillStyleSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -10285,9 +10663,13 @@ export declare class NCollection_HSequence_TCollection_ExtendedString {
    * @param theSequence the sequence to append
    */
   Append(theSequence: NCollection_Sequence_TCollection_ExtendedString): void;
+  /**
+   * Append single item.
+   */
+  Append(theSeq: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -10301,7 +10683,7 @@ export declare class NCollection_List_BRepOffset_Interval extends NCollection_Ba
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -10309,13 +10691,13 @@ export declare class NCollection_List_BRepOffset_Interval extends NCollection_Ba
   /**
    * Move constructor.
    */
-  constructor(theInitList: BRepOffset_Interval[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: BRepOffset_Interval[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -10327,19 +10709,19 @@ export declare class NCollection_List_BRepOffset_Interval extends NCollection_Ba
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): BRepOffset_Interval;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): BRepOffset_Interval;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: BRepOffset_Interval): BRepOffset_Interval;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -10347,7 +10729,7 @@ export declare class NCollection_List_BRepOffset_Interval extends NCollection_Ba
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: BRepOffset_Interval): BRepOffset_Interval;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -10467,12 +10849,12 @@ export declare class NCollection_Array1_StepDimTol_DatumSystemOrReference {
    */
   constructor(theOther: NCollection_Array1_StepDimTol_DatumSystemOrReference);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepDimTol_DatumSystemOrReference, theLower: number, theUpper: number);
-  constructor(theBegin: StepDimTol_DatumSystemOrReference, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepDimTol_DatumSystemOrReference): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -10501,22 +10883,22 @@ export declare class NCollection_Array1_StepDimTol_DatumSystemOrReference {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepDimTol_DatumSystemOrReference): NCollection_Array1_StepDimTol_DatumSystemOrReference;
-  First(): StepDimTol_DatumSystemOrReference;
-  ChangeFirst(): StepDimTol_DatumSystemOrReference;
-  Last(): StepDimTol_DatumSystemOrReference;
-  ChangeLast(): StepDimTol_DatumSystemOrReference;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepDimTol_DatumSystemOrReference;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepDimTol_DatumSystemOrReference;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepDimTol_DatumSystemOrReference): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -10619,7 +11001,7 @@ export declare class NCollection_Array1_TCollection_ExtendedString {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_Plate_PinpointConstraint extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_Plate_PinpointConstraint {
   /**
    * Empty constructor.
    */
@@ -10627,7 +11009,7 @@ export declare class NCollection_Sequence_Plate_PinpointConstraint extends NColl
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -10665,11 +11047,11 @@ export declare class NCollection_Sequence_Plate_PinpointConstraint extends NColl
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -10685,7 +11067,7 @@ export declare class NCollection_Sequence_Plate_PinpointConstraint extends NColl
   /**
    * Append one item.
    */
-  Append(theItem: Plate_PinpointConstraint): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -10693,7 +11075,7 @@ export declare class NCollection_Sequence_Plate_PinpointConstraint extends NColl
   /**
    * Prepend one item.
    */
-  Prepend(theItem: Plate_PinpointConstraint): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -10701,7 +11083,7 @@ export declare class NCollection_Sequence_Plate_PinpointConstraint extends NColl
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: Plate_PinpointConstraint): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -10713,7 +11095,7 @@ export declare class NCollection_Sequence_Plate_PinpointConstraint extends NColl
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: Plate_PinpointConstraint): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -10721,31 +11103,31 @@ export declare class NCollection_Sequence_Plate_PinpointConstraint extends NColl
   /**
    * First item access.
    */
-  First(): Plate_PinpointConstraint;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): Plate_PinpointConstraint;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): Plate_PinpointConstraint;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): Plate_PinpointConstraint;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): Plate_PinpointConstraint;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): Plate_PinpointConstraint;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: Plate_PinpointConstraint): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -10783,7 +11165,7 @@ export declare class NCollection_HArray1_StepDimTol_DatumSystemOrReference {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepDimTol_DatumSystemOrReference);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -10791,7 +11173,7 @@ export declare class NCollection_HArray1_StepDimTol_DatumSystemOrReference {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepDimTol_DatumSystemOrReference, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -10801,8 +11183,8 @@ export declare class NCollection_HArray1_StepDimTol_DatumSystemOrReference {
    */
   ChangeArray1(): NCollection_Array1_StepDimTol_DatumSystemOrReference;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -10851,14 +11233,14 @@ export declare class NCollection_HArray1_gp_Vec2d {
    */
   ChangeArray1(): NCollection_Array1_gp_Vec2d;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntTools_Root extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntTools_Root {
   /**
    * Empty constructor.
    */
@@ -10866,7 +11248,7 @@ export declare class NCollection_Sequence_IntTools_Root extends NCollection_Base
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -10904,11 +11286,11 @@ export declare class NCollection_Sequence_IntTools_Root extends NCollection_Base
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -10924,7 +11306,7 @@ export declare class NCollection_Sequence_IntTools_Root extends NCollection_Base
   /**
    * Append one item.
    */
-  Append(theItem: IntTools_Root): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -10932,7 +11314,7 @@ export declare class NCollection_Sequence_IntTools_Root extends NCollection_Base
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntTools_Root): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -10940,7 +11322,7 @@ export declare class NCollection_Sequence_IntTools_Root extends NCollection_Base
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntTools_Root): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -10952,7 +11334,7 @@ export declare class NCollection_Sequence_IntTools_Root extends NCollection_Base
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntTools_Root): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -10960,31 +11342,31 @@ export declare class NCollection_Sequence_IntTools_Root extends NCollection_Base
   /**
    * First item access.
    */
-  First(): IntTools_Root;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntTools_Root;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntTools_Root;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntTools_Root;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntTools_Root;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntTools_Root;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntTools_Root): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -10998,7 +11380,7 @@ export declare class NCollection_List_TCollection_AsciiString extends NCollectio
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -11006,13 +11388,13 @@ export declare class NCollection_List_TCollection_AsciiString extends NCollectio
   /**
    * Move constructor.
    */
-  constructor(theInitList: TCollection_AsciiString[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: TCollection_AsciiString[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -11024,19 +11406,19 @@ export declare class NCollection_List_TCollection_AsciiString extends NCollectio
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): TCollection_AsciiString;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): TCollection_AsciiString;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: TCollection_AsciiString): TCollection_AsciiString;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -11044,7 +11426,7 @@ export declare class NCollection_List_TCollection_AsciiString extends NCollectio
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: TCollection_AsciiString): TCollection_AsciiString;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -11157,12 +11539,12 @@ export declare class NCollection_Array1_StepAP214_GroupItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_GroupItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_GroupItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_GroupItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_GroupItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -11191,22 +11573,22 @@ export declare class NCollection_Array1_StepAP214_GroupItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_GroupItem): NCollection_Array1_StepAP214_GroupItem;
-  First(): StepAP214_GroupItem;
-  ChangeFirst(): StepAP214_GroupItem;
-  Last(): StepAP214_GroupItem;
-  ChangeLast(): StepAP214_GroupItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_GroupItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_GroupItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_GroupItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -11238,12 +11620,12 @@ export declare class NCollection_Array1_StepAP214_AutoDesignReferencingItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_AutoDesignReferencingItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignReferencingItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignReferencingItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_AutoDesignReferencingItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -11272,22 +11654,22 @@ export declare class NCollection_Array1_StepAP214_AutoDesignReferencingItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignReferencingItem): NCollection_Array1_StepAP214_AutoDesignReferencingItem;
-  First(): StepAP214_AutoDesignReferencingItem;
-  ChangeFirst(): StepAP214_AutoDesignReferencingItem;
-  Last(): StepAP214_AutoDesignReferencingItem;
-  ChangeLast(): StepAP214_AutoDesignReferencingItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_AutoDesignReferencingItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_AutoDesignReferencingItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_AutoDesignReferencingItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -11334,7 +11716,7 @@ export declare class NCollection_HArray1_StepAP214_DateItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_DateItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -11342,7 +11724,7 @@ export declare class NCollection_HArray1_StepAP214_DateItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_DateItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -11352,8 +11734,15 @@ export declare class NCollection_HArray1_StepAP214_DateItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_DateItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_OccurrenceId {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -11384,7 +11773,7 @@ export declare class NCollection_HArray1_TCollection_AsciiString {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: TCollection_AsciiString);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -11392,7 +11781,7 @@ export declare class NCollection_HArray1_TCollection_AsciiString {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: TCollection_AsciiString, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -11402,8 +11791,8 @@ export declare class NCollection_HArray1_TCollection_AsciiString {
    */
   ChangeArray1(): NCollection_Array1_TCollection_AsciiString;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -11424,7 +11813,7 @@ export declare class NCollection_List_IntSurf_PntOn2S extends NCollection_BaseLi
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -11432,13 +11821,13 @@ export declare class NCollection_List_IntSurf_PntOn2S extends NCollection_BaseLi
   /**
    * Move constructor.
    */
-  constructor(theInitList: IntSurf_PntOn2S[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: IntSurf_PntOn2S[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -11450,19 +11839,19 @@ export declare class NCollection_List_IntSurf_PntOn2S extends NCollection_BaseLi
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): IntSurf_PntOn2S;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): IntSurf_PntOn2S;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: IntSurf_PntOn2S): IntSurf_PntOn2S;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -11470,7 +11859,7 @@ export declare class NCollection_List_IntSurf_PntOn2S extends NCollection_BaseLi
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: IntSurf_PntOn2S): IntSurf_PntOn2S;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -11517,7 +11906,7 @@ export declare class NCollection_HArray1_StepShape_Shell {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepShape_Shell);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -11525,7 +11914,7 @@ export declare class NCollection_HArray1_StepShape_Shell {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepShape_Shell, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -11535,8 +11924,8 @@ export declare class NCollection_HArray1_StepShape_Shell {
    */
   ChangeArray1(): NCollection_Array1_StepShape_Shell;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -11567,7 +11956,7 @@ export declare class NCollection_HArray1_StepGeom_PcurveOrSurface {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepGeom_PcurveOrSurface);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -11575,7 +11964,7 @@ export declare class NCollection_HArray1_StepGeom_PcurveOrSurface {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepGeom_PcurveOrSurface, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -11585,14 +11974,14 @@ export declare class NCollection_HArray1_StepGeom_PcurveOrSurface {
    */
   ChangeArray1(): NCollection_Array1_StepGeom_PcurveOrSurface;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_BRepExtrema_SolutionElem extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_BRepExtrema_SolutionElem {
   /**
    * Empty constructor.
    */
@@ -11600,7 +11989,7 @@ export declare class NCollection_Sequence_BRepExtrema_SolutionElem extends NColl
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -11638,11 +12027,11 @@ export declare class NCollection_Sequence_BRepExtrema_SolutionElem extends NColl
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -11658,7 +12047,7 @@ export declare class NCollection_Sequence_BRepExtrema_SolutionElem extends NColl
   /**
    * Append one item.
    */
-  Append(theItem: BRepExtrema_SolutionElem): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -11666,7 +12055,7 @@ export declare class NCollection_Sequence_BRepExtrema_SolutionElem extends NColl
   /**
    * Prepend one item.
    */
-  Prepend(theItem: BRepExtrema_SolutionElem): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -11674,7 +12063,7 @@ export declare class NCollection_Sequence_BRepExtrema_SolutionElem extends NColl
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: BRepExtrema_SolutionElem): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -11686,7 +12075,7 @@ export declare class NCollection_Sequence_BRepExtrema_SolutionElem extends NColl
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: BRepExtrema_SolutionElem): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -11694,31 +12083,45 @@ export declare class NCollection_Sequence_BRepExtrema_SolutionElem extends NColl
   /**
    * First item access.
    */
-  First(): BRepExtrema_SolutionElem;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): BRepExtrema_SolutionElem;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): BRepExtrema_SolutionElem;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): BRepExtrema_SolutionElem;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): BRepExtrema_SolutionElem;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): BRepExtrema_SolutionElem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: BRepExtrema_SolutionElem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_ChildRef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_WireDef {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -11767,8 +12170,8 @@ export declare class NCollection_HArray1_Bnd_Box {
    */
   ChangeArray1(): NCollection_Array1_Bnd_Box;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -11946,12 +12349,12 @@ export declare class NCollection_Array1_AppParCurves_ConstraintCouple {
    */
   constructor(theOther: NCollection_Array1_AppParCurves_ConstraintCouple);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: AppParCurves_ConstraintCouple, theLower: number, theUpper: number);
-  constructor(theBegin: AppParCurves_ConstraintCouple, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: AppParCurves_ConstraintCouple): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -11980,22 +12383,22 @@ export declare class NCollection_Array1_AppParCurves_ConstraintCouple {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_AppParCurves_ConstraintCouple): NCollection_Array1_AppParCurves_ConstraintCouple;
-  First(): AppParCurves_ConstraintCouple;
-  ChangeFirst(): AppParCurves_ConstraintCouple;
-  Last(): AppParCurves_ConstraintCouple;
-  ChangeLast(): AppParCurves_ConstraintCouple;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): AppParCurves_ConstraintCouple;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): AppParCurves_ConstraintCouple;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: AppParCurves_ConstraintCouple): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -12042,7 +12445,7 @@ export declare class NCollection_HArray1_StepAP214_PresentedItemSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_PresentedItemSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -12050,7 +12453,7 @@ export declare class NCollection_HArray1_StepAP214_PresentedItemSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_PresentedItemSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -12060,8 +12463,8 @@ export declare class NCollection_HArray1_StepAP214_PresentedItemSelect {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_PresentedItemSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -12158,12 +12561,12 @@ export declare class NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect 
    */
   constructor(theOther: NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignPresentedItemSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignPresentedItemSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_AutoDesignPresentedItemSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -12192,22 +12595,22 @@ export declare class NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect 
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect): NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect;
-  First(): StepAP214_AutoDesignPresentedItemSelect;
-  ChangeFirst(): StepAP214_AutoDesignPresentedItemSelect;
-  Last(): StepAP214_AutoDesignPresentedItemSelect;
-  ChangeLast(): StepAP214_AutoDesignPresentedItemSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_AutoDesignPresentedItemSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_AutoDesignPresentedItemSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_AutoDesignPresentedItemSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -12229,7 +12632,7 @@ export declare class NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect 
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_ShapeFix_WireSegment extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_ShapeFix_WireSegment {
   /**
    * Empty constructor.
    */
@@ -12237,7 +12640,7 @@ export declare class NCollection_Sequence_ShapeFix_WireSegment extends NCollecti
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -12275,11 +12678,11 @@ export declare class NCollection_Sequence_ShapeFix_WireSegment extends NCollecti
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -12295,7 +12698,7 @@ export declare class NCollection_Sequence_ShapeFix_WireSegment extends NCollecti
   /**
    * Append one item.
    */
-  Append(theItem: ShapeFix_WireSegment): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -12303,7 +12706,7 @@ export declare class NCollection_Sequence_ShapeFix_WireSegment extends NCollecti
   /**
    * Prepend one item.
    */
-  Prepend(theItem: ShapeFix_WireSegment): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -12311,7 +12714,7 @@ export declare class NCollection_Sequence_ShapeFix_WireSegment extends NCollecti
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: ShapeFix_WireSegment): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -12323,7 +12726,7 @@ export declare class NCollection_Sequence_ShapeFix_WireSegment extends NCollecti
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: ShapeFix_WireSegment): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -12331,37 +12734,37 @@ export declare class NCollection_Sequence_ShapeFix_WireSegment extends NCollecti
   /**
    * First item access.
    */
-  First(): ShapeFix_WireSegment;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): ShapeFix_WireSegment;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): ShapeFix_WireSegment;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): ShapeFix_WireSegment;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): ShapeFix_WireSegment;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): ShapeFix_WireSegment;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: ShapeFix_WireSegment): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -12377,7 +12780,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopToo
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -12385,7 +12788,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopToo
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -12400,28 +12803,28 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopToo
    * @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
    * @returns true if Key was not bound already
    */
-  Bind(theKey: TopoDS_Shape, theItem: BRepTopAdaptor_Tool): boolean;
+  Bind(theKey: TopoDS_Shape, theItem: unknown): boolean;
   /**
    * Bound binds Item to Key in map.
    * @param theKey key to add/update
    * @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
    * @returns pointer to modifiable Item
    */
-  Bound(theKey: TopoDS_Shape, theItem: BRepTopAdaptor_Tool): BRepTopAdaptor_Tool;
+  Bound(theKey: TopoDS_Shape, theItem: unknown): unknown;
   /**
    * TryBind binds Item to Key in map only if Key is not yet bound.
    * @param theKey key to add
    * @param theItem item to bind if Key is not yet bound
    * @returns true if Key was newly bound, false if Key already existed (no replacement)
    */
-  TryBind(theKey: TopoDS_Shape, theItem: BRepTopAdaptor_Tool): boolean;
+  TryBind(theKey: TopoDS_Shape, theItem: unknown): boolean;
   /**
    * TryBound binds Item to Key in map only if Key is not yet bound.
    * @param theKey key to add
    * @param theItem item to bind if Key is not yet bound
    * @returns reference to existing or newly bound Item
    */
-  TryBound(theKey: TopoDS_Shape, theItem: BRepTopAdaptor_Tool): BRepTopAdaptor_Tool;
+  TryBound(theKey: TopoDS_Shape, theItem: unknown): unknown;
   /**
    * IsBound.
    */
@@ -12433,15 +12836,15 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopToo
   /**
    * Seek returns pointer to Item by Key. Returns NULL is Key was not bound.
    */
-  Seek(theKey: TopoDS_Shape): BRepTopAdaptor_Tool;
+  Seek(theKey: TopoDS_Shape): unknown;
   /**
    * ChangeSeek returns modifiable pointer to Item by Key. Returns NULL is Key was not bound.
    */
-  ChangeSeek(theKey: TopoDS_Shape): BRepTopAdaptor_Tool;
+  ChangeSeek(theKey: TopoDS_Shape): unknown;
   /**
    * ChangeFind returns modifiable Item by Key. Raises if Key was not bound.
    */
-  ChangeFind(theKey: TopoDS_Shape): BRepTopAdaptor_Tool;
+  ChangeFind(theKey: TopoDS_Shape): unknown;
   /**
    * Clear data. If doReleaseMemory is false then the table of buckets is not released and will be reused.
    */
@@ -12449,7 +12852,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopToo
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -12472,7 +12875,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopToo
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -12488,10 +12891,17 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopToo
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
-export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_Vector_BRepGraphInc_WireRef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
    */
@@ -12507,7 +12917,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_Sha
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -12515,7 +12925,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_Sha
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -12618,7 +13028,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_Sha
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -12641,7 +13051,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_Sha
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -12657,7 +13067,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_Sha
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
 /**
@@ -12703,14 +13113,14 @@ export declare class NCollection_HArray1_TDF_Label {
    */
   ChangeArray1(): NCollection_Array1_TDF_Label;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
    */
@@ -12726,7 +13136,7 @@ export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -12734,7 +13144,7 @@ export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assign. This method does not change the internal allocator.
    */
@@ -12794,7 +13204,7 @@ export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -12817,7 +13227,7 @@ export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -12833,7 +13243,7 @@ export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
 /**
@@ -12861,7 +13271,7 @@ export declare class NCollection_HArray1_StepVisual_InvisibleItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_InvisibleItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -12869,7 +13279,7 @@ export declare class NCollection_HArray1_StepVisual_InvisibleItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_InvisibleItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -12879,8 +13289,8 @@ export declare class NCollection_HArray1_StepVisual_InvisibleItem {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_InvisibleItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -12911,7 +13321,7 @@ export declare class NCollection_HArray1_StepAP214_PersonAndOrganizationItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_PersonAndOrganizationItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -12919,7 +13329,7 @@ export declare class NCollection_HArray1_StepAP214_PersonAndOrganizationItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_PersonAndOrganizationItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -12929,8 +13339,8 @@ export declare class NCollection_HArray1_StepAP214_PersonAndOrganizationItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_PersonAndOrganizationItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -12961,7 +13371,7 @@ export declare class NCollection_HArray1_StepFEA_DegreeOfFreedom {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepFEA_DegreeOfFreedom);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -12969,7 +13379,7 @@ export declare class NCollection_HArray1_StepFEA_DegreeOfFreedom {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepFEA_DegreeOfFreedom, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -12979,8 +13389,8 @@ export declare class NCollection_HArray1_StepFEA_DegreeOfFreedom {
    */
   ChangeArray1(): NCollection_Array1_StepFEA_DegreeOfFreedom;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -13036,14 +13446,14 @@ export declare class NCollection_HArray1_float {
    */
   ChangeArray1(): any;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -13059,7 +13469,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -13067,7 +13477,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -13082,28 +13492,28 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools
    * @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
    * @returns true if Key was not bound already
    */
-  Bind(theKey: TopoDS_Shape, theItem: BRepOffset_Offset): boolean;
+  Bind(theKey: TopoDS_Shape, theItem: unknown): boolean;
   /**
    * Bound binds Item to Key in map.
    * @param theKey key to add/update
    * @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
    * @returns pointer to modifiable Item
    */
-  Bound(theKey: TopoDS_Shape, theItem: BRepOffset_Offset): BRepOffset_Offset;
+  Bound(theKey: TopoDS_Shape, theItem: unknown): unknown;
   /**
    * TryBind binds Item to Key in map only if Key is not yet bound.
    * @param theKey key to add
    * @param theItem item to bind if Key is not yet bound
    * @returns true if Key was newly bound, false if Key already existed (no replacement)
    */
-  TryBind(theKey: TopoDS_Shape, theItem: BRepOffset_Offset): boolean;
+  TryBind(theKey: TopoDS_Shape, theItem: unknown): boolean;
   /**
    * TryBound binds Item to Key in map only if Key is not yet bound.
    * @param theKey key to add
    * @param theItem item to bind if Key is not yet bound
    * @returns reference to existing or newly bound Item
    */
-  TryBound(theKey: TopoDS_Shape, theItem: BRepOffset_Offset): BRepOffset_Offset;
+  TryBound(theKey: TopoDS_Shape, theItem: unknown): unknown;
   /**
    * IsBound.
    */
@@ -13115,15 +13525,15 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools
   /**
    * Seek returns pointer to Item by Key. Returns NULL is Key was not bound.
    */
-  Seek(theKey: TopoDS_Shape): BRepOffset_Offset;
+  Seek(theKey: TopoDS_Shape): unknown;
   /**
    * ChangeSeek returns modifiable pointer to Item by Key. Returns NULL is Key was not bound.
    */
-  ChangeSeek(theKey: TopoDS_Shape): BRepOffset_Offset;
+  ChangeSeek(theKey: TopoDS_Shape): unknown;
   /**
    * ChangeFind returns modifiable Item by Key. Raises if Key was not bound.
    */
-  ChangeFind(theKey: TopoDS_Shape): BRepOffset_Offset;
+  ChangeFind(theKey: TopoDS_Shape): unknown;
   /**
    * Clear data. If doReleaseMemory is false then the table of buckets is not released and will be reused.
    */
@@ -13131,7 +13541,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -13154,7 +13564,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -13170,8 +13580,15 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
+
+export declare class NCollection_Vector_BRepGraphInc_OccurrenceDef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
 
 /**
  * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
@@ -13183,12 +13600,12 @@ export declare class NCollection_Array1_StepGeom_SurfaceBoundary {
    */
   constructor(theOther: NCollection_Array1_StepGeom_SurfaceBoundary);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepGeom_SurfaceBoundary, theLower: number, theUpper: number);
-  constructor(theBegin: StepGeom_SurfaceBoundary, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepGeom_SurfaceBoundary): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -13217,22 +13634,22 @@ export declare class NCollection_Array1_StepGeom_SurfaceBoundary {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepGeom_SurfaceBoundary): NCollection_Array1_StepGeom_SurfaceBoundary;
-  First(): StepGeom_SurfaceBoundary;
-  ChangeFirst(): StepGeom_SurfaceBoundary;
-  Last(): StepGeom_SurfaceBoundary;
-  ChangeLast(): StepGeom_SurfaceBoundary;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepGeom_SurfaceBoundary;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepGeom_SurfaceBoundary;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepGeom_SurfaceBoundary): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -13254,6 +13671,13 @@ export declare class NCollection_Array1_StepGeom_SurfaceBoundary {
   [Symbol.dispose](): void;
 }
 
+export declare class NCollection_Vector_BRepGraph_CompSolidId {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
 /**
  * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
  */
@@ -13264,12 +13688,12 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDatedItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_AutoDesignDatedItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignDatedItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignDatedItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_AutoDesignDatedItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -13298,22 +13722,22 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDatedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignDatedItem): NCollection_Array1_StepAP214_AutoDesignDatedItem;
-  First(): StepAP214_AutoDesignDatedItem;
-  ChangeFirst(): StepAP214_AutoDesignDatedItem;
-  Last(): StepAP214_AutoDesignDatedItem;
-  ChangeLast(): StepAP214_AutoDesignDatedItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_AutoDesignDatedItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_AutoDesignDatedItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_AutoDesignDatedItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -13335,7 +13759,7 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDatedItem {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_TCollection_AsciiString extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_TCollection_AsciiString {
   /**
    * Empty constructor.
    */
@@ -13343,7 +13767,7 @@ export declare class NCollection_Sequence_TCollection_AsciiString extends NColle
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -13381,11 +13805,11 @@ export declare class NCollection_Sequence_TCollection_AsciiString extends NColle
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -13401,7 +13825,7 @@ export declare class NCollection_Sequence_TCollection_AsciiString extends NColle
   /**
    * Append one item.
    */
-  Append(theItem: TCollection_AsciiString): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -13409,7 +13833,7 @@ export declare class NCollection_Sequence_TCollection_AsciiString extends NColle
   /**
    * Prepend one item.
    */
-  Prepend(theItem: TCollection_AsciiString): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -13417,7 +13841,7 @@ export declare class NCollection_Sequence_TCollection_AsciiString extends NColle
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: TCollection_AsciiString): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -13429,7 +13853,7 @@ export declare class NCollection_Sequence_TCollection_AsciiString extends NColle
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: TCollection_AsciiString): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -13437,31 +13861,31 @@ export declare class NCollection_Sequence_TCollection_AsciiString extends NColle
   /**
    * First item access.
    */
-  First(): TCollection_AsciiString;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): TCollection_AsciiString;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): TCollection_AsciiString;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): TCollection_AsciiString;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): TCollection_AsciiString;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): TCollection_AsciiString;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: TCollection_AsciiString): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -13475,7 +13899,7 @@ export declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList 
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -13489,7 +13913,7 @@ export declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList 
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: TopoDS_Shape[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: TopoDS_Shape[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -13501,7 +13925,7 @@ export declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList 
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
@@ -13543,7 +13967,7 @@ export declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList 
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -13559,7 +13983,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_Shap
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -13567,7 +13991,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_Shap
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -13631,7 +14055,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_Shap
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -13654,7 +14078,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_Shap
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -13670,10 +14094,10 @@ export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_Shap
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
-export declare class NCollection_Sequence_AppParCurves_MultiCurve extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_AppParCurves_MultiCurve {
   /**
    * Empty constructor.
    */
@@ -13681,7 +14105,7 @@ export declare class NCollection_Sequence_AppParCurves_MultiCurve extends NColle
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -13719,11 +14143,11 @@ export declare class NCollection_Sequence_AppParCurves_MultiCurve extends NColle
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -13739,7 +14163,7 @@ export declare class NCollection_Sequence_AppParCurves_MultiCurve extends NColle
   /**
    * Append one item.
    */
-  Append(theItem: AppParCurves_MultiCurve): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -13747,7 +14171,7 @@ export declare class NCollection_Sequence_AppParCurves_MultiCurve extends NColle
   /**
    * Prepend one item.
    */
-  Prepend(theItem: AppParCurves_MultiCurve): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -13755,7 +14179,7 @@ export declare class NCollection_Sequence_AppParCurves_MultiCurve extends NColle
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: AppParCurves_MultiCurve): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -13767,7 +14191,7 @@ export declare class NCollection_Sequence_AppParCurves_MultiCurve extends NColle
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: AppParCurves_MultiCurve): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -13775,31 +14199,31 @@ export declare class NCollection_Sequence_AppParCurves_MultiCurve extends NColle
   /**
    * First item access.
    */
-  First(): AppParCurves_MultiCurve;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): AppParCurves_MultiCurve;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): AppParCurves_MultiCurve;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): AppParCurves_MultiCurve;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): AppParCurves_MultiCurve;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): AppParCurves_MultiCurve;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: AppParCurves_MultiCurve): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -13815,12 +14239,12 @@ export declare class NCollection_Array1_StepAP203_DateTimeItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_DateTimeItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_DateTimeItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_DateTimeItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_DateTimeItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -13849,22 +14273,22 @@ export declare class NCollection_Array1_StepAP203_DateTimeItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_DateTimeItem): NCollection_Array1_StepAP203_DateTimeItem;
-  First(): StepAP203_DateTimeItem;
-  ChangeFirst(): StepAP203_DateTimeItem;
-  Last(): StepAP203_DateTimeItem;
-  ChangeLast(): StepAP203_DateTimeItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_DateTimeItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_DateTimeItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_DateTimeItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -13896,12 +14320,12 @@ export declare class NCollection_Array1_StepGeom_TrimmingSelect {
    */
   constructor(theOther: NCollection_Array1_StepGeom_TrimmingSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepGeom_TrimmingSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepGeom_TrimmingSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepGeom_TrimmingSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -13930,22 +14354,22 @@ export declare class NCollection_Array1_StepGeom_TrimmingSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepGeom_TrimmingSelect): NCollection_Array1_StepGeom_TrimmingSelect;
-  First(): StepGeom_TrimmingSelect;
-  ChangeFirst(): StepGeom_TrimmingSelect;
-  Last(): StepGeom_TrimmingSelect;
-  ChangeLast(): StepGeom_TrimmingSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepGeom_TrimmingSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepGeom_TrimmingSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepGeom_TrimmingSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -14047,13 +14471,25 @@ export declare class NCollection_Array2_gp_Vec {
    */
   Assign(theOther: NCollection_Array2_gp_Vec): NCollection_Array2_gp_Vec;
   /**
+   * Assignment.
+   */
+  Assign(theOther: unknown): unknown;
+  /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
    */
   Move(theOther: NCollection_Array2_gp_Vec): NCollection_Array2_gp_Vec;
   /**
+   * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
+   */
+  Move(theOther: unknown): unknown;
+  /**
    * SetValue.
    */
   SetValue(theRow: number, theCol: number, theItem: gp_Vec): void;
+  /**
+   * SetValue.
+   */
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -14063,6 +14499,11 @@ export declare class NCollection_Array2_gp_Vec {
    * @param theToCopyData flag to copy existing data into new array
    */
   Resize(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
+  /**
+   * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
+   * @param theToCopyData flag to copy existing data into new array
+   */
+  Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   /**
    * Resizes the array preserving 2D element layout. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols) elements from the top-left corner of the old array to the top-left corner of the new, preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -14077,7 +14518,7 @@ export declare class NCollection_Array2_gp_Vec {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
    */
@@ -14093,7 +14534,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -14101,7 +14542,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -14116,35 +14557,35 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
    * @param theItem Item value to set for newly bound Key; ignored if Key was already bound
    * @returns index of Key
    */
-  Add(theKey1: TopoDS_Shape, theItem: XCAFPrs_Style): number;
+  Add(theKey1: TopoDS_Shape, theItem: unknown): number;
   /**
    * TryBound binds Item to Key only if Key is not yet bound.
    * @param theKey1 key to add
    * @param theItem item to bind if Key is not yet bound
    * @returns reference to existing or newly bound Item
    */
-  TryBound(theKey1: TopoDS_Shape, theItem: XCAFPrs_Style): XCAFPrs_Style;
+  TryBound(theKey1: TopoDS_Shape, theItem: unknown): unknown;
   /**
    * TryBind binds Item to Key only if Key is not yet bound.
    * @param theKey1 key to add
    * @param theItem item to bind if Key is not yet bound
    * @returns true if key was newly added, false if key already existed
    */
-  TryBind(theKey1: TopoDS_Shape, theItem: XCAFPrs_Style): boolean;
+  TryBind(theKey1: TopoDS_Shape, theItem: unknown): boolean;
   /**
    * Bind binds Item to Key in map; overwrites value if Key already exists.
    * @param theKey1 key to add/update
    * @param theItem new item; overrides value previously bound to the key
    * @returns true if Key was not bound already
    */
-  Bind(theKey1: TopoDS_Shape, theItem: XCAFPrs_Style): boolean;
+  Bind(theKey1: TopoDS_Shape, theItem: unknown): boolean;
   /**
    * Bound binds Item to Key in map; overwrites value if Key already exists.
    * @param theKey1 key to add/update
    * @param theItem new item; overrides value previously bound to the key
    * @returns pointer to modifiable Item
    */
-  Bound(theKey1: TopoDS_Shape, theItem: XCAFPrs_Style): XCAFPrs_Style;
+  Bound(theKey1: TopoDS_Shape, theItem: unknown): unknown;
   /**
    * Contains.
    */
@@ -14152,7 +14593,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
   /**
    * Substitute.
    */
-  Substitute(theIndex: number, theKey1: TopoDS_Shape, theItem: XCAFPrs_Style): void;
+  Substitute(theIndex: number, theKey1: TopoDS_Shape, theItem: unknown): void;
   /**
    * Swaps two elements with the given indices.
    */
@@ -14176,11 +14617,11 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
   /**
    * FindFromIndex.
    */
-  FindFromIndex(theIndex: number): XCAFPrs_Style;
+  FindFromIndex(theIndex: number): unknown;
   /**
    * ChangeFromIndex.
    */
-  ChangeFromIndex(theIndex: number): XCAFPrs_Style;
+  ChangeFromIndex(theIndex: number): unknown;
   /**
    * FindIndex.
    */
@@ -14188,15 +14629,15 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
   /**
    * ChangeFromKey.
    */
-  ChangeFromKey(theKey1: TopoDS_Shape): XCAFPrs_Style;
+  ChangeFromKey(theKey1: TopoDS_Shape): unknown;
   /**
    * Seek returns pointer to Item by Key. Returns NULL if Key was not found.
    */
-  Seek(theKey1: TopoDS_Shape): XCAFPrs_Style;
+  Seek(theKey1: TopoDS_Shape): unknown;
   /**
    * ChangeSeek returns modifiable pointer to Item by Key. Returns NULL if Key was not found.
    */
-  ChangeSeek(theKey1: TopoDS_Shape): XCAFPrs_Style;
+  ChangeSeek(theKey1: TopoDS_Shape): unknown;
   /**
    * Clear data. If doReleaseMemory is false then the table of buckets is not released and will be reused.
    */
@@ -14204,7 +14645,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -14227,7 +14668,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -14243,7 +14684,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
 export declare class NCollection_List_int extends NCollection_BaseList {
@@ -14254,7 +14695,7 @@ export declare class NCollection_List_int extends NCollection_BaseList {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -14268,7 +14709,7 @@ export declare class NCollection_List_int extends NCollection_BaseList {
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: number[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: number[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -14280,7 +14721,7 @@ export declare class NCollection_List_int extends NCollection_BaseList {
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
@@ -14402,13 +14843,25 @@ export declare class NCollection_Array2_gp_Pnt {
    */
   Assign(theOther: NCollection_Array2_gp_Pnt): NCollection_Array2_gp_Pnt;
   /**
+   * Assignment.
+   */
+  Assign(theOther: unknown): unknown;
+  /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
    */
   Move(theOther: NCollection_Array2_gp_Pnt): NCollection_Array2_gp_Pnt;
   /**
+   * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
+   */
+  Move(theOther: unknown): unknown;
+  /**
    * SetValue.
    */
   SetValue(theRow: number, theCol: number, theItem: gp_Pnt): void;
+  /**
+   * SetValue.
+   */
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -14418,6 +14871,11 @@ export declare class NCollection_Array2_gp_Pnt {
    * @param theToCopyData flag to copy existing data into new array
    */
   Resize(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
+  /**
+   * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
+   * @param theToCopyData flag to copy existing data into new array
+   */
+  Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   /**
    * Resizes the array preserving 2D element layout. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols) elements from the top-left corner of the old array to the top-left corner of the new, preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -14442,12 +14900,12 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingInt
    */
   constructor(theOther: NCollection_Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_CameraModelD3MultiClippingInterectionSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_CameraModelD3MultiClippingInterectionSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_CameraModelD3MultiClippingInterectionSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -14476,22 +14934,22 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingInt
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect): NCollection_Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect;
-  First(): StepVisual_CameraModelD3MultiClippingInterectionSelect;
-  ChangeFirst(): StepVisual_CameraModelD3MultiClippingInterectionSelect;
-  Last(): StepVisual_CameraModelD3MultiClippingInterectionSelect;
-  ChangeLast(): StepVisual_CameraModelD3MultiClippingInterectionSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_CameraModelD3MultiClippingInterectionSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_CameraModelD3MultiClippingInterectionSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_CameraModelD3MultiClippingInterectionSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -14538,7 +14996,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDatedItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_AutoDesignDatedItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -14546,7 +15004,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDatedItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_AutoDesignDatedItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -14556,8 +15014,8 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDatedItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_AutoDesignDatedItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -14573,12 +15031,12 @@ export declare class NCollection_Array1_StepAP214_SecurityClassificationItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_SecurityClassificationItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_SecurityClassificationItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_SecurityClassificationItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_SecurityClassificationItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -14607,22 +15065,22 @@ export declare class NCollection_Array1_StepAP214_SecurityClassificationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_SecurityClassificationItem): NCollection_Array1_StepAP214_SecurityClassificationItem;
-  First(): StepAP214_SecurityClassificationItem;
-  ChangeFirst(): StepAP214_SecurityClassificationItem;
-  Last(): StepAP214_SecurityClassificationItem;
-  ChangeLast(): StepAP214_SecurityClassificationItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_SecurityClassificationItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_SecurityClassificationItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_SecurityClassificationItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -14652,14 +15110,14 @@ export declare class NCollection_Array1_AppParCurves_MultiPoint {
   /**
    * Copy constructor.
    */
-  constructor(theOther: any);
+  constructor(theOther: unknown);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: AppParCurves_MultiPoint, theLower: number, theUpper: number);
-  constructor(theBegin: AppParCurves_MultiPoint, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: AppParCurves_MultiPoint): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -14683,27 +15141,27 @@ export declare class NCollection_Array1_AppParCurves_MultiPoint {
   /**
    * Copies data of theOther array to this. This array should be pre-allocated and have the same length as theOther; otherwise exception Standard_DimensionMismatch is thrown.
    */
-  Assign(theOther: any): any;
+  Assign(theOther: unknown): unknown;
   /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
-  Move(theOther: any): any;
-  First(): AppParCurves_MultiPoint;
-  ChangeFirst(): AppParCurves_MultiPoint;
-  Last(): AppParCurves_MultiPoint;
-  ChangeLast(): AppParCurves_MultiPoint;
+  Move(theOther: unknown): unknown;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): AppParCurves_MultiPoint;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): AppParCurves_MultiPoint;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: AppParCurves_MultiPoint): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -14720,6 +15178,13 @@ export declare class NCollection_Array1_AppParCurves_MultiPoint {
    */
   Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   IsDeletable(): boolean;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_CoEdgeRef {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -14756,9 +15221,13 @@ export declare class NCollection_HSequence_double {
    * @param theSequence the sequence to append
    */
   Append(theSequence: any): void;
+  /**
+   * Append single item.
+   */
+  Append(theSeq: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -14789,7 +15258,7 @@ export declare class NCollection_HArray1_StepAP214_ExternalIdentificationItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_ExternalIdentificationItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -14797,7 +15266,7 @@ export declare class NCollection_HArray1_StepAP214_ExternalIdentificationItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_ExternalIdentificationItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -14807,8 +15276,20 @@ export declare class NCollection_HArray1_StepAP214_ExternalIdentificationItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_ExternalIdentificationItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class ReplicadEdgeMeshData {
+  constructor();
+  constructor(other: ReplicadEdgeMeshData);
+  getLinesPtr(): number;
+  getLinesSize(): number;
+  getEdgeGroupsPtr(): number;
+  getEdgeGroupsSize(): number;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -14824,12 +15305,12 @@ export declare class NCollection_Array1_HLRAlgo_PolyHidingData {
    */
   constructor(theOther: NCollection_Array1_HLRAlgo_PolyHidingData);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: HLRAlgo_PolyHidingData, theLower: number, theUpper: number);
-  constructor(theBegin: HLRAlgo_PolyHidingData, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: HLRAlgo_PolyHidingData): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -14858,22 +15339,22 @@ export declare class NCollection_Array1_HLRAlgo_PolyHidingData {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_HLRAlgo_PolyHidingData): NCollection_Array1_HLRAlgo_PolyHidingData;
-  First(): HLRAlgo_PolyHidingData;
-  ChangeFirst(): HLRAlgo_PolyHidingData;
-  Last(): HLRAlgo_PolyHidingData;
-  ChangeLast(): HLRAlgo_PolyHidingData;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): HLRAlgo_PolyHidingData;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): HLRAlgo_PolyHidingData;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: HLRAlgo_PolyHidingData): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -14926,15 +15407,26 @@ export declare class NCollection_HSequence_int {
    * @param theSequence the sequence to append
    */
   Append(theSequence: any): void;
+  /**
+   * Append single item.
+   */
+  Append(theSeq: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif extends NCollection_BaseSequence {
+export declare class NCollection_Vector_BRepGraphInc_CoEdgeDef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif {
   /**
    * Empty constructor.
    */
@@ -14942,7 +15434,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif e
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -14980,11 +15472,11 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif e
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -15000,7 +15492,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif e
   /**
    * Append one item.
    */
-  Append(theItem: XCAFDimTolObjects_GeomToleranceModif): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -15008,7 +15500,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif e
   /**
    * Prepend one item.
    */
-  Prepend(theItem: XCAFDimTolObjects_GeomToleranceModif): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -15016,7 +15508,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif e
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: XCAFDimTolObjects_GeomToleranceModif): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -15028,7 +15520,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif e
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: XCAFDimTolObjects_GeomToleranceModif): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -15036,31 +15528,31 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif e
   /**
    * First item access.
    */
-  First(): XCAFDimTolObjects_GeomToleranceModif;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): XCAFDimTolObjects_GeomToleranceModif;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): XCAFDimTolObjects_GeomToleranceModif;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): XCAFDimTolObjects_GeomToleranceModif;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): XCAFDimTolObjects_GeomToleranceModif;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): XCAFDimTolObjects_GeomToleranceModif;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: XCAFDimTolObjects_GeomToleranceModif): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -15073,7 +15565,7 @@ export declare class NCollection_Vector_TopoDS_Face {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -15089,7 +15581,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapH
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -15097,7 +15589,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapH
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -15161,7 +15653,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapH
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -15184,7 +15676,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapH
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -15200,10 +15692,10 @@ export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapH
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
-export declare class NCollection_Sequence_gp_Pnt2d extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_gp_Pnt2d {
   /**
    * Empty constructor.
    */
@@ -15211,7 +15703,7 @@ export declare class NCollection_Sequence_gp_Pnt2d extends NCollection_BaseSeque
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -15249,11 +15741,11 @@ export declare class NCollection_Sequence_gp_Pnt2d extends NCollection_BaseSeque
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -15345,12 +15837,12 @@ export declare class NCollection_Array1_StepVisual_DraughtingCalloutElement {
    */
   constructor(theOther: NCollection_Array1_StepVisual_DraughtingCalloutElement);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_DraughtingCalloutElement, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_DraughtingCalloutElement, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_DraughtingCalloutElement): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -15379,22 +15871,22 @@ export declare class NCollection_Array1_StepVisual_DraughtingCalloutElement {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_DraughtingCalloutElement): NCollection_Array1_StepVisual_DraughtingCalloutElement;
-  First(): StepVisual_DraughtingCalloutElement;
-  ChangeFirst(): StepVisual_DraughtingCalloutElement;
-  Last(): StepVisual_DraughtingCalloutElement;
-  ChangeLast(): StepVisual_DraughtingCalloutElement;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_DraughtingCalloutElement;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_DraughtingCalloutElement;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_DraughtingCalloutElement): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -15426,12 +15918,12 @@ export declare class NCollection_Array1_StepAP214_PresentedItemSelect {
    */
   constructor(theOther: NCollection_Array1_StepAP214_PresentedItemSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_PresentedItemSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_PresentedItemSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_PresentedItemSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -15460,22 +15952,22 @@ export declare class NCollection_Array1_StepAP214_PresentedItemSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_PresentedItemSelect): NCollection_Array1_StepAP214_PresentedItemSelect;
-  First(): StepAP214_PresentedItemSelect;
-  ChangeFirst(): StepAP214_PresentedItemSelect;
-  Last(): StepAP214_PresentedItemSelect;
-  ChangeLast(): StepAP214_PresentedItemSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_PresentedItemSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_PresentedItemSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_PresentedItemSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -15522,7 +16014,7 @@ export declare class NCollection_HArray1_AppParCurves_ConstraintCouple {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: AppParCurves_ConstraintCouple);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -15530,7 +16022,7 @@ export declare class NCollection_HArray1_AppParCurves_ConstraintCouple {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: AppParCurves_ConstraintCouple, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -15540,14 +16032,14 @@ export declare class NCollection_HArray1_AppParCurves_ConstraintCouple {
    */
   ChangeArray1(): NCollection_Array1_AppParCurves_ConstraintCouple;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_Extrema_POnCurv2d extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_Extrema_POnCurv2d {
   /**
    * Empty constructor.
    */
@@ -15555,7 +16047,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d extends NCollection_
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -15593,11 +16085,11 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d extends NCollection_
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -15613,7 +16105,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d extends NCollection_
   /**
    * Append one item.
    */
-  Append(theItem: Extrema_POnCurv2d): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -15621,7 +16113,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d extends NCollection_
   /**
    * Prepend one item.
    */
-  Prepend(theItem: Extrema_POnCurv2d): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -15629,7 +16121,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d extends NCollection_
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: Extrema_POnCurv2d): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -15641,7 +16133,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d extends NCollection_
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: Extrema_POnCurv2d): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -15649,31 +16141,31 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d extends NCollection_
   /**
    * First item access.
    */
-  First(): Extrema_POnCurv2d;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): Extrema_POnCurv2d;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): Extrema_POnCurv2d;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): Extrema_POnCurv2d;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): Extrema_POnCurv2d;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): Extrema_POnCurv2d;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: Extrema_POnCurv2d): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -15689,12 +16181,12 @@ export declare class NCollection_Array1_StepAP214_ApprovalItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_ApprovalItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_ApprovalItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_ApprovalItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_ApprovalItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -15723,22 +16215,22 @@ export declare class NCollection_Array1_StepAP214_ApprovalItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_ApprovalItem): NCollection_Array1_StepAP214_ApprovalItem;
-  First(): StepAP214_ApprovalItem;
-  ChangeFirst(): StepAP214_ApprovalItem;
-  Last(): StepAP214_ApprovalItem;
-  ChangeLast(): StepAP214_ApprovalItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_ApprovalItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_ApprovalItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_ApprovalItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -15795,8 +16287,8 @@ export declare class NCollection_HArray2_double {
    */
   ChangeArray2(): any;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -15812,12 +16304,12 @@ export declare class NCollection_Array1_StepAP203_ContractedItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_ContractedItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_ContractedItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_ContractedItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_ContractedItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -15846,22 +16338,22 @@ export declare class NCollection_Array1_StepAP203_ContractedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_ContractedItem): NCollection_Array1_StepAP203_ContractedItem;
-  First(): StepAP203_ContractedItem;
-  ChangeFirst(): StepAP203_ContractedItem;
-  Last(): StepAP203_ContractedItem;
-  ChangeLast(): StepAP203_ContractedItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_ContractedItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_ContractedItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_ContractedItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -15891,7 +16383,7 @@ export declare class NCollection_List_BRepCheck_Status extends NCollection_BaseL
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -15899,13 +16391,13 @@ export declare class NCollection_List_BRepCheck_Status extends NCollection_BaseL
   /**
    * Move constructor.
    */
-  constructor(theInitList: BRepCheck_Status[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: BRepCheck_Status[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -15917,19 +16409,19 @@ export declare class NCollection_List_BRepCheck_Status extends NCollection_BaseL
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): BRepCheck_Status;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): BRepCheck_Status;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: BRepCheck_Status): BRepCheck_Status;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -15937,7 +16429,7 @@ export declare class NCollection_List_BRepCheck_Status extends NCollection_BaseL
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: BRepCheck_Status): BRepCheck_Status;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -16039,13 +16531,25 @@ export declare class NCollection_Array2_int {
    */
   Assign(theOther: NCollection_Array2_int): NCollection_Array2_int;
   /**
+   * Assignment.
+   */
+  Assign(theOther: unknown): unknown;
+  /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
    */
   Move(theOther: NCollection_Array2_int): NCollection_Array2_int;
   /**
+   * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
+   */
+  Move(theOther: unknown): unknown;
+  /**
    * SetValue.
    */
   SetValue(theRow: number, theCol: number, theItem: number): void;
+  /**
+   * SetValue.
+   */
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -16056,6 +16560,11 @@ export declare class NCollection_Array2_int {
    */
   Resize(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
   /**
+   * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
+   * @param theToCopyData flag to copy existing data into new array
+   */
+  Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
+  /**
    * Resizes the array preserving 2D element layout. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols) elements from the top-left corner of the old array to the top-left corner of the new, preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
    * @param theRowUpper new upper Row of array
@@ -16064,6 +16573,13 @@ export declare class NCollection_Array2_int {
    * @param theToCopyData flag to copy existing data into new array
    */
   ResizeWithTrim(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_WireId {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -16079,12 +16595,12 @@ export declare class NCollection_Array1_ChFiDS_CircSection {
    */
   constructor(theOther: NCollection_Array1_ChFiDS_CircSection);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: ChFiDS_CircSection, theLower: number, theUpper: number);
-  constructor(theBegin: ChFiDS_CircSection, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: ChFiDS_CircSection): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -16113,22 +16629,22 @@ export declare class NCollection_Array1_ChFiDS_CircSection {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_ChFiDS_CircSection): NCollection_Array1_ChFiDS_CircSection;
-  First(): ChFiDS_CircSection;
-  ChangeFirst(): ChFiDS_CircSection;
-  Last(): ChFiDS_CircSection;
-  ChangeLast(): ChFiDS_CircSection;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): ChFiDS_CircSection;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): ChFiDS_CircSection;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: ChFiDS_CircSection): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -16150,7 +16666,7 @@ export declare class NCollection_Array1_ChFiDS_CircSection {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntTools_Curve extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntTools_Curve {
   /**
    * Empty constructor.
    */
@@ -16158,7 +16674,7 @@ export declare class NCollection_Sequence_IntTools_Curve extends NCollection_Bas
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -16196,11 +16712,11 @@ export declare class NCollection_Sequence_IntTools_Curve extends NCollection_Bas
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -16216,7 +16732,7 @@ export declare class NCollection_Sequence_IntTools_Curve extends NCollection_Bas
   /**
    * Append one item.
    */
-  Append(theItem: IntTools_Curve): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -16224,7 +16740,7 @@ export declare class NCollection_Sequence_IntTools_Curve extends NCollection_Bas
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntTools_Curve): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -16232,7 +16748,7 @@ export declare class NCollection_Sequence_IntTools_Curve extends NCollection_Bas
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntTools_Curve): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -16244,7 +16760,7 @@ export declare class NCollection_Sequence_IntTools_Curve extends NCollection_Bas
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntTools_Curve): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -16252,31 +16768,31 @@ export declare class NCollection_Sequence_IntTools_Curve extends NCollection_Bas
   /**
    * First item access.
    */
-  First(): IntTools_Curve;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntTools_Curve;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntTools_Curve;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntTools_Curve;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntTools_Curve;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntTools_Curve;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntTools_Curve): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -16292,12 +16808,12 @@ export declare class NCollection_Array1_StepShape_Shell {
    */
   constructor(theOther: NCollection_Array1_StepShape_Shell);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepShape_Shell, theLower: number, theUpper: number);
-  constructor(theBegin: StepShape_Shell, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepShape_Shell): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -16326,22 +16842,22 @@ export declare class NCollection_Array1_StepShape_Shell {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepShape_Shell): NCollection_Array1_StepShape_Shell;
-  First(): StepShape_Shell;
-  ChangeFirst(): StepShape_Shell;
-  Last(): StepShape_Shell;
-  ChangeLast(): StepShape_Shell;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepShape_Shell;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepShape_Shell;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepShape_Shell): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -16373,12 +16889,12 @@ export declare class NCollection_Array1_StepAP203_WorkItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_WorkItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_WorkItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_WorkItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_WorkItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -16407,22 +16923,22 @@ export declare class NCollection_Array1_StepAP203_WorkItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_WorkItem): NCollection_Array1_StepAP203_WorkItem;
-  First(): StepAP203_WorkItem;
-  ChangeFirst(): StepAP203_WorkItem;
-  Last(): StepAP203_WorkItem;
-  ChangeLast(): StepAP203_WorkItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_WorkItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_WorkItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_WorkItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -16487,8 +17003,8 @@ export declare class NCollection_HArray1_TCollection_ExtendedString {
    */
   ChangeArray1(): NCollection_Array1_TCollection_ExtendedString;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -16504,12 +17020,12 @@ export declare class NCollection_Array1_HLRAlgo_TriangleData {
    */
   constructor(theOther: NCollection_Array1_HLRAlgo_TriangleData);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: HLRAlgo_TriangleData, theLower: number, theUpper: number);
-  constructor(theBegin: HLRAlgo_TriangleData, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: HLRAlgo_TriangleData): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -16538,22 +17054,22 @@ export declare class NCollection_Array1_HLRAlgo_TriangleData {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_HLRAlgo_TriangleData): NCollection_Array1_HLRAlgo_TriangleData;
-  First(): HLRAlgo_TriangleData;
-  ChangeFirst(): HLRAlgo_TriangleData;
-  Last(): HLRAlgo_TriangleData;
-  ChangeLast(): HLRAlgo_TriangleData;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): HLRAlgo_TriangleData;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): HLRAlgo_TriangleData;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: HLRAlgo_TriangleData): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -16600,7 +17116,7 @@ export declare class NCollection_HArray1_StepVisual_DirectionCountSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_DirectionCountSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -16608,7 +17124,7 @@ export declare class NCollection_HArray1_StepVisual_DirectionCountSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_DirectionCountSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -16618,8 +17134,8 @@ export declare class NCollection_HArray1_StepVisual_DirectionCountSelect {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_DirectionCountSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -16650,7 +17166,7 @@ export declare class NCollection_HArray1_StepAP214_ApprovalItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_ApprovalItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -16658,7 +17174,7 @@ export declare class NCollection_HArray1_StepAP214_ApprovalItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_ApprovalItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -16668,8 +17184,8 @@ export declare class NCollection_HArray1_StepAP214_ApprovalItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_ApprovalItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -16700,7 +17216,7 @@ export declare class NCollection_HArray1_StepAP214_GroupItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_GroupItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -16708,7 +17224,7 @@ export declare class NCollection_HArray1_StepAP214_GroupItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_GroupItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -16718,8 +17234,8 @@ export declare class NCollection_HArray1_StepAP214_GroupItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_GroupItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -16750,7 +17266,7 @@ export declare class NCollection_HArray1_StepAP214_DateAndTimeItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_DateAndTimeItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -16758,7 +17274,7 @@ export declare class NCollection_HArray1_StepAP214_DateAndTimeItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_DateAndTimeItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -16768,8 +17284,8 @@ export declare class NCollection_HArray1_StepAP214_DateAndTimeItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_DateAndTimeItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -16785,12 +17301,12 @@ export declare class NCollection_Array1_StepAP203_ClassifiedItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_ClassifiedItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_ClassifiedItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_ClassifiedItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_ClassifiedItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -16819,22 +17335,22 @@ export declare class NCollection_Array1_StepAP203_ClassifiedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_ClassifiedItem): NCollection_Array1_StepAP203_ClassifiedItem;
-  First(): StepAP203_ClassifiedItem;
-  ChangeFirst(): StepAP203_ClassifiedItem;
-  Last(): StepAP203_ClassifiedItem;
-  ChangeLast(): StepAP203_ClassifiedItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_ClassifiedItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_ClassifiedItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_ClassifiedItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -16881,7 +17397,7 @@ export declare class NCollection_HArray1_StepGeom_TrimmingSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepGeom_TrimmingSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -16889,7 +17405,7 @@ export declare class NCollection_HArray1_StepGeom_TrimmingSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepGeom_TrimmingSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -16899,8 +17415,8 @@ export declare class NCollection_HArray1_StepGeom_TrimmingSelect {
    */
   ChangeArray1(): NCollection_Array1_StepGeom_TrimmingSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -16916,12 +17432,12 @@ export declare class NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignGeneralOrgItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignGeneralOrgItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_AutoDesignGeneralOrgItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -16950,22 +17466,22 @@ export declare class NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem): NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem;
-  First(): StepAP214_AutoDesignGeneralOrgItem;
-  ChangeFirst(): StepAP214_AutoDesignGeneralOrgItem;
-  Last(): StepAP214_AutoDesignGeneralOrgItem;
-  ChangeLast(): StepAP214_AutoDesignGeneralOrgItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_AutoDesignGeneralOrgItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_AutoDesignGeneralOrgItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_AutoDesignGeneralOrgItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -16982,6 +17498,13 @@ export declare class NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem {
    */
   Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   IsDeletable(): boolean;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_EdgeId {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -17004,12 +17527,12 @@ export declare class NCollection_Array1_StepVisual_FillStyleSelect {
    */
   constructor(theOther: NCollection_Array1_StepVisual_FillStyleSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_FillStyleSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_FillStyleSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_FillStyleSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -17038,22 +17561,22 @@ export declare class NCollection_Array1_StepVisual_FillStyleSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_FillStyleSelect): NCollection_Array1_StepVisual_FillStyleSelect;
-  First(): StepVisual_FillStyleSelect;
-  ChangeFirst(): StepVisual_FillStyleSelect;
-  Last(): StepVisual_FillStyleSelect;
-  ChangeLast(): StepVisual_FillStyleSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_FillStyleSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_FillStyleSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_FillStyleSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -17075,7 +17598,7 @@ export declare class NCollection_Array1_StepVisual_FillStyleSelect {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_PCDM_Reference extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_PCDM_Reference {
   /**
    * Empty constructor.
    */
@@ -17083,7 +17606,7 @@ export declare class NCollection_Sequence_PCDM_Reference extends NCollection_Bas
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -17121,11 +17644,11 @@ export declare class NCollection_Sequence_PCDM_Reference extends NCollection_Bas
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -17141,7 +17664,7 @@ export declare class NCollection_Sequence_PCDM_Reference extends NCollection_Bas
   /**
    * Append one item.
    */
-  Append(theItem: PCDM_Reference): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -17149,7 +17672,7 @@ export declare class NCollection_Sequence_PCDM_Reference extends NCollection_Bas
   /**
    * Prepend one item.
    */
-  Prepend(theItem: PCDM_Reference): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -17157,7 +17680,7 @@ export declare class NCollection_Sequence_PCDM_Reference extends NCollection_Bas
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: PCDM_Reference): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -17169,7 +17692,7 @@ export declare class NCollection_Sequence_PCDM_Reference extends NCollection_Bas
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: PCDM_Reference): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -17177,31 +17700,31 @@ export declare class NCollection_Sequence_PCDM_Reference extends NCollection_Bas
   /**
    * First item access.
    */
-  First(): PCDM_Reference;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): PCDM_Reference;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): PCDM_Reference;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): PCDM_Reference;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): PCDM_Reference;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): PCDM_Reference;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: PCDM_Reference): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -17217,12 +17740,12 @@ export declare class NCollection_Array1_StepAP214_PersonAndOrganizationItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_PersonAndOrganizationItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_PersonAndOrganizationItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_PersonAndOrganizationItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_PersonAndOrganizationItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -17251,22 +17774,22 @@ export declare class NCollection_Array1_StepAP214_PersonAndOrganizationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_PersonAndOrganizationItem): NCollection_Array1_StepAP214_PersonAndOrganizationItem;
-  First(): StepAP214_PersonAndOrganizationItem;
-  ChangeFirst(): StepAP214_PersonAndOrganizationItem;
-  Last(): StepAP214_PersonAndOrganizationItem;
-  ChangeLast(): StepAP214_PersonAndOrganizationItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_PersonAndOrganizationItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_PersonAndOrganizationItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_PersonAndOrganizationItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -17313,7 +17836,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignGroupedItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_AutoDesignGroupedItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -17321,7 +17844,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignGroupedItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_AutoDesignGroupedItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -17331,8 +17854,8 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignGroupedItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_AutoDesignGroupedItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -17363,7 +17886,7 @@ export declare class NCollection_HArray1_StepDimTol_ToleranceZoneTarget {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepDimTol_ToleranceZoneTarget);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -17371,7 +17894,7 @@ export declare class NCollection_HArray1_StepDimTol_ToleranceZoneTarget {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepDimTol_ToleranceZoneTarget, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -17381,8 +17904,15 @@ export declare class NCollection_HArray1_StepDimTol_ToleranceZoneTarget {
    */
   ChangeArray1(): NCollection_Array1_StepDimTol_ToleranceZoneTarget;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_NodeId {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -17405,12 +17935,12 @@ export declare class NCollection_Array1_StepDimTol_GeometricToleranceModifier {
    */
   constructor(theOther: NCollection_Array1_StepDimTol_GeometricToleranceModifier);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepDimTol_GeometricToleranceModifier, theLower: number, theUpper: number);
-  constructor(theBegin: StepDimTol_GeometricToleranceModifier, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepDimTol_GeometricToleranceModifier): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -17439,22 +17969,22 @@ export declare class NCollection_Array1_StepDimTol_GeometricToleranceModifier {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepDimTol_GeometricToleranceModifier): NCollection_Array1_StepDimTol_GeometricToleranceModifier;
-  First(): StepDimTol_GeometricToleranceModifier;
-  ChangeFirst(): StepDimTol_GeometricToleranceModifier;
-  Last(): StepDimTol_GeometricToleranceModifier;
-  ChangeLast(): StepDimTol_GeometricToleranceModifier;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepDimTol_GeometricToleranceModifier;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepDimTol_GeometricToleranceModifier;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepDimTol_GeometricToleranceModifier): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -17501,7 +18031,7 @@ export declare class NCollection_HArray1_HLRAlgo_PolyHidingData {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: HLRAlgo_PolyHidingData);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -17509,7 +18039,7 @@ export declare class NCollection_HArray1_HLRAlgo_PolyHidingData {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: HLRAlgo_PolyHidingData, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -17519,8 +18049,8 @@ export declare class NCollection_HArray1_HLRAlgo_PolyHidingData {
    */
   ChangeArray1(): NCollection_Array1_HLRAlgo_PolyHidingData;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -17615,7 +18145,7 @@ export declare class NCollection_List_gp_Pnt2d extends NCollection_BaseList {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -17629,7 +18159,7 @@ export declare class NCollection_List_gp_Pnt2d extends NCollection_BaseList {
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: gp_Pnt2d[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: gp_Pnt2d[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -17641,7 +18171,7 @@ export declare class NCollection_List_gp_Pnt2d extends NCollection_BaseList {
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
@@ -17693,12 +18223,12 @@ export declare class NCollection_Array1_StepVisual_TessellatedEdgeOrVertex {
    */
   constructor(theOther: NCollection_Array1_StepVisual_TessellatedEdgeOrVertex);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_TessellatedEdgeOrVertex, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_TessellatedEdgeOrVertex, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_TessellatedEdgeOrVertex): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -17727,22 +18257,22 @@ export declare class NCollection_Array1_StepVisual_TessellatedEdgeOrVertex {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_TessellatedEdgeOrVertex): NCollection_Array1_StepVisual_TessellatedEdgeOrVertex;
-  First(): StepVisual_TessellatedEdgeOrVertex;
-  ChangeFirst(): StepVisual_TessellatedEdgeOrVertex;
-  Last(): StepVisual_TessellatedEdgeOrVertex;
-  ChangeLast(): StepVisual_TessellatedEdgeOrVertex;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_TessellatedEdgeOrVertex;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_TessellatedEdgeOrVertex;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_TessellatedEdgeOrVertex): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -17764,7 +18294,14 @@ export declare class NCollection_Array1_StepVisual_TessellatedEdgeOrVertex {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_Vector_BRepGraph_UID {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
    */
@@ -17780,7 +18317,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher extend
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -17788,7 +18325,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher extend
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assign. This method does not change the internal allocator.
    */
@@ -17825,7 +18362,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher extend
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -17898,7 +18435,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher extend
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -17914,7 +18451,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher extend
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
 /**
@@ -17942,7 +18479,7 @@ export declare class NCollection_HArray1_StepVisual_RenderingPropertiesSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_RenderingPropertiesSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -17950,7 +18487,7 @@ export declare class NCollection_HArray1_StepVisual_RenderingPropertiesSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_RenderingPropertiesSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -17960,8 +18497,8 @@ export declare class NCollection_HArray1_StepVisual_RenderingPropertiesSelect {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_RenderingPropertiesSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -17975,21 +18512,21 @@ export declare class NCollection_List_HLRAlgo_BiPoint extends NCollection_BaseLi
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
-  constructor(theOther: any);
+  constructor(theOther: unknown);
   /**
    * Move constructor.
    */
-  constructor(theInitList: HLRAlgo_BiPoint[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: HLRAlgo_BiPoint[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -17997,35 +18534,35 @@ export declare class NCollection_List_HLRAlgo_BiPoint extends NCollection_BaseLi
   /**
    * Replace this list by the items of another list (theOther parameter). This method does not change the internal allocator.
    */
-  Assign(theOther: any): any;
+  Assign(theOther: unknown): unknown;
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): HLRAlgo_BiPoint;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): HLRAlgo_BiPoint;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: HLRAlgo_BiPoint): HLRAlgo_BiPoint;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theOther: any): void;
+  Append(theOther: unknown): void;
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: HLRAlgo_BiPoint): HLRAlgo_BiPoint;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theOther: any): void;
+  Prepend(theOther: unknown): void;
   /**
    * RemoveFirst item.
    */
@@ -18037,7 +18574,7 @@ export declare class NCollection_List_HLRAlgo_BiPoint extends NCollection_BaseLi
   /**
    * Exchange the content of two lists without re-allocations. Swaps all internal state including allocators, ensuring correct deallocation. Existing iterators remain valid but will point to the other list's elements.
    */
-  Exchange(theOther: any): void;
+  Exchange(theOther: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -18123,13 +18660,25 @@ export declare class NCollection_Array2_gp_XYZ {
    */
   Assign(theOther: NCollection_Array2_gp_XYZ): NCollection_Array2_gp_XYZ;
   /**
+   * Assignment.
+   */
+  Assign(theOther: unknown): unknown;
+  /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
    */
   Move(theOther: NCollection_Array2_gp_XYZ): NCollection_Array2_gp_XYZ;
   /**
+   * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
+   */
+  Move(theOther: unknown): unknown;
+  /**
    * SetValue.
    */
   SetValue(theRow: number, theCol: number, theItem: gp_XYZ): void;
+  /**
+   * SetValue.
+   */
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -18139,6 +18688,11 @@ export declare class NCollection_Array2_gp_XYZ {
    * @param theToCopyData flag to copy existing data into new array
    */
   Resize(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
+  /**
+   * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
+   * @param theToCopyData flag to copy existing data into new array
+   */
+  Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   /**
    * Resizes the array preserving 2D element layout. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols) elements from the top-left corner of the old array to the top-left corner of the new, preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -18178,7 +18732,7 @@ export declare class NCollection_HArray1_HLRAlgo_TriangleData {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: HLRAlgo_TriangleData);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -18186,7 +18740,7 @@ export declare class NCollection_HArray1_HLRAlgo_TriangleData {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: HLRAlgo_TriangleData, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -18196,8 +18750,8 @@ export declare class NCollection_HArray1_HLRAlgo_TriangleData {
    */
   ChangeArray1(): NCollection_Array1_HLRAlgo_TriangleData;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -18211,7 +18765,7 @@ export declare class NCollection_List_HLRAlgo_Interference extends NCollection_B
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -18219,13 +18773,13 @@ export declare class NCollection_List_HLRAlgo_Interference extends NCollection_B
   /**
    * Move constructor.
    */
-  constructor(theInitList: HLRAlgo_Interference[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: HLRAlgo_Interference[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -18237,19 +18791,19 @@ export declare class NCollection_List_HLRAlgo_Interference extends NCollection_B
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): HLRAlgo_Interference;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): HLRAlgo_Interference;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: HLRAlgo_Interference): HLRAlgo_Interference;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -18257,7 +18811,7 @@ export declare class NCollection_List_HLRAlgo_Interference extends NCollection_B
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: HLRAlgo_Interference): HLRAlgo_Interference;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -18304,7 +18858,7 @@ export declare class NCollection_HArray1_StepShape_ShapeDimensionRepresentationI
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepShape_ShapeDimensionRepresentationItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -18312,7 +18866,7 @@ export declare class NCollection_HArray1_StepShape_ShapeDimensionRepresentationI
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepShape_ShapeDimensionRepresentationItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -18322,8 +18876,8 @@ export declare class NCollection_HArray1_StepShape_ShapeDimensionRepresentationI
    */
   ChangeArray1(): NCollection_Array1_StepShape_ShapeDimensionRepresentationItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -18354,7 +18908,7 @@ export declare class NCollection_HArray1_StepVisual_StyleContextSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_StyleContextSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -18362,7 +18916,7 @@ export declare class NCollection_HArray1_StepVisual_StyleContextSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_StyleContextSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -18372,8 +18926,8 @@ export declare class NCollection_HArray1_StepVisual_StyleContextSelect {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_StyleContextSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -18404,7 +18958,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignReferencingItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_AutoDesignReferencingItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -18412,7 +18966,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignReferencingItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_AutoDesignReferencingItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -18422,14 +18976,14 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignReferencingItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_AutoDesignReferencingItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_int extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_int {
   /**
    * Empty constructor.
    */
@@ -18437,7 +18991,7 @@ export declare class NCollection_Sequence_int extends NCollection_BaseSequence {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -18475,11 +19029,11 @@ export declare class NCollection_Sequence_int extends NCollection_BaseSequence {
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -18561,7 +19115,7 @@ export declare class NCollection_Sequence_int extends NCollection_BaseSequence {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntSurf_InteriorPoint extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntSurf_InteriorPoint {
   /**
    * Empty constructor.
    */
@@ -18569,11 +19123,11 @@ export declare class NCollection_Sequence_IntSurf_InteriorPoint extends NCollect
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
-  constructor(theOther: any);
+  constructor(theOther: unknown);
   /**
    * Number of items.
    */
@@ -18607,15 +19161,15 @@ export declare class NCollection_Sequence_IntSurf_InteriorPoint extends NCollect
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
-  Assign(theOther: any): any;
+  Assign(theOther: unknown): unknown;
   /**
    * Remove one item.
    */
@@ -18627,67 +19181,83 @@ export declare class NCollection_Sequence_IntSurf_InteriorPoint extends NCollect
   /**
    * Append one item.
    */
-  Append(theItem: IntSurf_InteriorPoint): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
-  Append(theSeq: any): void;
+  Append(theSeq: unknown): void;
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntSurf_InteriorPoint): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
-  Prepend(theSeq: any): void;
+  Prepend(theSeq: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntSurf_InteriorPoint): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theSeq: any): void;
+  InsertBefore(theIndex: number, theSeq: unknown): void;
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theSeq: any): void;
+  InsertAfter(theIndex: number, theSeq: unknown): void;
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntSurf_InteriorPoint): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
-  Split(theIndex: number, theSeq: any): void;
+  Split(theIndex: number, theSeq: unknown): void;
   /**
    * First item access.
    */
-  First(): IntSurf_InteriorPoint;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntSurf_InteriorPoint;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntSurf_InteriorPoint;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntSurf_InteriorPoint;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntSurf_InteriorPoint;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntSurf_InteriorPoint;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntSurf_InteriorPoint): void;
+  SetValue(theIndex: number, theItem: unknown): void;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class ReplicadMeshData {
+  constructor();
+  constructor(other: ReplicadMeshData);
+  getVerticesPtr(): number;
+  getNormalsPtr(): number;
+  getTrianglesPtr(): number;
+  getFaceGroupsPtr(): number;
+  getVerticesSize(): number;
+  getNormalsSize(): number;
+  getTrianglesSize(): number;
+  getFaceGroupsSize(): number;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -18784,12 +19354,12 @@ export declare class NCollection_Array1_StepVisual_DirectionCountSelect {
    */
   constructor(theOther: NCollection_Array1_StepVisual_DirectionCountSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_DirectionCountSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_DirectionCountSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_DirectionCountSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -18818,22 +19388,22 @@ export declare class NCollection_Array1_StepVisual_DirectionCountSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_DirectionCountSelect): NCollection_Array1_StepVisual_DirectionCountSelect;
-  First(): StepVisual_DirectionCountSelect;
-  ChangeFirst(): StepVisual_DirectionCountSelect;
-  Last(): StepVisual_DirectionCountSelect;
-  ChangeLast(): StepVisual_DirectionCountSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_DirectionCountSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_DirectionCountSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_DirectionCountSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -18855,7 +19425,7 @@ export declare class NCollection_Array1_StepVisual_DirectionCountSelect {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_gp_XY extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_gp_XY {
   /**
    * Empty constructor.
    */
@@ -18863,7 +19433,7 @@ export declare class NCollection_Sequence_gp_XY extends NCollection_BaseSequence
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -18901,11 +19471,11 @@ export declare class NCollection_Sequence_gp_XY extends NCollection_BaseSequence
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -18995,7 +19565,7 @@ export declare class NCollection_List_gp_Pnt extends NCollection_BaseList {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -19009,7 +19579,7 @@ export declare class NCollection_List_gp_Pnt extends NCollection_BaseList {
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: gp_Pnt[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: gp_Pnt[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -19021,7 +19591,7 @@ export declare class NCollection_List_gp_Pnt extends NCollection_BaseList {
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
@@ -19063,6 +19633,20 @@ export declare class NCollection_List_gp_Pnt extends NCollection_BaseList {
   [Symbol.dispose](): void;
 }
 
+export declare class NCollection_Vector_BRepGraph_RefUID {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_ShellDef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
  */
@@ -19088,7 +19672,7 @@ export declare class NCollection_HArray1_StepAP214_OrganizationItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_OrganizationItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -19096,7 +19680,7 @@ export declare class NCollection_HArray1_StepAP214_OrganizationItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_OrganizationItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -19106,8 +19690,8 @@ export declare class NCollection_HArray1_StepAP214_OrganizationItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_OrganizationItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -19138,7 +19722,7 @@ export declare class NCollection_HArray1_StepAP203_DateTimeItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_DateTimeItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -19146,7 +19730,7 @@ export declare class NCollection_HArray1_StepAP203_DateTimeItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_DateTimeItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -19156,8 +19740,8 @@ export declare class NCollection_HArray1_StepAP203_DateTimeItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_DateTimeItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -19244,7 +19828,7 @@ export declare class NCollection_Array1_float {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_double extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_double {
   /**
    * Empty constructor.
    */
@@ -19252,7 +19836,7 @@ export declare class NCollection_Sequence_double extends NCollection_BaseSequenc
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -19290,11 +19874,11 @@ export declare class NCollection_Sequence_double extends NCollection_BaseSequenc
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -19474,12 +20058,12 @@ export declare class NCollection_Array1_StepVisual_TextOrCharacter {
    */
   constructor(theOther: NCollection_Array1_StepVisual_TextOrCharacter);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_TextOrCharacter, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_TextOrCharacter, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_TextOrCharacter): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -19508,22 +20092,22 @@ export declare class NCollection_Array1_StepVisual_TextOrCharacter {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_TextOrCharacter): NCollection_Array1_StepVisual_TextOrCharacter;
-  First(): StepVisual_TextOrCharacter;
-  ChangeFirst(): StepVisual_TextOrCharacter;
-  Last(): StepVisual_TextOrCharacter;
-  ChangeLast(): StepVisual_TextOrCharacter;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_TextOrCharacter;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_TextOrCharacter;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_TextOrCharacter): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -19553,7 +20137,7 @@ export declare class NCollection_List_uint8_t extends NCollection_BaseList {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -19561,13 +20145,13 @@ export declare class NCollection_List_uint8_t extends NCollection_BaseList {
   /**
    * Move constructor.
    */
-  constructor(theInitList: uint8_t[]);
+  constructor(theInitList: number[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: uint8_t[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: number[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -19579,19 +20163,19 @@ export declare class NCollection_List_uint8_t extends NCollection_BaseList {
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): uint8_t;
+  First(): number;
   /**
    * Last item.
    */
-  Last(): uint8_t;
+  Last(): number;
   /**
    * Append one item at the end.
    */
-  Append(theItem: uint8_t): uint8_t;
+  Append(theItem: number): number;
   /**
    * Append one item at the end.
    */
@@ -19599,7 +20183,7 @@ export declare class NCollection_List_uint8_t extends NCollection_BaseList {
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: uint8_t): uint8_t;
+  Prepend(theItem: number): number;
   /**
    * Prepend one item at the beginning.
    */
@@ -19631,12 +20215,12 @@ export declare class NCollection_Array1_StepAP203_StartRequestItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_StartRequestItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_StartRequestItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_StartRequestItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_StartRequestItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -19665,22 +20249,22 @@ export declare class NCollection_Array1_StepAP203_StartRequestItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_StartRequestItem): NCollection_Array1_StepAP203_StartRequestItem;
-  First(): StepAP203_StartRequestItem;
-  ChangeFirst(): StepAP203_StartRequestItem;
-  Last(): StepAP203_StartRequestItem;
-  ChangeLast(): StepAP203_StartRequestItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_StartRequestItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_StartRequestItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_StartRequestItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -19719,12 +20303,12 @@ export declare class NCollection_Array1_StepElement_MeasureOrUnspecifiedValue {
    */
   constructor(theOther: NCollection_Array1_StepElement_MeasureOrUnspecifiedValue);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepElement_MeasureOrUnspecifiedValue, theLower: number, theUpper: number);
-  constructor(theBegin: StepElement_MeasureOrUnspecifiedValue, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepElement_MeasureOrUnspecifiedValue): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -19753,22 +20337,22 @@ export declare class NCollection_Array1_StepElement_MeasureOrUnspecifiedValue {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepElement_MeasureOrUnspecifiedValue): NCollection_Array1_StepElement_MeasureOrUnspecifiedValue;
-  First(): StepElement_MeasureOrUnspecifiedValue;
-  ChangeFirst(): StepElement_MeasureOrUnspecifiedValue;
-  Last(): StepElement_MeasureOrUnspecifiedValue;
-  ChangeLast(): StepElement_MeasureOrUnspecifiedValue;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepElement_MeasureOrUnspecifiedValue;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepElement_MeasureOrUnspecifiedValue;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepElement_MeasureOrUnspecifiedValue): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -19790,7 +20374,7 @@ export declare class NCollection_Array1_StepElement_MeasureOrUnspecifiedValue {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntRes2d_IntersectionPoint extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntRes2d_IntersectionPoint {
   /**
    * Empty constructor.
    */
@@ -19798,11 +20382,11 @@ export declare class NCollection_Sequence_IntRes2d_IntersectionPoint extends NCo
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
-  constructor(theOther: any);
+  constructor(theOther: unknown);
   /**
    * Number of items.
    */
@@ -19836,15 +20420,15 @@ export declare class NCollection_Sequence_IntRes2d_IntersectionPoint extends NCo
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
-  Assign(theOther: any): any;
+  Assign(theOther: unknown): unknown;
   /**
    * Remove one item.
    */
@@ -19856,67 +20440,67 @@ export declare class NCollection_Sequence_IntRes2d_IntersectionPoint extends NCo
   /**
    * Append one item.
    */
-  Append(theItem: IntRes2d_IntersectionPoint): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
-  Append(theSeq: any): void;
+  Append(theSeq: unknown): void;
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntRes2d_IntersectionPoint): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
-  Prepend(theSeq: any): void;
+  Prepend(theSeq: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntRes2d_IntersectionPoint): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theSeq: any): void;
+  InsertBefore(theIndex: number, theSeq: unknown): void;
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theSeq: any): void;
+  InsertAfter(theIndex: number, theSeq: unknown): void;
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntRes2d_IntersectionPoint): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
-  Split(theIndex: number, theSeq: any): void;
+  Split(theIndex: number, theSeq: unknown): void;
   /**
    * First item access.
    */
-  First(): IntRes2d_IntersectionPoint;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntRes2d_IntersectionPoint;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntRes2d_IntersectionPoint;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntRes2d_IntersectionPoint;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntRes2d_IntersectionPoint;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntRes2d_IntersectionPoint;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntRes2d_IntersectionPoint): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -19930,7 +20514,7 @@ export declare class NCollection_List_TCollection_ExtendedString extends NCollec
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -19944,7 +20528,7 @@ export declare class NCollection_List_TCollection_ExtendedString extends NCollec
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: TCollection_ExtendedString[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: TCollection_ExtendedString[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -19956,7 +20540,7 @@ export declare class NCollection_List_TCollection_ExtendedString extends NCollec
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
@@ -20008,12 +20592,12 @@ export declare class NCollection_Array1_StepVisual_SurfaceStyleElementSelect {
    */
   constructor(theOther: NCollection_Array1_StepVisual_SurfaceStyleElementSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_SurfaceStyleElementSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_SurfaceStyleElementSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_SurfaceStyleElementSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -20042,22 +20626,22 @@ export declare class NCollection_Array1_StepVisual_SurfaceStyleElementSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_SurfaceStyleElementSelect): NCollection_Array1_StepVisual_SurfaceStyleElementSelect;
-  First(): StepVisual_SurfaceStyleElementSelect;
-  ChangeFirst(): StepVisual_SurfaceStyleElementSelect;
-  Last(): StepVisual_SurfaceStyleElementSelect;
-  ChangeLast(): StepVisual_SurfaceStyleElementSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_SurfaceStyleElementSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_SurfaceStyleElementSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_SurfaceStyleElementSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -20122,8 +20706,8 @@ export declare class NCollection_HArray1_double {
    */
   ChangeArray1(): any;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -20136,7 +20720,7 @@ export declare class NCollection_Vector_BOPDS_InterfEZ {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_Extrema_POnSurf extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_Extrema_POnSurf {
   /**
    * Empty constructor.
    */
@@ -20144,7 +20728,7 @@ export declare class NCollection_Sequence_Extrema_POnSurf extends NCollection_Ba
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -20182,11 +20766,11 @@ export declare class NCollection_Sequence_Extrema_POnSurf extends NCollection_Ba
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -20202,7 +20786,7 @@ export declare class NCollection_Sequence_Extrema_POnSurf extends NCollection_Ba
   /**
    * Append one item.
    */
-  Append(theItem: Extrema_POnSurf): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -20210,7 +20794,7 @@ export declare class NCollection_Sequence_Extrema_POnSurf extends NCollection_Ba
   /**
    * Prepend one item.
    */
-  Prepend(theItem: Extrema_POnSurf): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -20218,7 +20802,7 @@ export declare class NCollection_Sequence_Extrema_POnSurf extends NCollection_Ba
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: Extrema_POnSurf): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -20230,7 +20814,7 @@ export declare class NCollection_Sequence_Extrema_POnSurf extends NCollection_Ba
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: Extrema_POnSurf): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -20238,31 +20822,31 @@ export declare class NCollection_Sequence_Extrema_POnSurf extends NCollection_Ba
   /**
    * First item access.
    */
-  First(): Extrema_POnSurf;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): Extrema_POnSurf;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): Extrema_POnSurf;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): Extrema_POnSurf;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): Extrema_POnSurf;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): Extrema_POnSurf;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: Extrema_POnSurf): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -20278,12 +20862,12 @@ export declare class NCollection_Array1_TCollection_AsciiString {
    */
   constructor(theOther: NCollection_Array1_TCollection_AsciiString);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: TCollection_AsciiString, theLower: number, theUpper: number);
-  constructor(theBegin: TCollection_AsciiString, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: TCollection_AsciiString): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -20312,22 +20896,22 @@ export declare class NCollection_Array1_TCollection_AsciiString {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_TCollection_AsciiString): NCollection_Array1_TCollection_AsciiString;
-  First(): TCollection_AsciiString;
-  ChangeFirst(): TCollection_AsciiString;
-  Last(): TCollection_AsciiString;
-  ChangeLast(): TCollection_AsciiString;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): TCollection_AsciiString;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): TCollection_AsciiString;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: TCollection_AsciiString): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -20359,12 +20943,12 @@ export declare class NCollection_Array1_StepAP203_PersonOrganizationItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_PersonOrganizationItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_PersonOrganizationItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_PersonOrganizationItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_PersonOrganizationItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -20393,22 +20977,22 @@ export declare class NCollection_Array1_StepAP203_PersonOrganizationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_PersonOrganizationItem): NCollection_Array1_StepAP203_PersonOrganizationItem;
-  First(): StepAP203_PersonOrganizationItem;
-  ChangeFirst(): StepAP203_PersonOrganizationItem;
-  Last(): StepAP203_PersonOrganizationItem;
-  ChangeLast(): StepAP203_PersonOrganizationItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_PersonOrganizationItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_PersonOrganizationItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_PersonOrganizationItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -20440,12 +21024,12 @@ export declare class NCollection_Array1_StepAP214_AutoDesignGroupedItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_AutoDesignGroupedItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignGroupedItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignGroupedItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_AutoDesignGroupedItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -20474,22 +21058,22 @@ export declare class NCollection_Array1_StepAP214_AutoDesignGroupedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignGroupedItem): NCollection_Array1_StepAP214_AutoDesignGroupedItem;
-  First(): StepAP214_AutoDesignGroupedItem;
-  ChangeFirst(): StepAP214_AutoDesignGroupedItem;
-  Last(): StepAP214_AutoDesignGroupedItem;
-  ChangeLast(): StepAP214_AutoDesignGroupedItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_AutoDesignGroupedItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_AutoDesignGroupedItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_AutoDesignGroupedItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -20536,7 +21120,7 @@ export declare class NCollection_HArray1_StepAP203_ChangeRequestItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_ChangeRequestItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -20544,7 +21128,7 @@ export declare class NCollection_HArray1_StepAP203_ChangeRequestItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_ChangeRequestItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -20554,8 +21138,8 @@ export declare class NCollection_HArray1_StepAP203_ChangeRequestItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_ChangeRequestItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -20586,7 +21170,7 @@ export declare class NCollection_HArray1_StepVisual_DraughtingCalloutElement {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_DraughtingCalloutElement);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -20594,7 +21178,7 @@ export declare class NCollection_HArray1_StepVisual_DraughtingCalloutElement {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_DraughtingCalloutElement, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -20604,8 +21188,8 @@ export declare class NCollection_HArray1_StepVisual_DraughtingCalloutElement {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_DraughtingCalloutElement;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -20636,7 +21220,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndPersonItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_AutoDesignDateAndPersonItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -20644,7 +21228,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndPersonItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_AutoDesignDateAndPersonItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -20654,8 +21238,8 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndPersonItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -20671,12 +21255,12 @@ export declare class NCollection_Array1_StepVisual_StyleContextSelect {
    */
   constructor(theOther: NCollection_Array1_StepVisual_StyleContextSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_StyleContextSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_StyleContextSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_StyleContextSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -20705,22 +21289,22 @@ export declare class NCollection_Array1_StepVisual_StyleContextSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_StyleContextSelect): NCollection_Array1_StepVisual_StyleContextSelect;
-  First(): StepVisual_StyleContextSelect;
-  ChangeFirst(): StepVisual_StyleContextSelect;
-  Last(): StepVisual_StyleContextSelect;
-  ChangeLast(): StepVisual_StyleContextSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_StyleContextSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_StyleContextSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_StyleContextSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -20833,12 +21417,12 @@ export declare class NCollection_Array1_StepVisual_BoxCharacteristicSelect {
    */
   constructor(theOther: NCollection_Array1_StepVisual_BoxCharacteristicSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_BoxCharacteristicSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_BoxCharacteristicSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_BoxCharacteristicSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -20867,22 +21451,22 @@ export declare class NCollection_Array1_StepVisual_BoxCharacteristicSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_BoxCharacteristicSelect): NCollection_Array1_StepVisual_BoxCharacteristicSelect;
-  First(): StepVisual_BoxCharacteristicSelect;
-  ChangeFirst(): StepVisual_BoxCharacteristicSelect;
-  Last(): StepVisual_BoxCharacteristicSelect;
-  ChangeLast(): StepVisual_BoxCharacteristicSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_BoxCharacteristicSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_BoxCharacteristicSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_BoxCharacteristicSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -20914,12 +21498,12 @@ export declare class NCollection_Array1_StepShape_ValueQualifier {
    */
   constructor(theOther: NCollection_Array1_StepShape_ValueQualifier);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepShape_ValueQualifier, theLower: number, theUpper: number);
-  constructor(theBegin: StepShape_ValueQualifier, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepShape_ValueQualifier): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -20948,22 +21532,22 @@ export declare class NCollection_Array1_StepShape_ValueQualifier {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepShape_ValueQualifier): NCollection_Array1_StepShape_ValueQualifier;
-  First(): StepShape_ValueQualifier;
-  ChangeFirst(): StepShape_ValueQualifier;
-  Last(): StepShape_ValueQualifier;
-  ChangeLast(): StepShape_ValueQualifier;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepShape_ValueQualifier;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepShape_ValueQualifier;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepShape_ValueQualifier): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -21104,9 +21688,13 @@ export declare class NCollection_HSequence_TopoDS_Shape {
    * @param theSequence the sequence to append
    */
   Append(theSequence: NCollection_Sequence_TopoDS_Shape): void;
+  /**
+   * Append single item.
+   */
+  Append(theSeq: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -21122,12 +21710,12 @@ export declare class NCollection_Array1_StepVisual_PresentationStyleSelect {
    */
   constructor(theOther: NCollection_Array1_StepVisual_PresentationStyleSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_PresentationStyleSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_PresentationStyleSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_PresentationStyleSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -21156,22 +21744,22 @@ export declare class NCollection_Array1_StepVisual_PresentationStyleSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_PresentationStyleSelect): NCollection_Array1_StepVisual_PresentationStyleSelect;
-  First(): StepVisual_PresentationStyleSelect;
-  ChangeFirst(): StepVisual_PresentationStyleSelect;
-  Last(): StepVisual_PresentationStyleSelect;
-  ChangeLast(): StepVisual_PresentationStyleSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_PresentationStyleSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_PresentationStyleSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_PresentationStyleSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -21200,7 +21788,7 @@ export declare class NCollection_Vector_BOPDS_FaceInfo {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -21216,7 +21804,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMa
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -21224,7 +21812,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMa
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -21288,7 +21876,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMa
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -21311,7 +21899,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMa
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -21327,7 +21915,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMa
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
 /**
@@ -21340,12 +21928,12 @@ export declare class NCollection_Array1_StepAP203_ChangeRequestItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_ChangeRequestItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_ChangeRequestItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_ChangeRequestItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_ChangeRequestItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -21374,22 +21962,22 @@ export declare class NCollection_Array1_StepAP203_ChangeRequestItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_ChangeRequestItem): NCollection_Array1_StepAP203_ChangeRequestItem;
-  First(): StepAP203_ChangeRequestItem;
-  ChangeFirst(): StepAP203_ChangeRequestItem;
-  Last(): StepAP203_ChangeRequestItem;
-  ChangeLast(): StepAP203_ChangeRequestItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_ChangeRequestItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_ChangeRequestItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_ChangeRequestItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -21411,6 +21999,13 @@ export declare class NCollection_Array1_StepAP203_ChangeRequestItem {
   [Symbol.dispose](): void;
 }
 
+export declare class NCollection_Vector_BRepGraphInc_ShellRef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
 /**
  * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
  */
@@ -21421,12 +22016,12 @@ export declare class NCollection_Array1_StepFEA_DegreeOfFreedom {
    */
   constructor(theOther: NCollection_Array1_StepFEA_DegreeOfFreedom);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepFEA_DegreeOfFreedom, theLower: number, theUpper: number);
-  constructor(theBegin: StepFEA_DegreeOfFreedom, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepFEA_DegreeOfFreedom): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -21455,22 +22050,22 @@ export declare class NCollection_Array1_StepFEA_DegreeOfFreedom {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepFEA_DegreeOfFreedom): NCollection_Array1_StepFEA_DegreeOfFreedom;
-  First(): StepFEA_DegreeOfFreedom;
-  ChangeFirst(): StepFEA_DegreeOfFreedom;
-  Last(): StepFEA_DegreeOfFreedom;
-  ChangeLast(): StepFEA_DegreeOfFreedom;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepFEA_DegreeOfFreedom;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepFEA_DegreeOfFreedom;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepFEA_DegreeOfFreedom): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -21492,7 +22087,7 @@ export declare class NCollection_Array1_StepFEA_DegreeOfFreedom {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_TDF_Label extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_TDF_Label {
   /**
    * Empty constructor.
    */
@@ -21500,7 +22095,7 @@ export declare class NCollection_Sequence_TDF_Label extends NCollection_BaseSequ
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -21538,11 +22133,11 @@ export declare class NCollection_Sequence_TDF_Label extends NCollection_BaseSequ
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -21649,7 +22244,7 @@ export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingUn
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_CameraModelD3MultiClippingUnionSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -21657,7 +22252,7 @@ export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingUn
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_CameraModelD3MultiClippingUnionSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -21667,8 +22262,15 @@ export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingUn
    */
   ChangeArray1(): NCollection_Array1_StepVisual_CameraModelD3MultiClippingUnionSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_CoEdgeUsage {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -21676,7 +22278,7 @@ export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingUn
 
 export declare class OCJS_ShapeHasher {
   constructor();
-  static HashCode(shape: TopoDS_Shape, a1: number): size_t;
+  static HashCode(shape: TopoDS_Shape, a1: number): number;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -21690,7 +22292,7 @@ export declare class NCollection_List_Poly_Triangle extends NCollection_BaseList
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -21704,7 +22306,7 @@ export declare class NCollection_List_Poly_Triangle extends NCollection_BaseList
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: Poly_Triangle[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: Poly_Triangle[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -21716,7 +22318,7 @@ export declare class NCollection_List_Poly_Triangle extends NCollection_BaseList
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
@@ -21773,14 +22375,14 @@ export declare class NCollection_Array1_StepDimTol_ToleranceZoneTarget {
   /**
    * Copy constructor.
    */
-  constructor(theOther: any);
+  constructor(theOther: unknown);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepDimTol_ToleranceZoneTarget, theLower: number, theUpper: number);
-  constructor(theBegin: StepDimTol_ToleranceZoneTarget, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepDimTol_ToleranceZoneTarget): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -21804,27 +22406,27 @@ export declare class NCollection_Array1_StepDimTol_ToleranceZoneTarget {
   /**
    * Copies data of theOther array to this. This array should be pre-allocated and have the same length as theOther; otherwise exception Standard_DimensionMismatch is thrown.
    */
-  Assign(theOther: any): any;
+  Assign(theOther: unknown): unknown;
   /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
-  Move(theOther: any): any;
-  First(): StepDimTol_ToleranceZoneTarget;
-  ChangeFirst(): StepDimTol_ToleranceZoneTarget;
-  Last(): StepDimTol_ToleranceZoneTarget;
-  ChangeLast(): StepDimTol_ToleranceZoneTarget;
+  Move(theOther: unknown): unknown;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepDimTol_ToleranceZoneTarget;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepDimTol_ToleranceZoneTarget;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepDimTol_ToleranceZoneTarget): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -21846,7 +22448,7 @@ export declare class NCollection_Array1_StepDimTol_ToleranceZoneTarget {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_bool extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_bool {
   /**
    * Empty constructor.
    */
@@ -21854,7 +22456,7 @@ export declare class NCollection_Sequence_bool extends NCollection_BaseSequence 
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -21892,11 +22494,11 @@ export declare class NCollection_Sequence_bool extends NCollection_BaseSequence 
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -21978,6 +22580,13 @@ export declare class NCollection_Sequence_bool extends NCollection_BaseSequence 
   [Symbol.dispose](): void;
 }
 
+export declare class NCollection_Vector_BRepGraphInc_CompoundDef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
 /**
  * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
  */
@@ -21988,12 +22597,12 @@ export declare class NCollection_Array1_uint8_t {
    */
   constructor(theOther: NCollection_Array1_uint8_t);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: uint8_t, theLower: number, theUpper: number);
-  constructor(theBegin: uint8_t, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: number, theLower: number, theUpper: number);
+  constructor(theBegin: number, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: uint8_t): void;
+  Init(theValue: number): void;
   /**
    * Size query.
    */
@@ -22022,22 +22631,22 @@ export declare class NCollection_Array1_uint8_t {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_uint8_t): NCollection_Array1_uint8_t;
-  First(): uint8_t;
-  ChangeFirst(): uint8_t;
-  Last(): uint8_t;
-  ChangeLast(): uint8_t;
+  First(): number;
+  ChangeFirst(): number;
+  Last(): number;
+  ChangeLast(): number;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): uint8_t;
+  Value(theIndex: number): number;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): uint8_t;
+  ChangeValue(theIndex: number): number;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: uint8_t): void;
+  SetValue(theIndex: number, theItem: number): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -22054,6 +22663,27 @@ export declare class NCollection_Array1_uint8_t {
    */
   Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   IsDeletable(): boolean;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_SolidRef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_FaceDef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_VertexRef {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -22093,7 +22723,7 @@ export declare class NCollection_HArray1_StepDimTol_GeometricToleranceModifier {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepDimTol_GeometricToleranceModifier);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -22101,7 +22731,7 @@ export declare class NCollection_HArray1_StepDimTol_GeometricToleranceModifier {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepDimTol_GeometricToleranceModifier, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -22111,8 +22741,8 @@ export declare class NCollection_HArray1_StepDimTol_GeometricToleranceModifier {
    */
   ChangeArray1(): NCollection_Array1_StepDimTol_GeometricToleranceModifier;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -22126,7 +22756,7 @@ export declare class NCollection_List_TDF_Label extends NCollection_BaseList {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -22140,7 +22770,7 @@ export declare class NCollection_List_TDF_Label extends NCollection_BaseList {
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: TDF_Label[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: TDF_Label[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -22152,7 +22782,7 @@ export declare class NCollection_List_TDF_Label extends NCollection_BaseList {
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
@@ -22202,7 +22832,7 @@ export declare class NCollection_List_Standard_GUID extends NCollection_BaseList
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -22210,13 +22840,13 @@ export declare class NCollection_List_Standard_GUID extends NCollection_BaseList
   /**
    * Move constructor.
    */
-  constructor(theInitList: Standard_GUID[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: Standard_GUID[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -22228,19 +22858,19 @@ export declare class NCollection_List_Standard_GUID extends NCollection_BaseList
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): Standard_GUID;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): Standard_GUID;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: Standard_GUID): Standard_GUID;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -22248,7 +22878,7 @@ export declare class NCollection_List_Standard_GUID extends NCollection_BaseList
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: Standard_GUID): Standard_GUID;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -22270,7 +22900,7 @@ export declare class NCollection_List_Standard_GUID extends NCollection_BaseList
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_Extrema_POnCurv extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_Extrema_POnCurv {
   /**
    * Empty constructor.
    */
@@ -22278,7 +22908,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv extends NCollection_Ba
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -22316,11 +22946,11 @@ export declare class NCollection_Sequence_Extrema_POnCurv extends NCollection_Ba
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -22336,7 +22966,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv extends NCollection_Ba
   /**
    * Append one item.
    */
-  Append(theItem: Extrema_POnCurv): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -22344,7 +22974,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv extends NCollection_Ba
   /**
    * Prepend one item.
    */
-  Prepend(theItem: Extrema_POnCurv): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -22352,7 +22982,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv extends NCollection_Ba
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: Extrema_POnCurv): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -22364,7 +22994,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv extends NCollection_Ba
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: Extrema_POnCurv): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -22372,31 +23002,31 @@ export declare class NCollection_Sequence_Extrema_POnCurv extends NCollection_Ba
   /**
    * First item access.
    */
-  First(): Extrema_POnCurv;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): Extrema_POnCurv;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): Extrema_POnCurv;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): Extrema_POnCurv;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): Extrema_POnCurv;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): Extrema_POnCurv;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: Extrema_POnCurv): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -22518,14 +23148,35 @@ export declare class NCollection_HArray2_TopoDS_Shape {
    */
   ChangeArray2(): NCollection_Array2_TopoDS_Shape;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_gp_Trsf extends NCollection_BaseSequence {
+export declare class NCollection_Vector_BRepGraphInc_FaceRef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraphInc_SolidDef {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_gp_Pnt2d {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Sequence_gp_Trsf {
   /**
    * Empty constructor.
    */
@@ -22533,7 +23184,7 @@ export declare class NCollection_Sequence_gp_Trsf extends NCollection_BaseSequen
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -22571,11 +23222,11 @@ export declare class NCollection_Sequence_gp_Trsf extends NCollection_BaseSequen
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -22682,7 +23333,7 @@ export declare class NCollection_HArray1_StepAP203_ApprovedItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_ApprovedItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -22690,7 +23341,7 @@ export declare class NCollection_HArray1_StepAP203_ApprovedItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_ApprovedItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -22700,14 +23351,14 @@ export declare class NCollection_HArray1_StepAP203_ApprovedItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_ApprovedItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_TopoDS_Shape extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_TopoDS_Shape {
   /**
    * Empty constructor.
    */
@@ -22715,7 +23366,7 @@ export declare class NCollection_Sequence_TopoDS_Shape extends NCollection_BaseS
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -22753,11 +23404,11 @@ export declare class NCollection_Sequence_TopoDS_Shape extends NCollection_BaseS
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -22864,15 +23515,19 @@ export declare class NCollection_HSequence_TCollection_AsciiString {
    * Append single item.
    * @param theItem the item to append
    */
-  Append(theItem: TCollection_AsciiString): void;
+  Append(theItem: unknown): void;
   /**
    * Append another sequence.
    * @param theSequence the sequence to append
    */
   Append(theSequence: NCollection_Sequence_TCollection_AsciiString): void;
+  /**
+   * Append single item.
+   */
+  Append(theSeq: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -22886,7 +23541,7 @@ export declare class NCollection_List_Bnd_Range extends NCollection_BaseList {
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -22894,13 +23549,13 @@ export declare class NCollection_List_Bnd_Range extends NCollection_BaseList {
   /**
    * Move constructor.
    */
-  constructor(theInitList: Bnd_Range[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: Bnd_Range[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -22912,19 +23567,19 @@ export declare class NCollection_List_Bnd_Range extends NCollection_BaseList {
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): Bnd_Range;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): Bnd_Range;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: Bnd_Range): Bnd_Range;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -22932,7 +23587,7 @@ export declare class NCollection_List_Bnd_Range extends NCollection_BaseList {
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: Bnd_Range): Bnd_Range;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -22997,8 +23652,8 @@ export declare class NCollection_HArray1_gp_XYZ {
    */
   ChangeArray1(): NCollection_Array1_gp_XYZ;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -23093,7 +23748,7 @@ export declare class NCollection_List_BOPTools_CoupleOfShape extends NCollection
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -23101,13 +23756,13 @@ export declare class NCollection_List_BOPTools_CoupleOfShape extends NCollection
   /**
    * Move constructor.
    */
-  constructor(theInitList: BOPTools_CoupleOfShape[]);
+  constructor(theInitList: unknown[]);
   /**
    * Initializer list constructor.
    * @param theInitList initializer list of elements to populate the list
    * @param theAllocator optional allocator for memory management
    */
-  constructor(theInitList: BOPTools_CoupleOfShape[], theAllocator?: NCollection_BaseAllocator);
+  constructor(theInitList: unknown[], theAllocator?: unknown);
   /**
    * Size - Number of items.
    */
@@ -23119,19 +23774,19 @@ export declare class NCollection_List_BOPTools_CoupleOfShape extends NCollection
   /**
    * Clear this list.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * First item.
    */
-  First(): BOPTools_CoupleOfShape;
+  First(): unknown;
   /**
    * Last item.
    */
-  Last(): BOPTools_CoupleOfShape;
+  Last(): unknown;
   /**
    * Append one item at the end.
    */
-  Append(theItem: BOPTools_CoupleOfShape): BOPTools_CoupleOfShape;
+  Append(theItem: unknown): unknown;
   /**
    * Append one item at the end.
    */
@@ -23139,7 +23794,7 @@ export declare class NCollection_List_BOPTools_CoupleOfShape extends NCollection
   /**
    * Prepend one item at the beginning.
    */
-  Prepend(theItem: BOPTools_CoupleOfShape): BOPTools_CoupleOfShape;
+  Prepend(theItem: unknown): unknown;
   /**
    * Prepend one item at the beginning.
    */
@@ -23186,7 +23841,7 @@ export declare class NCollection_HArray1_StepAP203_ContractedItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_ContractedItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -23194,7 +23849,7 @@ export declare class NCollection_HArray1_StepAP203_ContractedItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_ContractedItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -23204,8 +23859,8 @@ export declare class NCollection_HArray1_StepAP203_ContractedItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_ContractedItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -23246,8 +23901,8 @@ export declare class NCollection_HArray2_int {
    */
   ChangeArray2(): any;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -23278,7 +23933,7 @@ export declare class NCollection_HArray1_StepAP203_CertifiedItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP203_CertifiedItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -23286,7 +23941,7 @@ export declare class NCollection_HArray1_StepAP203_CertifiedItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP203_CertifiedItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -23296,14 +23951,14 @@ export declare class NCollection_HArray1_StepAP203_CertifiedItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP203_CertifiedItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -23319,7 +23974,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHa
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -23327,7 +23982,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHa
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -23391,7 +24046,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHa
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -23414,7 +24069,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHa
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -23430,7 +24085,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHa
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
 /**
@@ -23443,12 +24098,12 @@ export declare class NCollection_Array1_StepDimTol_DatumReferenceModifier {
    */
   constructor(theOther: NCollection_Array1_StepDimTol_DatumReferenceModifier);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepDimTol_DatumReferenceModifier, theLower: number, theUpper: number);
-  constructor(theBegin: StepDimTol_DatumReferenceModifier, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepDimTol_DatumReferenceModifier): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -23477,22 +24132,22 @@ export declare class NCollection_Array1_StepDimTol_DatumReferenceModifier {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepDimTol_DatumReferenceModifier): NCollection_Array1_StepDimTol_DatumReferenceModifier;
-  First(): StepDimTol_DatumReferenceModifier;
-  ChangeFirst(): StepDimTol_DatumReferenceModifier;
-  Last(): StepDimTol_DatumReferenceModifier;
-  ChangeLast(): StepDimTol_DatumReferenceModifier;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepDimTol_DatumReferenceModifier;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepDimTol_DatumReferenceModifier;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepDimTol_DatumReferenceModifier): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -23521,6 +24176,14 @@ export declare class NCollection_Vector_double {
   [Symbol.dispose](): void;
 }
 
+export declare class ReplicadEdgeMeshExtractor {
+  constructor();
+  static extract(shape: TopoDS_Shape, tolerance: number, angularTolerance: number): ReplicadEdgeMeshData;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
 /**
  * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
  */
@@ -23531,12 +24194,12 @@ export declare class NCollection_Array1_StepVisual_RenderingPropertiesSelect {
    */
   constructor(theOther: NCollection_Array1_StepVisual_RenderingPropertiesSelect);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_RenderingPropertiesSelect, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_RenderingPropertiesSelect, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_RenderingPropertiesSelect): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -23565,22 +24228,22 @@ export declare class NCollection_Array1_StepVisual_RenderingPropertiesSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_RenderingPropertiesSelect): NCollection_Array1_StepVisual_RenderingPropertiesSelect;
-  First(): StepVisual_RenderingPropertiesSelect;
-  ChangeFirst(): StepVisual_RenderingPropertiesSelect;
-  Last(): StepVisual_RenderingPropertiesSelect;
-  ChangeLast(): StepVisual_RenderingPropertiesSelect;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_RenderingPropertiesSelect;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_RenderingPropertiesSelect;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_RenderingPropertiesSelect): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -23619,12 +24282,12 @@ export declare class NCollection_Array1_StepAP214_DateItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_DateItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_DateItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_DateItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_DateItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -23653,22 +24316,22 @@ export declare class NCollection_Array1_StepAP214_DateItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_DateItem): NCollection_Array1_StepAP214_DateItem;
-  First(): StepAP214_DateItem;
-  ChangeFirst(): StepAP214_DateItem;
-  Last(): StepAP214_DateItem;
-  ChangeLast(): StepAP214_DateItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_DateItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_DateItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_DateItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -23715,7 +24378,7 @@ export declare class NCollection_HArray1_StepDimTol_DatumReferenceModifier {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepDimTol_DatumReferenceModifier);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -23723,7 +24386,7 @@ export declare class NCollection_HArray1_StepDimTol_DatumReferenceModifier {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepDimTol_DatumReferenceModifier, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -23733,8 +24396,8 @@ export declare class NCollection_HArray1_StepDimTol_DatumReferenceModifier {
    */
   ChangeArray1(): NCollection_Array1_StepDimTol_DatumReferenceModifier;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -23750,12 +24413,12 @@ export declare class NCollection_Array1_StepVisual_LayeredItem {
    */
   constructor(theOther: NCollection_Array1_StepVisual_LayeredItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_LayeredItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_LayeredItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_LayeredItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -23784,22 +24447,22 @@ export declare class NCollection_Array1_StepVisual_LayeredItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_LayeredItem): NCollection_Array1_StepVisual_LayeredItem;
-  First(): StepVisual_LayeredItem;
-  ChangeFirst(): StepVisual_LayeredItem;
-  Last(): StepVisual_LayeredItem;
-  ChangeLast(): StepVisual_LayeredItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_LayeredItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_LayeredItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_LayeredItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -23901,13 +24564,25 @@ export declare class NCollection_Array2_double {
    */
   Assign(theOther: NCollection_Array2_double): NCollection_Array2_double;
   /**
+   * Assignment.
+   */
+  Assign(theOther: unknown): unknown;
+  /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
    */
   Move(theOther: NCollection_Array2_double): NCollection_Array2_double;
   /**
+   * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
+   */
+  Move(theOther: unknown): unknown;
+  /**
    * SetValue.
    */
   SetValue(theRow: number, theCol: number, theItem: number): void;
+  /**
+   * SetValue.
+   */
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -23917,6 +24592,11 @@ export declare class NCollection_Array2_double {
    * @param theToCopyData flag to copy existing data into new array
    */
   Resize(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
+  /**
+   * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
+   * @param theToCopyData flag to copy existing data into new array
+   */
+  Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   /**
    * Resizes the array preserving 2D element layout. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols) elements from the top-left corner of the old array to the top-left corner of the new, preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -23974,8 +24654,8 @@ export declare class NCollection_HArray1_int {
    */
   ChangeArray1(): any;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -23991,12 +24671,12 @@ export declare class NCollection_Array1_StepGeom_PcurveOrSurface {
    */
   constructor(theOther: NCollection_Array1_StepGeom_PcurveOrSurface);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepGeom_PcurveOrSurface, theLower: number, theUpper: number);
-  constructor(theBegin: StepGeom_PcurveOrSurface, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepGeom_PcurveOrSurface): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -24025,22 +24705,22 @@ export declare class NCollection_Array1_StepGeom_PcurveOrSurface {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepGeom_PcurveOrSurface): NCollection_Array1_StepGeom_PcurveOrSurface;
-  First(): StepGeom_PcurveOrSurface;
-  ChangeFirst(): StepGeom_PcurveOrSurface;
-  Last(): StepGeom_PcurveOrSurface;
-  ChangeLast(): StepGeom_PcurveOrSurface;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepGeom_PcurveOrSurface;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepGeom_PcurveOrSurface;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepGeom_PcurveOrSurface): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -24072,12 +24752,12 @@ export declare class NCollection_Array1_StepAP203_SpecifiedItem {
    */
   constructor(theOther: NCollection_Array1_StepAP203_SpecifiedItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_SpecifiedItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP203_SpecifiedItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP203_SpecifiedItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -24106,22 +24786,22 @@ export declare class NCollection_Array1_StepAP203_SpecifiedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_SpecifiedItem): NCollection_Array1_StepAP203_SpecifiedItem;
-  First(): StepAP203_SpecifiedItem;
-  ChangeFirst(): StepAP203_SpecifiedItem;
-  Last(): StepAP203_SpecifiedItem;
-  ChangeLast(): StepAP203_SpecifiedItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP203_SpecifiedItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP203_SpecifiedItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP203_SpecifiedItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -24150,7 +24830,7 @@ export declare class NCollection_Vector_BOPDS_InterfVV {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif {
   /**
    * Empty constructor.
    */
@@ -24158,7 +24838,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif ext
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -24196,11 +24876,11 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif ext
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -24216,7 +24896,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif ext
   /**
    * Append one item.
    */
-  Append(theItem: XCAFDimTolObjects_DatumSingleModif): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -24224,7 +24904,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif ext
   /**
    * Prepend one item.
    */
-  Prepend(theItem: XCAFDimTolObjects_DatumSingleModif): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -24232,7 +24912,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif ext
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: XCAFDimTolObjects_DatumSingleModif): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -24244,7 +24924,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif ext
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: XCAFDimTolObjects_DatumSingleModif): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -24252,31 +24932,31 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif ext
   /**
    * First item access.
    */
-  First(): XCAFDimTolObjects_DatumSingleModif;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): XCAFDimTolObjects_DatumSingleModif;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): XCAFDimTolObjects_DatumSingleModif;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): XCAFDimTolObjects_DatumSingleModif;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): XCAFDimTolObjects_DatumSingleModif;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): XCAFDimTolObjects_DatumSingleModif;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: XCAFDimTolObjects_DatumSingleModif): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -24307,7 +24987,7 @@ export declare class NCollection_HArray1_StepVisual_SurfaceStyleElementSelect {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepVisual_SurfaceStyleElementSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -24315,7 +24995,7 @@ export declare class NCollection_HArray1_StepVisual_SurfaceStyleElementSelect {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepVisual_SurfaceStyleElementSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -24325,8 +25005,22 @@ export declare class NCollection_HArray1_StepVisual_SurfaceStyleElementSelect {
    */
   ChangeArray1(): NCollection_Array1_StepVisual_SurfaceStyleElementSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_FaceId {
+  constructor();
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class NCollection_Vector_BRepGraph_RefId {
+  constructor();
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -24412,13 +25106,25 @@ export declare class NCollection_Array2_gp_Pnt2d {
    */
   Assign(theOther: NCollection_Array2_gp_Pnt2d): NCollection_Array2_gp_Pnt2d;
   /**
+   * Assignment.
+   */
+  Assign(theOther: unknown): unknown;
+  /**
    * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
    */
   Move(theOther: NCollection_Array2_gp_Pnt2d): NCollection_Array2_gp_Pnt2d;
   /**
+   * Move assignment. This array will borrow all the data from theOther. The moved object will be left uninitialized and should not be used anymore.
+   */
+  Move(theOther: unknown): unknown;
+  /**
    * SetValue.
    */
   SetValue(theRow: number, theCol: number, theItem: gp_Pnt2d): void;
+  /**
+   * SetValue.
+   */
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -24428,6 +25134,11 @@ export declare class NCollection_Array2_gp_Pnt2d {
    * @param theToCopyData flag to copy existing data into new array
    */
   Resize(theRowLower: number, theRowUpper: number, theColLower: number, theColUpper: number, theToCopyData: boolean): void;
+  /**
+   * Resizes the array to specified bounds. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies elements in linear (row-major) order. No re-allocation is done if dimensions are unchanged.
+   * @param theToCopyData flag to copy existing data into new array
+   */
+  Resize(theLower: number, theUpper: number, theToCopyData: boolean): void;
   /**
    * Resizes the array preserving 2D element layout. When theToCopyData is false, the array is re-allocated without preserving data. When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols) elements from the top-left corner of the old array to the top-left corner of the new, preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed. No re-allocation is done if dimensions are unchanged.
    * @param theRowLower new lower Row of array
@@ -24467,7 +25178,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignPresentedItemSelect
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_AutoDesignPresentedItemSelect);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -24475,7 +25186,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignPresentedItemSelect
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_AutoDesignPresentedItemSelect, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -24485,14 +25196,14 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignPresentedItemSelect
    */
   ChangeArray1(): NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher extends NCollection_BaseMap {
+export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -24508,7 +25219,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHa
   /**
    * Constructor.
    */
-  constructor(theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+  constructor(theNbBuckets: number, theAllocator: unknown);
   /**
    * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
    */
@@ -24516,7 +25227,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHa
   /**
    * Returns const reference to the hasher.
    */
-  GetHasher(): TopTools_ShapeMapHasher;
+  GetHasher(): unknown;
   /**
    * Assignment. This method does not change the internal allocator.
    */
@@ -24580,7 +25291,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHa
   /**
    * Clear data and reset allocator.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Size.
    */
@@ -24603,7 +25314,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHa
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
   /**
@@ -24619,7 +25330,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHa
      * @param theNbBuckets initial number of buckets
      * @param theAllocator custom memory allocator
      */
-    constructor(theHasher: TopTools_ShapeMapHasher, theNbBuckets: number, theAllocator: NCollection_BaseAllocator);
+    constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
 /**
@@ -24632,12 +25343,12 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem {
    */
   constructor(theOther: NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignDateAndPersonItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepAP214_AutoDesignDateAndPersonItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepAP214_AutoDesignDateAndPersonItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -24666,22 +25377,22 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem): NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem;
-  First(): StepAP214_AutoDesignDateAndPersonItem;
-  ChangeFirst(): StepAP214_AutoDesignDateAndPersonItem;
-  Last(): StepAP214_AutoDesignDateAndPersonItem;
-  ChangeLast(): StepAP214_AutoDesignDateAndPersonItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepAP214_AutoDesignDateAndPersonItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepAP214_AutoDesignDateAndPersonItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepAP214_AutoDesignDateAndPersonItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -24703,7 +25414,7 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_IntTools_Range extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_IntTools_Range {
   /**
    * Empty constructor.
    */
@@ -24711,7 +25422,7 @@ export declare class NCollection_Sequence_IntTools_Range extends NCollection_Bas
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -24749,11 +25460,11 @@ export declare class NCollection_Sequence_IntTools_Range extends NCollection_Bas
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -24769,7 +25480,7 @@ export declare class NCollection_Sequence_IntTools_Range extends NCollection_Bas
   /**
    * Append one item.
    */
-  Append(theItem: IntTools_Range): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -24777,7 +25488,7 @@ export declare class NCollection_Sequence_IntTools_Range extends NCollection_Bas
   /**
    * Prepend one item.
    */
-  Prepend(theItem: IntTools_Range): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -24785,7 +25496,7 @@ export declare class NCollection_Sequence_IntTools_Range extends NCollection_Bas
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: IntTools_Range): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -24797,7 +25508,7 @@ export declare class NCollection_Sequence_IntTools_Range extends NCollection_Bas
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: IntTools_Range): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -24805,31 +25516,31 @@ export declare class NCollection_Sequence_IntTools_Range extends NCollection_Bas
   /**
    * First item access.
    */
-  First(): IntTools_Range;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): IntTools_Range;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): IntTools_Range;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): IntTools_Range;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): IntTools_Range;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): IntTools_Range;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: IntTools_Range): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -24959,8 +25670,8 @@ export declare class NCollection_HArray1_gp_XY {
    */
   ChangeArray1(): NCollection_Array1_gp_XY;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25009,8 +25720,8 @@ export declare class NCollection_HArray1_Quantity_Color {
    */
   ChangeArray1(): NCollection_Array1_Quantity_Color;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25041,7 +25752,7 @@ export declare class NCollection_HArray1_StepGeom_SurfaceBoundary {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepGeom_SurfaceBoundary);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -25049,7 +25760,7 @@ export declare class NCollection_HArray1_StepGeom_SurfaceBoundary {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepGeom_SurfaceBoundary, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -25059,8 +25770,8 @@ export declare class NCollection_HArray1_StepGeom_SurfaceBoundary {
    */
   ChangeArray1(): NCollection_Array1_StepGeom_SurfaceBoundary;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25190,8 +25901,8 @@ export declare class NCollection_HArray1_TopoDS_Shape {
    */
   ChangeArray1(): NCollection_Array1_TopoDS_Shape;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25232,14 +25943,14 @@ export declare class NCollection_HArray2_gp_Pnt {
    */
   ChangeArray2(): NCollection_Array2_gp_Pnt;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_Sequence_HLRBRep_ShapeBounds extends NCollection_BaseSequence {
+export declare class NCollection_Sequence_HLRBRep_ShapeBounds {
   /**
    * Empty constructor.
    */
@@ -25247,7 +25958,7 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds extends NCollectio
   /**
    * Constructor.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Copy constructor.
    */
@@ -25285,11 +25996,11 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds extends NCollectio
   /**
    * Static deleter to be passed to BaseSequence.
    */
-  static delNode(theNode: NCollection_SeqNode): { theAl: NCollection_BaseAllocator };
+  static delNode(theNode: unknown): { theAl: unknown };
   /**
    * Clear the items out, take a new allocator if non null.
    */
-  Clear(theAllocator: NCollection_BaseAllocator): void;
+  Clear(theAllocator: unknown): void;
   /**
    * Replace this sequence by the items of theOther. This method does not change the internal allocator.
    */
@@ -25305,7 +26016,7 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds extends NCollectio
   /**
    * Append one item.
    */
-  Append(theItem: HLRBRep_ShapeBounds): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    */
@@ -25313,7 +26024,7 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds extends NCollectio
   /**
    * Prepend one item.
    */
-  Prepend(theItem: HLRBRep_ShapeBounds): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    */
@@ -25321,7 +26032,7 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds extends NCollectio
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: HLRBRep_ShapeBounds): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   /**
    * InsertBefore theIndex theItem.
    */
@@ -25333,7 +26044,7 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds extends NCollectio
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: HLRBRep_ShapeBounds): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    */
@@ -25341,31 +26052,31 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds extends NCollectio
   /**
    * First item access.
    */
-  First(): HLRBRep_ShapeBounds;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): HLRBRep_ShapeBounds;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): HLRBRep_ShapeBounds;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): HLRBRep_ShapeBounds;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): HLRBRep_ShapeBounds;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): HLRBRep_ShapeBounds;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: HLRBRep_ShapeBounds): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25396,7 +26107,7 @@ export declare class NCollection_HArray1_StepElement_MeasureOrUnspecifiedValue {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepElement_MeasureOrUnspecifiedValue);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -25404,7 +26115,7 @@ export declare class NCollection_HArray1_StepElement_MeasureOrUnspecifiedValue {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepElement_MeasureOrUnspecifiedValue, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -25414,8 +26125,8 @@ export declare class NCollection_HArray1_StepElement_MeasureOrUnspecifiedValue {
    */
   ChangeArray1(): NCollection_Array1_StepElement_MeasureOrUnspecifiedValue;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25446,7 +26157,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndTimeItem {
    * @param theUpper upper bound of the array
    * @param theValue initial value for all elements
    */
-  constructor(theLower: number, theUpper: number, theValue: StepAP214_AutoDesignDateAndTimeItem);
+  constructor(theLower: number, theUpper: number, theValue: unknown);
   /**
    * Constructor from C array.
    * @param theBegin reference to the first element of a C array
@@ -25454,7 +26165,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndTimeItem {
    * @param theUpper upper bound of the array
    * @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
    */
-  constructor(theBegin: StepAP214_AutoDesignDateAndTimeItem, theLower: number, theUpper: number, theUseBuffer: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer: boolean);
   /**
    * Returns const reference to the underlying array.
    */
@@ -25464,8 +26175,8 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndTimeItem {
    */
   ChangeArray1(): NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25488,12 +26199,12 @@ export declare class NCollection_Array1_StepVisual_InvisibleItem {
    */
   constructor(theOther: NCollection_Array1_StepVisual_InvisibleItem);
   constructor(theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_InvisibleItem, theLower: number, theUpper: number);
-  constructor(theBegin: StepVisual_InvisibleItem, theLower: number, theUpper: number, theUseBuffer?: boolean);
+  constructor(theBegin: unknown, theLower: number, theUpper: number);
+  constructor(theBegin: unknown, theLower: number, theUpper: number, theUseBuffer?: boolean);
   /**
    * Initialise the items with theValue.
    */
-  Init(theValue: StepVisual_InvisibleItem): void;
+  Init(theValue: unknown): void;
   /**
    * Size query.
    */
@@ -25522,22 +26233,22 @@ export declare class NCollection_Array1_StepVisual_InvisibleItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_InvisibleItem): NCollection_Array1_StepVisual_InvisibleItem;
-  First(): StepVisual_InvisibleItem;
-  ChangeFirst(): StepVisual_InvisibleItem;
-  Last(): StepVisual_InvisibleItem;
-  ChangeLast(): StepVisual_InvisibleItem;
+  First(): unknown;
+  ChangeFirst(): unknown;
+  Last(): unknown;
+  ChangeLast(): unknown;
   /**
    * Constant value access.
    */
-  Value(theIndex: number): StepVisual_InvisibleItem;
+  Value(theIndex: number): unknown;
   /**
    * Variable value access.
    */
-  ChangeValue(theIndex: number): StepVisual_InvisibleItem;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set value.
    */
-  SetValue(theIndex: number, theItem: StepVisual_InvisibleItem): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * Changes the lowest bound. Do not move data.
    */
@@ -25590,22 +26301,22 @@ export declare class BOPAlgo_Options {
   /**
    * Constructor with allocator.
    */
-  constructor(theAllocator: NCollection_BaseAllocator);
+  constructor(theAllocator: unknown);
   /**
    * Returns allocator.
    */
-  Allocator(): NCollection_BaseAllocator;
+  Allocator(): unknown;
   /**
    * Clears all warnings and errors, and any data cached by the algorithm. User defined options are not cleared.
    */
   Clear(): void;
-  AddError(theAlert: Message_Alert): void;
-  AddWarning(theAlert: Message_Alert): void;
+  AddError(theAlert: unknown): void;
+  AddWarning(theAlert: unknown): void;
   HasErrors(): boolean;
-  HasError(theType: Standard_Type): boolean;
+  HasError(theType: unknown): boolean;
   HasWarnings(): boolean;
-  HasWarning(theType: Standard_Type): boolean;
-  GetReport(): Message_Report;
+  HasWarning(theType: unknown): boolean;
+  GetReport(): unknown;
   ClearWarnings(): void;
   static GetParallelMode(): boolean;
   static SetParallelMode(theNewMode: boolean): void;
@@ -25631,7 +26342,7 @@ export declare class BRepAlgoAPI_Cut extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor <PF> - PaveFiller object that is carried out.
    */
-  constructor(PF: BOPAlgo_PaveFiller);
+  constructor(PF: unknown);
   /**
    * Empty constructor.
    */
@@ -25643,15 +26354,15 @@ export declare class BRepAlgoAPI_Cut extends BRepAlgoAPI_BooleanOperation {
   /**
    * Constructor with two shapes <S1> -argument <S2> -tool <anOperation> - the type of the operation Obsolete.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: BOPAlgo_PaveFiller);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: unknown);
   /**
    * Empty constructor.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: BOPAlgo_PaveFiller, bFWD: boolean);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: unknown, bFWD: boolean);
   /**
    * Constructor with two shapes <S1> -argument <S2> -tool <anOperation> - the type of the operation <PF> - PaveFiller object that is carried out Obsolete.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: BOPAlgo_PaveFiller, bFWD?: boolean, theRange?: Message_ProgressRange);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: unknown, bFWD?: boolean, theRange?: Message_ProgressRange);
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25662,7 +26373,7 @@ export declare class BRepAlgoAPI_Cut extends BRepAlgoAPI_BooleanOperation {
  */
 export declare class BRepAlgoAPI_BuilderAlgo extends BRepAlgoAPI_Algo {
   constructor();
-  constructor(thePF: BOPAlgo_PaveFiller);
+  constructor(thePF: unknown);
   SetArguments(theLS: NCollection_List_TopoDS_Shape): void;
   Arguments(): NCollection_List_TopoDS_Shape;
   SetNonDestructive(theFlag: boolean): void;
@@ -25682,9 +26393,9 @@ export declare class BRepAlgoAPI_BuilderAlgo extends BRepAlgoAPI_Algo {
   SetToFillHistory(theHistFlag: boolean): void;
   HasHistory(): boolean;
   SectionEdges(): NCollection_List_TopoDS_Shape;
-  DSFiller(): BOPAlgo_PPaveFiller;
-  Builder(): BOPAlgo_PBuilder;
-  History(): BRepTools_History;
+  DSFiller(): unknown;
+  Builder(): unknown;
+  History(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25701,7 +26412,7 @@ export declare class BRepAlgoAPI_Common extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor <PF> - PaveFiller object that is carried out.
    */
-  constructor(PF: BOPAlgo_PaveFiller);
+  constructor(PF: unknown);
   /**
    * Empty constructor.
    */
@@ -25713,11 +26424,11 @@ export declare class BRepAlgoAPI_Common extends BRepAlgoAPI_BooleanOperation {
   /**
    * Constructor with two shapes <S1> -argument <S2> -tool <anOperation> - the type of the operation Obsolete.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, PF: BOPAlgo_PaveFiller);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, PF: unknown);
   /**
    * Constructor with two shapes <S1> -argument <S2> -tool <anOperation> - the type of the operation <PF> - PaveFiller object that is carried out Obsolete.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, PF: BOPAlgo_PaveFiller, theRange?: Message_ProgressRange);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, PF: unknown, theRange?: Message_ProgressRange);
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25734,7 +26445,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor <PF> - PaveFiller object that is carried out.
    */
-  constructor(PF: BOPAlgo_PaveFiller);
+  constructor(PF: unknown);
   /**
    * Empty constructor.
    */
@@ -25742,7 +26453,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor.
    */
-  constructor(S1: TopoDS_Shape, Pl: gp_Pln);
+  constructor(S1: TopoDS_Shape, Pl: unknown);
   /**
    * Empty constructor.
    */
@@ -25762,7 +26473,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * Constructor with two shapes <S1> - argument <Pl> - tool <PerformNow> - the flag: if <PerformNow>=True - the algorithm is performed immediately Obsolete.
    */
-  constructor(S1: TopoDS_Shape, Pl: gp_Pln, PerformNow: boolean);
+  constructor(S1: TopoDS_Shape, Pl: unknown, PerformNow: boolean);
   /**
    * Constructor with two shapes <S1> - argument <Sf> - tool <PerformNow> - the flag: if <PerformNow>=True - the algorithm is performed immediately Obsolete.
    */
@@ -25778,11 +26489,11 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * Constructor with two shapes <Sf1> - argument <Sf2> - tool <PerformNow> - the flag: if <PerformNow>=True - the algorithm is performed immediately Obsolete.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: BOPAlgo_PaveFiller);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: unknown);
   /**
    * Constructor with two shapes <S1> -argument <S2> -tool <PF> - PaveFiller object that is carried out <PerformNow> - the flag: if <PerformNow>=True - the algorithm is performed immediately Obsolete.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: BOPAlgo_PaveFiller, PerformNow?: boolean);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: unknown, PerformNow?: boolean);
   /**
    * initialize the argument <S1> - argument Obsolete
    */
@@ -25790,7 +26501,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * initialize the argument <Pl> - argument Obsolete
    */
-  Init1(Pl: gp_Pln): void;
+  Init1(Pl: unknown): void;
   /**
    * initialize the argument <Sf> - argument Obsolete
    */
@@ -25802,7 +26513,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * initialize the tool <Pl> - tool Obsolete
    */
-  Init2(Pl: gp_Pln): void;
+  Init2(Pl: unknown): void;
   /**
    * initialize the tool <Sf> - tool Obsolete
    */
@@ -25851,13 +26562,13 @@ export declare class BRepAlgoAPI_Algo extends BRepBuilderAPI_MakeShape {
  */
 export declare class BRepAlgoAPI_BooleanOperation extends BRepAlgoAPI_BuilderAlgo {
   constructor();
-  constructor(thePF: BOPAlgo_PaveFiller);
+  constructor(thePF: unknown);
   Shape1(): TopoDS_Shape;
   Shape2(): TopoDS_Shape;
   SetTools(theLS: NCollection_List_TopoDS_Shape): void;
   Tools(): NCollection_List_TopoDS_Shape;
-  SetOperation(theBOP: BOPAlgo_Operation): void;
-  Operation(): BOPAlgo_Operation;
+  SetOperation(theBOP: unknown): void;
+  Operation(): unknown;
   Build(theRange: Message_ProgressRange): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -25875,7 +26586,7 @@ export declare class BRepAlgoAPI_Fuse extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor <PF> - PaveFiller object that is carried out.
    */
-  constructor(PF: BOPAlgo_PaveFiller);
+  constructor(PF: unknown);
   /**
    * Empty constructor.
    */
@@ -25887,11 +26598,11 @@ export declare class BRepAlgoAPI_Fuse extends BRepAlgoAPI_BooleanOperation {
   /**
    * Constructor with two shapes <S1> -argument <S2> -tool <anOperation> - the type of the operation Obsolete.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: BOPAlgo_PaveFiller);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: unknown);
   /**
    * Constructor with two shapes <S1> -argument <S2> -tool <anOperation> - the type of the operation <PF> - PaveFiller object that is carried out Obsolete.
    */
-  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: BOPAlgo_PaveFiller, theRange?: Message_ProgressRange);
+  constructor(S1: TopoDS_Shape, S2: TopoDS_Shape, aDSF: unknown, theRange?: Message_ProgressRange);
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25942,12 +26653,12 @@ export declare class Law_Composite extends Law_Function {
    * Returns the elementary function of the composite used to compute at parameter W.
    */
   ChangeElementaryLaw(W: number): Law_Function;
-  ChangeLaws(): NCollection_List_handle_Law_Function;
+  ChangeLaws(): unknown;
   IsPeriodic(): boolean;
   SetPeriodic(): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25972,8 +26683,8 @@ export declare class Law_Interpol extends Law_BSpFunc {
   SetInRelative(ParAndRad: NCollection_Array1_gp_Pnt2d, Ud: number, Uf: number, Periodic: boolean): void;
   SetInRelative(ParAndRad: NCollection_Array1_gp_Pnt2d, Ud: number, Uf: number, Dd: number, Df: number, Periodic: boolean): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -25984,7 +26695,7 @@ export declare class Law_Interpol extends Law_BSpFunc {
  */
 export declare class Law_BSpFunc extends Law_Function {
   constructor();
-  constructor(C: Law_BSpline, First: number, Last: number);
+  constructor(C: unknown, First: number, Last: number);
   Continuity(): GeomAbs_Shape;
   /**
    * Returns the number of intervals for continuity . May be one if Continuity(me) >= .
@@ -26014,11 +26725,11 @@ export declare class Law_BSpFunc extends Law_Function {
    * Returns the parametric bounds of the function.
    */
   Bounds(): { PFirst: number; PLast: number };
-  Curve(): Law_BSpline;
-  SetCurve(C: Law_BSpline): void;
+  Curve(): unknown;
+  SetCurve(C: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -26041,8 +26752,8 @@ export declare class Law_S extends Law_BSpFunc {
    */
   Set(Pdeb: number, Valdeb: number, Ddeb: number, Pfin: number, Valfin: number, Dfin: number): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -26093,8 +26804,8 @@ export declare class Law_Linear extends Law_Function {
    */
   Bounds(): { PFirst: number; PLast: number };
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -26134,8 +26845,8 @@ export declare class Law_Function extends Standard_Transient {
    */
   Bounds(): { PFirst: number; PLast: number };
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -26192,7 +26903,7 @@ export declare class Geom2dAPI_InterCurveCurve {
   /**
    * return the algorithmic object from Intersection.
    */
-  Intersector(): Geom2dInt_GInter;
+  Intersector(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -26237,7 +26948,11 @@ export declare class Geom2dAPI_ProjectPointOnCurve {
   /**
    * Returns the parameter on the curve of a point which is the orthogonal projection. Index is a number of a computed projected point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
    */
-  Parameter(Index: number): { U: number };
+  Parameter_1(Index: number): number;
+  /**
+   * Returns the parameter on the curve of a point which is the orthogonal projection. Index is a number of a computed projected point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
+   */
+  Parameter_2(Index: number): { U: number };
   /**
    * Computes the distance between the point and its computed orthogonal projection on the curve. Index is a number of computed projected point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
    */
@@ -26299,7 +27014,7 @@ export declare class Geom2dAPI_ExtremaCurveCurve {
    * Computes the distance between the end points of the shortest extremum computed by this algorithm. Exceptions - StdFail_NotDone if this algorithm fails.
    */
   LowerDistance(): number;
-  Extrema(): Extrema_ExtCC2d;
+  Extrema(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -26324,7 +27039,7 @@ export declare class Geom2dAPI_PointsToBSpline {
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: Approx_ParametrizationType);
+  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: unknown);
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
@@ -26340,7 +27055,7 @@ export declare class Geom2dAPI_PointsToBSpline {
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: Approx_ParametrizationType, DegMin: number);
+  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: unknown, DegMin: number);
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
@@ -26360,7 +27075,7 @@ export declare class Geom2dAPI_PointsToBSpline {
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: Approx_ParametrizationType, DegMin: number, DegMax: number);
+  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: unknown, DegMin: number, DegMax: number);
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
@@ -26380,7 +27095,7 @@ export declare class Geom2dAPI_PointsToBSpline {
   /**
    * Approximate a BSpline Curve passing through an array of Point. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol2D.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: Approx_ParametrizationType, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape);
+  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: unknown, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape);
   /**
    * Approximate a BSpline Curve passing through an array of Point. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol2D.
    */
@@ -26388,7 +27103,7 @@ export declare class Geom2dAPI_PointsToBSpline {
   /**
    * Approximate a BSpline Curve passing through an array of Point. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol2D.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: Approx_ParametrizationType, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol2D: number);
+  constructor(Points: NCollection_Array1_gp_Pnt2d, ParType: unknown, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol2D: number);
   /**
    * Approximate a BSpline Curve passing through an array of Point, which parameters are given by the array <Parameters>. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol2D.
    */
@@ -26416,7 +27131,7 @@ export declare class Geom2dAPI_PointsToBSpline {
   /**
    * Approximate a BSpline Curve passing through an array of Point. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol2D.
    */
-  Init(Points: NCollection_Array1_gp_Pnt2d, ParType: Approx_ParametrizationType, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol2D: number): void;
+  Init(Points: NCollection_Array1_gp_Pnt2d, ParType: unknown, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol2D: number): void;
   /**
    * Approximate a BSpline Curve passing through an array of Point, which parameters are given by the array <Parameters>. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol2D.
    */
@@ -26458,7 +27173,7 @@ export declare class GeomAPI_PointsToBSpline {
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt, ParType: Approx_ParametrizationType);
+  constructor(Points: NCollection_Array1_gp_Pnt, ParType: unknown);
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
@@ -26470,7 +27185,7 @@ export declare class GeomAPI_PointsToBSpline {
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt, ParType: Approx_ParametrizationType, DegMin: number);
+  constructor(Points: NCollection_Array1_gp_Pnt, ParType: unknown, DegMin: number);
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
@@ -26482,7 +27197,7 @@ export declare class GeomAPI_PointsToBSpline {
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt, ParType: Approx_ParametrizationType, DegMin: number, DegMax: number);
+  constructor(Points: NCollection_Array1_gp_Pnt, ParType: unknown, DegMin: number, DegMax: number);
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
@@ -26498,7 +27213,7 @@ export declare class GeomAPI_PointsToBSpline {
   /**
    * Approximate a BSpline Curve passing through an array of Point. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol3D.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt, ParType: Approx_ParametrizationType, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape);
+  constructor(Points: NCollection_Array1_gp_Pnt, ParType: unknown, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape);
   /**
    * Approximate a BSpline Curve passing through an array of Point. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol3D.
    */
@@ -26510,7 +27225,7 @@ export declare class GeomAPI_PointsToBSpline {
   /**
    * Approximate a BSpline Curve passing through an array of Point. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol3D.
    */
-  constructor(Points: NCollection_Array1_gp_Pnt, ParType: Approx_ParametrizationType, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol3D: number);
+  constructor(Points: NCollection_Array1_gp_Pnt, ParType: unknown, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol3D: number);
   /**
    * Approximate a BSpline Curve passing through an array of Point, which parameters are given by the array <Parameters>. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol3D.
    */
@@ -26530,7 +27245,7 @@ export declare class GeomAPI_PointsToBSpline {
   /**
    * Approximate a BSpline Curve passing through an array of Point. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol3D.
    */
-  Init(Points: NCollection_Array1_gp_Pnt, ParType: Approx_ParametrizationType, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol3D: number): void;
+  Init(Points: NCollection_Array1_gp_Pnt, ParType: unknown, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol3D: number): void;
   /**
    * Approximate a BSpline Curve passing through an array of Point, which parameters are given by the array <Parameters>. The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol3D.
    */
@@ -26605,7 +27320,7 @@ export declare class GeomAPI_ProjectPointOnSurf {
   /**
    * Sets the Extrema search flag - MIN or MAX or MINMAX. By default the Extrema is set to search the MinMax solutions.
    */
-  SetExtremaFlag(theExtFlag: Extrema_ExtFlag): void;
+  SetExtremaFlag(theExtFlag: unknown): void;
   /**
    * Performs the projection of a point on the current surface.
    */
@@ -26679,7 +27394,7 @@ export declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
   /**
    * Returns the internal sweeping algorithm.
    */
-  Prism(): BRepSweep_Prism;
+  Prism(): unknown;
   /**
    * Builds the resulting shape (redefined from MakeShape).
    */
@@ -26805,7 +27520,7 @@ export declare class BRepPrimAPI_MakeSphere extends BRepPrimAPI_MakeOneAxis {
   /**
    * Returns the algorithm.
    */
-  Sphere(): BRepPrim_Sphere;
+  Sphere(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -26834,7 +27549,7 @@ export declare class BRepPrimAPI_MakeRevol extends BRepPrimAPI_MakeSweep {
   /**
    * Returns the internal sweeping algorithm.
    */
-  Revol(): BRepSweep_Revol;
+  Revol(): unknown;
   /**
    * Builds the resulting shape (redefined from MakeShape).
    */
@@ -26924,7 +27639,7 @@ export declare class BRepPrimAPI_MakeCylinder extends BRepPrimAPI_MakeOneAxis {
   /**
    * Returns the algorithm.
    */
-  Cylinder(): BRepPrim_Cylinder;
+  Cylinder(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -26998,7 +27713,7 @@ export declare class BRepPrimAPI_MakeBox extends BRepBuilderAPI_MakeShape {
   /**
    * Returns the internal algorithm.
    */
-  Wedge(): BRepPrim_Wedge;
+  Wedge(): unknown;
   /**
    * Stores the solid in myShape.
    */
@@ -27058,15 +27773,15 @@ export declare class HLRBRep_InternalAlgo extends Standard_Transient {
   /**
    * add the shape .
    */
-  Load(S: HLRTopoBRep_OutLiner, SData: Standard_Transient, nbIso: number): void;
+  Load(S: unknown, SData: Standard_Transient, nbIso: number): void;
   /**
    * add the shape .
    */
-  Load(S: HLRTopoBRep_OutLiner, nbIso: number): void;
+  Load(S: unknown, nbIso: number): void;
   /**
    * return the index of the Shape  and return 0 if the Shape  is not found.
    */
-  Index(S: HLRTopoBRep_OutLiner): number;
+  Index(S: unknown): number;
   /**
    * remove the Shape of Index .
    */
@@ -27077,7 +27792,7 @@ export declare class HLRBRep_InternalAlgo extends Standard_Transient {
   ShapeData(I: number, SData: Standard_Transient): void;
   SeqOfShapeBounds(): NCollection_Sequence_HLRBRep_ShapeBounds;
   NbShapes(): number;
-  ShapeBounds(I: number): HLRBRep_ShapeBounds;
+  ShapeBounds(I: number): unknown;
   /**
    * init the status of the selected edges depending of the back faces of a closed shell.
    */
@@ -27132,10 +27847,10 @@ export declare class HLRBRep_InternalAlgo extends Standard_Transient {
   Hide(I: number, J: number): void;
   Debug(deb: boolean): void;
   Debug(): boolean;
-  DataStructure(): HLRBRep_Data;
+  DataStructure(): unknown;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -27163,12 +27878,16 @@ export declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
    */
   Index(S: TopoDS_Shape): number;
   /**
+   * return the index of the Shape  and return 0 if the Shape  is not found.
+   */
+  Index(S: unknown): number;
+  /**
    * nullify all the results of OutLiner from HLRTopoBRep.
    */
   OutLinedShapeNullify(): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -27269,11 +27988,11 @@ export declare class HLRBRep_HLRToShape {
   /**
    * Returns compound of resulting edges of required type and visibility, taking into account the kind of space (2d or 3d).
    */
-  CompoundOfEdges(type: HLRBRep_TypeOfResultingEdge, visible: boolean, In3d: boolean): TopoDS_Shape;
+  CompoundOfEdges(type_: unknown, visible: boolean, In3d: boolean): TopoDS_Shape;
   /**
    * For specified shape returns compound of resulting edges of required type and visibility, taking into account the kind of space (2d or 3d).
    */
-  CompoundOfEdges(S: TopoDS_Shape, type: HLRBRep_TypeOfResultingEdge, visible: boolean, In3d: boolean): TopoDS_Shape;
+  CompoundOfEdges(S: TopoDS_Shape, type_: unknown, visible: boolean, In3d: boolean): TopoDS_Shape;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -27343,7 +28062,7 @@ export declare class HLRAlgo_Projector {
   /**
    * return a line going through the eye towards the 2d point <X,Y>.
    */
-  Shoot(X: number, Y: number): gp_Lin;
+  Shoot(X: number, Y: number): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -27367,8 +28086,8 @@ export declare class BRepMesh_DiscretRoot extends Standard_Transient {
    */
   Perform(theRange: Message_ProgressRange): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -27380,22 +28099,22 @@ export declare class BRepMesh_DiscretRoot extends Standard_Transient {
 export declare class BRepMesh_IncrementalMesh extends BRepMesh_DiscretRoot {
   constructor();
   constructor(theShape: TopoDS_Shape, theLinDeflection: number);
-  constructor(theShape: TopoDS_Shape, theParameters: IMeshTools_Parameters);
-  constructor(theShape: TopoDS_Shape, theParameters: IMeshTools_Parameters, theRange: Message_ProgressRange);
+  constructor(theShape: TopoDS_Shape, theParameters: unknown);
+  constructor(theShape: TopoDS_Shape, theParameters: unknown, theRange: Message_ProgressRange);
   constructor(theShape: TopoDS_Shape, theLinDeflection: number, isRelative: boolean);
   constructor(theShape: TopoDS_Shape, theLinDeflection: number, isRelative: boolean, theAngDeflection: number);
   constructor(theShape: TopoDS_Shape, theLinDeflection: number, isRelative?: boolean, theAngDeflection?: number, isInParallel?: boolean);
   Perform(theRange: Message_ProgressRange): void;
-  Perform(theContext: IMeshTools_Context, theRange: Message_ProgressRange): void;
-  Parameters(): IMeshTools_Parameters;
-  ChangeParameters(): IMeshTools_Parameters;
+  Perform(theContext: unknown, theRange: Message_ProgressRange): void;
+  Parameters(): unknown;
+  ChangeParameters(): unknown;
   IsModified(): boolean;
   GetStatusFlags(): number;
   static IsParallelDefault(): boolean;
   static SetParallelDefault(isInParallel: boolean): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -27544,7 +28263,7 @@ export declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeSh
   /**
    * Returns instance of the underlying intersection / arc algorithm.
    */
-  MakeOffset(): BRepOffset_MakeOffset;
+  MakeOffset(): unknown;
   /**
    * Does nothing.
    */
@@ -27601,7 +28320,7 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
   /**
    * Define the type of parametrization used in the approximation.
    */
-  SetParType(ParType: Approx_ParametrizationType): void;
+  SetParType(ParType: unknown): void;
   /**
    * Define the Continuity used in the approximation.
    */
@@ -27617,7 +28336,7 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
   /**
    * returns the type of parametrization used in the approximation
    */
-  ParType(): Approx_ParametrizationType;
+  ParType(): unknown;
   /**
    * returns the Continuity used in the approximation
    */
@@ -27669,7 +28388,7 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
   /**
    * Returns the status of thrusection operation.
    */
-  GetStatus(): BRepFill_ThruSectionErrorStatus;
+  GetStatus(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -27800,7 +28519,7 @@ export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
   /**
    * Get a status, when Simulate or Build failed. It can be BRepBuilderAPI_PipeDone, BRepBuilderAPI_PipeNotDone, BRepBuilderAPI_PlaneNotIntersectGuide, BRepBuilderAPI_ImpossibleContact.
    */
-  GetStatus(): BRepBuilderAPI_PipeError;
+  GetStatus(): unknown;
   /**
    * Sets the following tolerance values.
    */
@@ -27887,7 +28606,7 @@ export declare class BRepExtrema_DistShapeShape {
    * @param Shape2 - the second shape for distance computation
    * @param F and
    */
-  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: Extrema_ExtFlag);
+  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: unknown);
   /**
    * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is Precision::Confusion().
    * @param Shape1 - the first shape for distance computation
@@ -27902,7 +28621,7 @@ export declare class BRepExtrema_DistShapeShape {
    * @param F and
    * @param A are not used in computation and are obsolete.
    */
-  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: Extrema_ExtFlag, A: Extrema_ExtAlgo);
+  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: unknown, A: Extrema_ExtAlgo);
   /**
    * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is Precision::Confusion().
    * @param Shape1 - the first shape for distance computation
@@ -27910,7 +28629,7 @@ export declare class BRepExtrema_DistShapeShape {
    * @param theDeflection - the presition of distance computation
    * @param F and
    */
-  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number, F: Extrema_ExtFlag);
+  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number, F: unknown);
   /**
    * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is Precision::Confusion().
    * @param Shape1 - the first shape for distance computation
@@ -27919,7 +28638,7 @@ export declare class BRepExtrema_DistShapeShape {
    * @param A are not used in computation and are obsolete.
    * @param theRange - the progress indicator of algorithm
    */
-  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: Extrema_ExtFlag, A: Extrema_ExtAlgo, theRange: Message_ProgressRange);
+  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: unknown, A: Extrema_ExtAlgo, theRange: Message_ProgressRange);
   /**
    * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is Precision::Confusion().
    * @param Shape1 - the first shape for distance computation
@@ -27927,7 +28646,7 @@ export declare class BRepExtrema_DistShapeShape {
    * @param F and
    * @param A are not used in computation and are obsolete.
    */
-  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number, F: Extrema_ExtFlag, A: Extrema_ExtAlgo);
+  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number, F: unknown, A: Extrema_ExtAlgo);
   /**
    * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is Precision::Confusion().
    * @param Shape1 - the first shape for distance computation
@@ -27937,7 +28656,7 @@ export declare class BRepExtrema_DistShapeShape {
    * @param A are not used in computation and are obsolete.
    * @param theRange - the progress indicator of algorithm
    */
-  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number, F?: Extrema_ExtFlag, A?: Extrema_ExtAlgo, theRange?: Message_ProgressRange);
+  constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number, F?: unknown, A?: Extrema_ExtAlgo, theRange?: Message_ProgressRange);
   /**
    * Sets deflection to computation of the minimum distance.
    */
@@ -27981,11 +28700,11 @@ export declare class BRepExtrema_DistShapeShape {
   /**
    * gives the type of the support where the Nth solution on the first shape is situated: IsVertex => the Nth solution on the first shape is a Vertex IsOnEdge => the Nth soluion on the first shape is on a Edge IsInFace => the Nth solution on the first shape is inside a face the corresponding support is obtained by the method SupportOnShape1
    */
-  SupportTypeShape1(N: number): BRepExtrema_SupportType;
+  SupportTypeShape1(N: number): unknown;
   /**
    * gives the type of the support where the Nth solution on the second shape is situated: IsVertex => the Nth solution on the second shape is a Vertex IsOnEdge => the Nth soluion on the secondt shape is on a Edge IsInFace => the Nth solution on the second shape is inside a face the corresponding support is obtained by the method SupportOnShape2
    */
-  SupportTypeShape2(N: number): BRepExtrema_SupportType;
+  SupportTypeShape2(N: number): unknown;
   /**
    * gives the support where the Nth solution on the first shape is situated. This support can be a Vertex, an Edge or a Face.
    */
@@ -28013,7 +28732,7 @@ export declare class BRepExtrema_DistShapeShape {
   /**
    * Sets unused parameter Obsolete.
    */
-  SetFlag(F: Extrema_ExtFlag): void;
+  SetFlag(F: unknown): void;
   /**
    * Sets unused parameter Obsolete.
    */
@@ -28051,7 +28770,7 @@ export declare class BRepBndLib {
   /**
    * Computes the Oriented Bounding box for the shape <theS>. Two independent methods of computation are implemented: first method based on set of points (so, it demands the triangulated shape or shape with planar faces and linear edges). The second method is based on use of inertia axes and is called if use of the first method is impossible. If theIsTriangulationUsed == FALSE then the triangulation will be ignored at all. If theIsShapeToleranceUsed == TRUE then resulting box will be extended on the tolerance of the shape. theIsOptimal flag defines whether to look for the more tight OBB for the cost of performance or not.
    */
-  static AddOBB(theS: TopoDS_Shape, theOBB: Bnd_OBB, theIsTriangulationUsed: boolean, theIsOptimal: boolean, theIsShapeToleranceUsed: boolean): void;
+  static AddOBB(theS: TopoDS_Shape, theOBB: unknown, theIsTriangulationUsed: boolean, theIsOptimal: boolean, theIsShapeToleranceUsed: boolean): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -28073,30 +28792,30 @@ export declare const BRepBuilderAPI_WireError: {
  */
 export declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
   constructor();
-  constructor(L: gp_Lin);
+  constructor(L: unknown);
   constructor(L: gp_Circ);
   constructor(L: gp_Elips);
-  constructor(L: gp_Hypr);
-  constructor(L: gp_Parab);
+  constructor(L: unknown);
+  constructor(L: unknown);
   constructor(L: Geom_Curve);
   constructor(V1: TopoDS_Vertex, V2: TopoDS_Vertex);
   constructor(P1: gp_Pnt, P2: gp_Pnt);
   constructor(L: Geom2d_Curve, S: Geom_Surface);
-  constructor(L: gp_Lin, p1: number, p2: number);
-  constructor(L: gp_Lin, P1: gp_Pnt, P2: gp_Pnt);
-  constructor(L: gp_Lin, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
+  constructor(L: unknown, p1: number, p2: number);
+  constructor(L: unknown, P1: gp_Pnt, P2: gp_Pnt);
+  constructor(L: unknown, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
   constructor(L: gp_Circ, p1: number, p2: number);
   constructor(L: gp_Circ, P1: gp_Pnt, P2: gp_Pnt);
   constructor(L: gp_Circ, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
   constructor(L: gp_Elips, p1: number, p2: number);
   constructor(L: gp_Elips, P1: gp_Pnt, P2: gp_Pnt);
   constructor(L: gp_Elips, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
-  constructor(L: gp_Hypr, p1: number, p2: number);
-  constructor(L: gp_Hypr, P1: gp_Pnt, P2: gp_Pnt);
-  constructor(L: gp_Hypr, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
-  constructor(L: gp_Parab, p1: number, p2: number);
-  constructor(L: gp_Parab, P1: gp_Pnt, P2: gp_Pnt);
-  constructor(L: gp_Parab, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
+  constructor(L: unknown, p1: number, p2: number);
+  constructor(L: unknown, P1: gp_Pnt, P2: gp_Pnt);
+  constructor(L: unknown, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
+  constructor(L: unknown, p1: number, p2: number);
+  constructor(L: unknown, P1: gp_Pnt, P2: gp_Pnt);
+  constructor(L: unknown, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
   constructor(L: Geom_Curve, p1: number, p2: number);
   constructor(L: Geom_Curve, P1: gp_Pnt, P2: gp_Pnt);
   constructor(L: Geom_Curve, V1: TopoDS_Vertex, V2: TopoDS_Vertex);
@@ -28132,7 +28851,7 @@ export declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
   /**
    * Returns the construction status.
    */
-  Error(): BRepBuilderAPI_EdgeError;
+  Error(): unknown;
   /**
    * Returns the constructed edge. Exceptions StdFail_NotDone if the edge is not built.
    */
@@ -28208,11 +28927,11 @@ export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
   /**
    * set context
    */
-  SetContext(theContext: BRepTools_ReShape): void;
+  SetContext(theContext: unknown): void;
   /**
    * return context
    */
-  GetContext(): BRepTools_ReShape;
+  GetContext(): unknown;
   /**
    * Gives the number of free edges (edge shared by one face).
    */
@@ -28358,8 +29077,8 @@ export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
    */
   NonManifoldMode(): boolean;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -28380,7 +29099,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a plane.
    */
-  constructor(P: gp_Pln);
+  constructor(P: unknown);
   /**
    * Make a face from a cylinder.
    */
@@ -28388,7 +29107,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a cone.
    */
-  constructor(C: gp_Cone);
+  constructor(C: unknown);
   /**
    * Make a face from a sphere.
    */
@@ -28396,7 +29115,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a torus.
    */
-  constructor(C: gp_Torus);
+  constructor(C: unknown);
   /**
    * Make a face from a torus.
    */
@@ -28416,7 +29135,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
    */
-  constructor(P: gp_Pln, W: TopoDS_Wire);
+  constructor(P: unknown, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
    */
@@ -28424,7 +29143,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
    */
-  constructor(C: gp_Cone, W: TopoDS_Wire);
+  constructor(C: unknown, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
    */
@@ -28432,7 +29151,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
    */
-  constructor(C: gp_Torus, W: TopoDS_Wire);
+  constructor(C: unknown, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
    */
@@ -28440,7 +29159,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a plane and a wire.
    */
-  constructor(P: gp_Pln, W: TopoDS_Wire, Inside: boolean);
+  constructor(P: unknown, W: TopoDS_Wire, Inside: boolean);
   /**
    * Make a face from a cylinder and a wire.
    */
@@ -28448,7 +29167,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a cone and a wire.
    */
-  constructor(C: gp_Cone, W: TopoDS_Wire, Inside: boolean);
+  constructor(C: unknown, W: TopoDS_Wire, Inside: boolean);
   /**
    * Make a face from a sphere and a wire.
    */
@@ -28456,7 +29175,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a torus and a wire.
    */
-  constructor(C: gp_Torus, W: TopoDS_Wire, Inside: boolean);
+  constructor(C: unknown, W: TopoDS_Wire, Inside: boolean);
   /**
    * Make a face from a Surface and a wire. If the surface S is not plane, it must contain pcurves for all edges in W, otherwise the wrong shape will be created.
    */
@@ -28464,7 +29183,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a plane.
    */
-  constructor(P: gp_Pln, UMin: number, UMax: number, VMin: number, VMax: number);
+  constructor(P: unknown, UMin: number, UMax: number, VMin: number, VMax: number);
   /**
    * Make a face from a cylinder.
    */
@@ -28472,7 +29191,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a cone.
    */
-  constructor(C: gp_Cone, UMin: number, UMax: number, VMin: number, VMax: number);
+  constructor(C: unknown, UMin: number, UMax: number, VMin: number, VMax: number);
   /**
    * Make a face from a sphere.
    */
@@ -28480,7 +29199,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a torus.
    */
-  constructor(C: gp_Torus, UMin: number, UMax: number, VMin: number, VMax: number);
+  constructor(C: unknown, UMin: number, UMax: number, VMin: number, VMax: number);
   /**
    * Make a face from a Surface. Accepts tolerance value (TolDegen) for resolution of degenerated edges.
    */
@@ -28508,7 +29227,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Returns the construction status BRepBuilderAPI_FaceDone if the face is built, or.
    */
-  Error(): BRepBuilderAPI_FaceError;
+  Error(): unknown;
   /**
    * Returns the constructed face. Exceptions StdFail_NotDone if no face is built.
    */
@@ -28705,7 +29424,7 @@ export declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
   /**
    * Returns the construction status:
    */
-  Error(): BRepBuilderAPI_ShellError;
+  Error(): unknown;
   /**
    * Returns the new Shell.
    */
@@ -28798,11 +29517,11 @@ export declare class BRepLib {
   /**
    * Sets the current plane to P.
    */
-  static Plane(P: Geom_Plane): void;
+  static Plane(P: unknown): void;
   /**
    * Returns the current plane.
    */
-  static Plane(): Geom_Plane;
+  static Plane(): unknown;
   /**
    * checks if the Edge is same range IGNORING the same range flag of the edge Confusion argument is to compare real numbers idenpendently of any model space tolerance
    */
@@ -28828,9 +29547,13 @@ export declare class BRepLib {
    */
   static BuildPCurveForEdgeOnPlane(theE: TopoDS_Edge, theF: TopoDS_Face): void;
   /**
+   * Builds pcurve of edge on face if the surface is plane, and updates the edge.
+   */
+  static BuildPCurveForEdgeOnPlane_1(theE: TopoDS_Edge, theF: TopoDS_Face): void;
+  /**
    * Builds pcurve of edge on face if the surface is plane, but does not update the edge. The output are the pcurve and the flag telling that pcurve was built.
    */
-  static BuildPCurveForEdgeOnPlane(theE: TopoDS_Edge, theF: TopoDS_Face): { aC2D: Geom2d_Curve; bToUpdate: boolean };
+  static BuildPCurveForEdgeOnPlane_2(theE: TopoDS_Edge, theF: TopoDS_Face): { aC2D: Geom2d_Curve; bToUpdate: boolean };
   /**
    * Checks if the edge has a Tolerance smaller than MaxToleranceToCheck if so it will compute the radius of the cylindrical pipe surface that MinToleranceRequest is the minimum tolerance before it is useful to start testing. Usually it should be around 10e-5 contains all the curve representation of the edge returns True if the Edge tolerance had to be updated.
    */
@@ -28844,17 +29567,17 @@ export declare class BRepLib {
    */
   static SameParameter(theEdge: TopoDS_Edge, Tolerance: number): void;
   /**
+   * Computes new 2d curve(s) for the edge <theEdge> to have the same parameter as the 3d curve. The algorithm is not done if the flag SameParameter was True on the Edge. theNewTol is a new tolerance of vertices of the input edge (not applied inside the algorithm, but pre-computed). If IsUseOldEdge is true then the input edge will be modified, otherwise the new copy of input edge will be created. Returns the new edge as a result, can be ignored if IsUseOldEdge is true.
+   */
+  static SameParameter(theEdge: TopoDS_Edge, theTolerance: number, IsUseOldEdge: boolean): { result: TopoDS_Edge; theNewTol: number };
+  /**
    * Computes new 2d curve(s) for all the edges of  to have the same parameter as the 3d curve. The algorithm is not done if the flag SameParameter was True on an Edge.
    */
   static SameParameter(S: TopoDS_Shape, Tolerance: number, forced: boolean): void;
   /**
    * Computes new 2d curve(s) for the edge <theEdge> to have the same parameter as the 3d curve. The algorithm is not done if the flag SameParameter was True on the Edge. theNewTol is a new tolerance of vertices of the input edge (not applied inside the algorithm, but pre-computed). If IsUseOldEdge is true then the input edge will be modified, otherwise the new copy of input edge will be created. Returns the new edge as a result, can be ignored if IsUseOldEdge is true.
    */
-  static SameParameter(theEdge: TopoDS_Edge, theTolerance: number, IsUseOldEdge: boolean): { result: TopoDS_Edge; theNewTol: number };
-  /**
-   * Computes new 2d curve(s) for all the edges of  to have the same parameter as the 3d curve. The algorithm is not done if the flag SameParameter was True on an Edge. theReshaper is used to record the modifications of input shape  to prevent any modifications on the shape itself. Thus the input shape (and its subshapes) will not be modified, instead the reshaper will contain a modified empty-copies of original subshapes as substitutions.
-   */
-  static SameParameter(S: TopoDS_Shape, theReshaper: BRepTools_ReShape, Tolerance: number, forced: boolean): void;
+  static SameParameter(S: TopoDS_Shape, theReshaper: unknown, Tolerance: number, forced: boolean): void;
   /**
    * Replaces tolerance of FACE EDGE VERTEX by the tolerance Max of their connected handling shapes. It is not necessary to use this call after SameParameter. (called in).
    */
@@ -28862,7 +29585,7 @@ export declare class BRepLib {
   /**
    * Replaces tolerance of FACE EDGE VERTEX by the tolerance Max of their connected handling shapes. It is not necessary to use this call after SameParameter. (called in) theReshaper is used to record the modifications of input shape  to prevent any modifications on the shape itself. Thus the input shape (and its subshapes) will not be modified, instead the reshaper will contain a modified empty-copies of original subshapes as substitutions.
    */
-  static UpdateTolerances(S: TopoDS_Shape, theReshaper: BRepTools_ReShape, verifyFaceTolerance: boolean): void;
+  static UpdateTolerances(S: TopoDS_Shape, theReshaper: unknown, verifyFaceTolerance: boolean): void;
   /**
    * Checks tolerances of edges (including inner points) and vertices of a shape and updates them to satisfy "SameParameter" condition.
    */
@@ -28960,7 +29683,7 @@ export declare class BRepGProp {
    * Updates <VProps> with the shape , that contains its principal properties. The volume properties of all the FORWARD and REVERSED faces in  are computed. If OnlyClosed is True then computed faces must belong to closed Shells. Adaptive 2D Gauss integration is used. Parameter IsUseSpan says if it is necessary to define spans on a face. This option has an effect only for BSpline faces. Parameter Eps sets maximal relative error of computed property for each face. Error is delivered by the adaptive Gauss-Kronrod method of integral computation that is used for properties computation. Method returns estimation of relative error reached for whole shape. Returns negative value if the computation is failed. SkipShared is a special flag, which allows taking in calculation shared topological entities or not. For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once.
    */
   static VolumePropertiesGK(S: TopoDS_Shape, VProps: GProp_GProps, Eps: number, OnlyClosed: boolean, IsUseSpan: boolean, CGFlag: boolean, IFlag: boolean, SkipShared: boolean): number;
-  static VolumePropertiesGK(S: TopoDS_Shape, VProps: GProp_GProps, thePln: gp_Pln, Eps: number, OnlyClosed: boolean, IsUseSpan: boolean, CGFlag: boolean, IFlag: boolean, SkipShared: boolean): number;
+  static VolumePropertiesGK(S: TopoDS_Shape, VProps: GProp_GProps, thePln: unknown, Eps: number, OnlyClosed: boolean, IsUseSpan: boolean, CGFlag: boolean, IFlag: boolean, SkipShared: boolean): number;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -28991,7 +29714,7 @@ export declare class BRepGProp_Face {
   /**
    * Loading the boundary arc. This arc is either a top, bottom, left or right bound of a UV rectangle in which the parameters of surface are defined. If IsFirstParam is equal to true, the face is initialized by either left of bottom bound. Otherwise it is initialized by the top or right one. If theIsoType is equal to GeomAbs_IsoU, the face is initialized with either left or right bound. Otherwise - with either top or bottom one.
    */
-  Load(IsFirstParam: boolean, theIsoType: GeomAbs_IsoType): void;
+  Load(IsFirstParam: boolean, theIsoType: unknown): void;
   VIntegrationOrder(): number;
   /**
    * Returns true if the face is not trimmed.
@@ -29043,12 +29766,34 @@ export declare class BRepGProp_Face {
   D12d(U: number, P: gp_Pnt2d, V1: gp_Vec2d): void;
   /**
    * Returns an array of U knots of the face. The first and last elements of the array will be theUMin and theUMax. The middle elements will be the U Knots of the face greater then theUMin and lower then theUMax in increasing order. If the face is not a BSpline, the array initialized with theUMin and theUMax only.
+   * @param theUMin lower U bound
+   * @param theUMax upper U bound
+   * @returns array of U knot values
    */
-  GetUKnots(theUMin: number, theUMax: number): { theUKnots: NCollection_HArray1_double };
+  GetUKnots(theUMin: number, theUMax: number): NCollection_HArray1_double;
+  /**
+   * Returns an array of U knots of the face. The first and last elements of the array will be theUMin and theUMax. The middle elements will be the U Knots of the face greater then theUMin and lower then theUMax in increasing order. If the face is not a BSpline, the array initialized with theUMin and theUMax only.
+   * @param theUMin lower U bound
+   * @param theUMax upper U bound
+   * @returns array of U knot values
+   */
+  GetUKnots_1(theUMin: number, theUMax: number): NCollection_HArray1_double;
+  GetUKnots_2(theUMin: number, theUMax: number): { theUKnots: NCollection_HArray1_double };
   /**
    * Returns an array of combination of T knots of the arc and V knots of the face. The first and last elements of the array will be theTMin and theTMax. The middle elements will be the Knots of the arc and the values of parameters of arc on which the value points have V coordinates close to V knots of face. All the parameter will be greater then theTMin and lower then theTMax in increasing order. If the face is not a BSpline, the array initialized with theTMin and theTMax only.
+   * @param theTMin lower T bound
+   * @param theTMax upper T bound
+   * @returns array of T knot values
    */
-  GetTKnots(theTMin: number, theTMax: number): { theTKnots: NCollection_HArray1_double };
+  GetTKnots(theTMin: number, theTMax: number): NCollection_HArray1_double;
+  /**
+   * Returns an array of combination of T knots of the arc and V knots of the face. The first and last elements of the array will be theTMin and theTMax. The middle elements will be the Knots of the arc and the values of parameters of arc on which the value points have V coordinates close to V knots of face. All the parameter will be greater then theTMin and lower then theTMax in increasing order. If the face is not a BSpline, the array initialized with theTMin and theTMax only.
+   * @param theTMin lower T bound
+   * @param theTMax upper T bound
+   * @returns array of T knot values
+   */
+  GetTKnots_1(theTMin: number, theTMax: number): NCollection_HArray1_double;
+  GetTKnots_2(theTMin: number, theTMax: number): { theTKnots: NCollection_HArray1_double };
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -29207,7 +29952,7 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
   /**
    * Returns the internal filleting algorithm.
    */
-  Builder(): TopOpeBRepBuild_HBuilder;
+  Builder(): unknown;
   /**
    * Returns the list of shapes generated from the shape <EorV>.
    */
@@ -29372,7 +30117,7 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
   /**
    * Returns the internal topology building algorithm.
    */
-  Builder(): TopOpeBRepBuild_HBuilder;
+  Builder(): unknown;
   /**
    * Returns the list of shapes generated from the shape <EorV>.
    */
@@ -29431,7 +30176,7 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
   /**
    * returns the status concerning the contour IC in case of error ChFiDS_Ok : the computation is Ok ChFiDS_StartsolFailure : the computation can't start, perhaps the the radius is too big ChFiDS_TwistedSurface : the computation failed because of a twisted surface ChFiDS_WalkingFailure : there is a problem in the walking ChFiDS_Error: other error different from above
    */
-  StripeStatus(IC: number): ChFiDS_ErrorStatus;
+  StripeStatus(IC: number): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -29536,7 +30281,7 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
   /**
    * Load analyzer with all the data already prepared and drops all fixing statuses If analyzer contains face, there is no need to set it by SetFace or SetSurface.
    */
-  Init(saw: ShapeAnalysis_Wire): void;
+  Init(saw: unknown): void;
   /**
    * Load data for the wire, and drops all fixing statuses.
    */
@@ -29544,7 +30289,7 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
   /**
    * Load data for the wire, and drops all fixing statuses.
    */
-  Load(sbwd: ShapeExtend_WireData): void;
+  Load(sbwd: unknown): void;
   /**
    * Set working face for the wire.
    */
@@ -29552,11 +30297,11 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
   /**
    * Set working face for the wire and surface analysis object.
    */
-  SetFace(theFace: TopoDS_Face, theSurfaceAnalysis: ShapeAnalysis_Surface): void;
+  SetFace(theFace: TopoDS_Face, theSurfaceAnalysis: unknown): void;
   /**
    * Set surface analysis for the wire.
    */
-  SetSurface(theSurfaceAnalysis: ShapeAnalysis_Surface): void;
+  SetSurface(theSurfaceAnalysis: unknown): void;
   /**
    * Set surface for the wire.
    */
@@ -29600,11 +30345,11 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
   /**
    * returns field Analyzer (working tool)
    */
-  Analyzer(): ShapeAnalysis_Wire;
+  Analyzer(): unknown;
   /**
    * returns working wire
    */
-  WireData(): ShapeExtend_WireData;
+  WireData(): unknown;
   /**
    * returns working face (Analyzer.Face())
    */
@@ -29673,7 +30418,7 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
   /**
    * Reorder edges in the wire as determined by WireOrder that should be filled and computed before.
    */
-  FixReorder(wi: ShapeAnalysis_WireOrder): boolean;
+  FixReorder(wi: unknown): boolean;
   /**
    * Applies FixSmall(num) to all edges in the wire.
    */
@@ -29744,33 +30489,33 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
    */
   FixGap2d(num: number, convert: boolean): boolean;
   FixTails(): boolean;
-  StatusReorder(status: ShapeExtend_Status): boolean;
-  StatusSmall(status: ShapeExtend_Status): boolean;
-  StatusConnected(status: ShapeExtend_Status): boolean;
-  StatusEdgeCurves(status: ShapeExtend_Status): boolean;
-  StatusDegenerated(status: ShapeExtend_Status): boolean;
-  StatusSelfIntersection(status: ShapeExtend_Status): boolean;
-  StatusLacking(status: ShapeExtend_Status): boolean;
-  StatusClosed(status: ShapeExtend_Status): boolean;
-  StatusGaps3d(status: ShapeExtend_Status): boolean;
-  StatusGaps2d(status: ShapeExtend_Status): boolean;
-  StatusNotches(status: ShapeExtend_Status): boolean;
+  StatusReorder(status: unknown): boolean;
+  StatusSmall(status: unknown): boolean;
+  StatusConnected(status: unknown): boolean;
+  StatusEdgeCurves(status: unknown): boolean;
+  StatusDegenerated(status: unknown): boolean;
+  StatusSelfIntersection(status: unknown): boolean;
+  StatusLacking(status: unknown): boolean;
+  StatusClosed(status: unknown): boolean;
+  StatusGaps3d(status: unknown): boolean;
+  StatusGaps2d(status: unknown): boolean;
+  StatusNotches(status: unknown): boolean;
   /**
    * Querying the status of performed API fixing procedures Each Status..() methods gives information about the last call to the corresponding Fix..() method of API level: OK : no problems detected; nothing done DONE: some problem(s) was(were) detected and successfully fixed FAIL: some problem(s) cannot be fixed.
    */
   StatusRemovedSegment(): boolean;
-  StatusFixTails(status: ShapeExtend_Status): boolean;
+  StatusFixTails(status: unknown): boolean;
   /**
    * Queries the status of last call to methods Fix... of advanced level For details see corresponding methods; universal statuses are: OK : problem not detected; nothing done DONE: problem was detected and successfully fixed FAIL: problem cannot be fixed.
    */
-  LastFixStatus(status: ShapeExtend_Status): boolean;
+  LastFixStatus(status: unknown): boolean;
   /**
    * Returns tool for fixing wires.
    */
-  FixEdgeTool(): ShapeFix_Edge;
+  FixEdgeTool(): unknown;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -29803,7 +30548,7 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
   /**
    * Returns the status of the last Fix.
    */
-  Status(status: ShapeExtend_Status): boolean;
+  Status(status: unknown): boolean;
   /**
    * Returns resulting solid.
    */
@@ -29811,11 +30556,11 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
   /**
    * Returns tool for fixing shells.
    */
-  FixShellTool(): ShapeFix_Shell;
+  FixShellTool(): unknown;
   /**
    * Sets message registrator.
    */
-  SetMsgRegistrator(msgreg: ShapeExtend_BasicMsgRegistrator): void;
+  SetMsgRegistrator(msgreg: unknown): void;
   /**
    * Sets basic precision value (also to FixShellTool).
    */
@@ -29845,8 +30590,8 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
    */
   Shape(): TopoDS_Shape;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -29867,19 +30612,19 @@ export declare class ShapeFix_Root extends Standard_Transient {
   /**
    * Sets context.
    */
-  SetContext(context: ShapeBuild_ReShape): void;
+  SetContext(context: unknown): void;
   /**
    * Returns context.
    */
-  Context(): ShapeBuild_ReShape;
+  Context(): unknown;
   /**
    * Sets message registrator.
    */
-  SetMsgRegistrator(msgreg: ShapeExtend_BasicMsgRegistrator): void;
+  SetMsgRegistrator(msgreg: unknown): void;
   /**
    * Returns message registrator.
    */
-  MsgRegistrator(): ShapeExtend_BasicMsgRegistrator;
+  MsgRegistrator(): unknown;
   /**
    * Sets basic precision value.
    */
@@ -29911,30 +30656,30 @@ export declare class ShapeFix_Root extends Standard_Transient {
   /**
    * Sends a message to be attached to the shape. Calls corresponding message of message registrator.
    */
-  SendMsg(shape: TopoDS_Shape, message: Message_Msg, gravity: Message_Gravity): void;
+  SendMsg(shape: TopoDS_Shape, message: unknown, gravity: unknown): void;
   /**
    * Sends a message to be attached to myShape. Calls previous method.
    */
-  SendMsg(message: Message_Msg, gravity: Message_Gravity): void;
+  SendMsg(message: unknown, gravity: unknown): void;
   /**
    * Sends a warning to be attached to the shape. Calls SendMsg with gravity set to Message_Warning.
    */
-  SendWarning(shape: TopoDS_Shape, message: Message_Msg): void;
+  SendWarning(shape: TopoDS_Shape, message: unknown): void;
   /**
    * Calls previous method for myShape.
    */
-  SendWarning(message: Message_Msg): void;
+  SendWarning(message: unknown): void;
   /**
    * Sends a fail to be attached to the shape. Calls SendMsg with gravity set to Message_Fail.
    */
-  SendFail(shape: TopoDS_Shape, message: Message_Msg): void;
+  SendFail(shape: TopoDS_Shape, message: unknown): void;
   /**
    * Calls previous method for myShape.
    */
-  SendFail(message: Message_Msg): void;
+  SendFail(message: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -29967,11 +30712,11 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
   /**
    * Starts the creation of the face By default it will be FORWARD, or REVERSED if <fwd> is False.
    */
-  Init(surf: ShapeAnalysis_Surface, preci: number, fwd: boolean): void;
+  Init(surf: unknown, preci: number, fwd: boolean): void;
   /**
    * Sets message registrator.
    */
-  SetMsgRegistrator(msgreg: ShapeExtend_BasicMsgRegistrator): void;
+  SetMsgRegistrator(msgreg: unknown): void;
   /**
    * Sets basic precision value (also to FixWireTool).
    */
@@ -30051,7 +30796,7 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
   /**
    * Fixes orientation of wires on the face It tries to make all wires lie outside all others (according to orientation) by reversing orientation of some of them. If face lying on sphere or torus has single wire and AddNaturalBoundMode is True, that wire is not reversed in any case (supposing that natural bound will be added). Returns True if wires were reversed OutWires return information about out wires + list of internal wires for each (for performing split face).
    */
-  FixOrientation(MapWires: NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher): boolean;
+  FixOrientation(MapWires: unknown): boolean;
   /**
    * Adds natural boundary on face if it is missing. Two cases are supported:
    */
@@ -30079,7 +30824,7 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
   /**
    * Split face if there are more than one out wire using inrormation after FixOrientation().
    */
-  FixSplitFace(MapWires: NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher): boolean;
+  FixSplitFace(MapWires: unknown): boolean;
   /**
    * Fixes topology for a specific case when face is composed by a single wire belting a periodic surface. In that case a degenerated edge is reconstructed in the degenerated pole of the surface. Initial wire gets consistent orientation. Must be used in couple and before FixMissingSeam routine.
    */
@@ -30087,14 +30832,14 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
   /**
    * Returns the status of last call to Perform() ShapeExtend_OK : face was OK, nothing done ShapeExtend_DONE1: some wires are fixed ShapeExtend_DONE2: orientation of wires fixed ShapeExtend_DONE3: missing seam added ShapeExtend_DONE4: small area wire removed ShapeExtend_DONE5: natural bounds added ShapeExtend_DONE8: face may be splited ShapeExtend_FAIL1: some fails during fixing wires ShapeExtend_FAIL2: cannot fix orientation of wires ShapeExtend_FAIL3: cannot add missing seam ShapeExtend_FAIL4: cannot remove small area wire.
    */
-  Status(status: ShapeExtend_Status): boolean;
+  Status(status: unknown): boolean;
   /**
    * Returns tool for fixing wires.
    */
   FixWireTool(): ShapeFix_Wire;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -30163,10 +30908,10 @@ export declare class ShapeUpgrade_UnifySameDomain extends Standard_Transient {
   /**
    * Returns the history of the processed shapes.
    */
-  History(): BRepTools_History;
+  History(): unknown;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -30232,9 +30977,9 @@ export declare class BRepFeat_Form extends BRepBuilderAPI_MakeShape {
    * Initializes the topological construction if the selected face is present.
    */
   PerfSelectionValid(): void;
-  Curves(S: NCollection_Sequence_handle_Geom_Curve): void;
+  Curves(S: unknown): void;
   BarycCurve(): Geom_Curve;
-  CurrentStatusError(): BRepFeat_StatusError;
+  CurrentStatusError(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -30279,7 +31024,7 @@ export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
    * Assigns both a limiting shape, Until from TopoDS_Shape, and a height, Height at which to stop generation of the prism feature.
    */
   PerformUntilHeight(Until: TopoDS_Shape, Height: number): void;
-  Curves(S: NCollection_Sequence_handle_Geom_Curve): void;
+  Curves(S: unknown): void;
   BarycCurve(): Geom_Curve;
   /**
    * Determination of TopEdges and LatEdges. sig = 1 -> TopEdges = FirstShape of the DPrism sig = 2 -> TOpEdges = LastShape of the DPrism.
@@ -30304,8 +31049,8 @@ export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
 export declare class Adaptor3d_Curve extends Standard_Transient {
   constructor();
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -30331,27 +31076,27 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
   /**
    * Computes the point of parameter U on the curve.
    */
-  Value(U: number): gp_Pnt;
+  Value(theU: number): gp_Pnt;
   /**
    * Computes the point of parameter U on the curve.
    */
-  D0(U: number, P: gp_Pnt): void;
+  D0(theU: number, theP: gp_Pnt): void;
   /**
    * Computes the point of parameter U on the curve with its first derivative. Raised if the continuity of the current interval is not C1.
    */
-  D1(U: number, P: gp_Pnt, V: gp_Vec): void;
+  D1(theU: number, theP: gp_Pnt, theV: gp_Vec): void;
   /**
    * Returns the point P of parameter U, the first and second derivatives V1 and V2. Raised if the continuity of the current interval is not C2.
    */
-  D2(U: number, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec): void;
+  D2(theU: number, theP: gp_Pnt, theV1: gp_Vec, theV2: gp_Vec): void;
   /**
    * Returns the point P of parameter U, the first, the second and the third derivative. Raised if the continuity of the current interval is not C3.
    */
-  D3(U: number, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec, V3: gp_Vec): void;
+  D3(theU: number, theP: gp_Pnt, theV1: gp_Vec, theV2: gp_Vec, theV3: gp_Vec): void;
   /**
    * The returned vector gives the value of the derivative for the order of derivation N. Raised if the continuity of the current interval is not CN. Raised if N < 1.
    */
-  DN(U: number, N: number): gp_Vec;
+  DN(theU: number, theN: number): gp_Vec;
   /**
    * Returns the parametric resolution corresponding to the real space resolution <R3d>.
    */
@@ -30360,38 +31105,38 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
    * Returns the type of the curve in the current interval: Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
    */
   GetType(): GeomAbs_CurveType;
-  Line(): gp_Lin;
+  Line(): unknown;
   Circle(): gp_Circ;
   Ellipse(): gp_Elips;
-  Hyperbola(): gp_Hypr;
-  Parabola(): gp_Parab;
+  Hyperbola(): unknown;
+  Parabola(): unknown;
   Degree(): number;
   IsRational(): boolean;
   NbPoles(): number;
   NbKnots(): number;
   Bezier(): Geom_BezierCurve;
   BSpline(): Geom_BSplineCurve;
-  OffsetCurve(): Geom_OffsetCurve;
+  OffsetCurve(): unknown;
   /**
    * Computes the point of parameter U on the curve. Raises an exception on failure.
    */
-  EvalD0(U: number): gp_Pnt;
+  EvalD0(theU: number): gp_Pnt;
   /**
    * Computes the point and first derivative at parameter U. Raises an exception on failure.
    */
-  EvalD1(U: number): Geom_Curve_ResD1;
+  EvalD1(theU: number): Geom_Curve_ResD1;
   /**
    * Computes the point and first two derivatives at parameter U. Raises an exception on failure.
    */
-  EvalD2(U: number): Geom_Curve_ResD2;
+  EvalD2(theU: number): Geom_Curve_ResD2;
   /**
    * Computes the point and first three derivatives at parameter U. Raises an exception on failure.
    */
-  EvalD3(U: number): Geom_Curve_ResD3;
+  EvalD3(theU: number): Geom_Curve_ResD3;
   /**
    * Computes the Nth derivative at parameter U. Raises an exception on failure.
    */
-  EvalDN(U: number, N: number): gp_Vec;
+  EvalDN(theU: number, theN: number): gp_Vec;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -30403,8 +31148,8 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
 export declare class Adaptor3d_Surface extends Standard_Transient {
   constructor();
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -30448,27 +31193,27 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
   /**
    * Computes the point of parameters U,V on the surface. Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
    */
-  Value(U: number, V: number): gp_Pnt;
+  Value(theU: number, theV: number): gp_Pnt;
   /**
    * Computes the point of parameters U,V on the surface.
    */
-  D0(U: number, V: number, P: gp_Pnt): void;
+  D0(theU: number, theV: number, theP: gp_Pnt): void;
   /**
    * Computes the point and the first derivatives on the surface. Raised if the continuity of the current intervals is not C1.
    */
-  D1(U: number, V: number, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec): void;
+  D1(theU: number, theV: number, theP: gp_Pnt, theD1U: gp_Vec, theD1V: gp_Vec): void;
   /**
    * Computes the point, the first and second derivatives on the surface. Raised if the continuity of the current intervals is not C2.
    */
-  D2(U: number, V: number, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec): void;
+  D2(theU: number, theV: number, theP: gp_Pnt, theD1U: gp_Vec, theD1V: gp_Vec, theD2U: gp_Vec, theD2V: gp_Vec, theD2UV: gp_Vec): void;
   /**
    * Computes the point, the first, second and third derivatives on the surface. Raised if the continuity of the current intervals is not C3.
    */
-  D3(U: number, V: number, P: gp_Pnt, D1U: gp_Vec, D1V: gp_Vec, D2U: gp_Vec, D2V: gp_Vec, D2UV: gp_Vec, D3U: gp_Vec, D3V: gp_Vec, D3UUV: gp_Vec, D3UVV: gp_Vec): void;
+  D3(theU: number, theV: number, theP: gp_Pnt, theD1U: gp_Vec, theD1V: gp_Vec, theD2U: gp_Vec, theD2V: gp_Vec, theD2UV: gp_Vec, theD3U: gp_Vec, theD3V: gp_Vec, theD3UUV: gp_Vec, theD3UVV: gp_Vec): void;
   /**
    * Computes the derivative of order Nu in the direction U and Nv in the direction V at the point P(U, V). Raised if the current U interval is not not CNu and the current V interval is not CNv. Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
    */
-  DN(U: number, V: number, Nu: number, Nv: number): gp_Vec;
+  DN(theU: number, theV: number, theNu: number, theNv: number): gp_Vec;
   /**
    * Returns the parametric U resolution corresponding to the real space resolution <R3d>.
    */
@@ -30481,11 +31226,11 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
    * Returns the type of the surface: Plane, Cylinder, Cone, Sphere, Torus, BezierSurface, BSplineSurface, SurfaceOfRevolution, SurfaceOfExtrusion, OtherSurface.
    */
   GetType(): GeomAbs_SurfaceType;
-  Plane(): gp_Pln;
+  Plane(): unknown;
   Cylinder(): gp_Cylinder;
-  Cone(): gp_Cone;
+  Cone(): unknown;
   Sphere(): gp_Sphere;
-  Torus(): gp_Torus;
+  Torus(): unknown;
   UDegree(): number;
   NbUPoles(): number;
   VDegree(): number;
@@ -30494,7 +31239,7 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
   NbVKnots(): number;
   IsURational(): boolean;
   IsVRational(): boolean;
-  Bezier(): Geom_BezierSurface;
+  Bezier(): unknown;
   BSpline(): Geom_BSplineSurface;
   AxeOfRevolution(): gp_Ax1;
   Direction(): gp_Dir;
@@ -30504,23 +31249,23 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
   /**
    * Computes the point of parameters (U, V) on the surface. Raises an exception on failure.
    */
-  EvalD0(U: number, V: number): gp_Pnt;
+  EvalD0(theU: number, theV: number): gp_Pnt;
   /**
    * Computes the point and first partial derivatives at (U, V). Raises an exception on failure.
    */
-  EvalD1(U: number, V: number): Geom_Surface_ResD1;
+  EvalD1(theU: number, theV: number): Geom_Surface_ResD1;
   /**
    * Computes the point and partial derivatives up to 2nd order at (U, V). Raises an exception on failure.
    */
-  EvalD2(U: number, V: number): Geom_Surface_ResD2;
+  EvalD2(theU: number, theV: number): Geom_Surface_ResD2;
   /**
    * Computes the point and partial derivatives up to 3rd order at (U, V). Raises an exception on failure.
    */
-  EvalD3(U: number, V: number): Geom_Surface_ResD3;
+  EvalD3(theU: number, theV: number): Geom_Surface_ResD3;
   /**
    * Computes the derivative of order Nu in U and Nv in V at (U, V). Raises an exception on failure.
    */
-  EvalDN(U: number, V: number, Nu: number, Nv: number): gp_Vec;
+  EvalDN(theU: number, theV: number, theNu: number, theNv: number): gp_Vec;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -30574,8 +31319,8 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
    */
   constructor(theSurface: Geom_Surface, theUFirst: number, theULast: number, theVFirst: number, theVLast: number, theTrsf: gp_Trsf, theTolU?: number, theTolV?: number);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -30583,8 +31328,9 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
   /**
    * Loads the surface geometry.
    * @param theSurface underlying geometry
+   * @param theTrsf transformation to apply
    */
-  Load(theSurface: Geom_Surface): void;
+  Load(theSurface: Geom_Surface, theTrsf: gp_Trsf): void;
   /**
    * Loads the surface geometry with parameter bounds.
    * @param theSurface underlying geometry
@@ -30592,29 +31338,45 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
    * @param theULast maximum U parameter
    * @param theVFirst minimum V parameter
    * @param theVLast maximum V parameter
+   * @param theTrsf transformation to apply
    * @param theTolU tolerance in U direction
    * @param theTolV tolerance in V direction
    */
-  Load(theSurface: Geom_Surface, theUFirst: number, theULast: number, theVFirst: number, theVLast: number, theTolU: number, theTolV: number): void;
+  Load(theSurface: Geom_Surface, theUFirst: number, theULast: number, theVFirst: number, theVLast: number, theTrsf: gp_Trsf, theTolU: number, theTolV: number): void;
   /**
    * Sets the transformation.
    * @param theTrsf transformation to apply
    */
   SetTrsf(theTrsf: gp_Trsf): void;
   /**
+   * Returns true if non-identity transformation is applied.
+   */
+  HasTrsf(): boolean;
+  /**
    * Returns the transformation.
    */
   Trsf(): gp_Trsf;
+  Surface(): unknown;
   /**
    * Returns the underlying GeomAdaptor_Surface.
+   * @deprecated
    */
-  Surface(): GeomAdaptor_Surface;
+  AdaptorSurfaceOriginal(): unknown;
   /**
-   * Returns the underlying GeomAdaptor_Surface for modification.
+   * Returns an adaptor for the transformed surface state. Uses the original adaptor for identity transformation to preserve existing trimming.
    */
-  ChangeSurface(): GeomAdaptor_Surface;
+  AdaptorSurfaceTransformed(): unknown;
+  /**
+   * Returns the underlying original Geom_Surface without transformation applied.
+   */
+  GeomSurfaceOriginal(): Geom_Surface;
+  /**
+   * Returns the transformed Geom_Surface cached for current state.
+   */
+  GeomSurfaceTransformed(): Geom_Surface;
   /**
    * Returns the underlying Geom_Surface.
+   * @deprecated
    */
   GeomSurface(): Geom_Surface;
   FirstUParameter(): number;
@@ -30654,29 +31416,33 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
   IsVPeriodic(): boolean;
   VPeriod(): number;
   /**
-   * Computes the point of parameters U,V on the surface. Applies transformation after evaluation.
+   * Returns tolerance in U direction.
    */
-  Value(theU: number, theV: number): gp_Pnt;
+  ToleranceU(): number;
   /**
-   * Computes the point of parameters U,V on the surface. Applies transformation after evaluation.
+   * Returns tolerance in V direction.
    */
-  D0(theU: number, theV: number, theP: gp_Pnt): void;
+  ToleranceV(): number;
   /**
-   * Computes the point and the first derivatives on the surface. Applies transformation after evaluation.
+   * Point evaluation. Applies transformation after evaluation.
    */
-  D1(theU: number, theV: number, theP: gp_Pnt, theD1U: gp_Vec, theD1V: gp_Vec): void;
+  EvalD0(theU: number, theV: number): gp_Pnt;
   /**
-   * Computes the point, the first and second derivatives on the surface. Applies transformation after evaluation.
+   * D1 evaluation. Applies transformation after evaluation.
    */
-  D2(theU: number, theV: number, theP: gp_Pnt, theD1U: gp_Vec, theD1V: gp_Vec, theD2U: gp_Vec, theD2V: gp_Vec, theD2UV: gp_Vec): void;
+  EvalD1(theU: number, theV: number): Geom_Surface_ResD1;
   /**
-   * Computes the point, the first, second and third derivatives on the surface. Applies transformation after evaluation.
+   * D2 evaluation. Applies transformation after evaluation.
    */
-  D3(theU: number, theV: number, theP: gp_Pnt, theD1U: gp_Vec, theD1V: gp_Vec, theD2U: gp_Vec, theD2V: gp_Vec, theD2UV: gp_Vec, theD3U: gp_Vec, theD3V: gp_Vec, theD3UUV: gp_Vec, theD3UVV: gp_Vec): void;
+  EvalD2(theU: number, theV: number): Geom_Surface_ResD2;
   /**
-   * Computes the derivative of order Nu in the direction U and Nv in the direction V. Applies transformation after evaluation.
+   * D3 evaluation. Applies transformation after evaluation.
    */
-  DN(theU: number, theV: number, theNu: number, theNv: number): gp_Vec;
+  EvalD3(theU: number, theV: number): Geom_Surface_ResD3;
+  /**
+   * DN evaluation. Applies transformation after evaluation.
+   */
+  EvalDN(theU: number, theV: number, theNu: number, theNv: number): gp_Vec;
   /**
    * Returns the parametric U resolution corresponding to the real space resolution <R3d>.
    */
@@ -30689,11 +31455,11 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
    * Returns the type of the surface: Plane, Cylinder, Cone, Sphere, Torus, BezierSurface, BSplineSurface, SurfaceOfRevolution, SurfaceOfExtrusion, OtherSurface.
    */
   GetType(): GeomAbs_SurfaceType;
-  Plane(): gp_Pln;
+  Plane(): unknown;
   Cylinder(): gp_Cylinder;
-  Cone(): gp_Cone;
+  Cone(): unknown;
   Sphere(): gp_Sphere;
-  Torus(): gp_Torus;
+  Torus(): unknown;
   UDegree(): number;
   NbUPoles(): number;
   VDegree(): number;
@@ -30702,7 +31468,7 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
   NbVKnots(): number;
   IsURational(): boolean;
   IsVRational(): boolean;
-  Bezier(): Geom_BezierSurface;
+  Bezier(): unknown;
   BSpline(): Geom_BSplineSurface;
   AxeOfRevolution(): gp_Ax1;
   Direction(): gp_Dir;
@@ -30714,7 +31480,151 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
   [Symbol.dispose](): void;
 }
 
-export interface Geom_EvalRepSurfaceDesc_Base {}
+export type GeomEval_RepSurfaceDesc_Base = unknown;
+
+/**
+ * An adaptor for curves with an applied transformation.
+ */
+export declare class GeomAdaptor_TransformedCurve extends Adaptor3d_Curve {
+  /**
+   * Creates an undefined curve with identity transformation.
+   */
+  constructor();
+  /**
+   * Creates a curve adaptor with transformation.
+   * @param theCurve underlying geometry
+   * @param theTrsf transformation to apply
+   */
+  constructor(theCurve: Geom_Curve, theTrsf: gp_Trsf);
+  /**
+   * Creates a curve adaptor with transformation and parameter bounds.
+   * @param theCurve underlying geometry
+   * @param theFirst minimum parameter
+   * @param theLast maximum parameter
+   * @param theTrsf transformation to apply
+   */
+  constructor(theCurve: Geom_Curve, theFirst: number, theLast: number, theTrsf: gp_Trsf);
+  static get_type_name(): string;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /**
+   * Shallow copy of adaptor.
+   */
+  ShallowCopy(): Adaptor3d_Curve;
+  /**
+   * Loads the curve geometry.
+   * @param theCurve underlying geometry
+   */
+  Load(theCurve: Geom_Curve): void;
+  /**
+   * Loads the curve geometry with parameter bounds.
+   * @param theCurve underlying geometry
+   * @param theFirst minimum parameter
+   * @param theLast maximum parameter
+   */
+  Load(theCurve: Geom_Curve, theFirst: number, theLast: number): void;
+  /**
+   * Sets the curve on surface adaptor.
+   * @param theConSurf curve on surface adaptor
+   */
+  LoadCurveOnSurface(theConSurf: unknown): void;
+  /**
+   * Sets the transformation.
+   * @param theTrsf transformation to apply
+   */
+  SetTrsf(theTrsf: gp_Trsf): void;
+  /**
+   * Returns the transformation.
+   */
+  Trsf(): gp_Trsf;
+  /**
+   * Returns true if the geometry is a 3D curve (not curve on surface).
+   */
+  Is3DCurve(): boolean;
+  /**
+   * Returns true if the geometry is a curve on surface.
+   */
+  IsCurveOnSurface(): boolean;
+  /**
+   * Returns the underlying GeomAdaptor_Curve.
+   */
+  Curve(): unknown;
+  /**
+   * Returns the underlying GeomAdaptor_Curve for modification.
+   */
+  ChangeCurve(): unknown;
+  /**
+   * Returns the CurveOnSurface adaptor.
+   */
+  CurveOnSurface(): unknown;
+  /**
+   * Returns the underlying Geom_Curve.
+   */
+  GeomCurve(): Geom_Curve;
+  FirstParameter(): number;
+  LastParameter(): number;
+  Continuity(): GeomAbs_Shape;
+  /**
+   * Returns the number of intervals for continuity . May be one if Continuity(me) >= .
+   */
+  NbIntervals(theS: GeomAbs_Shape): number;
+  /**
+   * Stores in <T> the parameters bounding the intervals of continuity .
+   */
+  Intervals(theT: NCollection_Array1_double, theS: GeomAbs_Shape): void;
+  /**
+   * Returns a curve equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. If <First> >= <Last>.
+   */
+  Trim(theFirst: number, theLast: number, theTol: number): Adaptor3d_Curve;
+  IsClosed(): boolean;
+  IsPeriodic(): boolean;
+  Period(): number;
+  /**
+   * Point evaluation. Applies transformation after evaluation.
+   */
+  EvalD0(theU: number): gp_Pnt;
+  /**
+   * D1 evaluation. Applies transformation after evaluation.
+   */
+  EvalD1(theU: number): Geom_Curve_ResD1;
+  /**
+   * D2 evaluation. Applies transformation after evaluation.
+   */
+  EvalD2(theU: number): Geom_Curve_ResD2;
+  /**
+   * D3 evaluation. Applies transformation after evaluation.
+   */
+  EvalD3(theU: number): Geom_Curve_ResD3;
+  /**
+   * DN evaluation. Applies transformation after evaluation.
+   */
+  EvalDN(theU: number, theN: number): gp_Vec;
+  /**
+   * Returns the parametric resolution corresponding to the real space resolution <R3d>.
+   */
+  Resolution(theR3d: number): number;
+  /**
+   * Returns the type of the curve in the current interval: Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
+   */
+  GetType(): GeomAbs_CurveType;
+  Line(): unknown;
+  Circle(): gp_Circ;
+  Ellipse(): gp_Elips;
+  Hyperbola(): unknown;
+  Parabola(): unknown;
+  Degree(): number;
+  IsRational(): boolean;
+  NbPoles(): number;
+  NbKnots(): number;
+  Bezier(): Geom_BezierCurve;
+  BSpline(): Geom_BSplineCurve;
+  OffsetCurve(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export type GeomEval_RepCurveDesc_Base = unknown;
 
 export type TopAbs_ShapeEnum = typeof TopAbs_ShapeEnum[keyof typeof TopAbs_ShapeEnum];
 /**
@@ -30784,11 +31694,11 @@ export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
    */
   FirstParameter(): number;
   /**
-   * Returns True if the distance between the StartPoint and the EndPoint is lower or equal to Resolution from package gp.
+   * Returns TRUE if the basis curve is periodic and the trim spans exactly one full period, or if the distance between the StartPoint and the EndPoint is within computational precision.
    */
   IsClosed(): boolean;
   /**
-   * Always returns FALSE (independently of the type of basis curve).
+   * Returns TRUE if the basis curve is periodic and the trim spans exactly one full period. Returns FALSE otherwise.
    */
   IsPeriodic(): boolean;
   /**
@@ -30840,8 +31750,8 @@ export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
    */
   Copy(): Geom_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -30860,8 +31770,8 @@ export declare class Geom_BoundedCurve extends Geom_Curve {
    */
   StartPoint(): gp_Pnt;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -30907,11 +31817,11 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * Returns the current evaluation representation descriptor (may be null).
    */
-  EvalRepresentation(): Geom_EvalRepSurfaceDesc_Base;
+  EvalRepresentation(): GeomEval_RepSurfaceDesc_Base;
   /**
    * Sets a new evaluation representation. Validates descriptor data and ensures no circular references.
    */
-  SetEvalRepresentation(theDesc: Geom_EvalRepSurfaceDesc_Base): void;
+  SetEvalRepresentation(theDesc: GeomEval_RepSurfaceDesc_Base): void;
   /**
    * Removes the evaluation representation.
    */
@@ -31192,7 +32102,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier. If all the knots differ by a positive constant from the preceding knot in the U direction the B-spline surface can be :
    */
-  UKnotDistribution(): GeomAbs_BSplKnotDistribution;
+  UKnotDistribution(): unknown;
   /**
    * Returns the knots in the U direction.
    * @deprecated
@@ -31235,7 +32145,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier. If all the knots differ by a positive constant from the preceding knot in the V direction the B-spline surface can be :
    */
-  VKnotDistribution(): GeomAbs_BSplKnotDistribution;
+  VKnotDistribution(): unknown;
   /**
    * Returns the knots in the V direction.
    * @deprecated
@@ -31361,14 +32271,12 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
    */
   Copy(): Geom_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
-
-export interface Geom_EvalRepSurfaceDesc_Base {}
 
 /**
  * Definition of the B_spline curve. A B-spline curve can be Uniform or non-uniform Rational or non-rational Periodic or non-periodic.
@@ -31406,11 +32314,11 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   /**
    * Returns the current evaluation representation descriptor (may be null).
    */
-  EvalRepresentation(): Geom_EvalRepCurveDesc_Base;
+  EvalRepresentation(): GeomEval_RepCurveDesc_Base;
   /**
    * Sets a new evaluation representation. Validates descriptor data and ensures no circular references.
    */
-  SetEvalRepresentation(theDesc: Geom_EvalRepCurveDesc_Base): void;
+  SetEvalRepresentation(theDesc: GeomEval_RepCurveDesc_Base): void;
   /**
    * Removes the evaluation representation.
    */
@@ -31616,7 +32524,7 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   /**
    * Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier. If all the knots differ by a positive constant from the preceding knot the BSpline Curve can be :
    */
-  KnotDistribution(): GeomAbs_BSplKnotDistribution;
+  KnotDistribution(): unknown;
   /**
    * For a BSpline curve the last parameter (which gives the end point of the curve) is a knot value but if the multiplicity of the last knot index is lower than Degree + 1 it is not the last knot of the curve. This method computes the index of the knot corresponding to the last parameter.
    */
@@ -31705,14 +32613,12 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
    */
   IsEqual(theOther: Geom_BSplineCurve, thePreci: number): boolean;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
-
-export interface Geom_EvalRepCurveDesc_Base {}
 
 /**
  * Describes a sphere. A sphere is defined by its radius, and is positioned in space by a coordinate system (a gp_Ax3 object), the origin of which is the center of the sphere. This coordinate system is the "local coordinate system" of the sphere. The following apply:
@@ -31819,8 +32725,8 @@ export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
    */
   Copy(): Geom_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -31850,11 +32756,11 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   /**
    * Returns the current evaluation representation descriptor (may be null).
    */
-  EvalRepresentation(): Geom_EvalRepCurveDesc_Base;
+  EvalRepresentation(): GeomEval_RepCurveDesc_Base;
   /**
    * Sets a new evaluation representation. Validates descriptor data and ensures no circular references.
    */
-  SetEvalRepresentation(theDesc: Geom_EvalRepCurveDesc_Base): void;
+  SetEvalRepresentation(theDesc: GeomEval_RepCurveDesc_Base): void;
   /**
    * Removes the evaluation representation.
    */
@@ -32030,14 +32936,12 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
    */
   KnotSequence(): NCollection_Array1_double;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
-
-export interface Geom_EvalRepCurveDesc_Base {}
 
 /**
  * The abstract class Geometry for 3D space is the root class of all geometric objects from the Geom package. It describes the common behavior of these objects when:
@@ -32088,8 +32992,8 @@ export declare class Geom_Geometry extends Standard_Transient {
    */
   Copy(): Geom_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -32200,8 +33104,8 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
    */
   Copy(): Geom_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -32332,12 +33236,12 @@ export declare class Geom_Surface extends Geom_Geometry {
    */
   DN(U: number, V: number, Nu: number, Nv: number): gp_Vec;
   /**
-   * Computes the point of parameter (U, V) on the surface. Implemented with D0.
+   * Computes the point of parameter (U, V) on the surface.
    */
   Value(U: number, V: number): gp_Pnt;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -32428,8 +33332,8 @@ export declare class Geom_ElementarySurface extends Geom_Surface {
    */
   IsCNv(N: number): boolean;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -32528,12 +33432,12 @@ export declare class Geom_Curve extends Geom_Geometry {
    */
   DN(U: number, N: number): gp_Vec;
   /**
-   * Computes the point of parameter U on <me>. It is implemented with D0.
+   * Computes the point of parameter U on <me>.
    */
   Value(U: number): gp_Pnt;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -32562,57 +33466,8 @@ export interface Geom_Curve_ResD3 {
  */
 export declare class Geom_BoundedSurface extends Geom_Surface {
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * Implements a general mechanism to compute the global properties of a "compound geometric system" in 3d space by composition of the global properties of "elementary geometric entities" such as (curve, surface, solid, set of points). It is possible to compose the properties of several "compound geometric systems" too.
- */
-export declare class GProp_GProps {
-  /**
-   * The origin (0, 0, 0) of the absolute cartesian coordinate system is used to compute the global properties.
-   */
-  constructor();
-  /**
-   * The point SystemLocation is used to compute the global properties of the system. For more accuracy it is better to define this point closed to the location of the system. For example it could be a point around the centre of mass of the system. This point is referred to as the reference point for this framework. For greater accuracy it is better for the reference point to be close to the location of the system. It can, for example, be a point near the center of mass of the system. At initialization, the framework is empty; i.e. it retains no dimensional information such as mass, or inertia. However, it is now able to bring together global properties of various other systems, whose global properties have already been computed using another framework. To do this, use the function Add to define the components of the system. Use it once per component of the system, and then use the interrogation functions available to access the computed values.
-   */
-  constructor(SystemLocation: gp_Pnt);
-  /**
-   * Either.
-   */
-  Add(Item: GProp_GProps, Density: number): void;
-  /**
-   * Returns the mass of the current system. If no density is attached to the components of the current system the returned value corresponds to :
-   */
-  Mass(): number;
-  /**
-   * Returns the center of mass of the current system. If the gravitational field is uniform, it is the center of gravity. The coordinates returned for the center of mass are expressed in the absolute Cartesian coordinate system.
-   */
-  CentreOfMass(): gp_Pnt;
-  /**
-   * returns the matrix of inertia. It is a symmetrical matrix. The coefficients of the matrix are the quadratic moments of inertia.
-   */
-  MatrixOfInertia(): gp_Mat;
-  /**
-   * Returns Ix, Iy, Iz, the static moments of inertia of the current system; i.e. the moments of inertia about the three axes of the Cartesian coordinate system.
-   */
-  StaticMoments(): { Ix: number; Iy: number; Iz: number };
-  /**
-   * computes the moment of inertia of the material system about the axis A.
-   */
-  MomentOfInertia(A: gp_Ax1): number;
-  /**
-   * Computes the principal properties of inertia of the current system. There is always a set of axes for which the products of inertia of a geometric system are equal to 0; i.e. the matrix of inertia of the system is diagonal. These axes are the principal axes of inertia. Their origin is coincident with the center of mass of the system. The associated moments are called the principal moments of inertia. This function computes the eigen values and the eigen vectors of the matrix of inertia of the system. Results are stored by using a presentation framework of principal properties of inertia (GProp_PrincipalProps object) which may be queried to access the value sought.
-   */
-  PrincipalProperties(): GProp_PrincipalProps;
-  /**
-   * Returns the radius of gyration of the current system about the axis A.
-   */
-  RadiusOfGyration(A: gp_Ax1): number;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -32649,11 +33504,11 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   /**
    * Returns the current evaluation representation descriptor (may be null).
    */
-  EvalRepresentation(): Geom2d_EvalRepCurveDesc_Base;
+  EvalRepresentation(): unknown;
   /**
    * Sets a new evaluation representation. Validates descriptor data and ensures no circular references.
    */
-  SetEvalRepresentation(theDesc: Geom2d_EvalRepCurveDesc_Base): void;
+  SetEvalRepresentation(theDesc: unknown): void;
   /**
    * Removes the evaluation representation.
    */
@@ -32867,7 +33722,7 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   /**
    * Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier. If all the knots differ by a positive constant from the preceding knot the BSpline Curve can be :
    */
-  KnotDistribution(): GeomAbs_BSplKnotDistribution;
+  KnotDistribution(): unknown;
   /**
    * For a BSpline curve the last parameter (which gives the end point of the curve) is a knot value but if the multiplicity of the last knot index is lower than Degree + 1 it is not the last knot of the curve. This method computes the index of the knot corresponding to the last parameter.
    */
@@ -32952,14 +33807,12 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
    */
   Copy(): Geom2d_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
-
-export interface Geom2d_EvalRepCurveDesc_Base {}
 
 /**
  * The abstract class BoundedCurve describes the common behavior of bounded curves in 2D space. A bounded curve is limited by two finite values of the parameter, termed respectively "first parameter" and "last parameter". The "first parameter" gives the "start point" of the bounded curve, and the "last parameter" gives the "end point" of the bounded curve. The length of a bounded curve is finite. The Geom2d package provides three concrete classes of bounded curves:
@@ -32974,8 +33827,8 @@ export declare class Geom2d_BoundedCurve extends Geom2d_Curve {
    */
   StartPoint(): gp_Pnt2d;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33022,11 +33875,11 @@ export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
    */
   FirstParameter(): number;
   /**
-   * Returns True if the distance between the StartPoint and the EndPoint is lower or equal to Resolution from package gp.
+   * Returns TRUE if the basis curve is periodic and the trim spans exactly one full period, or if the distance between the StartPoint and the EndPoint is within computational precision.
    */
   IsClosed(): boolean;
   /**
-   * Always returns FALSE (independently of the type of basis curve).
+   * Returns TRUE if the basis curve is periodic and the trim spans exactly one full period. Returns FALSE otherwise.
    */
   IsPeriodic(): boolean;
   /**
@@ -33078,8 +33931,8 @@ export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
    */
   Copy(): Geom2d_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33171,8 +34024,8 @@ export declare class Geom2d_Circle extends Geom2d_Conic {
    */
   Copy(): Geom2d_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33189,7 +34042,7 @@ export declare class Geom2d_Line extends Geom2d_Curve {
   /**
    * Creates a line by conversion of the gp_Lin2d line L.
    */
-  constructor(L: gp_Lin2d);
+  constructor(L: unknown);
   /**
    * Constructs a line passing through point P and parallel to vector V (P and V are, respectively, the origin and the unit vector of the positioning axis of the line).
    */
@@ -33197,7 +34050,7 @@ export declare class Geom2d_Line extends Geom2d_Curve {
   /**
    * Set <me> so that <me> has the same geometric properties as L.
    */
-  SetLin2d(L: gp_Lin2d): void;
+  SetLin2d(L: unknown): void;
   /**
    * changes the direction of the line.
    */
@@ -33222,7 +34075,7 @@ export declare class Geom2d_Line extends Geom2d_Curve {
   /**
    * Returns non persistent line from gp with the same geometric properties as <me>.
    */
-  Lin2d(): gp_Lin2d;
+  Lin2d(): unknown;
   /**
    * Changes the orientation of this line. As a result, the unit vector of the positioning axis of this line is reversed.
    */
@@ -33296,8 +34149,8 @@ export declare class Geom2d_Line extends Geom2d_Curve {
    */
   Copy(): Geom2d_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33400,8 +34253,8 @@ export declare class Geom2d_Curve extends Geom2d_Geometry {
    */
   Value(U: number): gp_Pnt2d;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33448,11 +34301,11 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
   /**
    * Returns the current evaluation representation descriptor (may be null).
    */
-  EvalRepresentation(): Geom2d_EvalRepCurveDesc_Base;
+  EvalRepresentation(): unknown;
   /**
    * Sets a new evaluation representation. Validates descriptor data and ensures no circular references.
    */
-  SetEvalRepresentation(theDesc: Geom2d_EvalRepCurveDesc_Base): void;
+  SetEvalRepresentation(theDesc: unknown): void;
   /**
    * Removes the evaluation representation.
    */
@@ -33550,14 +34403,12 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
    */
   GetBasisCurveContinuity(): GeomAbs_Shape;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
-
-export interface Geom2d_EvalRepCurveDesc_Base {}
 
 /**
  * Describes a rational or non-rational Bezier curve.
@@ -33582,11 +34433,11 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   /**
    * Returns the current evaluation representation descriptor (may be null).
    */
-  EvalRepresentation(): Geom2d_EvalRepCurveDesc_Base;
+  EvalRepresentation(): unknown;
   /**
    * Sets a new evaluation representation. Validates descriptor data and ensures no circular references.
    */
-  SetEvalRepresentation(theDesc: Geom2d_EvalRepCurveDesc_Base): void;
+  SetEvalRepresentation(theDesc: unknown): void;
   /**
    * Removes the evaluation representation.
    */
@@ -33754,14 +34605,12 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
    */
   KnotSequence(): NCollection_Array1_double;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
-
-export interface Geom2d_EvalRepCurveDesc_Base {}
 
 /**
  * The abstract class Conic describes the common behavior of conic curves in 2D space and, in particular, their general characteristics. The Geom2d package provides four specific classes of conics: Geom2d_Circle, Geom2d_Ellipse, Geom2d_Hyperbola and Geom2d_Parabola. A conic is positioned in the plane with a coordinate system (gp_Ax22d object), where the origin is the center of the conic (or the apex in case of a parabola). This coordinate system is the local coordinate system of the conic. It gives the conic an explicit orientation, determining the direction in which the parameter increases along the conic. The "X Axis" of the local coordinate system also defines the origin of the parameter of the conic.
@@ -33820,8 +34669,8 @@ export declare class Geom2d_Conic extends Geom2d_Curve {
    */
   IsCN(N: number): boolean;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33868,8 +34717,8 @@ export declare class Geom2d_Geometry extends Standard_Transient {
   Translated(P1: gp_Pnt2d, P2: gp_Pnt2d): Geom2d_Geometry;
   Copy(): Geom2d_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33996,8 +34845,8 @@ export declare class Geom2d_Ellipse extends Geom2d_Conic {
    */
   Copy(): Geom2d_Geometry;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -34014,8 +34863,8 @@ export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
    */
   constructor(C: Geom2d_Curve, UFirst: number, ULast: number);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -34080,11 +34929,11 @@ export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
    * Returns the type of the curve in the current interval: Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
    */
   GetType(): GeomAbs_CurveType;
-  Line(): gp_Lin2d;
+  Line(): unknown;
   Circle(): gp_Circ2d;
   Ellipse(): gp_Elips2d;
-  Hyperbola(): gp_Hypr2d;
-  Parabola(): gp_Parab2d;
+  Hyperbola(): unknown;
+  Parabola(): unknown;
   Degree(): number;
   IsRational(): boolean;
   NbPoles(): number;
@@ -34095,23 +34944,23 @@ export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
   /**
    * Point evaluation. Raises an exception on failure.
    */
-  EvalD0(U: number): gp_Pnt2d;
+  EvalD0(theU: number): gp_Pnt2d;
   /**
    * D1 evaluation. Raises an exception on failure.
    */
-  EvalD1(U: number): Geom2d_Curve_ResD1;
+  EvalD1(theU: number): Geom2d_Curve_ResD1;
   /**
    * D2 evaluation. Raises an exception on failure.
    */
-  EvalD2(U: number): Geom2d_Curve_ResD2;
+  EvalD2(theU: number): Geom2d_Curve_ResD2;
   /**
    * D3 evaluation. Raises an exception on failure.
    */
-  EvalD3(U: number): Geom2d_Curve_ResD3;
+  EvalD3(theU: number): Geom2d_Curve_ResD3;
   /**
    * DN evaluation. Raises an exception on failure.
    */
-  EvalDN(U: number, N: number): gp_Vec2d;
+  EvalDN(theU: number, theN: number): gp_Vec2d;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -34120,19 +34969,19 @@ export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
 export interface Geom2dAdaptor_Curve_OffsetData {
   BasisAdaptor: Geom2dAdaptor_Curve;
   Offset: number;
-  EvalRep: Geom2d_EvalRepCurveDesc_Base;
+  EvalRep: unknown;
 }
 
 export interface Geom2dAdaptor_Curve_BezierData {
   Curve: Geom2d_BezierCurve;
-  Cache: BSplCLib_Cache;
-  EvalRep: Geom2d_EvalRepCurveDesc_Base;
+  Cache: unknown;
+  EvalRep: unknown;
 }
 
 export interface Geom2dAdaptor_Curve_BSplineData {
   Curve: Geom2d_BSplineCurve;
-  Cache: BSplCLib_Cache;
-  EvalRep: Geom2d_EvalRepCurveDesc_Base;
+  Cache: unknown;
+  EvalRep: unknown;
 }
 
 /**
@@ -34141,8 +34990,8 @@ export interface Geom2dAdaptor_Curve_BSplineData {
 export declare class Adaptor2d_Curve2d extends Standard_Transient {
   constructor();
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -34197,11 +35046,11 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
    * Returns the type of the curve in the current interval: Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
    */
   GetType(): GeomAbs_CurveType;
-  Line(): gp_Lin2d;
+  Line(): unknown;
   Circle(): gp_Circ2d;
   Ellipse(): gp_Elips2d;
-  Hyperbola(): gp_Hypr2d;
-  Parabola(): gp_Parab2d;
+  Hyperbola(): unknown;
+  Parabola(): unknown;
   Degree(): number;
   IsRational(): boolean;
   NbPoles(): number;
@@ -34212,23 +35061,23 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
   /**
    * Computes the point of parameter U on the curve. Raises an exception on failure.
    */
-  EvalD0(U: number): gp_Pnt2d;
+  EvalD0(theU: number): gp_Pnt2d;
   /**
    * Computes the point and first derivative at parameter U. Raises an exception on failure.
    */
-  EvalD1(U: number): Geom2d_Curve_ResD1;
+  EvalD1(theU: number): Geom2d_Curve_ResD1;
   /**
    * Computes the point and first two derivatives at parameter U. Raises an exception on failure.
    */
-  EvalD2(U: number): Geom2d_Curve_ResD2;
+  EvalD2(theU: number): Geom2d_Curve_ResD2;
   /**
    * Computes the point and first three derivatives at parameter U. Raises an exception on failure.
    */
-  EvalD3(U: number): Geom2d_Curve_ResD3;
+  EvalD3(theU: number): Geom2d_Curve_ResD3;
   /**
    * Computes the Nth derivative at parameter U. Raises an exception on failure.
    */
-  EvalDN(U: number, N: number): gp_Vec2d;
+  EvalDN(theU: number, theN: number): gp_Vec2d;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -34239,8 +35088,8 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
  */
 export declare class GeomTools {
   constructor();
-  static SetUndefinedTypeHandler(aHandler: GeomTools_UndefinedTypeHandler): void;
-  static GetUndefinedTypeHandler(): GeomTools_UndefinedTypeHandler;
+  static SetUndefinedTypeHandler(aHandler: unknown): void;
+  static GetUndefinedTypeHandler(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -34266,15 +35115,15 @@ export declare class Geom2dConvert {
   /**
    * This Method concatenates G1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatG1(ArrayOfCurves: NCollection_Array1_handle_Geom2d_BSplineCurve, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number): { ArrayOfConcatenated: NCollection_HArray1_handle_Geom2d_BSplineCurve; ClosedFlag: boolean };
+  static ConcatG1(ArrayOfCurves: unknown, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number): { ArrayOfConcatenated: unknown; ClosedFlag: boolean };
   /**
    * This Method concatenates C1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatC1(ArrayOfCurves: NCollection_Array1_handle_Geom2d_BSplineCurve, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number): { ArrayOfIndices: NCollection_HArray1_int; ArrayOfConcatenated: NCollection_HArray1_handle_Geom2d_BSplineCurve; ClosedFlag: boolean };
+  static ConcatC1(ArrayOfCurves: unknown, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number): { ArrayOfIndices: NCollection_HArray1_int; ArrayOfConcatenated: unknown; ClosedFlag: boolean };
   /**
    * This Method concatenates C1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatC1(ArrayOfCurves: NCollection_Array1_handle_Geom2d_BSplineCurve, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number, AngularTolerance: number): { ArrayOfIndices: NCollection_HArray1_int; ArrayOfConcatenated: NCollection_HArray1_handle_Geom2d_BSplineCurve; ClosedFlag: boolean };
+  static ConcatC1(ArrayOfCurves: unknown, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number, AngularTolerance: number): { ArrayOfIndices: NCollection_HArray1_int; ArrayOfConcatenated: unknown; ClosedFlag: boolean };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns a new BSpline which could still be C0. tolerance is a geometrical tolerance.
    */
@@ -34282,11 +35131,11 @@ export declare class Geom2dConvert {
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns an array of BSpline C1. Tolerance is a geometrical tolerance.
    */
-  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom2d_BSplineCurve, Tolerance: number): { tabBS: NCollection_HArray1_handle_Geom2d_BSplineCurve };
+  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom2d_BSplineCurve, Tolerance: number): { tabBS: unknown };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns an array of BSpline C1. tolerance is a geometrical tolerance.
    */
-  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom2d_BSplineCurve, AngularTolerance: number, Tolerance: number): { tabBS: NCollection_HArray1_handle_Geom2d_BSplineCurve };
+  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom2d_BSplineCurve, AngularTolerance: number, Tolerance: number): { tabBS: unknown };
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -34311,7 +35160,7 @@ export declare class Geom2dConvert_BSplineCurveToBezierCurve {
   /**
    * Constructs all the Bezier curves whose data is computed by this algorithm and loads these curves into the Curves table. The Bezier curves have the same orientation as the BSpline curve analyzed in this framework. Exceptions Standard_DimensionError if the Curves array was not created with the following bounds:
    */
-  Arcs(Curves: NCollection_Array1_handle_Geom2d_BezierCurve): void;
+  Arcs(Curves: unknown): void;
   /**
    * This methode returns the bspline's knots associated to the converted arcs Raises DimensionError if the length of Curves is not equal to NbArcs + 1.
    */
@@ -34375,7 +35224,7 @@ export declare class GeomLib {
    * Make the curve Curve2dPtr have the imposed range First to List the most economic way, that is if it can change the range without changing the nature of the curve it will try to do that. Otherwise it will produce a Bspline curve that has the required range.
    */
   static SameRange(Tolerance: number, Curve2dPtr: Geom2d_Curve, First: number, Last: number, RequestedFirst: number, RequestedLast: number): { NewCurve2dPtr: Geom2d_Curve };
-  static BuildCurve3d(Tolerance: number, CurvePtr: Adaptor3d_CurveOnSurface, FirstParameter: number, LastParameter: number, Continuity: GeomAbs_Shape, MaxDegree: number, MaxSegment: number): { NewCurvePtr: Geom_Curve; MaxDeviation: number; AverageDeviation: number };
+  static BuildCurve3d(Tolerance: number, CurvePtr: unknown, FirstParameter: number, LastParameter: number, Continuity: GeomAbs_Shape, MaxDegree: number, MaxSegment: number): { NewCurvePtr: Geom_Curve; MaxDeviation: number; AverageDeviation: number };
   static AdjustExtremity(P1: gp_Pnt, P2: gp_Pnt, T1: gp_Vec, T2: gp_Vec): { Curve: Geom_BoundedCurve };
   /**
    * Extends the bounded curve Curve to the point Point. The extension is built:
@@ -34445,11 +35294,11 @@ export declare class GeomLib {
   /**
    * Returns true if the poles of U1 isoline and the poles of U2 isoline of surface are identical according to tolerance criterion.
    */
-  static IsBzUClosed(S: Geom_BezierSurface, U1: number, U2: number, Tol: number): boolean;
+  static IsBzUClosed(S: unknown, U1: number, U2: number, Tol: number): boolean;
   /**
    * Returns true if the poles of V1 isoline and the poles of V2 isoline of surface are identical according to tolerance criterion.
    */
-  static IsBzVClosed(S: Geom_BezierSurface, V1: number, V2: number, Tol: number): boolean;
+  static IsBzVClosed(S: unknown, V1: number, V2: number, Tol: number): boolean;
   /**
    * Checks whether the 2d curve is a isoline. It can be represented by b-spline, bezier, or geometric line. This line should have natural parameterization.
    * @param theC2D Trimmed curve to be checked.
@@ -34470,234 +35319,60 @@ export declare class GeomLib {
   [Symbol.dispose](): void;
 }
 
-/**
- * Implements construction algorithms for an arc of ellipse in the plane. The result is a Geom2d_TrimmedCurve curve. A MakeArcOfEllipse object provides a framework for:
- */
-export declare class GCE2d_MakeArcOfEllipse extends GCE2d_Root {
-  /**
-   * Make an arc of Ellipse (TrimmedCurve from Geom2d) from a Ellipse between two parameters Alpha1 and Alpha2.
-   */
-  constructor(Elips: gp_Elips2d, Alpha1: number, Alpha2: number);
-  /**
-   * Make an arc of Ellipse (TrimmedCurve from Geom2d) from a Ellipse between two parameters Alpha1 and Alpha2.
-   */
-  constructor(Elips: gp_Elips2d, P: gp_Pnt2d, Alpha: number);
-  /**
-   * Make an arc of Ellipse (TrimmedCurve from Geom2d) from a Ellipse between two parameters Alpha1 and Alpha2.
-   */
-  constructor(Elips: gp_Elips2d, P1: gp_Pnt2d, P2: gp_Pnt2d);
-  /**
-   * Make an arc of Ellipse (TrimmedCurve from Geom2d) from a Ellipse between two parameters Alpha1 and Alpha2.
-   */
-  constructor(Elips: gp_Elips2d, Alpha1: number, Alpha2: number, Sense: boolean);
-  /**
-   * Make an arc of Ellipse (TrimmedCurve from Geom2d) from a Ellipse between point.
-   */
-  constructor(Elips: gp_Elips2d, P: gp_Pnt2d, Alpha: number, Sense: boolean);
-  /**
-   * Make an arc of Ellipse (TrimmedCurve from Geom2d) from a Ellipse between two points P1 and P2. Please, note: The orientation of the arc is:
-   */
-  constructor(Elips: gp_Elips2d, P1: gp_Pnt2d, P2: gp_Pnt2d, Sense: boolean);
-  /**
-   * Returns the constructed arc of ellipse.
-   */
-  Value(): Geom2d_TrimmedCurve;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * This class implements the following algorithms used to create Ellipse from Geom2d.
- */
-export declare class GCE2d_MakeEllipse extends GCE2d_Root {
-  /**
-   * Creates an ellipse from a non persistent one from package gp.
-   */
-  constructor(E: gp_Elips2d);
-  /**
-   * Axis is the local coordinate system of the ellipse. It is not forbidden to create an ellipse with MajorRadius = MinorRadius. The status is "InvertRadius" if MajorRadius < MinorRadius or "NegativeRadius" if MinorRadius < 0.
-   */
-  constructor(Axis: gp_Ax22d, MajorRadius: number, MinorRadius: number);
-  /**
-   * Make an Ellipse centered on the point Center, where.
-   */
-  constructor(S1: gp_Pnt2d, S2: gp_Pnt2d, Center: gp_Pnt2d);
-  /**
-   * Make an Ellipse centered on the point Center, where.
-   */
-  constructor(MajorAxis: gp_Ax2d, MajorRadius: number, MinorRadius: number);
-  /**
-   * MajorAxis is the local coordinate system of the ellipse. It is the "XAxis". The minor axis is the YAxis of the ellipse. Sense give the sense of parametrization of the Ellipse. It is not forbidden to create an ellipse with MajorRadius = MinorRadius. The status is "InvertRadius" if MajorRadius < MinorRadius or "NegativeRadius" if MinorRadius < 0.
-   */
-  constructor(MajorAxis: gp_Ax2d, MajorRadius: number, MinorRadius: number, Sense?: boolean);
-  /**
-   * Returns the constructed ellipse. Exceptions StdFail_NotDone if no ellipse is constructed.
-   */
-  Value(): Geom2d_Ellipse;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * Implements construction algorithms for a line segment in the plane. The result is a Geom2d_TrimmedCurve curve. A MakeSegment object provides a framework for:
- */
-export declare class GCE2d_MakeSegment extends GCE2d_Root {
-  /**
-   * Make a segment of Line from the 2 points <P1> and <P2>. Status is "ConfusedPoints" if <P1> and <P2> are confused.
-   */
-  constructor(P1: gp_Pnt2d, P2: gp_Pnt2d);
-  /**
-   * Make a segment of Line from the point <P1> with the direction.
-   */
-  constructor(P1: gp_Pnt2d, V: gp_Dir2d, P2: gp_Pnt2d);
-  /**
-   * Make a segment of Line from the line <Line> between the two parameters U1 and U2. Status is "SameParameters" if <U1> is equal <U2>.
-   */
-  constructor(Line: gp_Lin2d, U1: number, U2: number);
-  /**
-   * Make a segment of Line from the line <Line> between the point <Point> and the parameter Ulast. It returns NullObject if <U1> is equal <U2>.
-   */
-  constructor(Line: gp_Lin2d, Point: gp_Pnt2d, Ulast: number);
-  /**
-   * Make a segment of Line from the line <Line> between the two points <P1> and <P2>. It returns NullObject if <P1> and <P2> are confused. Warning If the points which limit the segment are coincident for given points or for the projection of given points on the line which supports the line segment (that is, when IsDone returns false), the Status function returns gce_ConfusedPoints. This warning only concerns the first two constructors.
-   */
-  constructor(Line: gp_Lin2d, P1: gp_Pnt2d, P2: gp_Pnt2d);
-  /**
-   * Returns the constructed line segment. Exceptions StdFail_NotDone if no line segment is constructed.
-   */
-  Value(): Geom2d_TrimmedCurve;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * Implements construction algorithms for an arc of circle in the plane. The result is a Geom2d_TrimmedCurve curve. A MakeArcOfCircle object provides a framework for:
- */
-export declare class GCE2d_MakeArcOfCircle extends GCE2d_Root {
-  /**
-   * Makes an arc of circle (TrimmedCurve from Geom2d) from three points P1,P2,P3 between two points P1 and P3, and passing through the point P2.
-   */
-  constructor(P1: gp_Pnt2d, P2: gp_Pnt2d, P3: gp_Pnt2d);
-  /**
-   * Makes an arc of circle (TrimmedCurve from Geom2d) from two points P1,P2 and the tangente to the solution at the point P1.
-   */
-  constructor(P1: gp_Pnt2d, V: gp_Vec2d, P2: gp_Pnt2d);
-  /**
-   * Makes an arc of circle (TrimmedCurve from Geom2d) from two points P1,P2 and the tangente to the solution at the point P1.
-   */
-  constructor(Circ: gp_Circ2d, Alpha1: number, Alpha2: number);
-  /**
-   * Makes an arc of circle (TrimmedCurve from Geom2d) from two points P1,P2 and the tangente to the solution at the point P1.
-   */
-  constructor(Circ: gp_Circ2d, P: gp_Pnt2d, Alpha: number);
-  /**
-   * Makes an arc of circle (TrimmedCurve from Geom2d) from two points P1,P2 and the tangente to the solution at the point P1.
-   */
-  constructor(Circ: gp_Circ2d, P1: gp_Pnt2d, P2: gp_Pnt2d);
-  /**
-   * Makes an arc of circle (TrimmedCurve from Geom2d) from a circle between two parameters Alpha1 and Alpha2. The two parameters are angles. The parameters are in radians.
-   */
-  constructor(Circ: gp_Circ2d, Alpha1: number, Alpha2: number, Sense: boolean);
-  /**
-   * Makes an arc of circle (TrimmedCurve from Geom2d) from a circle between point.
-   */
-  constructor(Circ: gp_Circ2d, P: gp_Pnt2d, Alpha: number, Sense: boolean);
-  /**
-   * Makes an arc of circle (TrimmedCurve from Geom2d) from a circle between two points P1 and P2.
-   */
-  constructor(Circ: gp_Circ2d, P1: gp_Pnt2d, P2: gp_Pnt2d, Sense: boolean);
-  /**
-   * Returns the constructed arc of circle. Exceptions StdFail_NotDone if no arc of circle is constructed.
-   */
-  Value(): Geom2d_TrimmedCurve;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * This class implements the following algorithms used to create Circle from Geom2d.
- */
-export declare class GCE2d_MakeCircle extends GCE2d_Root {
-  /**
-   * creates a circle from a non persistent one.
-   */
-  constructor(C: gp_Circ2d);
-  /**
-   * A is the local coordinate system of the circle which defines the origin of parametrization. It is not forbidden to create a circle with Radius = 0.0 The status is "NegativeRadius" if Radius < 0.
-   */
-  constructor(A: gp_Ax22d, Radius: number);
-  /**
-   * Make a Circle from Geom2d <TheCirc> parallel to another Circ <Circ> with a distance <Dist>. If Dist is greater than zero the result is enclosing the circle <Circ>, else the result is enclosed by the circle <Circ>.
-   */
-  constructor(Circ: gp_Circ2d, Dist: number);
-  /**
-   * Make a Circle from Geom2d <TheCirc> parallel to another Circ <Circ> and passing through a Pnt <Point>.
-   */
-  constructor(Circ: gp_Circ2d, Point: gp_Pnt2d);
-  /**
-   * Make a Circle from Geom2d <TheCirc> parallel to another Circ <Circ> and passing through a Pnt <Point>.
-   */
-  constructor(A: gp_Ax2d, Radius: number);
-  /**
-   * Make a Circle from Geom2d <TheCirc> parallel to another Circ <Circ> and passing through a Pnt <Point>.
-   */
-  constructor(P: gp_Pnt2d, Radius: number);
-  /**
-   * Make a Circle from Geom2d <TheCirc> parallel to another Circ <Circ> and passing through a Pnt <Point>.
-   */
-  constructor(Center: gp_Pnt2d, Point: gp_Pnt2d);
-  /**
-   * A is the "XAxis" of the circle which defines the origin of parametrization. It is not forbidden to create a circle with Radius = 0.0 The status is "NegativeRadius" if Radius < 0.
-   */
-  constructor(A: gp_Ax2d, Radius: number, Sense: boolean);
-  /**
-   * Make a Circ from gp <TheCirc> passing through 3 Pnt2d <P1>,<P2>,<P3>.
-   */
-  constructor(P1: gp_Pnt2d, P2: gp_Pnt2d, P3: gp_Pnt2d);
-  /**
-   * Make a Circ from geom2d <TheCirc> by its center an radius.
-   */
-  constructor(P: gp_Pnt2d, Radius: number, Sense: boolean);
-  /**
-   * Makes a Circle from geom2d <TheCirc> with its center  and a point giving the radius. If Sense is true the local coordinate system of the solution is direct and non direct in the other case. Warning The MakeCircle class does not prevent the construction of a circle with a null radius. If an error occurs (that is, when IsDone returns false), the Status function returns:
-   */
-  constructor(Center: gp_Pnt2d, Point: gp_Pnt2d, Sense: boolean);
-  /**
-   * Returns the constructed circle. Exceptions StdFail_NotDone if no circle is constructed.
-   */
-  Value(): Geom2d_Circle;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * This class implements the common services for all classes of gce which report error.
- */
-export declare class GCE2d_Root {
-  constructor();
-  /**
-   * Returns true if the construction is successful.
-   */
-  IsDone(): boolean;
-  /**
-   * Returns the status of the construction.
-   */
-  Status(): gce_ErrorType;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
 export type Extrema_ExtAlgo = typeof Extrema_ExtAlgo[keyof typeof Extrema_ExtAlgo];
 export declare const Extrema_ExtAlgo: {
   readonly Extrema_ExtAlgo_Grad: 'Extrema_ExtAlgo_Grad';
   readonly Extrema_ExtAlgo_Tree: 'Extrema_ExtAlgo_Tree';
 };
+
+/**
+ * Implements a general mechanism to compute the global properties of a "compound geometric system" in 3d space by composition of the global properties of "elementary geometric entities" such as (curve, surface, solid, set of points). It is possible to compose the properties of several "compound geometric systems" too.
+ */
+export declare class GProp_GProps {
+  /**
+   * The origin (0, 0, 0) of the absolute cartesian coordinate system is used to compute the global properties.
+   */
+  constructor();
+  /**
+   * The point SystemLocation is used to compute the global properties of the system. For more accuracy it is better to define this point closed to the location of the system. For example it could be a point around the centre of mass of the system. This point is referred to as the reference point for this framework. For greater accuracy it is better for the reference point to be close to the location of the system. It can, for example, be a point near the center of mass of the system. At initialization, the framework is empty; i.e. it retains no dimensional information such as mass, or inertia. However, it is now able to bring together global properties of various other systems, whose global properties have already been computed using another framework. To do this, use the function Add to define the components of the system. Use it once per component of the system, and then use the interrogation functions available to access the computed values.
+   */
+  constructor(SystemLocation: gp_Pnt);
+  /**
+   * Either.
+   */
+  Add(Item: GProp_GProps, Density: number): void;
+  /**
+   * Returns the mass of the current system. If no density is attached to the components of the current system the returned value corresponds to :
+   */
+  Mass(): number;
+  /**
+   * Returns the center of mass of the current system. If the gravitational field is uniform, it is the center of gravity. The coordinates returned for the center of mass are expressed in the absolute Cartesian coordinate system.
+   */
+  CentreOfMass(): gp_Pnt;
+  /**
+   * returns the matrix of inertia. It is a symmetrical matrix. The coefficients of the matrix are the quadratic moments of inertia.
+   */
+  MatrixOfInertia(): unknown;
+  /**
+   * Returns Ix, Iy, Iz, the static moments of inertia of the current system; i.e. the moments of inertia about the three axes of the Cartesian coordinate system.
+   */
+  StaticMoments(): { Ix: number; Iy: number; Iz: number };
+  /**
+   * computes the moment of inertia of the material system about the axis A.
+   */
+  MomentOfInertia(A: gp_Ax1): number;
+  /**
+   * Computes the principal properties of inertia of the current system. There is always a set of axes for which the products of inertia of a geometric system are equal to 0; i.e. the matrix of inertia of the system is diagonal. These axes are the principal axes of inertia. Their origin is coincident with the center of mass of the system. The associated moments are called the principal moments of inertia. This function computes the eigen values and the eigen vectors of the matrix of inertia of the system. Results are stored by using a presentation framework of principal properties of inertia (GProp_PrincipalProps object) which may be queried to access the value sought.
+   */
+  PrincipalProperties(): unknown;
+  /**
+   * Returns the radius of gyration of the current system about the axis A.
+   */
+  RadiusOfGyration(A: gp_Ax1): number;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
 
 /**
  * Computes a set of points on a curve from package Adaptor3d such as between two successive points P1(u1)and P2(u2) :
@@ -34916,31 +35591,351 @@ export declare class GCPnts_TangentialDeflection {
 }
 
 /**
+ * This class implements construction algorithms for arcs of ellipses in the plane. The result is a Geom2d_TrimmedCurve. A GC_MakeArcOfEllipse2d object provides a framework for:
+ */
+export declare class GC_MakeArcOfEllipse2d extends GC_Root {
+  /**
+   * Constructs an arc from angular bounds on an ellipse.
+   * @param theEllipse source ellipse
+   * @param theAlpha1 first angle (radians)
+   * @param theAlpha2 second angle (radians)
+   */
+  constructor(theEllipse: gp_Elips2d, theAlpha1: number, theAlpha2: number);
+  /**
+   * Constructs an arc from a point and angular bound on an ellipse.
+   * @param theEllipse source ellipse
+   * @param thePoint point on source ellipse
+   * @param theAlpha angle value (radians)
+   */
+  constructor(theEllipse: gp_Elips2d, thePoint: gp_Pnt2d, theAlpha: number);
+  /**
+   * Constructs an arc between two points on an ellipse.
+   * @param theEllipse source ellipse
+   * @param theP1 first point on source ellipse
+   * @param theP2 second point on source ellipse
+   */
+  constructor(theEllipse: gp_Elips2d, theP1: gp_Pnt2d, theP2: gp_Pnt2d);
+  /**
+   * Constructs an arc from angular bounds on an ellipse.
+   * @param theEllipse source ellipse
+   * @param theAlpha1 first angle (radians)
+   * @param theAlpha2 second angle (radians)
+   * @param theSense orientation of resulting arc
+   */
+  constructor(theEllipse: gp_Elips2d, theAlpha1: number, theAlpha2: number, theSense: boolean);
+  /**
+   * Constructs an arc from a point and angular bound on an ellipse.
+   * @param theEllipse source ellipse
+   * @param thePoint point on source ellipse
+   * @param theAlpha angle value (radians)
+   * @param theSense orientation of resulting arc
+   */
+  constructor(theEllipse: gp_Elips2d, thePoint: gp_Pnt2d, theAlpha: number, theSense: boolean);
+  /**
+   * Constructs an arc between two points on an ellipse.
+   * @param theEllipse source ellipse
+   * @param theP1 first point on source ellipse
+   * @param theP2 second point on source ellipse
+   * @param theSense orientation of resulting arc
+   */
+  constructor(theEllipse: gp_Elips2d, theP1: gp_Pnt2d, theP2: gp_Pnt2d, theSense: boolean);
+  /**
+   * Returns the constructed arc of ellipse.
+   * @returns resulting trimmed curve
+   */
+  Value(): Geom2d_TrimmedCurve;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
+ * This class implements construction algorithms for line segments in the plane. The result is a Geom2d_TrimmedCurve. A GC_MakeSegment2d object provides a framework for:
+ */
+export declare class GC_MakeSegment2d extends GC_Root {
+  /**
+   * Creates a segment between two points.
+   * @param theP1 first point
+   * @param theP2 second point
+   */
+  constructor(theP1: gp_Pnt2d, theP2: gp_Pnt2d);
+  /**
+   * Creates a segment on a line defined by point and direction. The segment starts at theP1 and ends at the orthogonal projection of theP2 onto that line.
+   * @param theP1 first point
+   * @param theV direction vector
+   * @param theP2 second point
+   */
+  constructor(theP1: gp_Pnt2d, theV: gp_Dir2d, theP2: gp_Pnt2d);
+  /**
+   * Creates a segment on a line between two parameter values.
+   * @param theLine source line
+   * @param theU1 first parameter
+   * @param theU2 second parameter
+   */
+  constructor(theLine: unknown, theU1: number, theU2: number);
+  /**
+   * Creates a segment on a line between point parameter and target parameter.
+   * @param theLine source line
+   * @param thePoint first point on segment support line
+   * @param theUlast last parameter
+   */
+  constructor(theLine: unknown, thePoint: gp_Pnt2d, theUlast: number);
+  /**
+   * Creates a segment on a line between projections of two points.
+   * @param theLine source line
+   * @param theP1 first point
+   * @param theP2 second point
+   */
+  constructor(theLine: unknown, theP1: gp_Pnt2d, theP2: gp_Pnt2d);
+  /**
+   * Returns the constructed line segment. Exceptions StdFail_NotDone if no line segment is constructed.
+   * @returns resulting trimmed curve
+   */
+  Value(): Geom2d_TrimmedCurve;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
+ * This class implements construction algorithms for ellipses in the plane. The result is a Geom2d_Ellipse. A GC_MakeEllipse2d object provides a framework for:
+ */
+export declare class GC_MakeEllipse2d extends GC_Root {
+  /**
+   * Creates an ellipse from a non-persistent one from package gp.
+   * @param theEllipse source ellipse
+   */
+  constructor(theEllipse: gp_Elips2d);
+  /**
+   * Creates an ellipse from a local coordinate system and radii.
+   * @param theAxis local coordinate system
+   * @param theMajorRadius major radius value
+   * @param theMinorRadius minor radius value
+   */
+  constructor(theAxis: gp_Ax22d, theMajorRadius: number, theMinorRadius: number);
+  /**
+   * Creates an ellipse from two apex points and center point.
+   * @param theS1 first apex point
+   * @param theS2 second point defining minor radius
+   * @param theCenter center point
+   */
+  constructor(theS1: gp_Pnt2d, theS2: gp_Pnt2d, theCenter: gp_Pnt2d);
+  /**
+   * Creates an ellipse from a local coordinate system and radii.
+   * @param theMajorRadius major radius value
+   * @param theMinorRadius minor radius value
+   */
+  constructor(theMajorAxis: gp_Ax2d, theMajorRadius: number, theMinorRadius: number);
+  /**
+   * Creates an ellipse from major axis placement and radii.
+   * @param theMajorAxis major axis placement
+   * @param theMajorRadius major radius value
+   * @param theMinorRadius minor radius value
+   * @param theSense orientation flag
+   */
+  constructor(theMajorAxis: gp_Ax2d, theMajorRadius: number, theMinorRadius: number, theSense?: boolean);
+  /**
+   * Returns the constructed ellipse. Exceptions StdFail_NotDone if no ellipse is constructed.
+   * @returns resulting ellipse
+   */
+  Value(): Geom2d_Ellipse;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
+ * This class implements construction algorithms for arcs of circles in the plane. The result is a Geom2d_TrimmedCurve. A GC_MakeArcOfCircle2d object provides a framework for:
+ */
+export declare class GC_MakeArcOfCircle2d extends GC_Root {
+  /**
+   * Constructs an arc passing through three points.
+   * @param theP1 first point
+   * @param theP2 intermediate point
+   * @param theP3 last point
+   */
+  constructor(theP1: gp_Pnt2d, theP2: gp_Pnt2d, theP3: gp_Pnt2d);
+  /**
+   * Constructs an arc from two points and tangent vector at start point.
+   * @param theP1 start point
+   * @param theV tangent vector at start point
+   * @param theP2 end point
+   */
+  constructor(theP1: gp_Pnt2d, theV: gp_Vec2d, theP2: gp_Pnt2d);
+  /**
+   * Constructs an arc from two points and tangent vector at start point.
+   */
+  constructor(theCircle: gp_Circ2d, theAlpha1: number, theAlpha2: number);
+  /**
+   * Constructs an arc from two points and tangent vector at start point.
+   */
+  constructor(theCircle: gp_Circ2d, thePoint: gp_Pnt2d, theAlpha: number);
+  /**
+   * Constructs an arc from two points and tangent vector at start point.
+   * @param theP1 start point
+   * @param theP2 end point
+   */
+  constructor(theCircle: gp_Circ2d, theP1: gp_Pnt2d, theP2: gp_Pnt2d);
+  /**
+   * Constructs an arc from angular bounds on a circle.
+   * @param theCircle source circle
+   * @param theAlpha1 first angle (radians)
+   * @param theAlpha2 second angle (radians)
+   * @param theSense orientation of resulting arc
+   */
+  constructor(theCircle: gp_Circ2d, theAlpha1: number, theAlpha2: number, theSense: boolean);
+  /**
+   * Constructs an arc from a point and angular bound on a circle.
+   * @param theCircle source circle
+   * @param thePoint point on source circle
+   * @param theAlpha angle value (radians)
+   * @param theSense orientation of resulting arc
+   */
+  constructor(theCircle: gp_Circ2d, thePoint: gp_Pnt2d, theAlpha: number, theSense: boolean);
+  /**
+   * Constructs an arc between two points on a circle.
+   * @param theCircle source circle
+   * @param theP1 first point on source circle
+   * @param theP2 second point on source circle
+   * @param theSense orientation of resulting arc
+   */
+  constructor(theCircle: gp_Circ2d, theP1: gp_Pnt2d, theP2: gp_Pnt2d, theSense: boolean);
+  /**
+   * Returns the constructed arc of circle. Exceptions StdFail_NotDone if no arc of circle is constructed.
+   * @returns resulting trimmed curve
+   */
+  Value(): Geom2d_TrimmedCurve;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
+ * This class implements construction algorithms for circles in the plane. The result is a Geom2d_Circle. A GC_MakeCircle2d object provides a framework for:
+ */
+export declare class GC_MakeCircle2d extends GC_Root {
+  /**
+   * Creates a circle from a non-persistent one from package gp.
+   * @param theCircle source circle
+   */
+  constructor(theCircle: gp_Circ2d);
+  /**
+   * Creates a circle from a local coordinate system and radius.
+   * @param theAxis local coordinate system
+   * @param theRadius radius value
+   */
+  constructor(theAxis: gp_Ax22d, theRadius: number);
+  /**
+   * Creates a circle parallel to another one at signed distance.
+   * @param theCircle source circle
+   * @param theDist signed distance
+   */
+  constructor(theCircle: gp_Circ2d, theDist: number);
+  /**
+   * Creates a circle parallel to another one and passing through a point.
+   * @param theCircle source circle
+   * @param thePoint point on resulting circle
+   */
+  constructor(theCircle: gp_Circ2d, thePoint: gp_Pnt2d);
+  /**
+   * Creates a circle from a local coordinate system and radius.
+   * @param theAxis local coordinate system
+   * @param theRadius radius value
+   */
+  constructor(theAxis: gp_Ax2d, theRadius: number);
+  /**
+   * Creates a circle from a local coordinate system and radius.
+   * @param theRadius radius value
+   */
+  constructor(theCenter: gp_Pnt2d, theRadius: number);
+  /**
+   * Creates a circle parallel to another one and passing through a point.
+   * @param thePoint point on resulting circle
+   */
+  constructor(theCenter: gp_Pnt2d, thePoint: gp_Pnt2d);
+  /**
+   * Creates a circle from an axis placement and radius.
+   * @param theAxis axis placement
+   * @param theRadius radius value
+   * @param theSense orientation flag
+   */
+  constructor(theAxis: gp_Ax2d, theRadius: number, theSense: boolean);
+  /**
+   * Creates a circle passing through three points.
+   * @param theP1 first point
+   * @param theP2 second point
+   * @param theP3 third point
+   */
+  constructor(theP1: gp_Pnt2d, theP2: gp_Pnt2d, theP3: gp_Pnt2d);
+  /**
+   * Creates a circle from center point and radius.
+   * @param theCenter center point
+   * @param theRadius radius value
+   * @param theSense orientation flag
+   */
+  constructor(theCenter: gp_Pnt2d, theRadius: number, theSense: boolean);
+  /**
+   * Creates a circle from center point and one point on the circle.
+   * @param theCenter center point
+   * @param thePoint point on resulting circle
+   * @param theSense orientation flag
+   */
+  constructor(theCenter: gp_Pnt2d, thePoint: gp_Pnt2d, theSense: boolean);
+  /**
+   * Returns the constructed circle. Exceptions StdFail_NotDone if no circle is constructed.
+   * @returns resulting circle
+   */
+  Value(): Geom2d_Circle;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
  * Implements construction algorithms for an arc of circle in 3D space. The result is a Geom_TrimmedCurve curve. A MakeArcOfCircle object provides a framework for:
  */
 export declare class GC_MakeArcOfCircle extends GC_Root {
   /**
-   * Make an arc of circle (TrimmedCurve from Geom) from three points P1,P2,P3 between two points P1 and P2.
+   * Creates an arc of circle passing through three points.
+   * @param theP1 first point
+   * @param theP2 second point
+   * @param theP3 third point
    */
-  constructor(P1: gp_Pnt, P2: gp_Pnt, P3: gp_Pnt);
+  constructor(theP1: gp_Pnt, theP2: gp_Pnt, theP3: gp_Pnt);
   /**
-   * Make an arc of circle (TrimmedCurve from Geom) from two points P1,P2 and the tangente to the solution at the point P1. The orientation of the arc is:
+   * Creates an arc of circle from two points and a tangent at the first point.
+   * @param theP1 start point
+   * @param theV tangent vector at start point
+   * @param theP2 end point
    */
-  constructor(P1: gp_Pnt, V: gp_Vec, P2: gp_Pnt);
+  constructor(theP1: gp_Pnt, theV: gp_Vec, theP2: gp_Pnt);
   /**
-   * Make an arc of circle (TrimmedCurve from Geom) from a circle between two angles Alpha1 and Alpha2 given in radiians.
+   * Creates an arc of circle from angular bounds.
+   * @param theCirc source circle
+   * @param theAlpha1 first angle (radians)
+   * @param theAlpha2 second angle (radians)
+   * @param theSense orientation of resulting arc
    */
-  constructor(Circ: gp_Circ, Alpha1: number, Alpha2: number, Sense: boolean);
+  constructor(theCirc: gp_Circ, theAlpha1: number, theAlpha2: number, theSense: boolean);
   /**
-   * Make an arc of circle (TrimmedCurve from Geom) from a circle between point.
+   * Creates an arc of circle from a point and an angular bound.
+   * @param theCirc source circle
+   * @param theP point on circle
+   * @param theAlpha target angle (radians)
+   * @param theSense orientation of resulting arc
    */
-  constructor(Circ: gp_Circ, P: gp_Pnt, Alpha: number, Sense: boolean);
+  constructor(theCirc: gp_Circ, theP: gp_Pnt, theAlpha: number, theSense: boolean);
   /**
-   * Make an arc of circle (TrimmedCurve from Geom) from a circle between two points P1 and P2.
+   * Creates an arc of circle from two points on the circle.
+   * @param theCirc source circle
+   * @param theP1 first point on circle
+   * @param theP2 second point on circle
+   * @param theSense orientation of resulting arc
    */
-  constructor(Circ: gp_Circ, P1: gp_Pnt, P2: gp_Pnt, Sense: boolean);
+  constructor(theCirc: gp_Circ, theP1: gp_Pnt, theP2: gp_Pnt, theSense: boolean);
   /**
    * Returns the constructed arc of circle. Exceptions StdFail_NotDone if no arc of circle is constructed.
+   * @returns resulting arc
    */
   Value(): Geom_TrimmedCurve;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -34949,7 +35944,7 @@ export declare class GC_MakeArcOfCircle extends GC_Root {
 }
 
 /**
- * This class implements the common services for all classes of gce which report error.
+ * Provides common status services for GC builders reporting construction errors.
  */
 export declare class GC_Root {
   constructor();
@@ -34958,9 +35953,13 @@ export declare class GC_Root {
    */
   IsDone(): boolean;
   /**
+   * Returns true if the construction has failed.
+   */
+  IsError(): boolean;
+  /**
    * Returns the status of the construction:
    */
-  Status(): gce_ErrorType;
+  Status(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -35036,15 +36035,15 @@ export declare class GeomConvert {
   /**
    * This Method concatenates G1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatG1(ArrayOfCurves: NCollection_Array1_handle_Geom_BSplineCurve, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number): { ArrayOfConcatenated: NCollection_HArray1_handle_Geom_BSplineCurve; ClosedFlag: boolean };
+  static ConcatG1(ArrayOfCurves: unknown, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number): { ArrayOfConcatenated: unknown; ClosedFlag: boolean };
   /**
    * This Method concatenates C1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatC1(ArrayOfCurves: NCollection_Array1_handle_Geom_BSplineCurve, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number): { ArrayOfIndices: NCollection_HArray1_int; ArrayOfConcatenated: NCollection_HArray1_handle_Geom_BSplineCurve; ClosedFlag: boolean };
+  static ConcatC1(ArrayOfCurves: unknown, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number): { ArrayOfIndices: NCollection_HArray1_int; ArrayOfConcatenated: unknown; ClosedFlag: boolean };
   /**
    * This Method concatenates C1 the ArrayOfCurves as far as it is possible. ArrayOfCurves[0..N-1] ArrayOfToler contains the biggest tolerance of the two points shared by two consecutives curves. Its dimension: [0..N-2] ClosedFlag indicates if the ArrayOfCurves is closed. In this case ClosedTolerance contains the biggest tolerance of the two points which are at the closure. Otherwise its value is 0.0 ClosedFlag becomes False on the output if it is impossible to build closed curve.
    */
-  static ConcatC1(ArrayOfCurves: NCollection_Array1_handle_Geom_BSplineCurve, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number, AngularTolerance: number): { ArrayOfIndices: NCollection_HArray1_int; ArrayOfConcatenated: NCollection_HArray1_handle_Geom_BSplineCurve; ClosedFlag: boolean };
+  static ConcatC1(ArrayOfCurves: unknown, ArrayOfToler: NCollection_Array1_double, ClosedTolerance: number, AngularTolerance: number): { ArrayOfIndices: NCollection_HArray1_int; ArrayOfConcatenated: unknown; ClosedFlag: boolean };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns a new BSpline which could still be C0. tolerance is a geometrical tolerance. The Angular toleranceis in radians and measures the angle of the tangents on the left and on the right to decide if the curve is G1 or not at a given point.
    */
@@ -35052,11 +36051,11 @@ export declare class GeomConvert {
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns an array of BSpline C1. tolerance is a geometrical tolerance.
    */
-  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom_BSplineCurve, tolerance: number): { tabBS: NCollection_HArray1_handle_Geom_BSplineCurve };
+  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom_BSplineCurve, tolerance: number): { tabBS: unknown };
   /**
    * This Method reduces as far as it is possible the multiplicities of the knots of the BSpline BS.(keeping the geometry). It returns an array of BSpline C1. tolerance is a geometrical tolerance : it allows for the maximum deformation The Angular tolerance is in radians and measures the angle of the tangents on the left and on the right to decide if the curve is C1 or not at a given point.
    */
-  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom_BSplineCurve, AngularTolerance: number, tolerance: number): { tabBS: NCollection_HArray1_handle_Geom_BSplineCurve };
+  static C0BSplineToArrayOfC1BSplineCurve(BS: Geom_BSplineCurve, AngularTolerance: number, tolerance: number): { tabBS: unknown };
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -35252,8 +36251,8 @@ export declare class TopoDS_Shape {
   /**
    * Returns a handle to the actual shape implementation.
    */
-  TShape(): TopoDS_TShape;
-  TShape(theTShape: TopoDS_TShape): void;
+  TShape(): unknown;
+  TShape(theTShape: unknown): void;
   /**
    * Returns the value of the TopAbs_ShapeEnum enumeration that corresponds to this shape, for example VERTEX, EDGE, and so on. Exceptions Standard_NullObject if this shape is null.
    */
@@ -35491,7 +36490,7 @@ export declare class BRepTools {
    * @param theFileSystem shared file system
    * @returns TRUE if at least one triangulation is loaded.
    */
-  static LoadTriangulation(theShape: TopoDS_Shape, theTriangulationIdx: number, theToSetAsActive: boolean, theFileSystem: OSD_FileSystem): boolean;
+  static LoadTriangulation(theShape: TopoDS_Shape, theTriangulationIdx: number, theToSetAsActive: boolean, theFileSystem: unknown): boolean;
   /**
    * Releases triangulation data for each face of the shape if there is deferred storage to load it later.
    * @param theShape shape to unload triangulations
@@ -35513,7 +36512,7 @@ export declare class BRepTools {
    * @param theFileSystem shared file system
    * @returns TRUE if at least one triangulation is loaded.
    */
-  static LoadAllTriangulations(theShape: TopoDS_Shape, theFileSystem: OSD_FileSystem): boolean;
+  static LoadAllTriangulations(theShape: TopoDS_Shape, theFileSystem: unknown): boolean;
   /**
    * Releases all available triangulations for each face of the shape if there is deferred storage to load them later.
    * @param theShape shape to unload triangulations
@@ -35560,11 +36559,11 @@ export declare class BRepTools {
    * @param theVersion the TopTools format version
    * @param theProgress the range of progress indicator to fill in
    */
-  static Write(theShape: TopoDS_Shape, theFile: string, theWithTriangles: boolean, theWithNormals: boolean, theVersion: TopTools_FormatVersion, theProgress: Message_ProgressRange): boolean;
+  static Write(theShape: TopoDS_Shape, theFile: string, theWithTriangles: boolean, theWithNormals: boolean, theVersion: unknown, theProgress: Message_ProgressRange): boolean;
   /**
    * Reads a Shape from  in returns it in <Sh>.  is used to build the shape.
    */
-  static Read(Sh: TopoDS_Shape, File: string, B: BRep_Builder, theProgress: Message_ProgressRange): boolean;
+  static Read(Sh: TopoDS_Shape, File: string, B: unknown, theProgress: Message_ProgressRange): boolean;
   /**
    * Evals real tolerance of edge <theE>. <theC3d>, <theC2d>, <theS>, <theF>, <theL> are correspondently 3d curve of edge, 2d curve on surface <theS> and rang of edge If calculated tolerance is more then current edge tolerance, edge is updated. Method returns actual tolerance of edge.
    */
@@ -35622,14 +36621,14 @@ export declare class BRep_Tool {
    * @param theMeshPurpose a mesh purpose to find appropriate triangulation (NONE by default).
    * @returns an active triangulation in case of NONE purpose, the first triangulation appropriate for the input purpose, just the first triangulation if none matching other criteria and input purpose is AnyFallback or null handle if there is no any suitable triangulation.
    */
-  static Triangulation(theFace: TopoDS_Face, theLocation: TopLoc_Location, theMeshPurpose: Poly_MeshPurpose): Poly_Triangulation;
+  static Triangulation(theFace: TopoDS_Face, theLocation: TopLoc_Location, theMeshPurpose: number): Poly_Triangulation;
   /**
    * Returns all triangulations of the face.
    * @param theFace the input face.
    * @param theLocation the face location.
    * @returns list of all available face triangulations.
    */
-  static Triangulations(theFace: TopoDS_Face, theLocation: TopLoc_Location): NCollection_List_handle_Poly_Triangulation;
+  static Triangulations(theFace: TopoDS_Face, theLocation: TopLoc_Location): unknown;
   /**
    * Returns the tolerance of the face.
    */
@@ -35665,23 +36664,23 @@ export declare class BRep_Tool {
   /**
    * Returns the 3D polygon of the edge. May be a Null handle. Returns in <L> the location for the polygon.
    */
-  static Polygon3D(E: TopoDS_Edge, L: TopLoc_Location): Poly_Polygon3D;
+  static Polygon3D(E: TopoDS_Edge, L: TopLoc_Location): unknown;
+  /**
+   * Returns the curve associated to the edge in the parametric space of the surface. Returns a NULL handle if this curve does not exist. Returns in <First> and <Last> the parameter range. If the surface is a plane the curve can be not stored but created a new each time. The flag pointed by <theIsStored> serves to indicate storage status. It is valued if the pointer is non-null.
+   */
+  static CurveOnSurface(E: TopoDS_Edge, L: TopLoc_Location): { C: Geom2d_Curve; S: Geom_Surface; First: number; Last: number };
   /**
    * Returns the curve associated to the edge in the parametric space of the face. Returns a NULL handle if this curve does not exist. Returns in <First> and <Last> the parameter range. If the surface is a plane the curve can be not stored but created a new each time. The flag pointed by <theIsStored> serves to indicate storage status. It is valued if the pointer is non-null.
    */
   static CurveOnSurface(E: TopoDS_Edge, F: TopoDS_Face, theIsStored: boolean): { result: Geom2d_Curve; First: number; Last: number };
   /**
-   * Returns the curve associated to the edge in the parametric space of the surface. Returns a NULL handle if this curve does not exist. Returns in <First> and <Last> the parameter range. If the surface is a plane the curve can be not stored but created a new each time. The flag pointed by <theIsStored> serves to indicate storage status. It is valued if the pointer is non-null.
-   */
-  static CurveOnSurface(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, theIsStored: boolean): { result: Geom2d_Curve; First: number; Last: number };
-  /**
-   * Returns in , , <L> a 2d curve, a surface and a location for the edge <E>.  and  are null if the edge has no curve on surface. Returns in <First> and <Last> the parameter range.
-   */
-  static CurveOnSurface(E: TopoDS_Edge, L: TopLoc_Location): { C: Geom2d_Curve; S: Geom_Surface; First: number; Last: number };
-  /**
    * Returns in , , <L> the 2d curve, the surface and the location for the edge <E> of rank <Index>.  and  are null if the index is out of range. Returns in <First> and <Last> the parameter range.
    */
   static CurveOnSurface(E: TopoDS_Edge, L: TopLoc_Location, Index: number): { C: Geom2d_Curve; S: Geom_Surface; First: number; Last: number };
+  /**
+   * Returns the curve associated to the edge in the parametric space of the surface. Returns a NULL handle if this curve does not exist. Returns in <First> and <Last> the parameter range. If the surface is a plane the curve can be not stored but created a new each time. The flag pointed by <theIsStored> serves to indicate storage status. It is valued if the pointer is non-null.
+   */
+  static CurveOnSurface(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, theIsStored: boolean): { result: Geom2d_Curve; First: number; Last: number };
   /**
    * For the planar surface builds the 2d curve for the edge by projection of the edge on plane. Returns a NULL handle if the surface is not planar or the projection failed.
    */
@@ -35689,27 +36688,27 @@ export declare class BRep_Tool {
   /**
    * Returns the polygon associated to the edge in the parametric space of the face. Returns a NULL handle if this polygon does not exist.
    */
-  static PolygonOnSurface(E: TopoDS_Edge, F: TopoDS_Face): Poly_Polygon2D;
-  /**
-   * Returns the polygon associated to the edge in the parametric space of the surface. Returns a NULL handle if this polygon does not exist.
-   */
-  static PolygonOnSurface(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location): Poly_Polygon2D;
+  static PolygonOnSurface(E: TopoDS_Edge, F: TopoDS_Face): unknown;
   /**
    * Returns in , , <L> a 2d curve, a surface and a location for the edge <E>.  and  are null if the edge has no polygon on surface.
    */
-  static PolygonOnSurface(E: TopoDS_Edge, L: TopLoc_Location): { C: Poly_Polygon2D; S: Geom_Surface };
+  static PolygonOnSurface(E: TopoDS_Edge, L: TopLoc_Location): { C: unknown; S: Geom_Surface };
+  /**
+   * Returns the polygon associated to the edge in the parametric space of the surface. Returns a NULL handle if this polygon does not exist.
+   */
+  static PolygonOnSurface(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location): unknown;
   /**
    * Returns in , , <L> the 2d curve, the surface and the location for the edge <E> of rank <Index>.  and  are null if the index is out of range.
    */
-  static PolygonOnSurface(E: TopoDS_Edge, L: TopLoc_Location, Index: number): { C: Poly_Polygon2D; S: Geom_Surface };
-  /**
-   * Returns the polygon associated to the edge in the parametric space of the face. Returns a NULL handle if this polygon does not exist.
-   */
-  static PolygonOnTriangulation(E: TopoDS_Edge, T: Poly_Triangulation, L: TopLoc_Location): Poly_PolygonOnTriangulation;
+  static PolygonOnSurface(E: TopoDS_Edge, L: TopLoc_Location, Index: number): { C: unknown; S: Geom_Surface };
   /**
    * Returns in.
    */
   static PolygonOnTriangulation(E: TopoDS_Edge, L: TopLoc_Location): { P: Poly_PolygonOnTriangulation; T: Poly_Triangulation };
+  /**
+   * Returns the polygon associated to the edge in the parametric space of the face. Returns a NULL handle if this polygon does not exist.
+   */
+  static PolygonOnTriangulation(E: TopoDS_Edge, T: Poly_Triangulation, L: TopLoc_Location): Poly_PolygonOnTriangulation;
   /**
    * Returns in.
    */
@@ -35783,10 +36782,6 @@ export declare class BRep_Tool {
    */
   static Pnt(V: TopoDS_Vertex): gp_Pnt;
   /**
-   * Returns the parameter of <V> on <E>. Throws Standard_NoSuchObject if no parameter on edge.
-   */
-  static Parameter(V: TopoDS_Vertex, E: TopoDS_Edge): number;
-  /**
    * Finds the parameter of <theV> on <theE>.
    * @param theV input vertex
    * @param theE input edge
@@ -35794,7 +36789,19 @@ export declare class BRep_Tool {
    */
   static Parameter(theV: TopoDS_Vertex, theE: TopoDS_Edge): { result: boolean; theParam: number };
   /**
-   * Returns the parameters of the vertex on the pcurve of the edge on the face.
+   * Finds the parameter of <theV> on <theE>.
+   * @param theV input vertex
+   * @param theE input edge
+   * @returns TRUE if done
+   */
+  static Parameter_1(theV: TopoDS_Vertex, theE: TopoDS_Edge): { result: boolean; theParam: number };
+  /**
+   * Returns the parameter of <V> on <E>. Throws Standard_NoSuchObject if no parameter on edge.
+   */
+  static Parameter_2(V: TopoDS_Vertex, E: TopoDS_Edge): number;
+  /**
+   * Finds the parameter of <theV> on <theE>.
+   * @returns TRUE if done
    */
   static Parameter(V: TopoDS_Vertex, E: TopoDS_Edge, F: TopoDS_Face): number;
   /**
@@ -35831,8 +36838,8 @@ export declare class BRepAdaptor_Surface extends GeomAdaptor_TransformedSurface 
    */
   constructor(F: TopoDS_Face, R?: boolean);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -35872,8 +36879,8 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
    */
   constructor(W: TopoDS_Wire, KnotByCurvilinearAbcissa: boolean, First: number, Last: number, Tol: number);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -35913,29 +36920,25 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
   IsPeriodic(): boolean;
   Period(): number;
   /**
-   * Computes the point of parameter U on the curve.
+   * Computes the point of parameter theU on the curve.
    */
-  Value(U: number): gp_Pnt;
+  EvalD0(theU: number): gp_Pnt;
   /**
-   * Computes the point of parameter U.
+   * Computes the point of parameter theU on the curve with its first derivative. Raised if the continuity of the current interval is not C1.
    */
-  D0(U: number, P: gp_Pnt): void;
+  EvalD1(theU: number): Geom_Curve_ResD1;
   /**
-   * Computes the point of parameter U on the curve with its first derivative. Raised if the continuity of the current interval is not C1.
+   * Returns the point and the first and second derivatives at parameter theU. Raised if the continuity of the current interval is not C2.
    */
-  D1(U: number, P: gp_Pnt, V: gp_Vec): void;
+  EvalD2(theU: number): Geom_Curve_ResD2;
   /**
-   * Returns the point P of parameter U, the first and second derivatives V1 and V2. Raised if the continuity of the current interval is not C2.
+   * Returns the point and the first, second and third derivatives at parameter theU. Raised if the continuity of the current interval is not C3.
    */
-  D2(U: number, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec): void;
+  EvalD3(theU: number): Geom_Curve_ResD3;
   /**
-   * Returns the point P of parameter U, the first, the second and the third derivative. Raised if the continuity of the current interval is not C3.
+   * Returns the derivative of order theN at parameter theU. Raised if the continuity of the current interval is not CN. Raised if theN < 1.
    */
-  D3(U: number, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec, V3: gp_Vec): void;
-  /**
-   * The returned vector gives the value of the derivative for the order of derivation N. Raised if the continuity of the current interval is not CN. Raised if N < 1.
-   */
-  DN(U: number, N: number): gp_Vec;
+  EvalDN(theU: number, theN: number): gp_Vec;
   /**
    * returns the parametric resolution
    */
@@ -35944,11 +36947,11 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
    * Returns the type of the curve in the current interval: Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
    */
   GetType(): GeomAbs_CurveType;
-  Line(): gp_Lin;
+  Line(): unknown;
   Circle(): gp_Circ;
   Ellipse(): gp_Elips;
-  Hyperbola(): gp_Hypr;
-  Parabola(): gp_Parab;
+  Hyperbola(): unknown;
+  Parabola(): unknown;
   Degree(): number;
   IsRational(): boolean;
   NbPoles(): number;
@@ -35963,7 +36966,7 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
 /**
  * The Curve from BRepAdaptor allows to use an Edge of the BRep topology like a 3D curve.
  */
-export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
+export declare class BRepAdaptor_Curve extends GeomAdaptor_TransformedCurve {
   /**
    * Creates an undefined Curve with no Edge loaded.
    */
@@ -35977,8 +36980,8 @@ export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
    */
   constructor(E: TopoDS_Edge, F: TopoDS_Face);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -35996,26 +36999,6 @@ export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
    */
   Initialize(E: TopoDS_Edge, F: TopoDS_Face): void;
   /**
-   * Returns the coordinate system of the curve.
-   */
-  Trsf(): gp_Trsf;
-  /**
-   * Returns True if the edge geometry is computed from a 3D curve.
-   */
-  Is3DCurve(): boolean;
-  /**
-   * Returns True if the edge geometry is computed from a pcurve on a surface.
-   */
-  IsCurveOnSurface(): boolean;
-  /**
-   * Returns the Curve of the edge.
-   */
-  Curve(): GeomAdaptor_Curve;
-  /**
-   * Returns the CurveOnSurface of the edge.
-   */
-  CurveOnSurface(): Adaptor3d_CurveOnSurface;
-  /**
    * Returns the edge.
    */
   Edge(): TopoDS_Edge;
@@ -36023,80 +37006,14 @@ export declare class BRepAdaptor_Curve extends Adaptor3d_Curve {
    * Returns the edge tolerance.
    */
   Tolerance(): number;
-  FirstParameter(): number;
-  LastParameter(): number;
-  Continuity(): GeomAbs_Shape;
   /**
-   * Returns the number of intervals for continuity . May be one if Continuity(me) >= .
-   */
-  NbIntervals(S: GeomAbs_Shape): number;
-  /**
-   * Stores in <T> the parameters bounding the intervals of continuity .
-   */
-  Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
-  /**
-   * Returns a curve equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. If <First> >= <Last>.
+   * Returns a curve equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion.
    */
   Trim(First: number, Last: number, Tol: number): Adaptor3d_Curve;
-  IsClosed(): boolean;
-  IsPeriodic(): boolean;
-  Period(): number;
-  /**
-   * Computes the point of parameter U on the curve.
-   */
-  Value(U: number): gp_Pnt;
-  /**
-   * Computes the point of parameter U.
-   */
-  D0(U: number, P: gp_Pnt): void;
-  /**
-   * Computes the point of parameter U on the curve with its first derivative. Raised if the continuity of the current interval is not C1.
-   */
-  D1(U: number, P: gp_Pnt, V: gp_Vec): void;
-  /**
-   * Returns the point P of parameter U, the first and second derivatives V1 and V2. Raised if the continuity of the current interval is not C2.
-   */
-  D2(U: number, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec): void;
-  /**
-   * Returns the point P of parameter U, the first, the second and the third derivative. Raised if the continuity of the current interval is not C3.
-   */
-  D3(U: number, P: gp_Pnt, V1: gp_Vec, V2: gp_Vec, V3: gp_Vec): void;
-  /**
-   * The returned vector gives the value of the derivative for the order of derivation N. Raised if the continuity of the current interval is not CN. Raised if N < 1.
-   */
-  DN(U: number, N: number): gp_Vec;
-  /**
-   * returns the parametric resolution
-   */
-  Resolution(R3d: number): number;
-  /**
-   * Returns the type of the curve in the current interval: Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
-   */
-  GetType(): GeomAbs_CurveType;
-  Line(): gp_Lin;
-  Circle(): gp_Circ;
-  Ellipse(): gp_Elips;
-  Hyperbola(): gp_Hypr;
-  Parabola(): gp_Parab;
-  Degree(): number;
-  IsRational(): boolean;
-  NbPoles(): number;
-  NbKnots(): number;
-  /**
-   * Warning: This will make a copy of the Bezier Curve since it applies to it myTsrf. Be careful when using this method.
-   */
-  Bezier(): Geom_BezierCurve;
-  /**
-   * Warning: This will make a copy of the BSpline Curve since it applies to it myTsrf. Be careful when using this method.
-   */
-  BSpline(): Geom_BSplineCurve;
-  OffsetCurve(): Geom_OffsetCurve;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
 }
-
-export interface Geom_EvalRepCurveDesc_Base {}
 
 /**
  * The Curve2d from BRepAdaptor allows to use an Edge on a Face like a 2d curve (curve in the parametric space).
@@ -36111,8 +37028,8 @@ export declare class BRepAdaptor_Curve2d extends Geom2dAdaptor_Curve {
    */
   constructor(E: TopoDS_Edge, F: TopoDS_Face);
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /**
    * Shallow copy of adaptor.
    */
@@ -36186,6 +37103,10 @@ export declare class TopExp_Explorer {
    * Clears the content of the explorer.
    */
   Clear(): void;
+  /**
+   * Returns a sentinel marking the end of iteration.
+   */
+  end(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -36241,11 +37162,11 @@ export declare class Interface_Static extends Interface_TypedValue {
   /**
    * Creates a new Static with same definition as another one (value is copied, except for Entity : it remains null).
    */
-  constructor(family: string, name: string, type: Interface_ParamType);
+  constructor(family: string, name: string, type_: unknown);
   /**
    * Creates and records a Static, with a family and a name family can report to a name of resource or to a system or internal definition. The name must be unique.
    */
-  constructor(family: string, name: string, type?: Interface_ParamType, init?: string);
+  constructor(family: string, name: string, type_?: unknown, init?: string);
   /**
    * Returns the family. It can be : a resource name for applis, an internal name between : $e (environment variables), $l (other, purely local).
    */
@@ -36269,11 +37190,11 @@ export declare class Interface_Static extends Interface_TypedValue {
   /**
    * Declares a new Static (by calling its constructor) If this name is already taken, does nothing and returns False Else, creates it and returns True For additional definitions, get the Static then edit it.
    */
-  static Init(family: string, name: string, type: Interface_ParamType, init: string): boolean;
+  static Init(family: string, name: string, type_: unknown, init: string): boolean;
   /**
    * As Init with ParamType, but type is given as a character This allows a simpler call Types : 'i' Integer, 'r' Real, 't' Text, 'e' Enum, 'o' Object '=' for same definition as, <init> gives the initial Static Returns False if <type> does not match this list.
    */
-  static Init(family: string, name: string, type: string, init: string): boolean;
+  static Init(family: string, name: string, type_: string, init: string): boolean;
   /**
    * Returns a Static from its name. Null Handle if not present.
    */
@@ -36329,7 +37250,7 @@ export declare class Interface_Static extends Interface_TypedValue {
   /**
    * Returns a list of names of statics : <mode> = 0 (D) : criter is for family <mode> = 1 : criter is regexp on names, takes final items (ignore wild cards) <mode> = 2 : idem but take only wilded, not final items <mode> = 3 : idem, take all items matching criter idem + 100 : takes only non-updated items idem + 200 : takes only updated items criter empty (D) : returns all names else returns names which match the given criter Remark : families beginning by '$' are not listed by criter "" they are listed only by criter "$".
    */
-  static Items(mode: number, criter: string): NCollection_HSequence_handle_TCollection_HAsciiString;
+  static Items(mode: number, criter: string): unknown;
   /**
    * Initializes all standard static parameters, which can be used by every function. statics specific of a norm or a function must be defined around it.
    */
@@ -36337,10 +37258,10 @@ export declare class Interface_Static extends Interface_TypedValue {
   /**
    * Fills given string-to-string map with all static data.
    */
-  static FillMap(theMap: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
+  static FillMap(theMap: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -36353,22 +37274,22 @@ export declare class Interface_TypedValue extends MoniTool_TypedValue {
   /**
    * Creates a TypedValue, with a name.
    */
-  constructor(name: string, type?: Interface_ParamType, init?: string);
+  constructor(name: string, type_?: unknown, init?: string);
   /**
    * Returns the type I.E. calls ValueType then makes correspondence between ParamType from Interface (which remains for compatibility reasons) and ValueType from MoniTool.
    */
-  Type(): Interface_ParamType;
+  Type(): unknown;
   /**
    * Correspondence ParamType from Interface to ValueType from MoniTool.
    */
-  static ParamTypeToValueType(typ: Interface_ParamType): MoniTool_ValueType;
+  static ParamTypeToValueType(typ: unknown): unknown;
   /**
    * Correspondence ParamType from Interface to ValueType from MoniTool.
    */
-  static ValueTypeToParamType(typ: MoniTool_ValueType): Interface_ParamType;
+  static ValueTypeToParamType(typ: unknown): unknown;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -36389,11 +37310,11 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Creates a TypedValue, with a name.
    */
-  constructor(name: string, type: MoniTool_ValueType);
+  constructor(name: string, type_: unknown);
   /**
    * Creates a TypedValue, with a name.
    */
-  constructor(name: string, type?: MoniTool_ValueType, init?: string);
+  constructor(name: string, type_?: unknown, init?: string);
   /**
    * Returns the name.
    */
@@ -36401,11 +37322,11 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Returns the type of the value.
    */
-  ValueType(): MoniTool_ValueType;
+  ValueType(): unknown;
   /**
    * Returns the Definition By priority, the enforced one, else an automatic one, computed from the specification.
    */
-  Definition(): XCAFDoc_PartId;
+  Definition(): unknown;
   /**
    * Enforces a Definition.
    */
@@ -36481,15 +37402,15 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Sets type of which an Object TypedValue must be kind of Error for a TypedValue not an Object (Entity).
    */
-  SetObjectType(typ: Standard_Type): void;
+  SetObjectType(typ: unknown): void;
   /**
    * Returns the type of which an Object TypedValue must be kind of Default is Standard_Transient Null for a TypedValue not an Object.
    */
-  ObjectType(): Standard_Type;
+  ObjectType(): unknown;
   /**
    * Sets a specific Interpret function.
    */
-  SetInterpret(func: MoniTool_ValueInterpret): void;
+  SetInterpret(func: unknown): void;
   /**
    * Tells if a TypedValue has an Interpret.
    */
@@ -36497,7 +37418,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Sets a specific Satisfies function : it is added to the already defined criteria It must match the form : satisfies (val : HAsciiString) returns Boolean.
    */
-  SetSatisfies(func: MoniTool_ValueSatisfies, name: string): void;
+  SetSatisfies(func: unknown, name: string): void;
   /**
    * Returns name of specific satisfy, empty string if none.
    */
@@ -36587,8 +37508,8 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
    */
   static StaticValue(name: string): MoniTool_TypedValue;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -36610,7 +37531,7 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
   /**
    * Selects a Norm defined by its Controller itself.
    */
-  SetController(theCtl: XSControl_Controller): void;
+  SetController(theCtl: unknown): void;
   /**
    * Returns the name of the last Selected Norm. If none is defined, returns an empty string By default, returns the complete name of the norm If <rsc> is True, returns the short name used for resource.
    */
@@ -36618,15 +37539,15 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
   /**
    * Returns the norm controller itself.
    */
-  NormAdaptor(): XSControl_Controller;
+  NormAdaptor(): unknown;
   /**
    * Returns the current Context List, Null if not defined The Context is given to the TransientProcess for TransferRead.
    */
-  Context(): XSControl_WorkSessionMap;
+  Context(): unknown;
   /**
    * Sets the current Context List, as a whole Sets it to the TransferReader.
    */
-  SetAllContext(theContext: XSControl_WorkSessionMap): void;
+  SetAllContext(theContext: unknown): void;
   /**
    * Clears the whole current Context (nullifies it).
    */
@@ -36638,19 +37559,19 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
   /**
    * Sets a Transfer Reader, which manages transfers on reading.
    */
-  SetTransferReader(theTR: XSControl_TransferReader): void;
+  SetTransferReader(theTR: unknown): void;
   /**
    * Returns the Transfer Reader, Null if not set.
    */
-  TransferReader(): XSControl_TransferReader;
+  TransferReader(): unknown;
   /**
    * Returns the TransientProcess(internal data for TransferReader).
    */
-  MapReader(): Transfer_TransientProcess;
+  MapReader(): unknown;
   /**
    * Changes the Map Reader, i.e. considers that the new one defines the relevant read results (forgets the former ones) Returns True when done, False in case of bad definition, i.e. if Model from TP differs from that of Session.
    */
-  SetMapReader(theTP: Transfer_TransientProcess): boolean;
+  SetMapReader(theTP: unknown): boolean;
   /**
    * Returns the result attached to a starting entity If <mode> = 0, returns Final Result If <mode> = 1, considers Last Result If <mode> = 2, considers Final, else if absent, Last returns it as Transient, if result is not transient returns the Binder <mode> = 10,11,12 idem but returns the Binder itself (if it is not, e.g. Shape, returns the Binder) <mode> = 20, returns the ResultFromModel.
    */
@@ -36666,24 +37587,24 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
   /**
    * produces and returns a new Model well conditioned It is produced by the Norm Controller It can be Null (if this function is not implemented)
    */
-  NewModel(): Interface_InterfaceModel;
+  NewModel(): unknown;
   /**
    * Returns the Transfer Reader, Null if not set.
    */
-  TransferWriter(): XSControl_TransferWriter;
+  TransferWriter(): unknown;
   /**
    * Changes the Map Reader, i.e. considers that the new one defines the relevant read results (forgets the former ones) Returns True when done, False if <FP> is Null.
    */
-  SetMapWriter(theFP: Transfer_FinderProcess): boolean;
+  SetMapWriter(theFP: unknown): boolean;
   /**
    * Transfers a Shape from CasCade to a model of current norm, according to the last call to SetModeWriteShape Returns status :Done if OK, Fail if error during transfer, Error if transfer badly initialised.
    */
   TransferWriteShape(theShape: TopoDS_Shape, theCompGraph: boolean, theProgress: Message_ProgressRange): IFSelect_ReturnStatus;
-  Vars(): XSControl_Vars;
-  SetVars(theVars: XSControl_Vars): void;
+  Vars(): unknown;
+  SetVars(theVars: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -36728,15 +37649,15 @@ export declare class XSControl_Reader {
   /**
    * Returns the model. It can then be consulted (header, product).
    */
-  Model(): Interface_InterfaceModel;
+  Model(): unknown;
   /**
    * Returns a list of entities from the IGES or STEP file according to the following rules:
    */
-  GiveList(first: string, second: string): NCollection_HSequence_handle_Standard_Transient;
+  GiveList(first: string, second: string): unknown;
   /**
    * Computes a List of entities from the model as follows <first> being a Selection, <ent> being an entity or a list of entities (as a HSequenceOfTransient) : the standard result of this selection applied to this list if <first> is erroneous, a null handle is returned.
    */
-  GiveList(first: string, ent: Standard_Transient): NCollection_HSequence_handle_Standard_Transient;
+  GiveList(first: string, ent: Standard_Transient): unknown;
   /**
    * Determines the list of root entities which are candidate for a transfer to a Shape, and returns the number of entities in the list.
    */
@@ -36760,7 +37681,7 @@ export declare class XSControl_Reader {
   /**
    * Translates a list of entities. Returns the number of IGES or STEP entities that were successfully translated. The list can be produced with GiveList. Warning - This function does not clear the existing output shapes.
    */
-  TransferList(list: NCollection_HSequence_handle_Standard_Transient, theProgress: Message_ProgressRange): number;
+  TransferList(list: unknown, theProgress: Message_ProgressRange): number;
   /**
    * Translates all translatable roots and returns the number of successful translations. Warning - This function clears existing output shapes first.
    */
@@ -36784,11 +37705,11 @@ export declare class XSControl_Reader {
   /**
    * Prints the check list attached to loaded data, on the Standard Trace File (starts at std::cout) All messages or fails only, according to <failsonly> mode = 0 : per entity, prints messages mode = 1 : per message, just gives count of entities per check mode = 2 : also gives entity numbers.
    */
-  PrintCheckLoad(failsonly: boolean, mode: IFSelect_PrintCount): void;
+  PrintCheckLoad(failsonly: boolean, mode: unknown): void;
   /**
    * Displays check results for the last translation of IGES or STEP entities to Open CASCADE entities. Only fail messages are displayed if failsonly is true. All messages are displayed if failsonly is false. mode determines the contents and the order of the messages according to the terms of the IFSelect_PrintCount enumeration.
    */
-  PrintCheckTransfer(failsonly: boolean, mode: IFSelect_PrintCount): void;
+  PrintCheckTransfer(failsonly: boolean, mode: unknown): void;
   /**
    * Displays the statistics for the last translation. what defines the kind of statistics that are displayed as follows:
    */
@@ -36796,23 +37717,23 @@ export declare class XSControl_Reader {
   /**
    * Gives statistics about Transfer.
    */
-  GetStatsTransfer(list: NCollection_HSequence_handle_Standard_Transient): { nbMapped: number; nbWithResult: number; nbWithFail: number };
+  GetStatsTransfer(list: unknown): { nbMapped: number; nbWithResult: number; nbWithFail: number };
   /**
    * Sets parameters for shape processing.
    * @param theParameters the parameters for shape processing.
    */
-  SetShapeFixParameters(theParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
+  SetShapeFixParameters(theParameters: unknown): void;
   /**
    * Sets parameters for shape processing. Parameters from theParameters are copied to the internal map. Parameters from theAdditionalParameters are copied to the internal map if they are not present in theParameters.
    * @param theParameters the parameters for shape processing.
    * @param theAdditionalParameters the additional parameters for shape processing.
    */
-  SetShapeFixParameters(theParameters: DE_ShapeFixParameters, theAdditionalParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
+  SetShapeFixParameters(theParameters: unknown, theAdditionalParameters: unknown): void;
   /**
    * Returns parameters for shape processing that was set by SetParameters() method.
    * @returns the parameters for shape processing. Empty map if no parameters were set.
    */
-  GetShapeFixParameters(): NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString;
+  GetShapeFixParameters(): unknown;
   /**
    * Sets flags defining operations to be performed on shapes.
    * @param theFlags The flags defining operations to be performed on shapes.
@@ -36847,11 +37768,11 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns the ShareOut defined at creation time.
    */
-  ShareOut(): IFSelect_ShareOut;
+  ShareOut(): unknown;
   /**
    * Sets a new ShareOut. Fills Items which its content Warning : data from the former ShareOut are lost.
    */
-  SetShareOut(shareout: IFSelect_ShareOut): void;
+  SetShareOut(shareout: unknown): void;
   /**
    * Set value of mode responsible for presence of selections after loading If mode set to true that different selections will be accessible after loading else selections will be not accessible after loading( for economy memory in applications).
    */
@@ -36863,27 +37784,27 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Sets a WorkLibrary, which will be used to Read and Write Files.
    */
-  SetLibrary(theLib: IFSelect_WorkLibrary): void;
+  SetLibrary(theLib: unknown): void;
   /**
    * Returns the WorkLibrary. Null Handle if not yet set should be C++ : return const &.
    */
-  WorkLibrary(): IFSelect_WorkLibrary;
+  WorkLibrary(): unknown;
   /**
    * Sets a Protocol, which will be used to determine Graphs, to Read and to Write Files.
    */
-  SetProtocol(protocol: Interface_Protocol): void;
+  SetProtocol(protocol: unknown): void;
   /**
    * Returns the Protocol. Null Handle if not yet set should be C++ : return const &.
    */
-  Protocol(): Interface_Protocol;
+  Protocol(): unknown;
   /**
    * Sets a specific Signature to be the SignType, i.e. the Signature which will determine TypeName from the Model (basic function). It is recorded in the GTool This Signature is also set as "xst-sign-type" (reserved name).
    */
-  SetSignType(signtype: IFSelect_Signature): void;
+  SetSignType(signtype: unknown): void;
   /**
    * Returns the current SignType.
    */
-  SignType(): IFSelect_Signature;
+  SignType(): unknown;
   /**
    * Returns True is a Model has been set.
    */
@@ -36891,11 +37812,11 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Sets a Model as input : this will be the Model from which the ShareOut will work if <clearpointed> is True (default) all SelectPointed items are cleared, else they must be managed by the caller Remark : SetModel clears the Graph, recomputes it if a Protocol is set and if the Model is not empty, of course.
    */
-  SetModel(model: Interface_InterfaceModel, clearpointed: boolean): void;
+  SetModel(model: unknown, clearpointed: boolean): void;
   /**
    * Returns the Model of the Work Session (Null Handle if none) should be C++ : return const &.
    */
-  Model(): Interface_InterfaceModel;
+  Model(): unknown;
   /**
    * Stores the filename used for read for setting the model It is cleared by SetModel and ClearData(1).
    */
@@ -36955,19 +37876,19 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns the Computed Graph as HGraph (Null Handle if not set).
    */
-  HGraph(): Interface_HGraph;
+  HGraph(): unknown;
   /**
    * Returns the Computed Graph, for Read only.
    */
-  Graph(): Interface_Graph;
+  Graph(): unknown;
   /**
    * Returns the list of entities shared by <ent> (can be empty) Returns a null Handle if <ent> is unknown.
    */
-  Shareds(ent: Standard_Transient): NCollection_HSequence_handle_Standard_Transient;
+  Shareds(ent: Standard_Transient): unknown;
   /**
    * Returns the list of entities sharing <ent> (can be empty) Returns a null Handle if <ent> is unknown.
    */
-  Sharings(ent: Standard_Transient): NCollection_HSequence_handle_Standard_Transient;
+  Sharings(ent: Standard_Transient): unknown;
   /**
    * Returns True if a Model is defined and really loaded (not empty), a Protocol is set and a Graph has been computed. In this case, the WorkSession can start to work.
    */
@@ -37043,15 +37964,15 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Fills a Sequence with the List of Idents attached to the Items of which Type complies with (IsKind) <type> (alphabetic order) Remark : <type> = TYPE(Standard_Transient) gives all the Idents which are suitable in the WorkSession.
    */
-  ItemIdents(type: Standard_Type): NCollection_HSequence_int;
+  ItemIdents(type_: unknown): NCollection_HSequence_int;
   /**
    * Fills a Sequence with the list of the Names attached to Items of which Type complies with (IsKind) <type> (alphabetic order) Remark : <type> = TYPE(Standard_Transient) gives all the Names.
    */
-  ItemNames(type: Standard_Type): NCollection_HSequence_handle_TCollection_HAsciiString;
+  ItemNames(type_: unknown): unknown;
   /**
    * Fills a Sequence with the NAMES of the control items, of which the label matches <label> (contain it) : see NextIdentForLabel Search mode is fixed to "contained" If <label> is empty, returns all Names.
    */
-  ItemNamesForLabel(label: string): NCollection_HSequence_handle_TCollection_HAsciiString;
+  ItemNamesForLabel(label: string): unknown;
   /**
    * For query by Label with possible iterations Searches the Ident of which Item has a Label which matches a given one, the search starts from an initial Ident. Returns the first found Ident which follows <id>, or ZERO.
    */
@@ -37063,19 +37984,19 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns an IntParam, given its Ident in the Session Null result if <id> is not suitable for an IntParam (undefined, or defined for another kind of variable).
    */
-  IntParam(id: number): IFSelect_IntParam;
+  IntParam(id: number): unknown;
   /**
    * Returns Integer Value of an IntParam.
    */
-  IntValue(it: IFSelect_IntParam): number;
+  IntValue(it: unknown): number;
   /**
    * Creates a new IntParam. A Name can be set (Optional) Returns the created IntParam, or a Null Handle in case of Failure (see AddItem/AddNamedItem).
    */
-  NewIntParam(name: string): IFSelect_IntParam;
+  NewIntParam(name: string): unknown;
   /**
    * Changes the Integer Value of an IntParam Returns True if Done, False if <it> is not in the WorkSession.
    */
-  SetIntValue(it: IFSelect_IntParam, val: number): boolean;
+  SetIntValue(it: unknown, val: number): boolean;
   /**
    * Returns a TextParam, given its Ident in the Session Null result if <id> is not suitable for a TextParam (undefined, or defined for another kind of variable).
    */
@@ -37083,7 +38004,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns Text Value of a TextParam (a String) or an empty string if <it> is not in the WorkSession.
    */
-  TextValue(par: TCollection_HAsciiString): XCAFDoc_PartId;
+  TextValue(par: TCollection_HAsciiString): unknown;
   /**
    * Creates a new (empty) TextParam. A Name can be set (Optional) Returns the created TextParam (as an HAsciiString), or a Null Handle in case of Failure (see AddItem/AddNamedItem).
    */
@@ -37095,27 +38016,27 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns a Signature, given its Ident in the Session Null result if <id> is not suitable for a Signature (undefined, or defined for another kind of variable).
    */
-  Signature(id: number): IFSelect_Signature;
+  Signature(id: number): unknown;
   /**
    * Returns the Value computed by a Signature for an Entity Returns an empty string if the entity does not belong to the loaded model.
    */
-  SignValue(sign: IFSelect_Signature, ent: Standard_Transient): string;
+  SignValue(sign: unknown, ent: Standard_Transient): string;
   /**
    * Returns a Selection, given its Ident in the Session Null result if <id> is not suitable for a Selection (undefined, or defined for another kind of variable).
    */
-  Selection(id: number): IFSelect_Selection;
+  Selection(id: number): unknown;
   /**
    * Returns the result of a Selection, computed by EvalSelection (see above) under the form of a HSequence (hence, it can be used by a frontal-engine logic). It can be empty Returns a Null Handle if <sel> is not in the WorkSession.
    */
-  SelectionResult(sel: IFSelect_Selection): NCollection_HSequence_handle_Standard_Transient;
+  SelectionResult(sel: unknown): unknown;
   /**
    * Returns the result of a Selection, by forcing its input with a given list unless Null). RULES : only for a SelectDeduct kind Selection : its Input is considered : if it is a SelectDeduct kind Selection, its Input is considered, etc... until an Input is not a Deduct/Extract : its result is replaced by all the chain of deductions is applied.
    */
-  SelectionResultFromList(sel: IFSelect_Selection, list: NCollection_HSequence_handle_Standard_Transient): NCollection_HSequence_handle_Standard_Transient;
+  SelectionResultFromList(sel: unknown, list: unknown): unknown;
   /**
    * Sets a Selection as input for an item, according its type : if  is a Dispatch : as Final Selection if  is a GeneralModifier (i.e. any kind of Modifier) : as Selection used to filter entities to modify <sel> Null causes this Selection to be nullified Returns False if  is not of a suitable type, or  or <sel> is not in the WorkSession.
    */
-  SetItemSelection(item: Standard_Transient, sel: IFSelect_Selection): boolean;
+  SetItemSelection(item: Standard_Transient, sel: unknown): boolean;
   /**
    * Resets input Selection which was set by SetItemSelection Same conditions as for SetItemSelection Returns True if done, False if  is not in the WorkSession.
    */
@@ -37123,19 +38044,19 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns the Selection of a Dispatch or a GeneralModifier. Returns a Null Handle if none is defined or  not good type.
    */
-  ItemSelection(item: Standard_Transient): IFSelect_Selection;
+  ItemSelection(item: Standard_Transient): unknown;
   /**
    * Returns a SignCounter from its ident in the Session Null result if <id> is not suitable for a SignCounter (undefined, or defined for another kind of variable).
    */
-  SignCounter(id: number): IFSelect_SignCounter;
+  SignCounter(id: number): unknown;
   /**
    * Computes the content of a SignCounter when it is defined with a Selection, then returns True Returns False if the SignCounter is not defined with a Selection, or if its Selection Mode is inhibited <forced> to work around optimisations.
    */
-  ComputeCounter(counter: IFSelect_SignCounter, forced: boolean): boolean;
+  ComputeCounter(counter: unknown, forced: boolean): boolean;
   /**
    * Computes the content of a SignCounter from an input list If Null, uses internal definition of the Counter : a Selection, else the whole Model (recomputation forced) If <clear> is True (D), starts from scratch Else, cumulates computations.
    */
-  ComputeCounterFromList(counter: IFSelect_SignCounter, list: NCollection_HSequence_handle_Standard_Transient, clear: boolean): boolean;
+  ComputeCounterFromList(counter: unknown, list: unknown, clear: boolean): boolean;
   /**
    * Returns the ordered list of dispatches stored by the ShareOut.
    */
@@ -37147,19 +38068,19 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns a Dispatch, given its Ident in the Session Null result if <id> is not suitable for a Dispatch (undefined, or defined for another kind of variable).
    */
-  Dispatch(id: number): IFSelect_Dispatch;
+  Dispatch(id: number): unknown;
   /**
    * Returns the rank of a Dispatch in the ShareOut, or 0 if <disp> is not in the ShareOut or not in the WorkSession.
    */
-  DispatchRank(disp: IFSelect_Dispatch): number;
+  DispatchRank(disp: unknown): number;
   /**
    * Gives access to the complete ModelCopier.
    */
-  ModelCopier(): IFSelect_ModelCopier;
+  ModelCopier(): unknown;
   /**
    * Sets a new ModelCopier. Fills Items which its content.
    */
-  SetModelCopier(copier: IFSelect_ModelCopier): void;
+  SetModelCopier(copier: unknown): void;
   /**
    * Returns the count of Modifiers applied to final sending Model Modifiers if <formodel> is True, File Modifiers else (i.e. Modifiers which apply once the Models have been filled).
    */
@@ -37171,15 +38092,15 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns a Modifier, given its Ident in the Session Null result if <id> is not suitable for a Modifier (undefined, or defined for another kind of variable).
    */
-  GeneralModifier(id: number): IFSelect_GeneralModifier;
+  GeneralModifier(id: number): unknown;
   /**
    * Returns a Model Modifier, given its Ident in the Session, i.e. typed as a Modifier (not simply a GeneralModifier) Null result if <id> is not suitable for a Modifier (undefined, or defined for another kind of variable).
    */
-  ModelModifier(id: number): IFSelect_Modifier;
+  ModelModifier(id: number): unknown;
   /**
    * Returns the Rank of a Modifier given its Ident. Model or File Modifier according its type (ModelModifier or not) Remember that Modifiers are applied sequentially following their Rank : first Model Modifiers then File Modifiers Rank is given by rank of call to AddItem and can be changed by ChangeModifierRank.
    */
-  ModifierRank(item: IFSelect_GeneralModifier): number;
+  ModifierRank(item: unknown): number;
   /**
    * Changes the Rank of a Modifier in the Session : Model Modifiers if <formodel> is True, File Modifiers else the Modifier n0 <before> is put to n0 <after> Return True if Done, False if <before> or <after> out of range.
    */
@@ -37191,39 +38112,39 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Sets a GeneralModifier to be applied to an item :
    */
-  SetAppliedModifier(modif: IFSelect_GeneralModifier, item: Standard_Transient): boolean;
+  SetAppliedModifier(modif: unknown, item: Standard_Transient): boolean;
   /**
    * Resets a GeneralModifier to be applied Returns True if done, False if <modif> was not applied.
    */
-  ResetAppliedModifier(modif: IFSelect_GeneralModifier): boolean;
+  ResetAppliedModifier(modif: unknown): boolean;
   /**
    * Returns the item on which a GeneralModifier is applied : the ShareOut, or a given Dispatch Returns a Null Handle if <modif> is not applied.
    */
-  UsesAppliedModifier(modif: IFSelect_GeneralModifier): Standard_Transient;
+  UsesAppliedModifier(modif: unknown): Standard_Transient;
   /**
    * Returns a Transformer, given its Ident in the Session Null result if <id> is not suitable for a Transformer (undefined, or defined for another kind of variable).
    */
-  Transformer(id: number): IFSelect_Transformer;
+  Transformer(id: number): unknown;
   /**
    * Runs a Transformer on starting Model, which can then be edited or replaced by a new one. The Protocol can also be changed. Fills LastRunCheckList.
    */
-  RunTransformer(transf: IFSelect_Transformer): number;
+  RunTransformer(transf: unknown): number;
   /**
    * Runs a Modifier on Starting Model. It can modify entities, or add new ones. But the Model or the Protocol is unchanged. The Modifier is applied on each entity of the Model. See also RunModifierSelected Fills LastRunCheckList.
    */
-  RunModifier(modif: IFSelect_Modifier, copy: boolean): number;
+  RunModifier(modif: unknown, copy: boolean): number;
   /**
    * Acts as RunModifier, but the Modifier is applied on the list determined by a Selection, rather than on the whole Model If the selection is a null handle, the whole model is taken.
    */
-  RunModifierSelected(modif: IFSelect_Modifier, sel: IFSelect_Selection, copy: boolean): number;
+  RunModifierSelected(modif: unknown, sel: unknown, copy: boolean): number;
   /**
    * Creates and returns a TransformStandard, empty, with its Copy Option (True = Copy, False = On the Spot) and an optional name. To a TransformStandard, the method SetAppliedModifier applies.
    */
-  NewTransformStandard(copy: boolean, name: string): IFSelect_Transformer;
+  NewTransformStandard(copy: boolean, name: string): unknown;
   /**
    * Defines a new content from the former one If <keep> is True, it is given by entities selected by Selection <sel> (and all shared entities) Else, it is given by all the former content but entities selected by the Selection <sel> (and properly shared ones) Returns True if done. Returns False if the selected list (from <sel>) is empty, hence nothing is done.
    */
-  SetModelContent(sel: IFSelect_Selection, keep: boolean): boolean;
+  SetModelContent(sel: unknown, keep: boolean): boolean;
   /**
    * Returns the defined File Prefix. Null Handle if not defined.
    */
@@ -37239,7 +38160,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns the File Root defined for a Dispatch. Null if no Root Name is defined for it (hence, no File will be produced).
    */
-  FileRoot(disp: IFSelect_Dispatch): TCollection_HAsciiString;
+  FileRoot(disp: unknown): TCollection_HAsciiString;
   /**
    * Defines a File Prefix.
    */
@@ -37255,7 +38176,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Defines a Root for a Dispatch If <name> is empty, clears Root Name This has as effect to inhibit the production of File by <disp> Returns False if <disp> is not in the WorkSession or if a root name is already defined for it.
    */
-  SetFileRoot(disp: IFSelect_Dispatch, name: string): boolean;
+  SetFileRoot(disp: unknown, name: string): boolean;
   /**
    * Extracts File Root Name from a given complete file name (uses OSD_Path).
    */
@@ -37279,11 +38200,11 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns a Model, given its rank in the Evaluation List.
    */
-  FileModel(num: number): Interface_InterfaceModel;
+  FileModel(num: number): unknown;
   /**
    * Returns the name of a file corresponding to a produced Model, given its rank in the Evaluation List.
    */
-  FileName(num: number): XCAFDoc_PartId;
+  FileName(num: number): unknown;
   /**
    * Commands file sending to clear the list of already sent files, commands to record a new one if <record> is True This list is managed by the ModelCopier when SendSplit is called It allows a global exploitation of the set of sent files.
    */
@@ -37291,7 +38212,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns the list of recorded sent files, or a Null Handle is recording has not been enabled.
    */
-  SentFiles(): NCollection_HSequence_handle_TCollection_HAsciiString;
+  SentFiles(): unknown;
   /**
    * Performs creation of derived files from the input Model Takes its data (sub-models and names), from result EvaluateFile if active, else by dynamic Evaluation (not stored) After SendSplit, result of EvaluateFile is Cleared Fills LastRunCheckList.
    */
@@ -37299,7 +38220,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns an Evaluation of the whole ShareOut definition : i.e. how the entities of the starting model are forecast to be sent to various files : list of packets according the dispatches, effective lists of roots for each packet (which determine the content of the corresponding file); plus evaluation of which entities are : forgotten (sent into no file), duplicated (sent into more than one file), sent into a given file. See the class PacketList for more details.
    */
-  EvalSplit(): IFSelect_PacketList;
+  EvalSplit(): unknown;
   /**
    * Returns the greater count of different files in which any of the starting entities could be sent. Before any file output, this count is 0. Ideal count is 1. More than 1 means that duplications occur.
    */
@@ -37307,7 +38228,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Processes Remaining data (after having sent files), mode : Forget : forget remaining info (i.e. clear all "Sent" status) Compute : compute and keep remaining (does nothing if : remaining is empty or if no files has been sent) Display : display entities recorded as remaining Undo : restore former state of data (after Remaining(1) ) Returns True if OK, False else (i.e. mode = 2 and Remaining List is either empty or takes all the entities, or mode = 3 and no former computation of remaining data was done).
    */
-  SetRemaining(mode: IFSelect_RemainMode): boolean;
+  SetRemaining(mode: unknown): boolean;
   /**
    * Sends the starting Model into one file, without splitting, managing remaining data or anything else. <computegraph> true commands the Graph to be recomputed before sending : required when a Model is filled in several steps.
    */
@@ -37315,7 +38236,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Sends a part of the starting Model into one file, without splitting. But remaining data are managed. <computegraph> true commands the Graph to be recomputed before sending : required when a Model is filled in several steps.
    */
-  SendSelected(filename: string, sel: IFSelect_Selection, computegraph: boolean): IFSelect_ReturnStatus;
+  SendSelected(filename: string, sel: unknown, computegraph: boolean): IFSelect_ReturnStatus;
   /**
    * Writes the current Interface Model globally to a File, and returns a write status which can be : Done OK, Fail file could not be written, Error no norm is selected Remark : It is a simple, one-file writing, other operations are available (such as splitting ...) which calls SendAll.
    */
@@ -37323,67 +38244,67 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Writes a sub-part of the current Interface Model to a File, as defined by a Selection <sel>, recomputes the Graph, and returns a write status which can be : Done OK, Fail file could not be written, Error no norm is selected Remark : It is a simple, one-file writing, other operations are available (such as splitting ...) which calls SendSelected.
    */
-  WriteFile(filename: string, sel: IFSelect_Selection): IFSelect_ReturnStatus;
+  WriteFile(filename: string, sel: unknown): IFSelect_ReturnStatus;
   /**
    * Returns the count of Input Selections known for a Selection, or 0 if <sel> not in the WorkSession. This count is one for a SelectDeduct / SelectExtract kind, two for SelectControl kind, variable for a SelectCombine (Union/Intersection), zero else.
    */
-  NbSources(sel: IFSelect_Selection): number;
+  NbSources(sel: unknown): number;
   /**
    * Returns the <num>th Input Selection of a Selection (see NbSources). Returns a Null Handle if <sel> is not in the WorkSession or if <num> is out of the range <1-NbSources> To obtain more details, see the method Sources.
    */
-  Source(sel: IFSelect_Selection, num: number): IFSelect_Selection;
+  Source(sel: unknown, num: number): unknown;
   /**
    * Returns True if <sel> a Reversed SelectExtract, False else.
    */
-  IsReversedSelectExtract(sel: IFSelect_Selection): boolean;
+  IsReversedSelectExtract(sel: unknown): boolean;
   /**
    * Toggles the Sense (Direct <-> Reversed) of a SelectExtract Returns True if Done, False if <sel> is not a SelectExtract or is not in the WorkSession.
    */
-  ToggleSelectExtract(sel: IFSelect_Selection): boolean;
+  ToggleSelectExtract(sel: unknown): boolean;
   /**
    * Sets an Input Selection (as <input>) to a SelectExtract or a SelectDeduct (as <sel>). Returns True if Done, False if <sel> is neither a SelectExtract nor a SelectDeduct, or not in the WorkSession.
    */
-  SetInputSelection(sel: IFSelect_Selection, input: IFSelect_Selection): boolean;
+  SetInputSelection(sel: unknown, input: unknown): boolean;
   /**
    * Sets an Input Selection, Main if <formain> is True, Second else (as <sc>) to a SelectControl (as <sel>). Returns True if Done, False if <sel> is not a SelectControl, or <sc> or <sel> is not in the WorkSession.
    */
-  SetControl(sel: IFSelect_Selection, sc: IFSelect_Selection, formain: boolean): boolean;
+  SetControl(sel: unknown, sc: unknown, formain: boolean): boolean;
   /**
    * Adds an input selection to a SelectCombine (Union or Inters.). Returns new count of inputs for this SelectCombine if Done or 0 if <sel> is not kind of SelectCombine, or if <seladd> or <sel> is not in the WorkSession By default, adding is done at the end of the list Else, it is an insertion to rank <atnum> (useful for Un-ReDo).
    */
-  CombineAdd(selcomb: IFSelect_Selection, seladd: IFSelect_Selection, atnum: number): number;
+  CombineAdd(selcomb: unknown, seladd: unknown, atnum: number): number;
   /**
    * Removes an input selection from a SelectCombine (Union or Intersection). Returns True if done, False if <selcomb> is not kind of SelectCombine or <selrem> is not source of <selcomb>.
    */
-  CombineRemove(selcomb: IFSelect_Selection, selrem: IFSelect_Selection): boolean;
+  CombineRemove(selcomb: unknown, selrem: unknown): boolean;
   /**
    * Creates a new Selection, of type SelectPointed, its content starts with A name must be given (can be empty).
    */
-  NewSelectPointed(list: NCollection_HSequence_handle_Standard_Transient, name: string): IFSelect_Selection;
+  NewSelectPointed(list: unknown, name: string): unknown;
   /**
    * Changes the content of a Selection of type SelectPointed According <mode> : 0 set new content (clear former) 1 : adds actual content -1 : removes actual content Returns True if done, False if <sel> is not a SelectPointed.
    */
-  SetSelectPointed(sel: IFSelect_Selection, list: NCollection_HSequence_handle_Standard_Transient, mode: number): boolean;
+  SetSelectPointed(sel: unknown, list: unknown, mode: number): boolean;
   /**
    * Returns a Selection from a Name :
    */
-  GiveSelection(selname: string): IFSelect_Selection;
+  GiveSelection(selname: string): unknown;
   /**
    * Determines a list of entities from an object : <obj> already HSequenceOfTransient : returned itself <obj> Selection : its Result of Evaluation is returned <obj> an entity of the Model : a HSequence which contains it else, an empty HSequence <obj> the Model it self : ALL its content (not only the roots).
    */
-  GiveList(obj: Standard_Transient): NCollection_HSequence_handle_Standard_Transient;
+  GiveList(obj: Standard_Transient): unknown;
   /**
    * Computes a List of entities from two alphanums, first and second, as follows : if <first> is a Number or Label of an entity : this entity if <first> is a list of Numbers/Labels : the list of entities if <first> is the name of a Selection in <WS>, and <second> not defined, the standard result of this Selection else, let's consider "first second" : this whole phrase is split by blanks, as follows (RECURSIVE CALL) :
    */
-  GiveList(first: string, second: string): NCollection_HSequence_handle_Standard_Transient;
+  GiveList(first: string, second: string): unknown;
   /**
    * Computes a List of entities from the model as follows <first> being a Selection or a combination of Selections, <ent> being an entity or a list of entities (as a HSequenceOfTransient) : the standard result of this selection applied to this list if <ent> is Null, the standard definition of the selection is used (which contains a default input selection) if <selname> is erroneous, a null handle is returned.
    */
-  GiveListFromList(selname: string, ent: Standard_Transient): NCollection_HSequence_handle_Standard_Transient;
+  GiveListFromList(selname: string, ent: Standard_Transient): unknown;
   /**
    * Combines two lists and returns the result, according to mode : <mode> < 0 : entities in <l1> AND NOT in <l2> <mode> = 0 : entities in <l1> AND in <l2> <mode> > 0 : entities in <l1> OR in <l2>.
    */
-  GiveListCombined(l1: NCollection_HSequence_handle_Standard_Transient, l2: NCollection_HSequence_handle_Standard_Transient, mode: number): NCollection_HSequence_handle_Standard_Transient;
+  GiveListCombined(l1: unknown, l2: unknown, mode: number): unknown;
   /**
    * Determines check status for an entity regarding last call to QueryCheckList : -1 : <ent> unknown in the model, ignored 0 : no check at all, immediate or inherited thru Graph 1 : immediate warning (no fail), no inherited check 2 : immediate fail, no inherited check +10 : idem but some inherited warning (no fail) +20 : idem but some inherited fail.
    */
@@ -37395,7 +38316,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Sets a list of Parameters, i.e. TypedValue, to be handled through an Editor The two lists are parallel, if <params> is longer than <uses>, surnumeral parameters are for general use.
    */
-  SetParams(params: NCollection_Vector_handle_Standard_Transient, uselist: NCollection_Vector_int): void;
+  SetParams(params: unknown, uselist: NCollection_Vector_int): void;
   /**
    * Traces the Statics attached to a given use number If <use> is given positive (normal), the trace is embedded with a header and a trailer If <use> is negative, just values are printed (this allows to make compositions) Remark : use number 5 commands use -2 to be traced Remark : use numbers 4 and 6 command use -3 to be traced.
    */
@@ -37415,7 +38336,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Lists a Selection and its Sources (see SelectionIterator), given its rank in the list.
    */
-  DumpSelection(sel: IFSelect_Selection): void;
+  DumpSelection(sel: unknown): void;
   /**
    * Dumps the current Model (as inherited DumpModel), on currently defined Default Trace File (default is standard output).
    */
@@ -37427,18 +38348,18 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Displays the list of Entities selected by a Selection (i.e. the result of EvalSelection).
    */
-  EvaluateSelection(sel: IFSelect_Selection): void;
+  EvaluateSelection(sel: unknown): void;
   /**
    * Displays the result of applying a Dispatch on the input Model (also shows Remainder if there is) <mode> = 0 (default), displays nothing else <mode> = 1 : displays also duplicated entities (because of this dispatch) <mode> = 2 : displays the entities of the starting Model which are not taken by this dispatch (forgotten entities) <mode> = 3 : displays both duplicated and forgotten entities Remark : EvaluateComplete displays these data evaluated for for all the dispatches, if there are several.
    */
-  EvaluateDispatch(disp: IFSelect_Dispatch, mode: number): void;
+  EvaluateDispatch(disp: unknown, mode: number): void;
   /**
    * Displays the effect of applying the ShareOut on the input Model. <mode> = 0 (default) : displays only roots for each packet, <mode> = 1 : displays all entities for each packet, plus duplicated entities <mode> = 2 : same as <mode> = 1, plus displays forgotten entities (which are in no packet at all).
    */
   EvaluateComplete(mode: number): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -37499,7 +38420,7 @@ export declare class STEPCAFControl_Writer {
    * @param theIsMulti if multi is not null pointer, it switches to multifile mode (with external refs), and string pointed by <multi> gives prefix for names of extern files (can be empty string)
    * @param theProgress progress indicator Returns True if translation is OK
    */
-  Transfer(theDoc: TDocStd_Document, theParams: DESTEP_Parameters, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
+  Transfer(theDoc: TDocStd_Document, theParams: unknown, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
   /**
    * Transfers a document (or single label) to a STEP model This method uses if need to set parameters avoiding initialization from Interface_Static.
    * @param theParams configuration parameters
@@ -37507,7 +38428,7 @@ export declare class STEPCAFControl_Writer {
    * @param theIsMulti if multi is not null pointer, it switches to multifile mode (with external refs), and string pointed by <multi> gives prefix for names of extern files (can be empty string)
    * @param theProgress progress indicator Returns True if translation is OK
    */
-  Transfer(theLabel: TDF_Label, theParams: DESTEP_Parameters, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
+  Transfer(theLabel: TDF_Label, theParams: unknown, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
   /**
    * Transfers a document (or single label) to a STEP model This method uses if need to set parameters avoiding initialization from Interface_Static.
    * @param theParams configuration parameters
@@ -37515,8 +38436,8 @@ export declare class STEPCAFControl_Writer {
    * @param theIsMulti if multi is not null pointer, it switches to multifile mode (with external refs), and string pointed by <multi> gives prefix for names of extern files (can be empty string)
    * @param theProgress progress indicator Returns True if translation is OK
    */
-  Transfer(theLabelSeq: NCollection_Sequence_TDF_Label, theParams: DESTEP_Parameters, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
-  Perform(theDoc: TDocStd_Document, theFileName: XCAFDoc_PartId, theProgress: Message_ProgressRange): boolean;
+  Transfer(theLabelSeq: NCollection_Sequence_TDF_Label, theParams: unknown, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
+  Perform(theDoc: TDocStd_Document, theFileName: unknown, theProgress: Message_ProgressRange): boolean;
   /**
    * Transfers a document and writes it to a STEP file Returns True if translation is OK.
    */
@@ -37524,19 +38445,19 @@ export declare class STEPCAFControl_Writer {
   /**
    * Transfers a document and writes it to a STEP file This method is utilized if there's a need to set parameters avoiding initialization from Interface_Static Returns True if translation is OK.
    */
-  Perform(theDoc: TDocStd_Document, theFileName: string, theParams: DESTEP_Parameters, theProgress: Message_ProgressRange): boolean;
+  Perform(theDoc: TDocStd_Document, theFileName: string, theParams: unknown, theProgress: Message_ProgressRange): boolean;
   /**
    * Returns data on external files Returns Null handle if no external files are read.
    */
-  ExternFiles(): NCollection_DataMap_TCollection_AsciiString_handle_STEPCAFControl_ExternFile;
+  ExternFiles(): unknown;
   /**
    * Returns data on external file by its original label Returns False if no external file with given name is read.
    */
-  ExternFile(theLabel: TDF_Label): { result: boolean; theExtFile: STEPCAFControl_ExternFile };
+  ExternFile(theLabel: TDF_Label): { result: boolean; theExtFile: unknown };
   /**
    * Returns data on external file by its name Returns False if no external file with given name is read.
    */
-  ExternFile(theName: string): { result: boolean; theExtFile: STEPCAFControl_ExternFile };
+  ExternFile(theName: string): { result: boolean; theExtFile: unknown };
   /**
    * Returns basic reader for root file.
    */
@@ -37604,18 +38525,18 @@ export declare class STEPCAFControl_Writer {
    * Sets parameters for shape processing.
    * @param theParameters the parameters for shape processing.
    */
-  SetShapeFixParameters(theParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
+  SetShapeFixParameters(theParameters: unknown): void;
   /**
    * Sets parameters for shape processing. Parameters from theParameters are copied to the internal map. Parameters from theAdditionalParameters are copied to the internal map if they are not present in theParameters.
    * @param theParameters the parameters for shape processing.
    * @param theAdditionalParameters the additional parameters for shape processing.
    */
-  SetShapeFixParameters(theParameters: DE_ShapeFixParameters, theAdditionalParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
+  SetShapeFixParameters(theParameters: unknown, theAdditionalParameters: unknown): void;
   /**
    * Returns parameters for shape processing that was set by SetParameters() method.
    * @returns the parameters for shape processing. Empty map if no parameters were set.
    */
-  GetShapeFixParameters(): NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString;
+  GetShapeFixParameters(): unknown;
   /**
    * Sets flags defining operations to be performed on shapes.
    * @param theFlags The flags defining operations to be performed on shapes.
@@ -37650,7 +38571,7 @@ export declare class STEPControl_Reader extends XSControl_Reader {
   /**
    * Returns the model as a StepModel. It can then be consulted (header, product).
    */
-  StepModel(): StepData_StepModel;
+  StepModel(): unknown;
   /**
    * Loads a file and returns the read status Zero for a Model which compies with the Controller.
    */
@@ -37658,7 +38579,7 @@ export declare class STEPControl_Reader extends XSControl_Reader {
   /**
    * Loads a file and returns the read status Zero for a Model which compies with the Controller.
    */
-  ReadFile(filename: string, theParams: DESTEP_Parameters): IFSelect_ReturnStatus;
+  ReadFile(filename: string, theParams: unknown): IFSelect_ReturnStatus;
   /**
    * Transfers a root given its rank in the list of candidate roots Default is the first one Returns True if a shape has resulted, false else Same as inherited TransferOneRoot, kept for compatibility.
    */
@@ -37719,7 +38640,7 @@ export declare class STEPControl_Writer {
   /**
    * Returns the produced model. Produces a new one if not yet done or if <newone> is True This method allows for instance to edit product or header data before writing.
    */
-  Model(newone: boolean): StepData_StepModel;
+  Model(newone: boolean): unknown;
   /**
    * Translates shape sh to a STEP entity. mode defines the STEP entity type to be output:
    */
@@ -37727,7 +38648,7 @@ export declare class STEPControl_Writer {
   /**
    * Translates shape sh to a STEP entity.
    */
-  Transfer(sh: TopoDS_Shape, mode: STEPControl_StepModelType, theParams: DESTEP_Parameters, compgraph: boolean, theProgress: Message_ProgressRange): IFSelect_ReturnStatus;
+  Transfer(sh: TopoDS_Shape, mode: STEPControl_StepModelType, theParams: unknown, compgraph: boolean, theProgress: Message_ProgressRange): IFSelect_ReturnStatus;
   /**
    * Writes a STEP model in the file identified by filename.
    */
@@ -37741,18 +38662,18 @@ export declare class STEPControl_Writer {
    * Sets parameters for shape processing.
    * @param theParameters the parameters for shape processing.
    */
-  SetShapeFixParameters(theParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
+  SetShapeFixParameters(theParameters: unknown): void;
   /**
    * Sets parameters for shape processing. Parameters from theParameters are copied to the internal map. Parameters from theAdditionalParameters are copied to the internal map if they are not present in theParameters.
    * @param theParameters the parameters for shape processing.
    * @param theAdditionalParameters the additional parameters for shape processing.
    */
-  SetShapeFixParameters(theParameters: DE_ShapeFixParameters, theAdditionalParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
+  SetShapeFixParameters(theParameters: unknown, theAdditionalParameters: unknown): void;
   /**
    * Returns parameters for shape processing that was set by SetParameters() method.
    * @returns the parameters for shape processing. Empty map if no parameters were set.
    */
-  GetShapeFixParameters(): NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString;
+  GetShapeFixParameters(): unknown;
   /**
    * Sets flags defining operations to be performed on shapes.
    * @param theFlags The flags defining operations to be performed on shapes.
@@ -37791,7 +38712,7 @@ export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
   /**
    * Returns the GUID of the attribute.
    */
-  static GetID(): Standard_GUID;
+  static GetID(): unknown;
   /**
    * Finds or creates a LengthUnit attribute.
    * @param theUnitValue - length scale factor to meter The LengthUnit attribute is returned.
@@ -37802,23 +38723,23 @@ export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
    * @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
    * @param theUnitValue - length scale factor to meter
    */
-  Set(theUnitName: XCAFDoc_PartId, theUnitValue: number): void;
+  Set(theUnitName: unknown, theUnitValue: number): void;
   /**
    * Finds or creates a LengthUnit attribute.
    * @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
    * @param theUnitValue - length scale factor to meter The LengthUnit attribute is returned.
    */
-  static Set(theLabel: TDF_Label, theUnitName: XCAFDoc_PartId, theUnitValue: number): XCAFDoc_LengthUnit;
+  static Set(theLabel: TDF_Label, theUnitName: unknown, theUnitValue: number): XCAFDoc_LengthUnit;
   /**
    * Finds, or creates, a LengthUnit attribute with explicit user defined GUID.
    * @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
    * @param theUnitValue - length scale factor to meter The LengthUnit attribute is returned
    */
-  static Set(theLabel: TDF_Label, theGUID: Standard_GUID, theUnitName: XCAFDoc_PartId, theUnitValue: number): XCAFDoc_LengthUnit;
+  static Set(theLabel: TDF_Label, theGUID: unknown, theUnitName: unknown, theUnitValue: number): XCAFDoc_LengthUnit;
   /**
    * Length unit description (could be arbitrary text).
    */
-  GetUnitName(): XCAFDoc_PartId;
+  GetUnitName(): unknown;
   /**
    * Returns length unit scale factor to meter.
    */
@@ -37827,7 +38748,7 @@ export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
   /**
    * Returns the ID of the attribute.
    */
-  ID(): Standard_GUID;
+  ID(): unknown;
   /**
    * Restores the backuped contents from <anAttribute> into this one. It is used when aborting a transaction.
    */
@@ -37835,10 +38756,10 @@ export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
    */
-  Paste(theInto: TDF_Attribute, theRT: TDF_RelocationTable): void;
+  Paste(theInto: TDF_Attribute, theRT: unknown): void;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   NewEmpty(): TDF_Attribute;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -37850,7 +38771,7 @@ export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
  */
 export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   constructor();
-  static GetID(): Standard_GUID;
+  static GetID(): unknown;
   /**
    * Create (if not exist) DocumentTool attribute on 0.1 label if <IsAcces> is true, else on <L> label. This label will be returned by DocLabel(); If the attribute is already set it won't be reset on <L> even if <IsAcces> is false. ColorTool and ShapeTool attributes are also set by this method.
    */
@@ -37915,7 +38836,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Creates (if it does not exist) XCAFDoc_VisMaterialTool attribute on VisMaterialLabel(). Should not be confused with MaterialTool() defining physical/manufacturing materials.
    */
-  static VisMaterialTool(theLabel: TDF_Label): XCAFDoc_VisMaterialTool;
+  static VisMaterialTool(theLabel: TDF_Label): unknown;
   /**
    * Checks for the VisMaterialTool attribute on the label's document Returns TRUE if Tool exists, ELSE if it has not been created.
    */
@@ -37923,7 +38844,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Creates (if it does not exist) LayerTool attribute on LayersLabel().
    */
-  static LayerTool(acces: TDF_Label): XCAFDoc_LayerTool;
+  static LayerTool(acces: TDF_Label): unknown;
   /**
    * Checks for the LayerTool attribute on the label's document Returns TRUE if Tool exists, ELSE if it has not been created.
    */
@@ -37931,7 +38852,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Creates (if it does not exist) DimTolTool attribute on DGTsLabel().
    */
-  static DimTolTool(acces: TDF_Label): XCAFDoc_DimTolTool;
+  static DimTolTool(acces: TDF_Label): unknown;
   /**
    * Checks for the DimTolTool attribute on the label's document Returns TRUE if Tool exists, ELSE if it has not been created.
    */
@@ -37947,7 +38868,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Creates (if it does not exist) ViewTool attribute on ViewsLabel().
    */
-  static ViewTool(acces: TDF_Label): XCAFDoc_ViewTool;
+  static ViewTool(acces: TDF_Label): unknown;
   /**
    * Checks for the ViewTool attribute on the label's document Returns TRUE if Tool exists, ELSE if it has not been created.
    */
@@ -37955,7 +38876,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Creates (if it does not exist) ClippingPlaneTool attribute on ClippingPlanesLabel().
    */
-  static ClippingPlaneTool(acces: TDF_Label): XCAFDoc_ClippingPlaneTool;
+  static ClippingPlaneTool(acces: TDF_Label): unknown;
   /**
    * Checks for the ClippingPlaneTool attribute on the label's document Returns TRUE if Tool exists, ELSE if it has not been created.
    */
@@ -37963,7 +38884,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Creates (if it does not exist) NotesTool attribute on NotesLabel().
    */
-  static NotesTool(acces: TDF_Label): XCAFDoc_NotesTool;
+  static NotesTool(acces: TDF_Label): unknown;
   /**
    * Checks for the NotesTool attribute on the label's document Returns TRUE if Tool exists, ELSE if it has not been created.
    */
@@ -37971,7 +38892,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Returns value of current internal unit for the document converted to base unit type.
    */
-  static GetLengthUnit(theDoc: TDocStd_Document, theBaseUnit: UnitsMethods_LengthUnit): { result: boolean; theResut: number };
+  static GetLengthUnit(theDoc: TDocStd_Document, theBaseUnit: unknown): { result: boolean; theResut: number };
   /**
    * Returns value of current internal unit for the document in meter.
    */
@@ -37984,7 +38905,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    * Sets value of current internal unit to the document.
    * @param theUnitValue must be represented in the base unit type
    */
-  static SetLengthUnit(theDoc: TDocStd_Document, theUnitValue: number, theBaseUnit: UnitsMethods_LengthUnit): void;
+  static SetLengthUnit(theDoc: TDocStd_Document, theUnitValue: number, theBaseUnit: unknown): void;
   /**
    * to be called when reading this attribute from file
    */
@@ -37992,14 +38913,14 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Returns the ID of the attribute.
    */
-  ID(): Standard_GUID;
+  ID(): unknown;
   /**
    * To init this derived attribute after the attribute restore using the base restore-methods.
    */
   AfterRetrieval(forceIt: boolean): boolean;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   NewEmpty(): TDF_Attribute;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -38014,7 +38935,7 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    * Creates an empty tool Creates a tool to work with a document <Doc> Attaches to label XCAFDoc::LabelShapes().
    */
   constructor();
-  static GetID(): Standard_GUID;
+  static GetID(): unknown;
   /**
    * Create (if not exist) ShapeTool from XCAFDoc on <L>.
    */
@@ -38199,7 +39120,7 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   /**
    * Returns the ID of the attribute.
    */
-  ID(): Standard_GUID;
+  ID(): unknown;
   /**
    * Returns True if the label is a label of external references, i.e. there are some reference on the no-step files, which are described in document only their names.
    */
@@ -38207,27 +39128,27 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   /**
    * Sets the names of references on the no-step files.
    */
-  SetExternRefs(SHAS: NCollection_Sequence_handle_TCollection_HAsciiString): TDF_Label;
+  SetExternRefs(SHAS: unknown): TDF_Label;
   /**
    * Sets the names of references on the no-step files.
    */
-  SetExternRefs(L: TDF_Label, SHAS: NCollection_Sequence_handle_TCollection_HAsciiString): void;
+  SetExternRefs(L: TDF_Label, SHAS: unknown): void;
   /**
    * Gets the names of references on the no-step files.
    */
-  static GetExternRefs(L: TDF_Label, SHAS: NCollection_Sequence_handle_TCollection_HAsciiString): void;
+  static GetExternRefs(L: TDF_Label, SHAS: unknown): void;
   /**
    * Sets the SHUO structure between upper_usage and next_usage create multy-level (if number of labels > 2) SHUO from first to last Initialise out <MainSHUOAttr> by main upper_usage SHUO attribute. Returns FALSE if some of labels in not component label.
    */
-  SetSHUO(Labels: NCollection_Sequence_TDF_Label): { result: boolean; MainSHUOAttr: XCAFDoc_GraphNode };
+  SetSHUO(Labels: NCollection_Sequence_TDF_Label): { result: boolean; MainSHUOAttr: unknown };
   /**
    * Returns founded SHUO GraphNode attribute <aSHUOAttr> Returns false in other case.
    */
-  static GetSHUO(SHUOLabel: TDF_Label): { result: boolean; aSHUOAttr: XCAFDoc_GraphNode };
+  static GetSHUO(SHUOLabel: TDF_Label): { result: boolean; aSHUOAttr: unknown };
   /**
    * Returns founded SHUO GraphNodes of indicated component Returns false in other case.
    */
-  static GetAllComponentSHUO(CompLabel: TDF_Label, SHUOAttrs: NCollection_Sequence_handle_TDF_Attribute): boolean;
+  static GetAllComponentSHUO(CompLabel: TDF_Label, SHUOAttrs: unknown): boolean;
   /**
    * Returns the sequence of labels of SHUO attributes, which is upper_usage for this next_usage SHUO attribute (that indicated by label) NOTE: returns upper_usages only on one level (not recurse) NOTE: do not clear the sequence before filling.
    */
@@ -38247,19 +39168,19 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   /**
    * Search for the component shape that styled by shuo Returns null shape if no any shape is found.
    */
-  GetSHUOInstance(theSHUO: XCAFDoc_GraphNode): TopoDS_Shape;
+  GetSHUOInstance(theSHUO: unknown): TopoDS_Shape;
   /**
    * Search for the component shape by labelks path and set SHUO structure for founded label structure Returns null attribute if no component in any assembly found.
    */
-  SetInstanceSHUO(theShape: TopoDS_Shape): XCAFDoc_GraphNode;
+  SetInstanceSHUO(theShape: TopoDS_Shape): unknown;
   /**
    * Searching for component shapes that styled by shuo Returns empty sequence of shape if no any shape is found.
    */
-  GetAllSHUOInstances(theSHUO: XCAFDoc_GraphNode, theSHUOShapeSeq: NCollection_Sequence_TopoDS_Shape): boolean;
+  GetAllSHUOInstances(theSHUO: unknown, theSHUOShapeSeq: NCollection_Sequence_TopoDS_Shape): boolean;
   /**
    * Searches the SHUO by labels of components from upper_usage component to next_usage Returns null attribute if no SHUO found.
    */
-  static FindSHUO(Labels: NCollection_Sequence_TDF_Label): { result: boolean; theSHUOAttr: XCAFDoc_GraphNode };
+  static FindSHUO(Labels: NCollection_Sequence_TDF_Label): { result: boolean; theSHUOAttr: unknown };
   /**
    * Sets location to the shape label If label is reference -> changes location attribute If label is free shape -> creates reference with location to it.
    * @param theShapeLabel the shape label to change location
@@ -38278,17 +39199,17 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    * @param theToCreate create and assign attribute if it doesn't exist
    * @returns Handle to the NamedData attribute or Null if there is none
    */
-  GetNamedProperties(theLabel: TDF_Label, theToCreate: boolean): TDataStd_NamedData;
+  GetNamedProperties(theLabel: TDF_Label, theToCreate: boolean): unknown;
   /**
    * Method to get NamedData attribute assigned to a label of the given shape.
    * @param theShape input shape
    * @param theToCreate create and assign attribute if it doesn't exist
    * @returns Handle to the NamedData attribute or Null if there is none
    */
-  GetNamedProperties(theShape: TopoDS_Shape, theToCreate: boolean): TDataStd_NamedData;
+  GetNamedProperties(theShape: TopoDS_Shape, theToCreate: boolean): unknown;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   NewEmpty(): TDF_Attribute;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -38312,7 +39233,7 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
    * Creates (if not exist) ColorTool.
    */
   static Set(L: TDF_Label): XCAFDoc_ColorTool;
-  static GetID(): Standard_GUID;
+  static GetID(): unknown;
   /**
    * returns the label under which colors are stored
    */
@@ -38336,27 +39257,27 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   /**
    * Returns label with color assigned to <L> as <type> Returns False if no such color is assigned.
    */
-  static GetColor(L: TDF_Label, type: XCAFDoc_ColorType, colorL: TDF_Label): boolean;
+  static GetColor(L: TDF_Label, type_: XCAFDoc_ColorType, colorL: TDF_Label): boolean;
   /**
    * Returns color assigned to <L> as <type> Returns False if no such color is assigned.
    */
-  static GetColor(L: TDF_Label, type: XCAFDoc_ColorType, color: Quantity_Color): boolean;
+  static GetColor(L: TDF_Label, type_: XCAFDoc_ColorType, color: Quantity_Color): boolean;
   /**
    * Returns color assigned to <L> as <type> Returns False if no such color is assigned.
    */
-  static GetColor(L: TDF_Label, type: XCAFDoc_ColorType, color: Quantity_ColorRGBA): boolean;
+  static GetColor(L: TDF_Label, type_: XCAFDoc_ColorType, color: Quantity_ColorRGBA): boolean;
   /**
    * Returns label with color assigned to <L> as <type> Returns False if no such color is assigned.
    */
-  GetColor(S: TopoDS_Shape, type: XCAFDoc_ColorType, colorL: TDF_Label): boolean;
+  GetColor(S: TopoDS_Shape, type_: XCAFDoc_ColorType, colorL: TDF_Label): boolean;
   /**
    * Returns color assigned to <L> as <type> Returns False if no such color is assigned.
    */
-  GetColor(S: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_Color): boolean;
+  GetColor(S: TopoDS_Shape, type_: XCAFDoc_ColorType, color: Quantity_Color): boolean;
   /**
    * Returns color assigned to <L> as <type> Returns False if no such color is assigned.
    */
-  GetColor(S: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_ColorRGBA): boolean;
+  GetColor(S: TopoDS_Shape, type_: XCAFDoc_ColorType, color: Quantity_ColorRGBA): boolean;
   /**
    * Finds a color definition in a colortable and returns its label if found (or Null label else).
    */
@@ -38392,43 +39313,43 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   /**
    * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color defined by <colorL>. Color of shape is defined following way in dependance with type of color. If type of color is XCAFDoc_ColorGen - then this color defines default color for surfaces and curves. If for shape color with types XCAFDoc_ColorSurf or XCAFDoc_ColorCurv is specified then such color overrides generic color.
    */
-  SetColor(L: TDF_Label, colorL: TDF_Label, type: XCAFDoc_ColorType): void;
+  SetColor(L: TDF_Label, colorL: TDF_Label, type_: XCAFDoc_ColorType): void;
   /**
    * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color <Color> in the colortable Adds a color as necessary.
    */
-  SetColor(L: TDF_Label, Color: Quantity_Color, type: XCAFDoc_ColorType): void;
+  SetColor(L: TDF_Label, Color: Quantity_Color, type_: XCAFDoc_ColorType): void;
   /**
    * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color <Color> in the colortable Adds a color as necessary.
    */
-  SetColor(L: TDF_Label, Color: Quantity_ColorRGBA, type: XCAFDoc_ColorType): void;
+  SetColor(L: TDF_Label, Color: Quantity_ColorRGBA, type_: XCAFDoc_ColorType): void;
   /**
    * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color defined by <colorL> Returns False if cannot find a label for shape S.
    */
-  SetColor(S: TopoDS_Shape, colorL: TDF_Label, type: XCAFDoc_ColorType): boolean;
+  SetColor(S: TopoDS_Shape, colorL: TDF_Label, type_: XCAFDoc_ColorType): boolean;
   /**
    * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color <Color> in the colortable Adds a color as necessary Returns False if cannot find a label for shape S.
    */
-  SetColor(S: TopoDS_Shape, Color: Quantity_Color, type: XCAFDoc_ColorType): boolean;
+  SetColor(S: TopoDS_Shape, Color: Quantity_Color, type_: XCAFDoc_ColorType): boolean;
   /**
    * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color <Color> in the colortable Adds a color as necessary Returns False if cannot find a label for shape S.
    */
-  SetColor(S: TopoDS_Shape, Color: Quantity_ColorRGBA, type: XCAFDoc_ColorType): boolean;
+  SetColor(S: TopoDS_Shape, Color: Quantity_ColorRGBA, type_: XCAFDoc_ColorType): boolean;
   /**
    * Removes a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color.
    */
-  UnSetColor(L: TDF_Label, type: XCAFDoc_ColorType): void;
+  UnSetColor(L: TDF_Label, type_: XCAFDoc_ColorType): void;
   /**
    * Removes a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color Returns True if such link existed.
    */
-  UnSetColor(S: TopoDS_Shape, type: XCAFDoc_ColorType): boolean;
+  UnSetColor(S: TopoDS_Shape, type_: XCAFDoc_ColorType): boolean;
   /**
    * Returns True if label <L> has a color assignment of the type <type>.
    */
-  IsSet(L: TDF_Label, type: XCAFDoc_ColorType): boolean;
+  IsSet(L: TDF_Label, type_: XCAFDoc_ColorType): boolean;
   /**
    * Returns True if label <L> has a color assignment of the type <type>.
    */
-  IsSet(S: TopoDS_Shape, type: XCAFDoc_ColorType): boolean;
+  IsSet(S: TopoDS_Shape, type_: XCAFDoc_ColorType): boolean;
   /**
    * Return TRUE if object on this label is visible, FALSE if invisible.
    */
@@ -38448,19 +39369,19 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   /**
    * Sets the color of component that styled with SHUO structure Returns FALSE if no sush component found NOTE: create SHUO structeure if it is necessary and if <isCreateSHUO>.
    */
-  SetInstanceColor(theShape: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_Color, isCreateSHUO: boolean): boolean;
+  SetInstanceColor(theShape: TopoDS_Shape, type_: XCAFDoc_ColorType, color: Quantity_Color, isCreateSHUO: boolean): boolean;
   /**
    * Sets the color of component that styled with SHUO structure Returns FALSE if no sush component found NOTE: create SHUO structeure if it is necessary and if <isCreateSHUO>.
    */
-  SetInstanceColor(theShape: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_ColorRGBA, isCreateSHUO: boolean): boolean;
+  SetInstanceColor(theShape: TopoDS_Shape, type_: XCAFDoc_ColorType, color: Quantity_ColorRGBA, isCreateSHUO: boolean): boolean;
   /**
    * Gets the color of component that styled with SHUO structure Returns FALSE if no sush component or color type.
    */
-  GetInstanceColor(theShape: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_Color): boolean;
+  GetInstanceColor(theShape: TopoDS_Shape, type_: XCAFDoc_ColorType, color: Quantity_Color): boolean;
   /**
    * Gets the color of component that styled with SHUO structure Returns FALSE if no sush component or color type.
    */
-  GetInstanceColor(theShape: TopoDS_Shape, type: XCAFDoc_ColorType, color: Quantity_ColorRGBA): boolean;
+  GetInstanceColor(theShape: TopoDS_Shape, type_: XCAFDoc_ColorType, color: Quantity_ColorRGBA): boolean;
   /**
    * Gets the visibility status of component that styled with SHUO structure Returns FALSE if no sush component.
    */
@@ -38472,10 +39393,106 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   /**
    * Returns the ID of the attribute.
    */
-  ID(): Standard_GUID;
+  ID(): unknown;
   static get_type_name(): string;
-  static get_type_descriptor(): Standard_Type;
-  DynamicType(): Standard_Type;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  NewEmpty(): TDF_Attribute;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
+ * attribute to store material
+ */
+export declare class XCAFDoc_Material extends TDF_Attribute {
+  constructor();
+  static GetID(): unknown;
+  static Set(label: TDF_Label, aName: TCollection_HAsciiString, aDescription: TCollection_HAsciiString, aDensity: number, aDensName: TCollection_HAsciiString, aDensValType: TCollection_HAsciiString): XCAFDoc_Material;
+  Set(aName: TCollection_HAsciiString, aDescription: TCollection_HAsciiString, aDensity: number, aDensName: TCollection_HAsciiString, aDensValType: TCollection_HAsciiString): void;
+  GetName(): TCollection_HAsciiString;
+  GetDescription(): TCollection_HAsciiString;
+  GetDensity(): number;
+  GetDensName(): TCollection_HAsciiString;
+  GetDensValType(): TCollection_HAsciiString;
+  /**
+   * Returns the ID of the attribute.
+   */
+  ID(): unknown;
+  /**
+   * Restores the backuped contents from <anAttribute> into this one. It is used when aborting a transaction.
+   */
+  Restore(With: TDF_Attribute): void;
+  /**
+   * Returns an new empty attribute from the good end type. It is used by the copy algorithm.
+   */
+  NewEmpty(): TDF_Attribute;
+  /**
+   * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
+   */
+  Paste(Into: TDF_Attribute, RT: unknown): void;
+  static get_type_name(): string;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
+ * Provides tools to store and retrieve attributes (materials) of TopoDS_Shape in and from TDocStd_Document A Document is intended to hold different attributes of ONE shape and it's sub-shapes Provide tools for management of Materialss section of document.
+ */
+export declare class XCAFDoc_MaterialTool extends TDataStd_GenericEmpty {
+  constructor();
+  /**
+   * Creates (if not exist) MaterialTool.
+   */
+  static Set(L: TDF_Label): XCAFDoc_MaterialTool;
+  static GetID(): unknown;
+  /**
+   * returns the label under which colors are stored
+   */
+  BaseLabel(): TDF_Label;
+  /**
+   * Returns internal XCAFDoc_ShapeTool tool.
+   */
+  ShapeTool(): XCAFDoc_ShapeTool;
+  /**
+   * Returns True if label belongs to a material table and is a Material definition.
+   */
+  IsMaterial(lab: TDF_Label): boolean;
+  /**
+   * Returns a sequence of materials currently stored in the material table.
+   */
+  GetMaterialLabels(Labels: NCollection_Sequence_TDF_Label): void;
+  /**
+   * Adds a Material definition to a table and returns its label.
+   */
+  AddMaterial(aName: TCollection_HAsciiString, aDescription: TCollection_HAsciiString, aDensity: number, aDensName: TCollection_HAsciiString, aDensValType: TCollection_HAsciiString): TDF_Label;
+  /**
+   * Sets a link with GUID.
+   */
+  SetMaterial(L: TDF_Label, MatL: TDF_Label): void;
+  /**
+   * Sets a link with GUID Adds a Material as necessary.
+   */
+  SetMaterial(L: TDF_Label, aName: TCollection_HAsciiString, aDescription: TCollection_HAsciiString, aDensity: number, aDensName: TCollection_HAsciiString, aDensValType: TCollection_HAsciiString): void;
+  /**
+   * Returns Material assigned to <MatL> Returns False if no such Material is assigned.
+   */
+  static GetMaterial(MatL: TDF_Label): { result: boolean; aName: TCollection_HAsciiString; aDescription: TCollection_HAsciiString; aDensity: number; aDensName: TCollection_HAsciiString; aDensValType: TCollection_HAsciiString };
+  /**
+   * Find referred material and return density from it if no material --> return 0.
+   */
+  static GetDensityForShape(ShapeL: TDF_Label): number;
+  /**
+   * Returns the ID of the attribute.
+   */
+  ID(): unknown;
+  static get_type_name(): string;
+  static get_type_descriptor(): unknown;
+  DynamicType(): unknown;
   NewEmpty(): TDF_Attribute;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -38620,15 +39637,15 @@ export declare namespace FS {
   /** Result of a path lookup containing the resolved node. */
   interface Lookup {
       path: string;
-      node: FSNode;
+      node: unknown;
   }
 
   /** Opaque handle to an open file stream. */
-  interface FSStream {}
+  type FSStream = unknown;
   /** Opaque handle to a filesystem node (file, directory, or device). */
-  interface FSNode {}
+  type FSNode = unknown;
   /** Error thrown by FS operations with an Emscripten errno code. */
-  interface ErrnoError {}
+  type ErrnoError = unknown;
 
   /** When `true`, permission checks are bypassed for all FS operations. */
   let ignorePermissions: boolean;
@@ -38643,14 +39660,14 @@ export declare namespace FS {
    * @param opts - Lookup options (e.g. `{ follow: true }`).
    * @returns The resolved path and filesystem node.
    */
-  function lookupPath(path: string, opts: any): Lookup;
+  function lookupPath(path: string, opts: any): unknown;
   /**
    * Get the absolute path for a filesystem node.
    *
    * @param node - The filesystem node.
    * @returns The absolute path string.
    */
-  function getPath(node: FSNode): string;
+  function getPath(node: unknown): string;
 
   /**
    * Check whether the mode bits indicate a regular file.
@@ -38915,13 +39932,13 @@ export declare namespace FS {
    * @param fd_end - Optional ending file descriptor number.
    * @returns The opened file stream.
    */
-  function open(path: string, flags: string, mode?: number, fd_start?: number, fd_end?: number): FSStream;
+  function open(path: string, flags: string, mode?: number, fd_start?: number, fd_end?: number): unknown;
   /**
    * Close an open file stream.
    *
    * @param stream - The stream to close.
    */
-  function close(stream: FSStream): void;
+  function close(stream: unknown): void;
   /**
    * Reposition the read/write offset of a stream.
    *
@@ -38930,7 +39947,7 @@ export declare namespace FS {
    * @param whence - The reference point (`0` = start, `1` = current, `2` = end).
    * @returns The resulting absolute offset.
    */
-  function llseek(stream: FSStream, offset: number, whence: number): any;
+  function llseek(stream: unknown, offset: number, whence: number): any;
   /**
    * Read bytes from a stream into a buffer.
    *
@@ -38941,7 +39958,7 @@ export declare namespace FS {
    * @param position - Optional absolute file offset to read from.
    * @returns The number of bytes actually read.
    */
-  function read(stream: FSStream, buffer: ArrayBufferView, offset: number, length: number, position?: number): number;
+  function read(stream: unknown, buffer: ArrayBufferView, offset: number, length: number, position?: number): number;
   /**
    * Write bytes from a buffer to a stream.
    *
@@ -38954,7 +39971,7 @@ export declare namespace FS {
    * @returns The number of bytes actually written.
    */
   function write(
-      stream: FSStream,
+      stream: unknown,
       buffer: ArrayBufferView,
       offset: number,
       length: number,
@@ -38968,7 +39985,7 @@ export declare namespace FS {
    * @param offset - Starting byte offset.
    * @param length - Number of bytes to allocate.
    */
-  function allocate(stream: FSStream, offset: number, length: number): void;
+  function allocate(stream: unknown, offset: number, length: number): void;
   /**
    * Memory-map a region of a file.
    *
@@ -38982,7 +39999,7 @@ export declare namespace FS {
    * @returns The mapped memory region.
    */
   function mmap(
-      stream: FSStream,
+      stream: unknown,
       buffer: ArrayBufferView,
       offset: number,
       length: number,
@@ -38998,7 +40015,7 @@ export declare namespace FS {
    * @param arg - The command argument.
    * @returns The ioctl result.
    */
-  function ioctl(stream: FSStream, cmd: any, arg: any): any;
+  function ioctl(stream: unknown, cmd: any, arg: any): any;
   /**
    * Read an entire file as a `Uint8Array` (binary mode).
    *
@@ -39073,7 +40090,7 @@ export declare namespace FS {
       url: string,
       canRead: boolean,
       canWrite: boolean,
-  ): FSNode;
+  ): unknown;
   /**
    * Create a file that is preloaded (fetched and stored) before the program runs.
    *
@@ -39116,7 +40133,7 @@ export declare namespace FS {
       canRead: boolean,
       canWrite: boolean,
       canOwn: boolean,
-  ): FSNode;
+  ): unknown;
   /** Result of analyzing a filesystem path for existence and parent resolution. */
   interface AnalysisResults {
     isRoot: boolean,
@@ -39135,710 +40152,53 @@ export declare namespace FS {
    * @param path - The path to analyze.
    * @returns Detailed information about the path's resolution.
    */
-  function analyzePath(path: string): AnalysisResults;
-}
-
-
-export namespace Adaptor2d {
-  export type Curve2d = Adaptor2d_Curve2d;
-}
-
-export namespace Adaptor3d {
-  export type Curve = Adaptor3d_Curve;
-  export type Surface = Adaptor3d_Surface;
-}
-
-export namespace BOPAlgo {
-  export type GlueEnum = BOPAlgo_GlueEnum;
-  export type Options = BOPAlgo_Options;
-}
-
-export namespace BRep {
-  export type Tool = BRep_Tool;
-}
-
-export namespace BRepAdaptor {
-  export type CompCurve = BRepAdaptor_CompCurve;
-  export type Curve = BRepAdaptor_Curve;
-  export type Curve2d = BRepAdaptor_Curve2d;
-  export type Surface = BRepAdaptor_Surface;
-}
-
-export namespace BRepAlgoAPI {
-  export type Algo = BRepAlgoAPI_Algo;
-  export type BooleanOperation = BRepAlgoAPI_BooleanOperation;
-  export type BuilderAlgo = BRepAlgoAPI_BuilderAlgo;
-  export type Common = BRepAlgoAPI_Common;
-  export type Cut = BRepAlgoAPI_Cut;
-  export type Fuse = BRepAlgoAPI_Fuse;
-  export type Section = BRepAlgoAPI_Section;
-}
-
-export namespace BRepBuilderAPI {
-  export type Command = BRepBuilderAPI_Command;
-  export type MakeEdge = BRepBuilderAPI_MakeEdge;
-  export type MakeFace = BRepBuilderAPI_MakeFace;
-  export type MakeShape = BRepBuilderAPI_MakeShape;
-  export type MakeShell = BRepBuilderAPI_MakeShell;
-  export type MakeSolid = BRepBuilderAPI_MakeSolid;
-  export type MakeVertex = BRepBuilderAPI_MakeVertex;
-  export type MakeWire = BRepBuilderAPI_MakeWire;
-  export type ModifyShape = BRepBuilderAPI_ModifyShape;
-  export type Sewing = BRepBuilderAPI_Sewing;
-  export type Transform = BRepBuilderAPI_Transform;
-  export type TransitionMode = BRepBuilderAPI_TransitionMode;
-  export type WireError = BRepBuilderAPI_WireError;
-}
-
-export namespace BRepExtrema {
-  export type DistShapeShape = BRepExtrema_DistShapeShape;
-}
-
-export namespace BRepFeat {
-  export type Form = BRepFeat_Form;
-  export type MakeDPrism = BRepFeat_MakeDPrism;
-}
-
-export namespace BRepFill {
-  export type TypeOfContact = BRepFill_TypeOfContact;
-}
-
-export namespace BRepFilletAPI {
-  export type LocalOperation = BRepFilletAPI_LocalOperation;
-  export type MakeChamfer = BRepFilletAPI_MakeChamfer;
-  export type MakeFillet = BRepFilletAPI_MakeFillet;
-}
-
-export namespace BRepGProp {
-  export type Face = BRepGProp_Face;
-}
-
-export namespace BRepMesh {
-  export type DiscretRoot = BRepMesh_DiscretRoot;
-  export type IncrementalMesh = BRepMesh_IncrementalMesh;
-}
-
-export namespace BRepOffset {
-  export type Mode = BRepOffset_Mode;
-}
-
-export namespace BRepOffsetAPI {
-  export type MakeFilling = BRepOffsetAPI_MakeFilling;
-  export type MakeOffset = BRepOffsetAPI_MakeOffset;
-  export type MakeOffsetShape = BRepOffsetAPI_MakeOffsetShape;
-  export type MakePipeShell = BRepOffsetAPI_MakePipeShell;
-  export type MakeThickSolid = BRepOffsetAPI_MakeThickSolid;
-  export type ThruSections = BRepOffsetAPI_ThruSections;
-}
-
-export namespace BRepPrimAPI {
-  export type MakeBox = BRepPrimAPI_MakeBox;
-  export type MakeCylinder = BRepPrimAPI_MakeCylinder;
-  export type MakeOneAxis = BRepPrimAPI_MakeOneAxis;
-  export type MakePrism = BRepPrimAPI_MakePrism;
-  export type MakeRevol = BRepPrimAPI_MakeRevol;
-  export type MakeSphere = BRepPrimAPI_MakeSphere;
-  export type MakeSweep = BRepPrimAPI_MakeSweep;
-}
-
-export namespace Bnd {
-  export type Box = Bnd_Box;
-  export type Box2d = Bnd_Box2d;
-  export type Box2d_Limits = Bnd_Box2d_Limits;
-  export type Box_Limits = Bnd_Box_Limits;
-}
-
-export namespace BndLib {
-  export type Add2dCurve = BndLib_Add2dCurve;
-}
-
-export namespace CDM {
-  export type Document = CDM_Document;
-}
-
-export namespace ChFi3d {
-  export type FilletShape = ChFi3d_FilletShape;
-}
-
-export namespace ChFiDS {
-  export type ChamfMode = ChFiDS_ChamfMode;
-}
-
-export namespace Convert {
-  export type ParameterisationType = Convert_ParameterisationType;
-}
-
-export namespace Extrema {
-  export type ExtAlgo = Extrema_ExtAlgo;
-}
-
-export namespace GC {
-  export type MakeArcOfCircle = GC_MakeArcOfCircle;
-  export type Root = GC_Root;
-}
-
-export namespace GCE2d {
-  export type MakeArcOfCircle = GCE2d_MakeArcOfCircle;
-  export type MakeArcOfEllipse = GCE2d_MakeArcOfEllipse;
-  export type MakeCircle = GCE2d_MakeCircle;
-  export type MakeEllipse = GCE2d_MakeEllipse;
-  export type MakeSegment = GCE2d_MakeSegment;
-  export type Root = GCE2d_Root;
-}
-
-export namespace GCPnts {
-  export type TangentialDeflection = GCPnts_TangentialDeflection;
-}
-
-export namespace GProp {
-  export type GProps = GProp_GProps;
-}
-
-export namespace Geom {
-  export type BSplineCurve = Geom_BSplineCurve;
-  export type BSplineSurface = Geom_BSplineSurface;
-  export type BezierCurve = Geom_BezierCurve;
-  export type BoundedCurve = Geom_BoundedCurve;
-  export type BoundedSurface = Geom_BoundedSurface;
-  export type Curve = Geom_Curve;
-  export type Curve_ResD1 = Geom_Curve_ResD1;
-  export type Curve_ResD2 = Geom_Curve_ResD2;
-  export type Curve_ResD3 = Geom_Curve_ResD3;
-  export type CylindricalSurface = Geom_CylindricalSurface;
-  export type ElementarySurface = Geom_ElementarySurface;
-  export type EvalRepCurveDesc_Base = Geom_EvalRepCurveDesc_Base;
-  export type EvalRepCurveDesc_Base = Geom_EvalRepCurveDesc_Base;
-  export type EvalRepCurveDesc_Base = Geom_EvalRepCurveDesc_Base;
-  export type EvalRepSurfaceDesc_Base = Geom_EvalRepSurfaceDesc_Base;
-  export type EvalRepSurfaceDesc_Base = Geom_EvalRepSurfaceDesc_Base;
-  export type Geometry = Geom_Geometry;
-  export type SphericalSurface = Geom_SphericalSurface;
-  export type Surface = Geom_Surface;
-  export type Surface_ResD1 = Geom_Surface_ResD1;
-  export type Surface_ResD2 = Geom_Surface_ResD2;
-  export type Surface_ResD3 = Geom_Surface_ResD3;
-  export type TrimmedCurve = Geom_TrimmedCurve;
-}
-
-export namespace Geom2d {
-  export type BSplineCurve = Geom2d_BSplineCurve;
-  export type BezierCurve = Geom2d_BezierCurve;
-  export type BoundedCurve = Geom2d_BoundedCurve;
-  export type Circle = Geom2d_Circle;
-  export type Conic = Geom2d_Conic;
-  export type Curve = Geom2d_Curve;
-  export type Curve_ResD1 = Geom2d_Curve_ResD1;
-  export type Curve_ResD2 = Geom2d_Curve_ResD2;
-  export type Curve_ResD3 = Geom2d_Curve_ResD3;
-  export type Ellipse = Geom2d_Ellipse;
-  export type EvalRepCurveDesc_Base = Geom2d_EvalRepCurveDesc_Base;
-  export type EvalRepCurveDesc_Base = Geom2d_EvalRepCurveDesc_Base;
-  export type EvalRepCurveDesc_Base = Geom2d_EvalRepCurveDesc_Base;
-  export type Geometry = Geom2d_Geometry;
-  export type Line = Geom2d_Line;
-  export type OffsetCurve = Geom2d_OffsetCurve;
-  export type TrimmedCurve = Geom2d_TrimmedCurve;
-}
-
-export namespace Geom2dAPI {
-  export type ExtremaCurveCurve = Geom2dAPI_ExtremaCurveCurve;
-  export type InterCurveCurve = Geom2dAPI_InterCurveCurve;
-  export type PointsToBSpline = Geom2dAPI_PointsToBSpline;
-  export type ProjectPointOnCurve = Geom2dAPI_ProjectPointOnCurve;
-}
-
-export namespace Geom2dAdaptor {
-  export type Curve = Geom2dAdaptor_Curve;
-  export type Curve_BSplineData = Geom2dAdaptor_Curve_BSplineData;
-  export type Curve_BezierData = Geom2dAdaptor_Curve_BezierData;
-  export type Curve_OffsetData = Geom2dAdaptor_Curve_OffsetData;
-}
-
-export namespace Geom2dConvert {
-  export type ApproxCurve = Geom2dConvert_ApproxCurve;
-  export type BSplineCurveToBezierCurve = Geom2dConvert_BSplineCurveToBezierCurve;
-}
-
-export namespace GeomAPI {
-  export type PointsToBSpline = GeomAPI_PointsToBSpline;
-  export type ProjectPointOnSurf = GeomAPI_ProjectPointOnSurf;
-}
-
-export namespace GeomAbs {
-  export type CurveType = GeomAbs_CurveType;
-  export type JoinType = GeomAbs_JoinType;
-  export type Shape = GeomAbs_Shape;
-  export type SurfaceType = GeomAbs_SurfaceType;
-}
-
-export namespace GeomAdaptor {
-  export type TransformedSurface = GeomAdaptor_TransformedSurface;
-}
-
-export namespace HLRAlgo {
-  export type Projector = HLRAlgo_Projector;
-}
-
-export namespace HLRBRep {
-  export type Algo = HLRBRep_Algo;
-  export type HLRToShape = HLRBRep_HLRToShape;
-  export type InternalAlgo = HLRBRep_InternalAlgo;
-}
-
-export namespace IFSelect {
-  export type ReturnStatus = IFSelect_ReturnStatus;
-  export type WorkSession = IFSelect_WorkSession;
-}
-
-export namespace Interface {
-  export type Static = Interface_Static;
-  export type TypedValue = Interface_TypedValue;
-}
-
-export namespace Law {
-  export type BSpFunc = Law_BSpFunc;
-  export type Composite = Law_Composite;
-  export type Function = Law_Function;
-  export type Interpol = Law_Interpol;
-  export type Linear = Law_Linear;
-  export type S = Law_S;
-}
-
-export namespace Message {
-  export type ProgressRange = Message_ProgressRange;
-}
-
-export namespace MoniTool {
-  export type TypedValue = MoniTool_TypedValue;
-}
-
-export namespace NCollection {
-  export type Array1_AppParCurves_ConstraintCouple = NCollection_Array1_AppParCurves_ConstraintCouple;
-  export type Array1_AppParCurves_MultiPoint = NCollection_Array1_AppParCurves_MultiPoint;
-  export type Array1_Bnd_Box = NCollection_Array1_Bnd_Box;
-  export type Array1_ChFiDS_CircSection = NCollection_Array1_ChFiDS_CircSection;
-  export type Array1_HLRAlgo_PolyHidingData = NCollection_Array1_HLRAlgo_PolyHidingData;
-  export type Array1_HLRAlgo_TriangleData = NCollection_Array1_HLRAlgo_TriangleData;
-  export type Array1_Plate_PinpointConstraint = NCollection_Array1_Plate_PinpointConstraint;
-  export type Array1_Poly_Triangle = NCollection_Array1_Poly_Triangle;
-  export type Array1_Quantity_Color = NCollection_Array1_Quantity_Color;
-  export type Array1_StepAP203_ApprovedItem = NCollection_Array1_StepAP203_ApprovedItem;
-  export type Array1_StepAP203_CertifiedItem = NCollection_Array1_StepAP203_CertifiedItem;
-  export type Array1_StepAP203_ChangeRequestItem = NCollection_Array1_StepAP203_ChangeRequestItem;
-  export type Array1_StepAP203_ClassifiedItem = NCollection_Array1_StepAP203_ClassifiedItem;
-  export type Array1_StepAP203_ContractedItem = NCollection_Array1_StepAP203_ContractedItem;
-  export type Array1_StepAP203_DateTimeItem = NCollection_Array1_StepAP203_DateTimeItem;
-  export type Array1_StepAP203_PersonOrganizationItem = NCollection_Array1_StepAP203_PersonOrganizationItem;
-  export type Array1_StepAP203_SpecifiedItem = NCollection_Array1_StepAP203_SpecifiedItem;
-  export type Array1_StepAP203_StartRequestItem = NCollection_Array1_StepAP203_StartRequestItem;
-  export type Array1_StepAP203_WorkItem = NCollection_Array1_StepAP203_WorkItem;
-  export type Array1_StepAP214_ApprovalItem = NCollection_Array1_StepAP214_ApprovalItem;
-  export type Array1_StepAP214_AutoDesignDateAndPersonItem = NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem;
-  export type Array1_StepAP214_AutoDesignDateAndTimeItem = NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem;
-  export type Array1_StepAP214_AutoDesignDatedItem = NCollection_Array1_StepAP214_AutoDesignDatedItem;
-  export type Array1_StepAP214_AutoDesignGeneralOrgItem = NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem;
-  export type Array1_StepAP214_AutoDesignGroupedItem = NCollection_Array1_StepAP214_AutoDesignGroupedItem;
-  export type Array1_StepAP214_AutoDesignPresentedItemSelect = NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect;
-  export type Array1_StepAP214_AutoDesignReferencingItem = NCollection_Array1_StepAP214_AutoDesignReferencingItem;
-  export type Array1_StepAP214_DateAndTimeItem = NCollection_Array1_StepAP214_DateAndTimeItem;
-  export type Array1_StepAP214_DateItem = NCollection_Array1_StepAP214_DateItem;
-  export type Array1_StepAP214_DocumentReferenceItem = NCollection_Array1_StepAP214_DocumentReferenceItem;
-  export type Array1_StepAP214_ExternalIdentificationItem = NCollection_Array1_StepAP214_ExternalIdentificationItem;
-  export type Array1_StepAP214_GroupItem = NCollection_Array1_StepAP214_GroupItem;
-  export type Array1_StepAP214_OrganizationItem = NCollection_Array1_StepAP214_OrganizationItem;
-  export type Array1_StepAP214_PersonAndOrganizationItem = NCollection_Array1_StepAP214_PersonAndOrganizationItem;
-  export type Array1_StepAP214_PresentedItemSelect = NCollection_Array1_StepAP214_PresentedItemSelect;
-  export type Array1_StepAP214_SecurityClassificationItem = NCollection_Array1_StepAP214_SecurityClassificationItem;
-  export type Array1_StepDimTol_DatumReferenceModifier = NCollection_Array1_StepDimTol_DatumReferenceModifier;
-  export type Array1_StepDimTol_DatumSystemOrReference = NCollection_Array1_StepDimTol_DatumSystemOrReference;
-  export type Array1_StepDimTol_GeometricToleranceModifier = NCollection_Array1_StepDimTol_GeometricToleranceModifier;
-  export type Array1_StepDimTol_ToleranceZoneTarget = NCollection_Array1_StepDimTol_ToleranceZoneTarget;
-  export type Array1_StepElement_MeasureOrUnspecifiedValue = NCollection_Array1_StepElement_MeasureOrUnspecifiedValue;
-  export type Array1_StepFEA_DegreeOfFreedom = NCollection_Array1_StepFEA_DegreeOfFreedom;
-  export type Array1_StepGeom_PcurveOrSurface = NCollection_Array1_StepGeom_PcurveOrSurface;
-  export type Array1_StepGeom_SurfaceBoundary = NCollection_Array1_StepGeom_SurfaceBoundary;
-  export type Array1_StepGeom_TrimmingSelect = NCollection_Array1_StepGeom_TrimmingSelect;
-  export type Array1_StepShape_GeometricSetSelect = NCollection_Array1_StepShape_GeometricSetSelect;
-  export type Array1_StepShape_ShapeDimensionRepresentationItem = NCollection_Array1_StepShape_ShapeDimensionRepresentationItem;
-  export type Array1_StepShape_Shell = NCollection_Array1_StepShape_Shell;
-  export type Array1_StepShape_ValueQualifier = NCollection_Array1_StepShape_ValueQualifier;
-  export type Array1_StepVisual_AnnotationPlaneElement = NCollection_Array1_StepVisual_AnnotationPlaneElement;
-  export type Array1_StepVisual_BoxCharacteristicSelect = NCollection_Array1_StepVisual_BoxCharacteristicSelect;
-  export type Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect = NCollection_Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect;
-  export type Array1_StepVisual_CameraModelD3MultiClippingUnionSelect = NCollection_Array1_StepVisual_CameraModelD3MultiClippingUnionSelect;
-  export type Array1_StepVisual_DirectionCountSelect = NCollection_Array1_StepVisual_DirectionCountSelect;
-  export type Array1_StepVisual_DraughtingCalloutElement = NCollection_Array1_StepVisual_DraughtingCalloutElement;
-  export type Array1_StepVisual_FillStyleSelect = NCollection_Array1_StepVisual_FillStyleSelect;
-  export type Array1_StepVisual_InvisibleItem = NCollection_Array1_StepVisual_InvisibleItem;
-  export type Array1_StepVisual_LayeredItem = NCollection_Array1_StepVisual_LayeredItem;
-  export type Array1_StepVisual_PresentationStyleSelect = NCollection_Array1_StepVisual_PresentationStyleSelect;
-  export type Array1_StepVisual_RenderingPropertiesSelect = NCollection_Array1_StepVisual_RenderingPropertiesSelect;
-  export type Array1_StepVisual_StyleContextSelect = NCollection_Array1_StepVisual_StyleContextSelect;
-  export type Array1_StepVisual_SurfaceStyleElementSelect = NCollection_Array1_StepVisual_SurfaceStyleElementSelect;
-  export type Array1_StepVisual_TessellatedEdgeOrVertex = NCollection_Array1_StepVisual_TessellatedEdgeOrVertex;
-  export type Array1_StepVisual_TextOrCharacter = NCollection_Array1_StepVisual_TextOrCharacter;
-  export type Array1_TCollection_AsciiString = NCollection_Array1_TCollection_AsciiString;
-  export type Array1_TCollection_ExtendedString = NCollection_Array1_TCollection_ExtendedString;
-  export type Array1_TDF_Label = NCollection_Array1_TDF_Label;
-  export type Array1_TopoDS_Shape = NCollection_Array1_TopoDS_Shape;
-  export type Array1_bool = NCollection_Array1_bool;
-  export type Array1_double = NCollection_Array1_double;
-  export type Array1_float = NCollection_Array1_float;
-  export type Array1_gp_Dir = NCollection_Array1_gp_Dir;
-  export type Array1_gp_Lin = NCollection_Array1_gp_Lin;
-  export type Array1_gp_Pnt = NCollection_Array1_gp_Pnt;
-  export type Array1_gp_Pnt2d = NCollection_Array1_gp_Pnt2d;
-  export type Array1_gp_Trsf = NCollection_Array1_gp_Trsf;
-  export type Array1_gp_Vec = NCollection_Array1_gp_Vec;
-  export type Array1_gp_Vec2d = NCollection_Array1_gp_Vec2d;
-  export type Array1_gp_XY = NCollection_Array1_gp_XY;
-  export type Array1_gp_XYZ = NCollection_Array1_gp_XYZ;
-  export type Array1_int = NCollection_Array1_int;
-  export type Array1_uint8_t = NCollection_Array1_uint8_t;
-  export type Array2_TopoDS_Shape = NCollection_Array2_TopoDS_Shape;
-  export type Array2_double = NCollection_Array2_double;
-  export type Array2_gp_Pnt = NCollection_Array2_gp_Pnt;
-  export type Array2_gp_Pnt2d = NCollection_Array2_gp_Pnt2d;
-  export type Array2_gp_Vec = NCollection_Array2_gp_Vec;
-  export type Array2_gp_XYZ = NCollection_Array2_gp_XYZ;
-  export type Array2_int = NCollection_Array2_int;
-  export type BaseList = NCollection_BaseList;
-  export type DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher;
-  export type DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher_3 = NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher_3;
-  export type DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher_4 = NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher_4;
-  export type DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher;
-  export type DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher_3 = NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher_3;
-  export type DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher_4 = NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher_4;
-  export type DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher;
-  export type DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher_3 = NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher_3;
-  export type DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher_4 = NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher_4;
-  export type DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher;
-  export type DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher_3 = NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher_3;
-  export type DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher_4 = NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher_4;
-  export type DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher;
-  export type DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher_3 = NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher_3;
-  export type DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher_4 = NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher_4;
-  export type DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher;
-  export type DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher_3 = NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher_3;
-  export type DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher_4 = NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher_4;
-  export type DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher;
-  export type DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_3 = NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_3;
-  export type DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_4 = NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_4;
-  export type DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher;
-  export type DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher_3 = NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher_3;
-  export type DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher_4 = NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher_4;
-  export type HArray1_AppParCurves_ConstraintCouple = NCollection_HArray1_AppParCurves_ConstraintCouple;
-  export type HArray1_Bnd_Box = NCollection_HArray1_Bnd_Box;
-  export type HArray1_ChFiDS_CircSection = NCollection_HArray1_ChFiDS_CircSection;
-  export type HArray1_HLRAlgo_PolyHidingData = NCollection_HArray1_HLRAlgo_PolyHidingData;
-  export type HArray1_HLRAlgo_TriangleData = NCollection_HArray1_HLRAlgo_TriangleData;
-  export type HArray1_Poly_Triangle = NCollection_HArray1_Poly_Triangle;
-  export type HArray1_Quantity_Color = NCollection_HArray1_Quantity_Color;
-  export type HArray1_StepAP203_ApprovedItem = NCollection_HArray1_StepAP203_ApprovedItem;
-  export type HArray1_StepAP203_CertifiedItem = NCollection_HArray1_StepAP203_CertifiedItem;
-  export type HArray1_StepAP203_ChangeRequestItem = NCollection_HArray1_StepAP203_ChangeRequestItem;
-  export type HArray1_StepAP203_ClassifiedItem = NCollection_HArray1_StepAP203_ClassifiedItem;
-  export type HArray1_StepAP203_ContractedItem = NCollection_HArray1_StepAP203_ContractedItem;
-  export type HArray1_StepAP203_DateTimeItem = NCollection_HArray1_StepAP203_DateTimeItem;
-  export type HArray1_StepAP203_PersonOrganizationItem = NCollection_HArray1_StepAP203_PersonOrganizationItem;
-  export type HArray1_StepAP203_SpecifiedItem = NCollection_HArray1_StepAP203_SpecifiedItem;
-  export type HArray1_StepAP203_StartRequestItem = NCollection_HArray1_StepAP203_StartRequestItem;
-  export type HArray1_StepAP203_WorkItem = NCollection_HArray1_StepAP203_WorkItem;
-  export type HArray1_StepAP214_ApprovalItem = NCollection_HArray1_StepAP214_ApprovalItem;
-  export type HArray1_StepAP214_AutoDesignDateAndPersonItem = NCollection_HArray1_StepAP214_AutoDesignDateAndPersonItem;
-  export type HArray1_StepAP214_AutoDesignDateAndTimeItem = NCollection_HArray1_StepAP214_AutoDesignDateAndTimeItem;
-  export type HArray1_StepAP214_AutoDesignDatedItem = NCollection_HArray1_StepAP214_AutoDesignDatedItem;
-  export type HArray1_StepAP214_AutoDesignGeneralOrgItem = NCollection_HArray1_StepAP214_AutoDesignGeneralOrgItem;
-  export type HArray1_StepAP214_AutoDesignGroupedItem = NCollection_HArray1_StepAP214_AutoDesignGroupedItem;
-  export type HArray1_StepAP214_AutoDesignPresentedItemSelect = NCollection_HArray1_StepAP214_AutoDesignPresentedItemSelect;
-  export type HArray1_StepAP214_AutoDesignReferencingItem = NCollection_HArray1_StepAP214_AutoDesignReferencingItem;
-  export type HArray1_StepAP214_DateAndTimeItem = NCollection_HArray1_StepAP214_DateAndTimeItem;
-  export type HArray1_StepAP214_DateItem = NCollection_HArray1_StepAP214_DateItem;
-  export type HArray1_StepAP214_DocumentReferenceItem = NCollection_HArray1_StepAP214_DocumentReferenceItem;
-  export type HArray1_StepAP214_ExternalIdentificationItem = NCollection_HArray1_StepAP214_ExternalIdentificationItem;
-  export type HArray1_StepAP214_GroupItem = NCollection_HArray1_StepAP214_GroupItem;
-  export type HArray1_StepAP214_OrganizationItem = NCollection_HArray1_StepAP214_OrganizationItem;
-  export type HArray1_StepAP214_PersonAndOrganizationItem = NCollection_HArray1_StepAP214_PersonAndOrganizationItem;
-  export type HArray1_StepAP214_PresentedItemSelect = NCollection_HArray1_StepAP214_PresentedItemSelect;
-  export type HArray1_StepAP214_SecurityClassificationItem = NCollection_HArray1_StepAP214_SecurityClassificationItem;
-  export type HArray1_StepDimTol_DatumReferenceModifier = NCollection_HArray1_StepDimTol_DatumReferenceModifier;
-  export type HArray1_StepDimTol_DatumSystemOrReference = NCollection_HArray1_StepDimTol_DatumSystemOrReference;
-  export type HArray1_StepDimTol_GeometricToleranceModifier = NCollection_HArray1_StepDimTol_GeometricToleranceModifier;
-  export type HArray1_StepDimTol_ToleranceZoneTarget = NCollection_HArray1_StepDimTol_ToleranceZoneTarget;
-  export type HArray1_StepElement_MeasureOrUnspecifiedValue = NCollection_HArray1_StepElement_MeasureOrUnspecifiedValue;
-  export type HArray1_StepFEA_DegreeOfFreedom = NCollection_HArray1_StepFEA_DegreeOfFreedom;
-  export type HArray1_StepGeom_PcurveOrSurface = NCollection_HArray1_StepGeom_PcurveOrSurface;
-  export type HArray1_StepGeom_SurfaceBoundary = NCollection_HArray1_StepGeom_SurfaceBoundary;
-  export type HArray1_StepGeom_TrimmingSelect = NCollection_HArray1_StepGeom_TrimmingSelect;
-  export type HArray1_StepShape_GeometricSetSelect = NCollection_HArray1_StepShape_GeometricSetSelect;
-  export type HArray1_StepShape_ShapeDimensionRepresentationItem = NCollection_HArray1_StepShape_ShapeDimensionRepresentationItem;
-  export type HArray1_StepShape_Shell = NCollection_HArray1_StepShape_Shell;
-  export type HArray1_StepShape_ValueQualifier = NCollection_HArray1_StepShape_ValueQualifier;
-  export type HArray1_StepVisual_AnnotationPlaneElement = NCollection_HArray1_StepVisual_AnnotationPlaneElement;
-  export type HArray1_StepVisual_BoxCharacteristicSelect = NCollection_HArray1_StepVisual_BoxCharacteristicSelect;
-  export type HArray1_StepVisual_CameraModelD3MultiClippingInterectionSelect = NCollection_HArray1_StepVisual_CameraModelD3MultiClippingInterectionSelect;
-  export type HArray1_StepVisual_CameraModelD3MultiClippingUnionSelect = NCollection_HArray1_StepVisual_CameraModelD3MultiClippingUnionSelect;
-  export type HArray1_StepVisual_DirectionCountSelect = NCollection_HArray1_StepVisual_DirectionCountSelect;
-  export type HArray1_StepVisual_DraughtingCalloutElement = NCollection_HArray1_StepVisual_DraughtingCalloutElement;
-  export type HArray1_StepVisual_FillStyleSelect = NCollection_HArray1_StepVisual_FillStyleSelect;
-  export type HArray1_StepVisual_InvisibleItem = NCollection_HArray1_StepVisual_InvisibleItem;
-  export type HArray1_StepVisual_LayeredItem = NCollection_HArray1_StepVisual_LayeredItem;
-  export type HArray1_StepVisual_PresentationStyleSelect = NCollection_HArray1_StepVisual_PresentationStyleSelect;
-  export type HArray1_StepVisual_RenderingPropertiesSelect = NCollection_HArray1_StepVisual_RenderingPropertiesSelect;
-  export type HArray1_StepVisual_StyleContextSelect = NCollection_HArray1_StepVisual_StyleContextSelect;
-  export type HArray1_StepVisual_SurfaceStyleElementSelect = NCollection_HArray1_StepVisual_SurfaceStyleElementSelect;
-  export type HArray1_StepVisual_TessellatedEdgeOrVertex = NCollection_HArray1_StepVisual_TessellatedEdgeOrVertex;
-  export type HArray1_StepVisual_TextOrCharacter = NCollection_HArray1_StepVisual_TextOrCharacter;
-  export type HArray1_TCollection_AsciiString = NCollection_HArray1_TCollection_AsciiString;
-  export type HArray1_TCollection_ExtendedString = NCollection_HArray1_TCollection_ExtendedString;
-  export type HArray1_TDF_Label = NCollection_HArray1_TDF_Label;
-  export type HArray1_TopoDS_Shape = NCollection_HArray1_TopoDS_Shape;
-  export type HArray1_bool = NCollection_HArray1_bool;
-  export type HArray1_double = NCollection_HArray1_double;
-  export type HArray1_float = NCollection_HArray1_float;
-  export type HArray1_gp_Pnt = NCollection_HArray1_gp_Pnt;
-  export type HArray1_gp_Pnt2d = NCollection_HArray1_gp_Pnt2d;
-  export type HArray1_gp_Vec = NCollection_HArray1_gp_Vec;
-  export type HArray1_gp_Vec2d = NCollection_HArray1_gp_Vec2d;
-  export type HArray1_gp_XY = NCollection_HArray1_gp_XY;
-  export type HArray1_gp_XYZ = NCollection_HArray1_gp_XYZ;
-  export type HArray1_int = NCollection_HArray1_int;
-  export type HArray1_uint8_t = NCollection_HArray1_uint8_t;
-  export type HArray2_TopoDS_Shape = NCollection_HArray2_TopoDS_Shape;
-  export type HArray2_double = NCollection_HArray2_double;
-  export type HArray2_gp_Pnt = NCollection_HArray2_gp_Pnt;
-  export type HArray2_gp_Pnt2d = NCollection_HArray2_gp_Pnt2d;
-  export type HArray2_gp_XYZ = NCollection_HArray2_gp_XYZ;
-  export type HArray2_int = NCollection_HArray2_int;
-  export type HSequence_TCollection_AsciiString = NCollection_HSequence_TCollection_AsciiString;
-  export type HSequence_TCollection_ExtendedString = NCollection_HSequence_TCollection_ExtendedString;
-  export type HSequence_TopoDS_Shape = NCollection_HSequence_TopoDS_Shape;
-  export type HSequence_double = NCollection_HSequence_double;
-  export type HSequence_int = NCollection_HSequence_int;
-  export type IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher = NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher;
-  export type IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher_3 = NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher_3;
-  export type IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher_4 = NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher_4;
-  export type IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher = NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher;
-  export type IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_3 = NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_3;
-  export type IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_4 = NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_4;
-  export type IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher = NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher;
-  export type IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher_3 = NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher_3;
-  export type IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher_4 = NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher_4;
-  export type List_BOPAlgo_CheckResult = NCollection_List_BOPAlgo_CheckResult;
-  export type List_BOPDS_Pave = NCollection_List_BOPDS_Pave;
-  export type List_BOPTools_ConnexityBlock = NCollection_List_BOPTools_ConnexityBlock;
-  export type List_BOPTools_CoupleOfShape = NCollection_List_BOPTools_CoupleOfShape;
-  export type List_BRepCheck_Status = NCollection_List_BRepCheck_Status;
-  export type List_BRepOffset_Interval = NCollection_List_BRepOffset_Interval;
-  export type List_Bnd_Range = NCollection_List_Bnd_Range;
-  export type List_HLRAlgo_BiPoint = NCollection_List_HLRAlgo_BiPoint;
-  export type List_HLRAlgo_Interference = NCollection_List_HLRAlgo_Interference;
-  export type List_IntSurf_PntOn2S = NCollection_List_IntSurf_PntOn2S;
-  export type List_IntTools_CurveRangeSample = NCollection_List_IntTools_CurveRangeSample;
-  export type List_IntTools_SurfaceRangeSample = NCollection_List_IntTools_SurfaceRangeSample;
-  export type List_Poly_Triangle = NCollection_List_Poly_Triangle;
-  export type List_Standard_GUID = NCollection_List_Standard_GUID;
-  export type List_TCollection_AsciiString = NCollection_List_TCollection_AsciiString;
-  export type List_TCollection_ExtendedString = NCollection_List_TCollection_ExtendedString;
-  export type List_TDF_Label = NCollection_List_TDF_Label;
-  export type List_TopoDS_Shape = NCollection_List_TopoDS_Shape;
-  export type List_double = NCollection_List_double;
-  export type List_gp_Pnt = NCollection_List_gp_Pnt;
-  export type List_gp_Pnt2d = NCollection_List_gp_Pnt2d;
-  export type List_int = NCollection_List_int;
-  export type List_uint8_t = NCollection_List_uint8_t;
-  export type Map_TopoDS_Shape_TopTools_ShapeMapHasher = NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher;
-  export type Map_TopoDS_Shape_TopTools_ShapeMapHasher_3 = NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher_3;
-  export type Map_TopoDS_Shape_TopTools_ShapeMapHasher_4 = NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher_4;
-  export type Sequence_AppParCurves_MultiCurve = NCollection_Sequence_AppParCurves_MultiCurve;
-  export type Sequence_BRepExtrema_SolutionElem = NCollection_Sequence_BRepExtrema_SolutionElem;
-  export type Sequence_Extrema_POnCurv = NCollection_Sequence_Extrema_POnCurv;
-  export type Sequence_Extrema_POnCurv2d = NCollection_Sequence_Extrema_POnCurv2d;
-  export type Sequence_Extrema_POnSurf = NCollection_Sequence_Extrema_POnSurf;
-  export type Sequence_HLRBRep_ShapeBounds = NCollection_Sequence_HLRBRep_ShapeBounds;
-  export type Sequence_IntPatch_Point = NCollection_Sequence_IntPatch_Point;
-  export type Sequence_IntRes2d_IntersectionPoint = NCollection_Sequence_IntRes2d_IntersectionPoint;
-  export type Sequence_IntSurf_InteriorPoint = NCollection_Sequence_IntSurf_InteriorPoint;
-  export type Sequence_IntSurf_PathPoint = NCollection_Sequence_IntSurf_PathPoint;
-  export type Sequence_IntTools_CommonPrt = NCollection_Sequence_IntTools_CommonPrt;
-  export type Sequence_IntTools_Curve = NCollection_Sequence_IntTools_Curve;
-  export type Sequence_IntTools_PntOn2Faces = NCollection_Sequence_IntTools_PntOn2Faces;
-  export type Sequence_IntTools_Range = NCollection_Sequence_IntTools_Range;
-  export type Sequence_IntTools_Root = NCollection_Sequence_IntTools_Root;
-  export type Sequence_PCDM_Reference = NCollection_Sequence_PCDM_Reference;
-  export type Sequence_Plate_PinpointConstraint = NCollection_Sequence_Plate_PinpointConstraint;
-  export type Sequence_RWGltf_GltfPrimArrayData = NCollection_Sequence_RWGltf_GltfPrimArrayData;
-  export type Sequence_ShapeFix_WireSegment = NCollection_Sequence_ShapeFix_WireSegment;
-  export type Sequence_TCollection_AsciiString = NCollection_Sequence_TCollection_AsciiString;
-  export type Sequence_TCollection_ExtendedString = NCollection_Sequence_TCollection_ExtendedString;
-  export type Sequence_TDF_Label = NCollection_Sequence_TDF_Label;
-  export type Sequence_TopoDS_Shape = NCollection_Sequence_TopoDS_Shape;
-  export type Sequence_XCAFDimTolObjects_DatumSingleModif = NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif;
-  export type Sequence_XCAFDimTolObjects_DimensionModif = NCollection_Sequence_XCAFDimTolObjects_DimensionModif;
-  export type Sequence_XCAFDimTolObjects_GeomToleranceModif = NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif;
-  export type Sequence_bool = NCollection_Sequence_bool;
-  export type Sequence_double = NCollection_Sequence_double;
-  export type Sequence_gp_Pnt = NCollection_Sequence_gp_Pnt;
-  export type Sequence_gp_Pnt2d = NCollection_Sequence_gp_Pnt2d;
-  export type Sequence_gp_Trsf = NCollection_Sequence_gp_Trsf;
-  export type Sequence_gp_XY = NCollection_Sequence_gp_XY;
-  export type Sequence_int = NCollection_Sequence_int;
-  export type Vector_BOPDS_Curve = NCollection_Vector_BOPDS_Curve;
-  export type Vector_BOPDS_FaceInfo = NCollection_Vector_BOPDS_FaceInfo;
-  export type Vector_BOPDS_InterfEE = NCollection_Vector_BOPDS_InterfEE;
-  export type Vector_BOPDS_InterfEF = NCollection_Vector_BOPDS_InterfEF;
-  export type Vector_BOPDS_InterfEZ = NCollection_Vector_BOPDS_InterfEZ;
-  export type Vector_BOPDS_InterfFF = NCollection_Vector_BOPDS_InterfFF;
-  export type Vector_BOPDS_InterfFZ = NCollection_Vector_BOPDS_InterfFZ;
-  export type Vector_BOPDS_InterfVE = NCollection_Vector_BOPDS_InterfVE;
-  export type Vector_BOPDS_InterfVF = NCollection_Vector_BOPDS_InterfVF;
-  export type Vector_BOPDS_InterfVV = NCollection_Vector_BOPDS_InterfVV;
-  export type Vector_BOPDS_InterfVZ = NCollection_Vector_BOPDS_InterfVZ;
-  export type Vector_BOPDS_InterfZZ = NCollection_Vector_BOPDS_InterfZZ;
-  export type Vector_BOPDS_Point = NCollection_Vector_BOPDS_Point;
-  export type Vector_BRepMesh_Circle = NCollection_Vector_BRepMesh_Circle;
-  export type Vector_BRepMesh_Vertex = NCollection_Vector_BRepMesh_Vertex;
-  export type Vector_TopoDS_Face = NCollection_Vector_TopoDS_Face;
-  export type Vector_TopoDS_Shape = NCollection_Vector_TopoDS_Shape;
-  export type Vector_double = NCollection_Vector_double;
-  export type Vector_gp_XYZ = NCollection_Vector_gp_XYZ;
-  export type Vector_int = NCollection_Vector_int;
-}
-
-export namespace OCJS {
-  export type ShapeHasher = OCJS_ShapeHasher;
-}
-
-export namespace Poly {
-  export type MergeNodesTool = Poly_MergeNodesTool;
-  export type PolygonOnTriangulation = Poly_PolygonOnTriangulation;
-  export type Triangle = Poly_Triangle;
-  export type Triangulation = Poly_Triangulation;
-}
-
-export namespace Quantity {
-  export type Color = Quantity_Color;
-  export type ColorRGBA = Quantity_ColorRGBA;
-}
-
-export namespace STEPCAFControl {
-  export type Writer = STEPCAFControl_Writer;
-}
-
-export namespace STEPControl {
-  export type Reader = STEPControl_Reader;
-  export type StepModelType = STEPControl_StepModelType;
-  export type Writer = STEPControl_Writer;
-}
-
-export namespace ShapeFix {
-  export type Face = ShapeFix_Face;
-  export type Root = ShapeFix_Root;
-  export type Solid = ShapeFix_Solid;
-  export type Wire = ShapeFix_Wire;
-}
-
-export namespace ShapeUpgrade {
-  export type UnifySameDomain = ShapeUpgrade_UnifySameDomain;
-}
-
-export namespace Standard {
-  export type Failure = Standard_Failure;
-  export type Transient = Standard_Transient;
-}
-
-export namespace StlAPI {
-  export type Reader = StlAPI_Reader;
-}
-
-export namespace TColStd {
-  export type IndexedDataMapOfStringString = TColStd_IndexedDataMapOfStringString;
-}
-
-export namespace TCollection {
-  export type ExtendedString = TCollection_ExtendedString;
-}
-
-export namespace TDF {
-  export type Attribute = TDF_Attribute;
-  export type Label = TDF_Label;
-}
-
-export namespace TDataStd {
-  export type GenericEmpty = TDataStd_GenericEmpty;
-  export type GenericExtString = TDataStd_GenericExtString;
-  export type Name = TDataStd_Name;
-}
-
-export namespace TDocStd {
-  export type Document = TDocStd_Document;
-}
-
-export namespace TopAbs {
-  export type Orientation = TopAbs_Orientation;
-  export type ShapeEnum = TopAbs_ShapeEnum;
-}
-
-export namespace TopExp {
-  export type Explorer = TopExp_Explorer;
-}
-
-export namespace TopLoc {
-  export type Location = TopLoc_Location;
-}
-
-export namespace TopoDS {
-  export type Builder = TopoDS_Builder;
-  export type CompSolid = TopoDS_CompSolid;
-  export type Compound = TopoDS_Compound;
-  export type Edge = TopoDS_Edge;
-  export type Face = TopoDS_Face;
-  export type Shape = TopoDS_Shape;
-  export type Shell = TopoDS_Shell;
-  export type Solid = TopoDS_Solid;
-  export type Vertex = TopoDS_Vertex;
-  export type Wire = TopoDS_Wire;
-}
-
-export namespace XCAFDoc {
-  export type ColorTool = XCAFDoc_ColorTool;
-  export type ColorType = XCAFDoc_ColorType;
-  export type DocumentTool = XCAFDoc_DocumentTool;
-  export type LengthUnit = XCAFDoc_LengthUnit;
-  export type ShapeTool = XCAFDoc_ShapeTool;
-}
-
-export namespace XSControl {
-  export type Reader = XSControl_Reader;
-  export type WorkSession = XSControl_WorkSession;
-}
-
-export namespace gp {
-  export type Ax1 = gp_Ax1;
-  export type Ax2 = gp_Ax2;
-  export type Ax22d = gp_Ax22d;
-  export type Ax2d = gp_Ax2d;
-  export type Ax3 = gp_Ax3;
-  export type Circ = gp_Circ;
-  export type Circ2d = gp_Circ2d;
-  export type Cylinder = gp_Cylinder;
-  export type Dir = gp_Dir;
-  export type Dir2d = gp_Dir2d;
-  export type Dir2d_D = gp_Dir2d_D;
-  export type Dir_D = gp_Dir_D;
-  export type Elips = gp_Elips;
-  export type Elips2d = gp_Elips2d;
-  export type GTrsf = gp_GTrsf;
-  export type GTrsf2d = gp_GTrsf2d;
-  export type Pnt = gp_Pnt;
-  export type Pnt2d = gp_Pnt2d;
-  export type Sphere = gp_Sphere;
-  export type Trsf = gp_Trsf;
-  export type Trsf2d = gp_Trsf2d;
-  export type Vec = gp_Vec;
-  export type Vec2d = gp_Vec2d;
-  export type XY = gp_XY;
-  export type XYZ = gp_XYZ;
+  function analyzePath(path: string): unknown;
+}
+
+
+/**
+ * Emscripten WASM heap views.
+ *
+ * Typed array views into the WASM linear memory (`Module.buffer`). Each view
+ * provides direct access to the heap at the corresponding element size and
+ * signedness. Only available when listed in `-sEXPORTED_RUNTIME_METHODS`.
+ *
+ * **Important:** These views are invalidated when WASM memory grows
+ * (`-sALLOW_MEMORY_GROWTH=1`). Do not cache references across calls that may
+ * trigger allocation — re-read the property from the module instance instead.
+ *
+ * @see {@link https://emscripten.org/docs/api_reference/preamble.js.html#type-accessors-for-the-memory-model | Emscripten Heap Views}
+ */
+
+/** Signed 8-bit integer view of the WASM heap. */
+export declare const HEAP8: Int8Array;
+/** Unsigned 8-bit integer view of the WASM heap. */
+export declare const HEAPU8: Uint8Array;
+/** Signed 16-bit integer view of the WASM heap. */
+export declare const HEAP16: Int16Array;
+/** Unsigned 16-bit integer view of the WASM heap. */
+export declare const HEAPU16: Uint16Array;
+/** Signed 32-bit integer view of the WASM heap. */
+export declare const HEAP32: Int32Array;
+/** Unsigned 32-bit integer view of the WASM heap. */
+export declare const HEAPU32: Uint32Array;
+/** 32-bit floating-point view of the WASM heap. */
+export declare const HEAPF32: Float32Array;
+/** 64-bit floating-point view of the WASM heap. */
+export declare const HEAPF64: Float64Array;
+
+
+declare global {
+  namespace WebAssembly {
+    interface Exception {
+      is(tag: unknown): boolean;
+      getArg(tag: unknown, index: number): unknown;
+      readonly stack?: string;
+    }
+    class Tag {
+      constructor(type: { parameters: ReadonlyArray<string> });
+    }
+  }
 }
 
 /**
@@ -39868,13 +40228,31 @@ export declare function decrementExceptionRefcount(ex: WebAssembly.Exception): v
 
 
 /**
- * Union of the Emscripten `FS` namespace and all bound OCCT classes, enums, and functions.
+ * Union of the Emscripten runtime exports and all bound OCCT classes, enums, and functions.
  *
  * Returned by {@link init} after the WASM module is fully loaded. Access any
- * OCCT binding as a property (e.g. `oc.BRepPrimAPI_MakeBox`) and use `oc.FS`
- * for virtual filesystem operations.
+ * OCCT binding as a property (e.g. `oc.BRepPrimAPI_MakeBox`) and use
+ * the Emscripten virtual filesystem (`oc.FS`) and WASM heap views (`oc.HEAP32`, `oc.HEAPU32`, `oc.HEAPF32`) and the live `WebAssembly.Memory` (`oc.wasmMemory`).
  */
-export type OpenCascadeInstance = {FS: typeof FS} & {
+export type OpenCascadeInstance = {
+  /** Emscripten virtual filesystem for reading/writing files in the WASM heap. */
+  FS: typeof FS;
+  /** Signed 32-bit integer view of the WASM linear memory. Index by byte offset / 4. */
+  HEAP32: typeof HEAP32;
+  /** Unsigned 32-bit integer view of the WASM linear memory. Index by byte offset / 4. */
+  HEAPU32: typeof HEAPU32;
+  /** 32-bit floating-point view of the WASM linear memory. Index by byte offset / 4. */
+  HEAPF32: typeof HEAPF32;
+  /**
+   * The live `WebAssembly.Memory` instance backing the WASM linear memory.
+   *
+   * Use `wasmMemory.buffer` to obtain the current `ArrayBuffer` after any
+   * call that may have grown memory (e.g. allocations during `extract()`).
+   * Cached `HEAP*` views may be detached after growth — taking fresh views
+   * off `wasmMemory.buffer` is the safe pattern.
+   */
+  wasmMemory: WebAssembly.Memory;
+} & {
   Message_ProgressRange: typeof Message_ProgressRange;
   Quantity_Color: typeof Quantity_Color;
   Quantity_ColorRGBA: typeof Quantity_ColorRGBA;
@@ -39883,6 +40261,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Standard_Failure: typeof Standard_Failure;
   Precision: typeof Precision;
   TCollection_ExtendedString: typeof TCollection_ExtendedString;
+  TCollection_HAsciiString: typeof TCollection_HAsciiString;
   TopLoc_Location: typeof TopLoc_Location;
   gp_Circ2d: typeof gp_Circ2d;
   gp_Vec: typeof gp_Vec;
@@ -39914,9 +40293,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   GeomAbs_CurveType: typeof GeomAbs_CurveType;
   GeomAbs_Shape: typeof GeomAbs_Shape;
   Bnd_Box2d: typeof Bnd_Box2d;
-  Bnd_Box2d_Limits: typeof Bnd_Box2d_Limits;
   Bnd_Box: typeof Bnd_Box;
-  Bnd_Box_Limits: typeof Bnd_Box_Limits;
   Convert_ParameterisationType: typeof Convert_ParameterisationType;
   Poly_PolygonOnTriangulation: typeof Poly_PolygonOnTriangulation;
   Poly_MergeNodesTool: typeof Poly_MergeNodesTool;
@@ -39936,10 +40313,14 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_HArray1_StepVisual_CameraModelD3MultiClippingInterectionSelect: typeof NCollection_HArray1_StepVisual_CameraModelD3MultiClippingInterectionSelect;
   NCollection_Sequence_RWGltf_GltfPrimArrayData: typeof NCollection_Sequence_RWGltf_GltfPrimArrayData;
   NCollection_HArray2_gp_XYZ: typeof NCollection_HArray2_gp_XYZ;
+  NCollection_Vector_BRepGraph_CompoundId: typeof NCollection_Vector_BRepGraph_CompoundId;
   NCollection_Array1_StepAP214_DateAndTimeItem: typeof NCollection_Array1_StepAP214_DateAndTimeItem;
+  NCollection_Vector_BRepGraphInc_EdgeDef: typeof NCollection_Vector_BRepGraphInc_EdgeDef;
+  NCollection_Vector_BRepGraph_CoEdgeId: typeof NCollection_Vector_BRepGraph_CoEdgeId;
   NCollection_HArray1_StepVisual_PresentationStyleSelect: typeof NCollection_HArray1_StepVisual_PresentationStyleSelect;
   NCollection_Vector_BOPDS_InterfVF: typeof NCollection_Vector_BOPDS_InterfVF;
   NCollection_HArray1_StepVisual_BoxCharacteristicSelect: typeof NCollection_HArray1_StepVisual_BoxCharacteristicSelect;
+  ReplicadMeshExtractor: typeof ReplicadMeshExtractor;
   NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher;
   NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher_3: typeof NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher_3;
   NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher_4: typeof NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher_4;
@@ -39973,11 +40354,13 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_HArray1_StepAP203_ClassifiedItem: typeof NCollection_HArray1_StepAP203_ClassifiedItem;
   NCollection_HArray1_uint8_t: typeof NCollection_HArray1_uint8_t;
   NCollection_Array1_StepVisual_AnnotationPlaneElement: typeof NCollection_Array1_StepVisual_AnnotationPlaneElement;
+  NCollection_Vector_BRepGraph_SolidId: typeof NCollection_Vector_BRepGraph_SolidId;
   NCollection_HArray1_Poly_Triangle: typeof NCollection_HArray1_Poly_Triangle;
   NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem: typeof NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem;
   NCollection_Sequence_gp_Pnt: typeof NCollection_Sequence_gp_Pnt;
   NCollection_Array1_StepAP214_ExternalIdentificationItem: typeof NCollection_Array1_StepAP214_ExternalIdentificationItem;
   NCollection_Array2_TopoDS_Shape: typeof NCollection_Array2_TopoDS_Shape;
+  NCollection_Vector_BRepGraphInc_CompSolidDef: typeof NCollection_Vector_BRepGraphInc_CompSolidDef;
   NCollection_HArray1_gp_Pnt: typeof NCollection_HArray1_gp_Pnt;
   NCollection_List_IntTools_SurfaceRangeSample: typeof NCollection_List_IntTools_SurfaceRangeSample;
   NCollection_Sequence_XCAFDimTolObjects_DimensionModif: typeof NCollection_Sequence_XCAFDimTolObjects_DimensionModif;
@@ -39989,6 +40372,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_Array1_StepAP203_ApprovedItem: typeof NCollection_Array1_StepAP203_ApprovedItem;
   NCollection_List_BOPDS_Pave: typeof NCollection_List_BOPDS_Pave;
   NCollection_Array1_gp_Lin: typeof NCollection_Array1_gp_Lin;
+  NCollection_Vector_BRepGraph_ShellId: typeof NCollection_Vector_BRepGraph_ShellId;
   NCollection_Array1_StepAP203_CertifiedItem: typeof NCollection_Array1_StepAP203_CertifiedItem;
   NCollection_Sequence_IntSurf_PathPoint: typeof NCollection_Sequence_IntSurf_PathPoint;
   NCollection_HArray1_StepAP214_AutoDesignGeneralOrgItem: typeof NCollection_HArray1_StepAP214_AutoDesignGeneralOrgItem;
@@ -40009,12 +40393,15 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_Array1_StepAP214_GroupItem: typeof NCollection_Array1_StepAP214_GroupItem;
   NCollection_Array1_StepAP214_AutoDesignReferencingItem: typeof NCollection_Array1_StepAP214_AutoDesignReferencingItem;
   NCollection_HArray1_StepAP214_DateItem: typeof NCollection_HArray1_StepAP214_DateItem;
+  NCollection_Vector_BRepGraph_OccurrenceId: typeof NCollection_Vector_BRepGraph_OccurrenceId;
   NCollection_HArray1_TCollection_AsciiString: typeof NCollection_HArray1_TCollection_AsciiString;
   NCollection_Vector_BOPDS_InterfFZ: typeof NCollection_Vector_BOPDS_InterfFZ;
   NCollection_List_IntSurf_PntOn2S: typeof NCollection_List_IntSurf_PntOn2S;
   NCollection_HArray1_StepShape_Shell: typeof NCollection_HArray1_StepShape_Shell;
   NCollection_HArray1_StepGeom_PcurveOrSurface: typeof NCollection_HArray1_StepGeom_PcurveOrSurface;
   NCollection_Sequence_BRepExtrema_SolutionElem: typeof NCollection_Sequence_BRepExtrema_SolutionElem;
+  NCollection_Vector_BRepGraphInc_ChildRef: typeof NCollection_Vector_BRepGraphInc_ChildRef;
+  NCollection_Vector_BRepGraphInc_WireDef: typeof NCollection_Vector_BRepGraphInc_WireDef;
   NCollection_HArray1_Bnd_Box: typeof NCollection_HArray1_Bnd_Box;
   NCollection_Array1_gp_XYZ: typeof NCollection_Array1_gp_XYZ;
   NCollection_Array1_bool: typeof NCollection_Array1_bool;
@@ -40026,6 +40413,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher;
   NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher_3: typeof NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher_3;
   NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher_4: typeof NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher_4;
+  NCollection_Vector_BRepGraphInc_WireRef: typeof NCollection_Vector_BRepGraphInc_WireRef;
   NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher: typeof NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher;
   NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_3: typeof NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_3;
   NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_4: typeof NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher_4;
@@ -40041,7 +40429,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher;
   NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher_3: typeof NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher_3;
   NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher_4: typeof NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher_4;
+  NCollection_Vector_BRepGraphInc_OccurrenceDef: typeof NCollection_Vector_BRepGraphInc_OccurrenceDef;
   NCollection_Array1_StepGeom_SurfaceBoundary: typeof NCollection_Array1_StepGeom_SurfaceBoundary;
+  NCollection_Vector_BRepGraph_CompSolidId: typeof NCollection_Vector_BRepGraph_CompSolidId;
   NCollection_Array1_StepAP214_AutoDesignDatedItem: typeof NCollection_Array1_StepAP214_AutoDesignDatedItem;
   NCollection_Sequence_TCollection_AsciiString: typeof NCollection_Sequence_TCollection_AsciiString;
   NCollection_List_TopoDS_Shape: typeof NCollection_List_TopoDS_Shape;
@@ -40061,10 +40451,13 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_HArray1_StepAP214_AutoDesignDatedItem: typeof NCollection_HArray1_StepAP214_AutoDesignDatedItem;
   NCollection_Array1_StepAP214_SecurityClassificationItem: typeof NCollection_Array1_StepAP214_SecurityClassificationItem;
   NCollection_Array1_AppParCurves_MultiPoint: typeof NCollection_Array1_AppParCurves_MultiPoint;
+  NCollection_Vector_BRepGraphInc_CoEdgeRef: typeof NCollection_Vector_BRepGraphInc_CoEdgeRef;
   NCollection_HSequence_double: typeof NCollection_HSequence_double;
   NCollection_HArray1_StepAP214_ExternalIdentificationItem: typeof NCollection_HArray1_StepAP214_ExternalIdentificationItem;
+  ReplicadEdgeMeshData: typeof ReplicadEdgeMeshData;
   NCollection_Array1_HLRAlgo_PolyHidingData: typeof NCollection_Array1_HLRAlgo_PolyHidingData;
   NCollection_HSequence_int: typeof NCollection_HSequence_int;
+  NCollection_Vector_BRepGraphInc_CoEdgeDef: typeof NCollection_Vector_BRepGraphInc_CoEdgeDef;
   NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif: typeof NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif;
   NCollection_Vector_TopoDS_Face: typeof NCollection_Vector_TopoDS_Face;
   NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher;
@@ -40080,6 +40473,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_Array1_StepAP203_ContractedItem: typeof NCollection_Array1_StepAP203_ContractedItem;
   NCollection_List_BRepCheck_Status: typeof NCollection_List_BRepCheck_Status;
   NCollection_Array2_int: typeof NCollection_Array2_int;
+  NCollection_Vector_BRepGraph_WireId: typeof NCollection_Vector_BRepGraph_WireId;
   NCollection_Array1_ChFiDS_CircSection: typeof NCollection_Array1_ChFiDS_CircSection;
   NCollection_Sequence_IntTools_Curve: typeof NCollection_Sequence_IntTools_Curve;
   NCollection_Array1_StepShape_Shell: typeof NCollection_Array1_StepShape_Shell;
@@ -40093,18 +40487,21 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_Array1_StepAP203_ClassifiedItem: typeof NCollection_Array1_StepAP203_ClassifiedItem;
   NCollection_HArray1_StepGeom_TrimmingSelect: typeof NCollection_HArray1_StepGeom_TrimmingSelect;
   NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem: typeof NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem;
+  NCollection_Vector_BRepGraph_EdgeId: typeof NCollection_Vector_BRepGraph_EdgeId;
   NCollection_Vector_BRepMesh_Vertex: typeof NCollection_Vector_BRepMesh_Vertex;
   NCollection_Array1_StepVisual_FillStyleSelect: typeof NCollection_Array1_StepVisual_FillStyleSelect;
   NCollection_Sequence_PCDM_Reference: typeof NCollection_Sequence_PCDM_Reference;
   NCollection_Array1_StepAP214_PersonAndOrganizationItem: typeof NCollection_Array1_StepAP214_PersonAndOrganizationItem;
   NCollection_HArray1_StepAP214_AutoDesignGroupedItem: typeof NCollection_HArray1_StepAP214_AutoDesignGroupedItem;
   NCollection_HArray1_StepDimTol_ToleranceZoneTarget: typeof NCollection_HArray1_StepDimTol_ToleranceZoneTarget;
+  NCollection_Vector_BRepGraph_NodeId: typeof NCollection_Vector_BRepGraph_NodeId;
   NCollection_Vector_BOPDS_Curve: typeof NCollection_Vector_BOPDS_Curve;
   NCollection_Array1_StepDimTol_GeometricToleranceModifier: typeof NCollection_Array1_StepDimTol_GeometricToleranceModifier;
   NCollection_HArray1_HLRAlgo_PolyHidingData: typeof NCollection_HArray1_HLRAlgo_PolyHidingData;
   NCollection_Array1_Quantity_Color: typeof NCollection_Array1_Quantity_Color;
   NCollection_List_gp_Pnt2d: typeof NCollection_List_gp_Pnt2d;
   NCollection_Array1_StepVisual_TessellatedEdgeOrVertex: typeof NCollection_Array1_StepVisual_TessellatedEdgeOrVertex;
+  NCollection_Vector_BRepGraph_UID: typeof NCollection_Vector_BRepGraph_UID;
   NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher: typeof NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher;
   NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher_3: typeof NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher_3;
   NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher_4: typeof NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher_4;
@@ -40118,10 +40515,13 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_HArray1_StepAP214_AutoDesignReferencingItem: typeof NCollection_HArray1_StepAP214_AutoDesignReferencingItem;
   NCollection_Sequence_int: typeof NCollection_Sequence_int;
   NCollection_Sequence_IntSurf_InteriorPoint: typeof NCollection_Sequence_IntSurf_InteriorPoint;
+  ReplicadMeshData: typeof ReplicadMeshData;
   NCollection_Array1_gp_Trsf: typeof NCollection_Array1_gp_Trsf;
   NCollection_Array1_StepVisual_DirectionCountSelect: typeof NCollection_Array1_StepVisual_DirectionCountSelect;
   NCollection_Sequence_gp_XY: typeof NCollection_Sequence_gp_XY;
   NCollection_List_gp_Pnt: typeof NCollection_List_gp_Pnt;
+  NCollection_Vector_BRepGraph_RefUID: typeof NCollection_Vector_BRepGraph_RefUID;
+  NCollection_Vector_BRepGraphInc_ShellDef: typeof NCollection_Vector_BRepGraphInc_ShellDef;
   NCollection_HArray1_StepAP214_OrganizationItem: typeof NCollection_HArray1_StepAP214_OrganizationItem;
   NCollection_HArray1_StepAP203_DateTimeItem: typeof NCollection_HArray1_StepAP203_DateTimeItem;
   NCollection_Array1_float: typeof NCollection_Array1_float;
@@ -40158,15 +40558,21 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher_3: typeof NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher_3;
   NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher_4: typeof NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher_4;
   NCollection_Array1_StepAP203_ChangeRequestItem: typeof NCollection_Array1_StepAP203_ChangeRequestItem;
+  NCollection_Vector_BRepGraphInc_ShellRef: typeof NCollection_Vector_BRepGraphInc_ShellRef;
   NCollection_Array1_StepFEA_DegreeOfFreedom: typeof NCollection_Array1_StepFEA_DegreeOfFreedom;
   NCollection_Sequence_TDF_Label: typeof NCollection_Sequence_TDF_Label;
   NCollection_HArray1_StepVisual_CameraModelD3MultiClippingUnionSelect: typeof NCollection_HArray1_StepVisual_CameraModelD3MultiClippingUnionSelect;
+  NCollection_Vector_BRepGraphInc_CoEdgeUsage: typeof NCollection_Vector_BRepGraphInc_CoEdgeUsage;
   OCJS_ShapeHasher: typeof OCJS_ShapeHasher;
   NCollection_List_Poly_Triangle: typeof NCollection_List_Poly_Triangle;
   NCollection_Vector_BOPDS_InterfVE: typeof NCollection_Vector_BOPDS_InterfVE;
   NCollection_Array1_StepDimTol_ToleranceZoneTarget: typeof NCollection_Array1_StepDimTol_ToleranceZoneTarget;
   NCollection_Sequence_bool: typeof NCollection_Sequence_bool;
+  NCollection_Vector_BRepGraphInc_CompoundDef: typeof NCollection_Vector_BRepGraphInc_CompoundDef;
   NCollection_Array1_uint8_t: typeof NCollection_Array1_uint8_t;
+  NCollection_Vector_BRepGraphInc_SolidRef: typeof NCollection_Vector_BRepGraphInc_SolidRef;
+  NCollection_Vector_BRepGraphInc_FaceDef: typeof NCollection_Vector_BRepGraphInc_FaceDef;
+  NCollection_Vector_BRepGraphInc_VertexRef: typeof NCollection_Vector_BRepGraphInc_VertexRef;
   BRepToolsWrapper: typeof BRepToolsWrapper;
   NCollection_HArray1_StepDimTol_GeometricToleranceModifier: typeof NCollection_HArray1_StepDimTol_GeometricToleranceModifier;
   NCollection_List_TDF_Label: typeof NCollection_List_TDF_Label;
@@ -40174,6 +40580,9 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_Sequence_Extrema_POnCurv: typeof NCollection_Sequence_Extrema_POnCurv;
   NCollection_Array1_Poly_Triangle: typeof NCollection_Array1_Poly_Triangle;
   NCollection_HArray2_TopoDS_Shape: typeof NCollection_HArray2_TopoDS_Shape;
+  NCollection_Vector_BRepGraphInc_FaceRef: typeof NCollection_Vector_BRepGraphInc_FaceRef;
+  NCollection_Vector_BRepGraphInc_SolidDef: typeof NCollection_Vector_BRepGraphInc_SolidDef;
+  NCollection_Vector_gp_Pnt2d: typeof NCollection_Vector_gp_Pnt2d;
   NCollection_Sequence_gp_Trsf: typeof NCollection_Sequence_gp_Trsf;
   NCollection_HArray1_StepAP203_ApprovedItem: typeof NCollection_HArray1_StepAP203_ApprovedItem;
   NCollection_Sequence_TopoDS_Shape: typeof NCollection_Sequence_TopoDS_Shape;
@@ -40190,6 +40599,7 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher_4: typeof NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher_4;
   NCollection_Array1_StepDimTol_DatumReferenceModifier: typeof NCollection_Array1_StepDimTol_DatumReferenceModifier;
   NCollection_Vector_double: typeof NCollection_Vector_double;
+  ReplicadEdgeMeshExtractor: typeof ReplicadEdgeMeshExtractor;
   NCollection_Array1_StepVisual_RenderingPropertiesSelect: typeof NCollection_Array1_StepVisual_RenderingPropertiesSelect;
   NCollection_Vector_BOPDS_InterfEE: typeof NCollection_Vector_BOPDS_InterfEE;
   NCollection_Array1_StepAP214_DateItem: typeof NCollection_Array1_StepAP214_DateItem;
@@ -40202,6 +40612,8 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   NCollection_Vector_BOPDS_InterfVV: typeof NCollection_Vector_BOPDS_InterfVV;
   NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif: typeof NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif;
   NCollection_HArray1_StepVisual_SurfaceStyleElementSelect: typeof NCollection_HArray1_StepVisual_SurfaceStyleElementSelect;
+  NCollection_Vector_BRepGraph_FaceId: typeof NCollection_Vector_BRepGraph_FaceId;
+  NCollection_Vector_BRepGraph_RefId: typeof NCollection_Vector_BRepGraph_RefId;
   NCollection_Array2_gp_Pnt2d: typeof NCollection_Array2_gp_Pnt2d;
   NCollection_HArray1_StepAP214_AutoDesignPresentedItemSelect: typeof NCollection_HArray1_StepAP214_AutoDesignPresentedItemSelect;
   NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher;
@@ -40296,66 +40708,47 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   Adaptor3d_Curve: typeof Adaptor3d_Curve;
   Adaptor3d_Surface: typeof Adaptor3d_Surface;
   GeomAdaptor_TransformedSurface: typeof GeomAdaptor_TransformedSurface;
-  Geom_EvalRepSurfaceDesc_Base: typeof Geom_EvalRepSurfaceDesc_Base;
+  GeomAdaptor_TransformedCurve: typeof GeomAdaptor_TransformedCurve;
   TopAbs_ShapeEnum: typeof TopAbs_ShapeEnum;
   TopAbs_Orientation: typeof TopAbs_Orientation;
   Geom_TrimmedCurve: typeof Geom_TrimmedCurve;
   Geom_BoundedCurve: typeof Geom_BoundedCurve;
   Geom_BSplineSurface: typeof Geom_BSplineSurface;
-  Geom_EvalRepSurfaceDesc_Base: typeof Geom_EvalRepSurfaceDesc_Base;
   Geom_BSplineCurve: typeof Geom_BSplineCurve;
-  Geom_EvalRepCurveDesc_Base: typeof Geom_EvalRepCurveDesc_Base;
   Geom_SphericalSurface: typeof Geom_SphericalSurface;
   Geom_BezierCurve: typeof Geom_BezierCurve;
-  Geom_EvalRepCurveDesc_Base: typeof Geom_EvalRepCurveDesc_Base;
   Geom_Geometry: typeof Geom_Geometry;
   Geom_CylindricalSurface: typeof Geom_CylindricalSurface;
   Geom_Surface: typeof Geom_Surface;
-  Geom_Surface_ResD1: typeof Geom_Surface_ResD1;
-  Geom_Surface_ResD2: typeof Geom_Surface_ResD2;
-  Geom_Surface_ResD3: typeof Geom_Surface_ResD3;
   Geom_ElementarySurface: typeof Geom_ElementarySurface;
   Geom_Curve: typeof Geom_Curve;
-  Geom_Curve_ResD1: typeof Geom_Curve_ResD1;
-  Geom_Curve_ResD2: typeof Geom_Curve_ResD2;
-  Geom_Curve_ResD3: typeof Geom_Curve_ResD3;
   Geom_BoundedSurface: typeof Geom_BoundedSurface;
-  GProp_GProps: typeof GProp_GProps;
   Geom2d_BSplineCurve: typeof Geom2d_BSplineCurve;
-  Geom2d_EvalRepCurveDesc_Base: typeof Geom2d_EvalRepCurveDesc_Base;
   Geom2d_BoundedCurve: typeof Geom2d_BoundedCurve;
   Geom2d_TrimmedCurve: typeof Geom2d_TrimmedCurve;
   Geom2d_Circle: typeof Geom2d_Circle;
   Geom2d_Line: typeof Geom2d_Line;
   Geom2d_Curve: typeof Geom2d_Curve;
-  Geom2d_Curve_ResD1: typeof Geom2d_Curve_ResD1;
-  Geom2d_Curve_ResD2: typeof Geom2d_Curve_ResD2;
-  Geom2d_Curve_ResD3: typeof Geom2d_Curve_ResD3;
-  Geom2d_EvalRepCurveDesc_Base: typeof Geom2d_EvalRepCurveDesc_Base;
   Geom2d_OffsetCurve: typeof Geom2d_OffsetCurve;
   Geom2d_BezierCurve: typeof Geom2d_BezierCurve;
-  Geom2d_EvalRepCurveDesc_Base: typeof Geom2d_EvalRepCurveDesc_Base;
   Geom2d_Conic: typeof Geom2d_Conic;
   Geom2d_Geometry: typeof Geom2d_Geometry;
   Geom2d_Ellipse: typeof Geom2d_Ellipse;
   Geom2dAdaptor_Curve: typeof Geom2dAdaptor_Curve;
-  Geom2dAdaptor_Curve_BSplineData: typeof Geom2dAdaptor_Curve_BSplineData;
-  Geom2dAdaptor_Curve_BezierData: typeof Geom2dAdaptor_Curve_BezierData;
-  Geom2dAdaptor_Curve_OffsetData: typeof Geom2dAdaptor_Curve_OffsetData;
   Adaptor2d_Curve2d: typeof Adaptor2d_Curve2d;
   GeomTools: typeof GeomTools;
   Geom2dConvert: typeof Geom2dConvert;
   Geom2dConvert_BSplineCurveToBezierCurve: typeof Geom2dConvert_BSplineCurveToBezierCurve;
   Geom2dConvert_ApproxCurve: typeof Geom2dConvert_ApproxCurve;
   GeomLib: typeof GeomLib;
-  GCE2d_MakeArcOfEllipse: typeof GCE2d_MakeArcOfEllipse;
-  GCE2d_MakeEllipse: typeof GCE2d_MakeEllipse;
-  GCE2d_MakeSegment: typeof GCE2d_MakeSegment;
-  GCE2d_MakeArcOfCircle: typeof GCE2d_MakeArcOfCircle;
-  GCE2d_MakeCircle: typeof GCE2d_MakeCircle;
-  GCE2d_Root: typeof GCE2d_Root;
   Extrema_ExtAlgo: typeof Extrema_ExtAlgo;
+  GProp_GProps: typeof GProp_GProps;
   GCPnts_TangentialDeflection: typeof GCPnts_TangentialDeflection;
+  GC_MakeArcOfEllipse2d: typeof GC_MakeArcOfEllipse2d;
+  GC_MakeSegment2d: typeof GC_MakeSegment2d;
+  GC_MakeEllipse2d: typeof GC_MakeEllipse2d;
+  GC_MakeArcOfCircle2d: typeof GC_MakeArcOfCircle2d;
+  GC_MakeCircle2d: typeof GC_MakeCircle2d;
   GC_MakeArcOfCircle: typeof GC_MakeArcOfCircle;
   GC_Root: typeof GC_Root;
   BndLib_Add2dCurve: typeof BndLib_Add2dCurve;
@@ -40375,7 +40768,6 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   BRepAdaptor_Surface: typeof BRepAdaptor_Surface;
   BRepAdaptor_CompCurve: typeof BRepAdaptor_CompCurve;
   BRepAdaptor_Curve: typeof BRepAdaptor_Curve;
-  Geom_EvalRepCurveDesc_Base: typeof Geom_EvalRepCurveDesc_Base;
   BRepAdaptor_Curve2d: typeof BRepAdaptor_Curve2d;
   TopExp_Explorer: typeof TopExp_Explorer;
   StlAPI_Reader: typeof StlAPI_Reader;
@@ -40395,6 +40787,8 @@ export type OpenCascadeInstance = {FS: typeof FS} & {
   XCAFDoc_DocumentTool: typeof XCAFDoc_DocumentTool;
   XCAFDoc_ShapeTool: typeof XCAFDoc_ShapeTool;
   XCAFDoc_ColorTool: typeof XCAFDoc_ColorTool;
+  XCAFDoc_Material: typeof XCAFDoc_Material;
+  XCAFDoc_MaterialTool: typeof XCAFDoc_MaterialTool;
   XCAFDoc_ColorType: typeof XCAFDoc_ColorType;
   TColStd_IndexedDataMapOfStringString: typeof TColStd_IndexedDataMapOfStringString;
   TopoDS: typeof TopoDS;

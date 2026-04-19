@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-03-23T19:59:08Z",
-  "yaml_config": "custom_build_single_v8.yml",
-  "yaml_hash": "56ebf5e02f21",
+  "timestamp": "2026-04-18T05:36:50Z",
+  "yaml_config": "custom_build_single.yml",
+  "yaml_hash": "a2a39c6565a8",
   "validation_passed": true,
   "symbols": {
     "requested": [
@@ -72,14 +72,13 @@
       "ChFiDS_ChamfMode",
       "Convert_ParameterisationType",
       "Extrema_ExtAlgo",
-      "GCE2d_MakeArcOfCircle",
-      "GCE2d_MakeArcOfEllipse",
-      "GCE2d_MakeCircle",
-      "GCE2d_MakeEllipse",
-      "GCE2d_MakeSegment",
-      "GCE2d_Root",
       "GCPnts_TangentialDeflection",
       "GC_MakeArcOfCircle",
+      "GC_MakeArcOfCircle2d",
+      "GC_MakeArcOfEllipse2d",
+      "GC_MakeCircle2d",
+      "GC_MakeEllipse2d",
+      "GC_MakeSegment2d",
       "GC_Root",
       "GProp_GProps",
       "Geom2dAPI_ExtremaCurveCurve",
@@ -88,6 +87,7 @@
       "Geom2dAPI_ProjectPointOnCurve",
       "Geom2dAdaptor_Curve",
       "Geom2dConvert",
+      "Geom2dConvert_ApproxCurve",
       "Geom2dConvert_BSplineCurveToBezierCurve",
       "Geom2d_BSplineCurve",
       "Geom2d_BezierCurve",
@@ -106,6 +106,7 @@
       "GeomAbs_JoinType",
       "GeomAbs_Shape",
       "GeomAbs_SurfaceType",
+      "GeomAdaptor_TransformedCurve",
       "GeomAdaptor_TransformedSurface",
       "GeomConvert",
       "GeomLib",
@@ -149,6 +150,10 @@
       "Precision",
       "Quantity_Color",
       "Quantity_ColorRGBA",
+      "ReplicadEdgeMeshData",
+      "ReplicadEdgeMeshExtractor",
+      "ReplicadMeshData",
+      "ReplicadMeshExtractor",
       "STEPCAFControl_Writer",
       "STEPControl_Reader",
       "STEPControl_StepModelType",
@@ -171,6 +176,7 @@
       "TColgp_Array1OfVec",
       "TColgp_Array2OfPnt",
       "TCollection_ExtendedString",
+      "TCollection_HAsciiString",
       "TDF_Attribute",
       "TDF_Label",
       "TDataStd_GenericEmpty",
@@ -196,6 +202,8 @@
       "XCAFDoc_ColorType",
       "XCAFDoc_DocumentTool",
       "XCAFDoc_LengthUnit",
+      "XCAFDoc_Material",
+      "XCAFDoc_MaterialTool",
       "XCAFDoc_ShapeTool",
       "XSControl_Reader",
       "XSControl_WorkSession",
@@ -223,9 +231,9 @@
       "gp_XY",
       "gp_XYZ"
     ],
-    "compiled": 4268,
+    "compiled": 4649,
     "missing": [],
-    "extra_compiled": 4051,
+    "extra_compiled": 4424,
     "pass": true
   },
   "outputs": [
@@ -233,18 +241,47 @@
       "name": "replicad_single.js",
       "wasm_file": "replicad_single.wasm",
       "wasm_exists": true,
-      "wasm_size": 19010278,
+      "wasm_size": 22716604,
       "js_exists": true,
-      "js_size": 54212,
+      "js_size": 56399,
       "pass": true
     }
   ],
   "binding_report": {
-    "total": 4266,
-    "succeeded": 4266,
+    "total": 4334,
+    "succeeded": 4329,
     "cached": 0,
-    "failed": 0,
-    "error_categories": {},
-    "failures": []
+    "failed": 5,
+    "error_categories": {
+      "template_error": 2,
+      "undefined_symbol": 3
+    },
+    "failures": [
+      {
+        "file": "NCollection_IncAllocator.cpp",
+        "error_type": "template_error",
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/deps/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/bind.h:466:16: error: no matching constructor for initialization of 'NCollection_IncAllocator::IBlock'"
+      },
+      {
+        "file": "BRepMesh_FaceChecker.cpp",
+        "error_type": "template_error",
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/deps/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/wire.h:124:19: error: static assertion failed due to requirement '!std::is_pointer<IMeshData_Edge *>::value': Implicitly binding raw pointers is illegal.  Specify allow_raw_pointer<arg<?>>"
+      },
+      {
+        "file": "BndBox2dTreeFiller.cpp",
+        "error_type": "undefined_symbol",
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/build/bindings/ModelingAlgorithms/TKMesh/IMeshData/IMeshData_Types.hxx/BndBox2dTreeFiller.cpp:4969:10: error: unknown type name 'BndBox2dTreeFiller'; did you mean 'IMeshData::BndBox2dTreeFiller'?"
+      },
+      {
+        "file": "CircleCellFilter.cpp",
+        "error_type": "undefined_symbol",
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/build/bindings/ModelingAlgorithms/TKMesh/IMeshData/IMeshData_Types.hxx/CircleCellFilter.cpp:4969:10: error: unknown type name 'CircleCellFilter'; did you mean 'IMeshData::CircleCellFilter'?"
+      },
+      {
+        "file": "VertexCellFilter.cpp",
+        "error_type": "undefined_symbol",
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/build/bindings/ModelingAlgorithms/TKMesh/IMeshData/IMeshData_Types.hxx/VertexCellFilter.cpp:4969:10: error: unknown type name 'VertexCellFilter'; did you mean 'IMeshData::VertexCellFilter'?"
+      }
+    ]
   }
 }
