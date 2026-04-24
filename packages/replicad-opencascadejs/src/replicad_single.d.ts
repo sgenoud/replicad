@@ -1,5 +1,13 @@
 /**
- * Auxiliary class representing a part of the global progress scale allocated by a step of the progress scope, see Message_ProgressScope::Next().
+ * Auxiliary class representing a part of the global progress scale allocated by a step of the progress scope, see `Message_ProgressScope::Next()`.
+ *
+ * A range object takes responsibility of advancing the progress by the size of allocated step, which is then performed depending on how it is used:
+ *
+ * - If {@link Message_ProgressScope | `Message_ProgressScope`} object is created using this range as argument, then this respondibility is taken over by that scope.
+ * - Otherwise, a range advances progress directly upon destruction.
+ *
+ * A range object can be copied, the responsibility for progress advancement is then taken by the copy. The same range object may be used (either copied or used to create scope) only once. Any consequent attempts to use range will give no result on the progress; in debug mode, an assert message will be generated.
+ * @see {@link Message_ProgressScope | `Message_ProgressScope`}
  */
 export declare class Message_ProgressRange {
   /**
@@ -33,6 +41,8 @@ export declare class Message_ProgressRange {
 
 /**
  * This class allows the definition of an RGB color as triplet of 3 normalized floating point values (red, green, blue).
+ *
+ * Although {@link Quantity_Color | `Quantity_Color`} can be technically used for pass-through storage of RGB triplet in any color space, other OCCT interfaces taking/returning {@link Quantity_Color | `Quantity_Color`} would expect them in linear space. Therefore, take a look into methods converting to and from non-linear sRGB color space, if needed; for instance, application usually providing color picking within 0..255 range in sRGB color space.
  */
 export declare class Quantity_Color {
   /**
@@ -48,11 +58,11 @@ export declare class Quantity_Color {
    */
   constructor(theC1: number, theC2: number, theC3: number, theType: unknown);
   /**
-   * Returns the name of the nearest color from the Quantity_NameOfColor enumeration.
+   * Returns the name of the nearest color from the `Quantity_NameOfColor` enumeration.
    */
   Name(): unknown;
   /**
-   * Returns the color from Quantity_NameOfColor enumeration nearest to specified RGB values.
+   * Returns the color from `Quantity_NameOfColor` enumeration nearest to specified RGB values.
    */
   static Name(theR: number, theG: number, theB: number): unknown;
   /**
@@ -100,11 +110,11 @@ export declare class Quantity_Color {
    */
   ChangeContrast(theDelta: number): void;
   /**
-   * Returns TRUE if the distance between two colors is greater than Epsilon().
+   * Returns TRUE if the distance between two colors is greater than `Epsilon()`.
    */
   IsDifferent(theOther: Quantity_Color): boolean;
   /**
-   * Returns TRUE if the distance between two colors is no greater than Epsilon().
+   * Returns TRUE if the distance between two colors is no greater than `Epsilon()`.
    */
   IsEqual(theOther: Quantity_Color): boolean;
   /**
@@ -120,11 +130,11 @@ export declare class Quantity_Color {
    */
   Delta(theColor: Quantity_Color): { DC: number; DI: number };
   /**
-   * Returns the value of the perceptual difference between this color and theOther, computed using the CIEDE2000 formula. The difference is in range [0, 100.], with 1 approximately corresponding to the minimal perceivable difference (usually difference 5 or greater is needed for the difference to be recognizable in practice).
+   * Returns the value of the perceptual difference between this color and `theOther`, computed using the CIEDE2000 formula. The difference is in range [0, 100.], with 1 approximately corresponding to the minimal perceivable difference (usually difference 5 or greater is needed for the difference to be recognizable in practice).
    */
   DeltaE2000(theOther: Quantity_Color): number;
   /**
-   * Returns the name of the color identified by the given Quantity_NameOfColor enumeration value.
+   * Returns the name of the color identified by the given `Quantity_NameOfColor` enumeration value.
    */
   static StringName(theColor: unknown): string;
   static ColorFromHex(theHexColorString: string, theColor: Quantity_Color): boolean;
@@ -149,7 +159,7 @@ export declare class Quantity_Color {
 }
 
 /**
- * The pair of Quantity_Color and Alpha component (1.0 opaque, 0.0 transparent).
+ * The pair of {@link Quantity_Color | `Quantity_Color`} and Alpha component (1.0 opaque, 0.0 transparent).
  */
 export declare class Quantity_ColorRGBA {
   /**
@@ -193,11 +203,11 @@ export declare class Quantity_ColorRGBA {
    */
   SetAlpha(theAlpha: number): void;
   /**
-   * Returns true if the distance between colors is greater than Epsilon().
+   * Returns true if the distance between colors is greater than `Epsilon()`.
    */
   IsDifferent(theOther: Quantity_ColorRGBA): boolean;
   /**
-   * Two colors are considered to be equal if their distance is no greater than Epsilon().
+   * Two colors are considered to be equal if their distance is no greater than `Epsilon()`.
    */
   IsEqual(theOther: Quantity_ColorRGBA): boolean;
   /**
@@ -249,7 +259,7 @@ export declare class Standard_Transient {
    */
   constructor();
   /**
-   * Copy constructor  does nothing.
+   * Copy constructor - does nothing.
    */
   constructor(a0: Standard_Transient);
   static get_type_name(): string;
@@ -270,7 +280,7 @@ export declare class Standard_Transient {
 }
 
 /**
- * Forms the root of the entire exception hierarchy. Inherits from std::exception and implements what() interface.
+ * Forms the root of the entire exception hierarchy. Inherits from std::exception and implements `what()` interface.
  */
 export declare class Standard_Failure {
   /**
@@ -310,11 +320,11 @@ export declare class Standard_Failure {
    */
   GetStackString(): string;
   /**
-   * Returns the default length of stack trace to be captured by Standard_Failure constructor; 0 by default meaning no stack trace.
+   * Returns the default length of stack trace to be captured by {@link Standard_Failure | `Standard_Failure`} constructor; 0 by default meaning no stack trace.
    */
   static DefaultStackTraceLength(): number;
   /**
-   * Sets default length of stack trace to be captured by Standard_Failure constructor.
+   * Sets default length of stack trace to be captured by {@link Standard_Failure | `Standard_Failure`} constructor.
    */
   static SetDefaultStackTraceLength(theNbStackTraces: number): void;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -323,16 +333,49 @@ export declare class Standard_Failure {
 }
 
 /**
- * The Precision package offers a set of functions defining precision criteria for use in conventional situations when comparing two numbers. Generalities It is not advisable to use floating number equality. Instead, the difference between numbers must be compared with a given precision, i.e. : double x1, x2 ; x1 = ... x2 = ... If ( x1 == x2 ) ... should not be used and must be written as indicated below: double x1, x2 ; double Precision = ... x1 = ... x2 = ... If ( Abs ( x1 - x2 ) < Precision ) ... Likewise, when ordering floating numbers, you must take the following into account : double x1, x2 ; double Precision = ... x1 = ... ! a large number x2 = ... ! another large number If ( x1 < x2 - Precision ) ... is incorrect when x1 and x2 are large numbers ; it is better to write : double x1, x2 ; double Precision = ... x1 = ... ! a large number x2 = ... ! another large number If ( x2 - x1 > Precision ) ... Precision in Cas.Cade Generally speaking, the precision criterion is not implicit in Cas.Cade. Low-level geometric algorithms accept precision criteria as arguments. As a rule, they should not refer directly to the precision criteria provided by the Precision package. On the other hand, high-level modeling algorithms have to provide the low-level geometric algorithms that they call, with a precision criteria. One way of doing this is to use the above precision criteria. Alternatively, the high-level algorithms can have their own system for precision management. For example, the Topology Data Structure stores precision criteria for each elementary shape (as a vertex, an edge or a face). When a new topological object is constructed, the precision criteria are taken from those provided by the Precision package, and stored in the related data structure. Later, a topological algorithm which analyses these objects will work with the values stored in the data structure. Also, if this algorithm is to build a new topological object, from these precision criteria, it will compute a new precision criterion for the new topological object, and write it into the data structure of the new topological object. The different precision criteria offered by the Precision package, cover the most common requirements of geometric algorithms, such as intersections, approximations, and so on. The choice of precision depends on the algorithm and on the geometric space. The geometric space may be :
+ * The {@link Precision | `Precision`} package offers a set of functions defining precision criteria for use in conventional situations when comparing two numbers. Generalities It is not advisable to use floating number equality. Instead, the difference between numbers must be compared with a given precision, i.e. : double x1, x2 ; x1 = ... x2 = ... If ( x1 == x2 ) ... should not be used and must be written as indicated below: double x1, x2 ; double {@link Precision | `Precision`} = ... x1 = ... x2 = ... If ( Abs ( x1 - x2 ) < {@link Precision | `Precision`} ) ...
+ * Likewise, when ordering floating numbers, you must take the following into account : double x1, x2 ; double {@link Precision | `Precision`} = ... x1 = ... ! a large number x2 = ... ! another large number If ( x1 < x2 - {@link Precision | `Precision`} ) ... is incorrect when x1 and x2 are large numbers ; it is better to write : double x1, x2 ; double {@link Precision | `Precision`} = ... x1 = ... ! a large number x2 = ... ! another large number If ( x2 - x1 > {@link Precision | `Precision`} ) ... {@link Precision | `Precision`} in Cas.Cade Generally speaking, the precision criterion is not implicit in Cas.Cade. Low-level geometric algorithms accept precision criteria as arguments.
+ * As a rule, they should not refer directly to the precision criteria provided by the {@link Precision | `Precision`} package.
+ * On the other hand, high-level modeling algorithms have to provide the low-level geometric algorithms that they call, with a precision criteria. One way of doing this is to use the above precision criteria. Alternatively, the high-level algorithms can have their own system for precision management.
+ * For example, the Topology Data Structure stores precision criteria for each elementary shape (as a vertex, an edge or a face).
+ * When a new topological object is constructed, the precision criteria are taken from those provided by the {@link Precision | `Precision`} package, and stored in the related data structure. Later, a topological algorithm which analyses these objects will work with the values stored in the data structure.
+ * Also, if this algorithm is to build a new topological object, from these precision criteria, it will compute a new precision criterion for the new topological object, and write it into the data structure of the new topological object. The different precision criteria offered by the {@link Precision | `Precision`} package, cover the most common requirements of geometric algorithms, such as intersections, approximations, and so on. The choice of precision depends on the algorithm and on the geometric space. The geometric space may be :
+ *
+ * - a "real" 2D or 3D space, where the lengths are measured in meters, millimeters, microns, inches, etc ..., or
+ * - a "parametric" space, 1D on a curve or 2D on a surface, where lengths have no dimension. The choice of precision criteria for real space depends on the choice of the product, as it is based on the accuracy of the machine and the unit of measurement.
+ * The choice of precision criteria for parametric space depends on both the accuracy of the machine and the dimensions of the curve or the surface, since the parametric precision criterion and the real precision criterion are linked : if the curve is defined by the equation P(t), the inequation : Abs ( t2 - t1 ) < ParametricPrecision means that the parameters t1 and t2 are considered to be equal, and the inequation : Distance ( P(t2) , P(t1) ) < RealPrecision means that the points P(t1) and P(t2) are considered to be coincident. It seems to be the same idea, and it would be wonderful if these two inequations were equivalent.
+ * Note that this is rarely the case ! What is provided in this package? The {@link Precision | `Precision`} package provides :
+ * - a set of real space precision criteria for the algorithms, in view of checking distances and angles,
+ * - a set of parametric space precision criteria for the algorithms, in view of checking both :
+ * - the equality of parameters in a parametric space,
+ * - or the coincidence of points in the real space, by using parameter values,
+ * - the notion of infinite value, composed of a value assumed to be infinite, and checking tests designed to verify if any value could be considered as infinite. All the provided functions are very simple. The returned values result from the adaptation of the applications developed by the Open CASCADE company to Open CASCADE algorithms. The main interest of these functions lies in that it incites engineers developing applications to ask questions on precision factors. Which one is to be used in such or such case ? Tolerance criteria are context dependent. They must first choose :
+ * - either to work in real space,
+ * - or to work in parametric space,
+ * - or to work in a combined real and parametric space. They must next decide which precision factor will give the best answer to the current problem. Within an application environment, it is crucial to master precision even though this process may take a great deal of time.
  */
 export declare class Precision {
   constructor();
   /**
-   * Returns the recommended precision value when checking the equality of two angles (given in radians). double Angle1 = ... , Angle2 = ... ; If ( std::abs( Angle2 - Angle1 ) < Precision::Angular() ) ... The tolerance of angular equality may be used to check the parallelism of two vectors : gp_Vec V1, V2 ; V1 = ... V2 = ... If ( V1.IsParallel (V2, Precision::Angular() ) ) ... The tolerance of angular equality is equal to 1.e-12. Note : The tolerance of angular equality can be used when working with scalar products or cross products since sines and angles are equivalent for small angles. Therefore, in order to check whether two unit vectors are perpendicular : gp_Dir D1, D2 ; D1 = ... D2 = ... you can use : If ( std::abs( D1.D2 ) < Precision::Angular() ) ... (although the function IsNormal does exist).
+   * Returns the recommended precision value when checking the equality of two angles (given in radians). double Angle1 = ... , Angle2 = ... ; If ( std::abs( Angle2 - Angle1 ) < `Precision::Angular()` ) ...
+   * The tolerance of angular equality may be used to check the parallelism of two vectors : {@link gp_Vec | `gp_Vec`} V1, V2 ; V1 = ... V2 = ... If ( V1.IsParallel (V2, `Precision::Angular()` ) ) ... The tolerance of angular equality is equal to 1.e-12.
+   * Note : The tolerance of angular equality can be used when working with scalar products or cross products since sines and angles are equivalent for small angles. Therefore, in order to check whether two unit vectors are perpendicular : {@link gp_Dir | `gp_Dir`} D1, D2 ; D1 = ...
+   * D2 = ... you can use : If ( std::abs( D1.D2 ) < `Precision::Angular()` ) ... (although the function IsNormal does exist).
    */
   static Angular(): number;
   /**
    * Returns the recommended precision value when checking coincidence of two points in real space. The tolerance of confusion is used for testing a 3D distance :
+   *
+   * - Two points are considered to be coincident if their distance is smaller than the tolerance of confusion. {@link gp_Pnt | `gp_Pnt`} P1, P2 ; P1 = ... P2 = ... if ( P1.IsEqual ( P2 , `Precision::Confusion()` ) ) then ...
+   * - A vector is considered to be null if it has a null length : {@link gp_Vec | `gp_Vec`} V ; V = ... if ( V.Magnitude() < `Precision::Confusion()` ) then ... The tolerance of confusion is equal to 1.e-7. The value of the tolerance of confusion is also used to define :
+   * - the tolerance of intersection, and
+   * - the tolerance of approximation.
+   * Note : As a rule, coordinate values in Cas.Cade are not dimensioned, so 1. represents one user unit, whatever value the unit may have : the millimeter, the meter, the inch, or any other unit.
+   * Let's say that Cas.Cade algorithms are written to be tuned essentially with mechanical design applications, on the basis of the millimeter.
+   * However, these algorithms may be used with any other unit but the tolerance criterion does no longer have the same signification.
+   * So pay particular attention to the type of your application, in relation with the impact of your unit on the precision criterion.
+   * - For example in mechanical design, if the unit is the millimeter, the tolerance of confusion corresponds to a distance of 1 / 10000 micron, which is rather difficult to measure.
+   * - However in other types of applications, such as cartography, where the kilometer is frequently used, the tolerance of confusion corresponds to a greater distance (1 / 10 millimeter). This distance becomes easily measurable, but only within a restricted space which contains some small objects of the complete scene.
    */
   static Confusion(): number;
   /**
@@ -341,6 +384,17 @@ export declare class Precision {
   static SquareConfusion(): number;
   /**
    * Returns a precision value at machine epsilon level, used for low-level numerical computations and floating-point comparisons. Unlike the geometric tolerances (Confusion, Intersection, Approximation) which are application-level values for modeling operations, this value represents the fundamental limit of floating-point arithmetic precision.
+   *
+   * Typical use cases include:
+   *
+   * - Checking if squared magnitudes are effectively zero (e.g., vector.SquareMagnitude() < `SquareComputational()`)
+   * - Division-by-zero protection in numerical algorithms
+   * - Convergence criteria in iterative solvers at machine precision level
+   * - Detecting numerical degeneracies in low-level computations
+   *
+   * The computational tolerance is equal to DBL_EPSILON (approximately 2.22e-16), which is the smallest positive value such that 1.0 + eps != 1.0 in double precision floating-point arithmetic. This is the fundamental machine epsilon for double (double) type.
+   *
+   * Note: This value should NOT be used for geometric comparisons. Use `Precision::Confusion()` for comparing geometric distances, `Precision::Angular()` for angles, etc.
    */
   static Computational(): number;
   /**
@@ -348,27 +402,51 @@ export declare class Precision {
    */
   static SquareComputational(): number;
   /**
-   * Returns the precision value in real space, frequently used by intersection algorithms to decide that a solution is reached. This function provides an acceptable level of precision for an intersection process to define the adjustment limits. The tolerance of intersection is designed to ensure that a point computed by an iterative algorithm as the intersection between two curves is indeed on the intersection. It is obvious that two tangent curves are close to each other, on a large distance. An iterative algorithm of intersection may find points on these curves within the scope of the confusion tolerance, but still far from the true intersection point. In order to force the intersection algorithm to continue the iteration process until a correct point is found on the tangent objects, the tolerance of intersection must be smaller than the tolerance of confusion. On the other hand, the tolerance of intersection must be large enough to minimize the time required by the process to converge to a solution. The tolerance of intersection is equal to : Precision::Confusion() / 100. (that is, 1.e-9).
+   * Returns the precision value in real space, frequently used by intersection algorithms to decide that a solution is reached. This function provides an acceptable level of precision for an intersection process to define the adjustment limits.
+   * The tolerance of intersection is designed to ensure that a point computed by an iterative algorithm as the intersection between two curves is indeed on the intersection. It is obvious that two tangent curves are close to each other, on a large distance.
+   * An iterative algorithm of intersection may find points on these curves within the scope of the confusion tolerance, but still far from the true intersection point.
+   * In order to force the intersection algorithm to continue the iteration process until a correct point is found on the tangent objects, the tolerance of intersection must be smaller than the tolerance of confusion. On the other hand, the tolerance of intersection must be large enough to minimize the time required by the process to converge to a solution. The tolerance of intersection is equal to : `Precision::Confusion()` / 100. (that is, 1.e-9).
    */
   static Intersection(): number;
   /**
-   * Returns the precision value in real space, frequently used by approximation algorithms. This function provides an acceptable level of precision for an approximation process to define adjustment limits. The tolerance of approximation is designed to ensure an acceptable computation time when performing an approximation process. That is why the tolerance of approximation is greater than the tolerance of confusion. The tolerance of approximation is equal to : Precision::Confusion() * 10. (that is, 1.e-6). You may use a smaller tolerance in an approximation algorithm, but this option might be costly.
+   * Returns the precision value in real space, frequently used by approximation algorithms. This function provides an acceptable level of precision for an approximation process to define adjustment limits.
+   * The tolerance of approximation is designed to ensure an acceptable computation time when performing an approximation process. That is why the tolerance of approximation is greater than the tolerance of confusion. The tolerance of approximation is equal to : `Precision::Confusion()` * 10. (that is, 1.e-6). You may use a smaller tolerance in an approximation algorithm, but this option might be costly.
    */
   static Approximation(): number;
   /**
    * Convert a real space precision to a parametric space precision. <T> is the mean value of the length of the tangent of the curve or the surface.
+   *
+   * Value is P / T
    */
   static Parametric(P: number, T: number): number;
   /**
    * Convert a real space precision to a parametric space precision on a default curve.
+   *
+   * Value is Parametric(P,1.e+2)
    */
   static Parametric(P: number): number;
   /**
    * Returns a precision value in parametric space, which may be used :
+   *
+   * - to test the coincidence of two points in the real space, by using parameter values, or
+   * - to test the equality of two parameter values in a parametric space. The parametric tolerance of confusion is designed to give a mean value in relation with the dimension of the curve or the surface. It considers that a variation of parameter equal to 1. along a curve (or an isoparametric curve of a surface) generates a segment whose length is equal to 100. (default value), or T. The parametric tolerance of confusion is equal to :
+   * - `Precision::Confusion()` / 100., or `Precision::Confusion()` / T. The value of the parametric tolerance of confusion is also used to define :
+   * - the parametric tolerance of intersection, and
+   * - the parametric tolerance of approximation. Warning It is rather difficult to define a unique precision value in parametric space.
+   * - First consider a curve (c) ; if M is the point of parameter u and M' the point of parameter u+du on the curve, call 'parametric tangent' at point M, for the variation du of the parameter, the quantity : T(u,du)=MM'/du (where MM' represents the distance between the two points M and M', in the real space).
+   * - Consider the other curve resulting from a scaling transformation of (c) with a scale factor equal to
+   *
+   * 1. The 'parametric tangent' at the point of parameter u of this curve is ten times greater than the previous one. This shows that for two different curves, the distance between two points on the curve, resulting from the same variation of parameter du, may vary considerably.
+   *
+   * - Moreover, the variation of the parameter along the curve is generally not proportional to the curvilinear abscissa along the curve. So the distance between two points resulting from the same variation of parameter du, at two different points of a curve, may completely differ.
+   * - Moreover, the parameterization of a surface may generate two quite different 'parametric tangent' values in the u or in the v parametric direction.
+   * - Last, close to the poles of a sphere (the points which correspond to the values -Pi/2. and Pi/2. of the v parameter) the u parameter may change from 0 to 2.Pi without impacting on the resulting point. Therefore, take great care when adjusting a parametric tolerance to your own algorithm.
    */
   static PConfusion(T: number): number;
   /**
    * Used to test distances in parametric space on a default curve.
+   *
+   * This is Precision::Parametric(Precision::Confusion())
    */
   static PConfusion(): number;
   /**
@@ -376,19 +454,33 @@ export declare class Precision {
    */
   static SquarePConfusion(): number;
   /**
-   * Returns a precision value in parametric space, which may be used by intersection algorithms, to decide that a solution is reached. The purpose of this function is to provide an acceptable level of precision in parametric space, for an intersection process to define the adjustment limits. The parametric tolerance of intersection is designed to give a mean value in relation with the dimension of the curve or the surface. It considers that a variation of parameter equal to 1. along a curve (or an isoparametric curve of a surface) generates a segment whose length is equal to 100. (default value), or T. The parametric tolerance of intersection is equal to :
+   * Returns a precision value in parametric space, which may be used by intersection algorithms, to decide that a solution is reached.
+   * The purpose of this function is to provide an acceptable level of precision in parametric space, for an intersection process to define the adjustment limits.
+   * The parametric tolerance of intersection is designed to give a mean value in relation with the dimension of the curve or the surface.
+   * It considers that a variation of parameter equal to 1. along a curve (or an isoparametric curve of a surface) generates a segment whose length is equal to 100. (default value), or T. The parametric tolerance of intersection is equal to :
+   *
+   * - `Precision::Intersection()` / 100., or `Precision::Intersection()` / T.
    */
   static PIntersection(T: number): number;
   /**
    * Used for Intersections in parametric space on a default curve.
+   *
+   * This is Precision::Parametric(Precision::Intersection())
    */
   static PIntersection(): number;
   /**
-   * Returns a precision value in parametric space, which may be used by approximation algorithms. The purpose of this function is to provide an acceptable level of precision in parametric space, for an approximation process to define the adjustment limits. The parametric tolerance of approximation is designed to give a mean value in relation with the dimension of the curve or the surface. It considers that a variation of parameter equal to 1. along a curve (or an isoparametric curve of a surface) generates a segment whose length is equal to 100. (default value), or T. The parametric tolerance of intersection is equal to :
+   * Returns a precision value in parametric space, which may be used by approximation algorithms.
+   * The purpose of this function is to provide an acceptable level of precision in parametric space, for an approximation process to define the adjustment limits.
+   * The parametric tolerance of approximation is designed to give a mean value in relation with the dimension of the curve or the surface.
+   * It considers that a variation of parameter equal to 1. along a curve (or an isoparametric curve of a surface) generates a segment whose length is equal to 100. (default value), or T. The parametric tolerance of intersection is equal to :
+   *
+   * - `Precision::Approximation()` / 100., or `Precision::Approximation()` / T.
    */
   static PApproximation(T: number): number;
   /**
    * Used for Approximations in parametric space on a default curve.
+   *
+   * This is Precision::Parametric(Precision::Approximation())
    */
   static PApproximation(): number;
   /**
@@ -404,7 +496,7 @@ export declare class Precision {
    */
   static IsNegativeInfinite(R: number): boolean;
   /**
-   * Returns a big number that can be considered as infinite. Use -Infinite() for a negative big number.
+   * Returns a big number that can be considered as infinite. Use -`Infinite()` for a negative big number.
    */
   static Infinite(): number;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -414,6 +506,11 @@ export declare class Precision {
 
 /**
  * A variable-length sequence of "extended" (UNICODE) characters (16-bit character type). It provides editing operations with built-in memory management to make ExtendedString objects easier to use than ordinary extended character arrays. ExtendedString objects follow "value semantics", that is, they are the actual strings, not handles to strings, and are copied through assignment. You may use HExtendedString objects to get handles to strings.
+ *
+ * Beware that class can transparently store UTF-16 string with surrogate pairs (Unicode symbol represented by two 16-bit code units). However, surrogate pairs are not considered by the following methods:
+ *
+ * - Method ::Length() return the number of 16-bit code units, not the number of Unicode symbols.
+ * - Methods taking/returning symbol index work with 16-bit code units, not true Unicode symbols, including ::Remove(), ::SetValue(), ::Value(), ::Search(), ::Trunc() and others. If application needs to process surrogate pairs, `NCollection_UtfIterator<char16_t>` class can be used for iterating through Unicode string (UTF-32 code unit will be returned for each position).
  */
 export declare class TCollection_ExtendedString {
   /**
@@ -468,6 +565,12 @@ export declare class TCollection_ExtendedString {
   constructor(theString: unknown, theIsMultiByte: boolean);
   /**
    * Appends the other extended string to this extended string. Note that this method is an alias of operator +=.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"Hello"); TCollection_ExtendedStringanotherString(u"World"); aString+=anotherString; //Result:aString==u"HelloWorld"
+   * ```
    * @param theOther the string to append
    */
   AssignCat(theOther: TCollection_ExtendedString): void;
@@ -530,12 +633,24 @@ export declare class TCollection_ExtendedString {
   Cat(theChar: string): TCollection_ExtendedString;
   /**
    * Appends the other extended string to this string and returns a new string.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"Hello"); TCollection_ExtendedStringanotherString(u"World"); TCollection_ExtendedStringaResult=aString+anotherString; //Result:aResult==u"HelloWorld"
+   * ```
    * @param theOther the string to append
    * @returns new string with theOther appended
    */
   Cat(theOther: TCollection_ExtendedString): TCollection_ExtendedString;
   /**
    * Appends the other extended string to this string and returns a new string.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"Hello"); TCollection_ExtendedStringanotherString(u"World"); TCollection_ExtendedStringaResult=aString+anotherString; //Result:aResult==u"HelloWorld"
+   * ```
    * @param theOther the string to append
    * @returns new string with theOther appended
    */
@@ -549,6 +664,12 @@ export declare class TCollection_ExtendedString {
   Cat(theOther: string, theLength: number): TCollection_ExtendedString;
   /**
    * Substitutes all the characters equal to theChar by theNewChar in this ExtendedString. The substitution can be case sensitive. If you don't use default case sensitive, no matter whether theChar is uppercase or not.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"Histake"); aString.ChangeAll(u'H',u'M'); //Result:aString==u"Mistake"
+   * ```
    * @param theChar the character to replace
    * @param theNewChar the replacement character
    */
@@ -559,6 +680,12 @@ export declare class TCollection_ExtendedString {
   Clear(): void;
   /**
    * Copy theFromWhere to this string. Used as operator =.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString; TCollection_ExtendedStringanotherString(u"HelloWorld"); aString=anotherString;//operator= //Result:aString==u"HelloWorld"
+   * ```
    * @param theFromWhere the string to copy from
    */
   Copy(theFromWhere: TCollection_ExtendedString): void;
@@ -580,6 +707,12 @@ export declare class TCollection_ExtendedString {
   Swap(theOther: TCollection_ExtendedString): void;
   /**
    * Insert a Character at position theWhere.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"hynot?"); aString.Insert(1,u'W'); //Result:aString==u"Whynot?"
+   * ```
    * @param theWhere the position to insert at (1-based)
    * @param theWhat the character to insert
    */
@@ -745,6 +878,12 @@ export declare class TCollection_ExtendedString {
   RemoveAll(theWhat: string): void;
   /**
    * Erases theHowMany characters from position theWhere, theWhere included.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"Hello"); aString.Remove(2,2);//erases2charactersfromposition2 //Result:aString==u"Hlo"
+   * ```
    * @param theWhere the position to start erasing from (1-based)
    * @param theHowMany the number of characters to erase
    */
@@ -789,6 +928,12 @@ export declare class TCollection_ExtendedString {
   SearchFromEnd(theWhat: string, theLength: number): number;
   /**
    * Replaces one character in the ExtendedString at position theWhere. If theWhere is less than zero or greater than the length of this string an exception is raised.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"Garbake"); aString.SetValue(6,u'g'); //Result:aString==u"Garbage"
+   * ```
    * @param theWhere the position to replace at (1-based)
    * @param theWhat the character to replace with
    */
@@ -814,6 +959,12 @@ export declare class TCollection_ExtendedString {
   SetValue(theWhere: number, theWhat: string, theLength: number): void;
   /**
    * Copies characters from this string starting from index theFromIndex to the index theToIndex (inclusive). Raises an exception if theToIndex or theFromIndex is out of bounds.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"abcdefg"); TCollection_ExtendedStringaSubString=aString.SubString(3,6); //Result:aSubString==u"cdef"
+   * ```
    * @param theFromIndex the starting index (1-based)
    * @param theToIndex the ending index (1-based, inclusive)
    * @returns the substring from theFromIndex to theToIndex
@@ -821,12 +972,27 @@ export declare class TCollection_ExtendedString {
   SubString(theFromIndex: number, theToIndex: number): TCollection_ExtendedString;
   /**
    * Splits this extended string into two sub-strings at position theWhere.
+   *
+   * - The second sub-string (from position theWhere + 1 of this string to the end) is returned in a new extended string.
+   * - This extended string is modified: its last characters are removed, it becomes equal to the first sub-string (from the first character to position theWhere).
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"abcdefg"); TCollection_ExtendedStringaSecondPart=aString.Split(3); //Result:aString==u"abc"andaSecondPart==u"defg"
+   * ```
    * @param theWhere the position to split at (0-based)
    * @returns the second part of the split string
    */
   Split(theWhere: number): TCollection_ExtendedString;
   /**
    * Extracts theWhichOne token from this string. By default, the theSeparators is set to space and tabulation. By default, the token extracted is the first one (theWhichOne = 1). theSeparators contains all separators you need. If no token indexed by theWhichOne is found, it returns an empty ExtendedString.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"Thisisamessage"); TCollection_ExtendedStringaToken1=aString.Token(); //Result:aToken1==u"This" TCollection_ExtendedStringaToken2=aString.Token(u"",4); //Result:aToken2==u"message" TCollection_ExtendedStringaToken3=aString.Token(u"",2); //Result:aToken3==u"is" TCollection_ExtendedStringaToken4=aString.Token(u"",9); //Result:aToken4==u"" TCollection_ExtendedStringbString(u"1234;test:message,value"); TCollection_ExtendedStringbToken1=bString.Token(u";:,",4); //Result:bToken1==u"value"
+   * ```
    * @param theSeparators the separator characters
    * @param theWhichOne the token number to extract (1-based)
    * @returns the extracted token
@@ -839,22 +1005,40 @@ export declare class TCollection_ExtendedString {
   ToExtString(): string;
   /**
    * Truncates this string to theHowMany characters.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"HelloDolly"); aString.Trunc(3); //Result:aString==u"Hel"
+   * ```
    * @param theHowMany the number of characters to keep
    */
   Trunc(theHowMany: number): void;
   /**
    * Returns character at position theWhere in this string. If theWhere is less than zero or greater than the length of this string, an exception is raised.
+   *
+   * Example:
+   *
+   * ```
+   * TCollection_ExtendedStringaString(u"Hello"); char16_taChar=aString.Value(2); //Result:aChar==u'e'
+   * ```
    * @param theWhere the position to get character from (1-based)
    * @returns the character at the specified position
    */
   Value(theWhere: number): string;
   /**
-   * Returns a hashed value for the extended string. Note: if string is ASCII, the computed value is the same as the value computed with the HashCode function on a TCollection_AsciiString string composed with equivalent ASCII characters.
+   * Returns a hashed value for the extended string. Note: if string is ASCII, the computed value is the same as the value computed with the HashCode function on a {@link TCollection_AsciiString | `TCollection_AsciiString`} string composed with equivalent ASCII characters.
    * @returns a computed hash code
    */
   HashCode(): number;
   /**
    * Returns a const reference to a single shared empty string instance. This method provides access to a static empty string to avoid creating temporary empty strings. Use this method instead of constructing empty strings when you need a const reference.
+   *
+   * Example:
+   *
+   * ```
+   * constTCollection_ExtendedString&anEmptyStr=TCollection_ExtendedString::EmptyString(); //UseanEmptyStrinsteadofTCollection_ExtendedString()
+   * ```
    * @returns const reference to static empty string
    */
   static EmptyString(): TCollection_ExtendedString;
@@ -891,6 +1075,7 @@ export declare class TCollection_ExtendedString {
   Center(theWidth: number, theFiller: string): void;
   /**
    * Converts the first character into its corresponding upper-case character and the other characters into lowercase.
+   * @remarks **Note:** Only ASCII characters (a-z, A-Z) are affected by case conversion.
    */
   Capitalize(): void;
   /**
@@ -951,6 +1136,7 @@ export declare class TCollection_ExtendedString {
    * @param theOther the string to compare with
    * @param theIsCaseSensitive flag indicating case sensitivity
    * @returns true if strings contain same characters
+   * @remarks **Note:** When case-insensitive, only ASCII characters (a-z, A-Z) are affected.
    */
   IsSameString(theOther: TCollection_ExtendedString, theIsCaseSensitive: boolean): boolean;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -960,6 +1146,9 @@ export declare class TCollection_ExtendedString {
 
 /**
  * A variable-length sequence of ASCII characters (normal 8-bit character type). It provides editing operations with built-in memory management to make HAsciiString objects easier to use than ordinary character arrays. HAsciiString objects are handles to strings.
+ *
+ * - HAsciiString strings may be shared by several objects.
+ * - You may use an AsciiString object to get the actual string. Note: HAsciiString objects use an AsciiString string as a field.
  */
 export declare class TCollection_HAsciiString extends Standard_Transient {
   /**
@@ -1019,11 +1208,11 @@ export declare class TCollection_HAsciiString extends Standard_Transient {
    */
   Cat(other: TCollection_HAsciiString): TCollection_HAsciiString;
   /**
-   * Modifies this ASCII string so that its length becomes equal to Width and the new characters are equal to Filler. New characters are added both at the beginning and at the end of this string. If Width is less than the length of this ASCII string, nothing happens. Example occ::handle<TCollection_HAsciiString> myAlphabet = new TCollection_HAsciiString ("abcdef"); myAlphabet->Center(9,' '); assert ( !strcmp( myAlphabet->ToCString(), " abcdef ") );.
+   * Modifies this ASCII string so that its length becomes equal to Width and the new characters are equal to Filler. New characters are added both at the beginning and at the end of this string. If Width is less than the length of this ASCII string, nothing happens. Example `occ::handle<TCollection_HAsciiString>` myAlphabet = new {@link TCollection_HAsciiString | `TCollection_HAsciiString`} ("abcdef"); myAlphabet->Center(9,' '); assert ( !strcmp( myAlphabet->`ToCString()`, " abcdef ") );.
    */
   Center(Width: number, Filler: string): void;
   /**
-   * Replaces all characters equal to aChar by NewChar in this ASCII string. The substitution is case sensitive if CaseSensitive is true (default value). If you do not use the default case sensitive option, it does not matter whether aChar is upper-case or not. Example occ::handle<TCollection_HAsciiString> myMistake = new TCollection_HAsciiString ("Hather"); myMistake->ChangeAll('H','F'); assert ( !strcmp( myMistake->ToCString(), "Father") );.
+   * Replaces all characters equal to aChar by NewChar in this ASCII string. The substitution is case sensitive if CaseSensitive is true (default value). If you do not use the default case sensitive option, it does not matter whether aChar is upper-case or not. Example `occ::handle<TCollection_HAsciiString>` myMistake = new {@link TCollection_HAsciiString | `TCollection_HAsciiString`} ("Hather"); myMistake->ChangeAll('H','F'); assert ( !strcmp( myMistake->`ToCString()`, "Father") );.
    */
   ChangeAll(aChar: string, NewChar: string, CaseSensitive: boolean): void;
   /**
@@ -1103,7 +1292,7 @@ export declare class TCollection_HAsciiString extends Standard_Transient {
    */
   LeftAdjust(): void;
   /**
-   * Left justify. Length becomes equal to Width and the new characters are equal to Filler if Width < Length nothing happens Raises an exception if Width is less than zero Example: before me = "abcdef" , Width = 9 , Filler = ' ' after me = "abcdef   ".
+   * Left justify. Length becomes equal to Width and the new characters are equal to Filler if Width < Length nothing happens Raises an exception if Width is less than zero Example: before me = "abcdef" , Width = 9 , Filler = ' ' after me = "abcdef ".
    */
   LeftJustify(Width: number, Filler: string): void;
   /**
@@ -1147,7 +1336,7 @@ export declare class TCollection_HAsciiString extends Standard_Transient {
    */
   RightAdjust(): void;
   /**
-   * Right justify. Length becomes equal to Width and the new characters are equal to Filler if Width < Length nothing happens Raises an exception if Width is less than zero Example: before me = "abcdef" , Width = 9 , Filler = ' ' after me = "   abcdef".
+   * Right justify. Length becomes equal to Width and the new characters are equal to Filler if Width < Length nothing happens Raises an exception if Width is less than zero Example: before me = "abcdef" , Width = 9 , Filler = ' ' after me = " abcdef".
    */
   RightJustify(Width: number, Filler: string): void;
   /**
@@ -1191,7 +1380,8 @@ export declare class TCollection_HAsciiString extends Standard_Transient {
    */
   ToCString(): string;
   /**
-   * Extracts <whichone> token from <me>. By default, the <separators> is set to space and tabulation. By default, the token extracted is the first one (whichone = 1). <separators> contains all separators you need. If no token indexed by <whichone> is found, it returns an empty String. Example: aString contains "This is a     message" aString.Token() returns "This" aString.Token(" ",4) returns "message" aString.Token(" ",2) returns "is" aString.Token(" ",9) returns "" Other separators than space character and tabulation are allowed aString contains "1234; test:message   , value" aString.Token("; :,",4) returns "value" aString.Token("; :,",2) returns "test".
+   * Extracts <whichone> token from <me>. By default, the <separators> is set to space and tabulation. By default, the token extracted is the first one (whichone = 1). <separators> contains all separators you need. If no token indexed by <whichone> is found, it returns an empty String.
+   * Example: aString contains "This is a message" aString.Token() returns "This" aString.Token(" ",4) returns "message" aString.Token(" ",2) returns "is" aString.Token(" ",9) returns "" Other separators than space character and tabulation are allowed aString contains "1234; test:message , value" aString.Token("; :,",4) returns "value" aString.Token("; :,",2) returns "test".
    */
   Token(separators: string, whichone: number): TCollection_HAsciiString;
   /**
@@ -1224,7 +1414,7 @@ export declare class TCollection_HAsciiString extends Standard_Transient {
 }
 
 /**
- * A Location is a composite transition. It comprises a series of elementary reference coordinates, i.e. objects of type TopLoc_Datum3D, and the powers to which these objects are raised.
+ * A Location is a composite transition. It comprises a series of elementary reference coordinates, i.e. objects of type {@link TopLoc_Datum3D | `TopLoc_Datum3D`}, and the powers to which these objects are raised.
  */
 export declare class TopLoc_Location {
   /**
@@ -1240,7 +1430,7 @@ export declare class TopLoc_Location {
    */
   constructor(T: gp_Trsf);
   /**
-   * Constructs the local coordinate system object defined by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
+   * Constructs the local coordinate system object defined by the transformation T. T invokes in turn, a {@link TopLoc_Datum3D | `TopLoc_Datum3D`} object.
    */
   constructor(D: unknown);
   /**
@@ -1261,6 +1451,8 @@ export declare class TopLoc_Location {
   FirstPower(): number;
   /**
    * Returns a Location representing <me> without the first datum. We have the relation:
+   *
+   * <me> = `NextLocation()` * `FirstDatum()` ^ `FirstPower()` Exceptions Standard_NoSuchObject if this location is empty.
    */
   NextLocation(): TopLoc_Location;
   /**
@@ -1269,6 +1461,8 @@ export declare class TopLoc_Location {
   Transformation(): gp_Trsf;
   /**
    * Returns the inverse of <me>.
+   *
+   * <me> * `Inverted()` is an Identity.
    */
   Inverted(): TopLoc_Location;
   /**
@@ -1280,7 +1474,7 @@ export declare class TopLoc_Location {
    */
   Divided(Other: TopLoc_Location): TopLoc_Location;
   /**
-   * Returns <Other>.Inverted() * <me>.
+   * Returns <Other>.`Inverted()` * <me>.
    */
   Predivided(Other: TopLoc_Location): TopLoc_Location;
   /**
@@ -1293,11 +1487,11 @@ export declare class TopLoc_Location {
    */
   HashCode(): number;
   /**
-   * Returns true if this location and the location Other have the same elementary data, i.e. contain the same series of TopLoc_Datum3D and respective powers. This method is an alias for operator ==.
+   * Returns true if this location and the location Other have the same elementary data, i.e. contain the same series of {@link TopLoc_Datum3D | `TopLoc_Datum3D`} and respective powers. This method is an alias for operator ==.
    */
   IsEqual(theOther: TopLoc_Location): boolean;
   /**
-   * Returns true if this location and the location Other do not have the same elementary data, i.e. do not contain the same series of TopLoc_Datum3D and respective powers. This method is an alias for operator !=.
+   * Returns true if this location and the location Other do not have the same elementary data, i.e. do not contain the same series of {@link TopLoc_Datum3D | `TopLoc_Datum3D`} and respective powers. This method is an alias for operator !=.
    */
   IsDifferent(theOther: TopLoc_Location): boolean;
   /**
@@ -1311,7 +1505,12 @@ export declare class TopLoc_Location {
 }
 
 /**
- * Describes a circle in the plane (2D space). A circle is defined by its radius and positioned in the plane with a coordinate system (a gp_Ax22d object) as follows:
+ * Describes a circle in the plane (2D space). A circle is defined by its radius and positioned in the plane with a coordinate system (a {@link gp_Ax22d | `gp_Ax22d`} object) as follows:
+ *
+ * - the origin of the coordinate system is the center of the circle, and
+ * - the orientation (direct or indirect) of the coordinate system gives an implicit orientation to the circle (and defines its trigonometric sense). This positioning coordinate system is the "local coordinate system" of the circle. Note: when a {@link gp_Circ2d | `gp_Circ2d`} circle is converted into a {@link Geom2d_Circle | `Geom2d_Circle`} circle, some implicit properties of the circle are used explicitly:
+ * - the implicit orientation corresponds to the direction in which parameter values increase,
+ * - the starting point for parameterization is that of the "X Axis" of the local coordinate system (i.e. the "X Axis" of the circle). See Also GccAna and {@link Geom2dGcc | `Geom2dGcc`} packages which provide functions for constructing circles defined by geometric constraints {@link gce_MakeCirc2d | `gce_MakeCirc2d`} which provides functions for more complex circle constructions {@link Geom2d_Circle | `Geom2d_Circle`} which provides additional functions for constructing circles and works, with the parametric equations of circles in particular {@link gp_Ax22d | `gp_Ax22d`}
  */
 export declare class gp_Circ2d {
   /**
@@ -1480,6 +1679,8 @@ export declare class gp_Vec {
   SetCoord(theIndex: number, theXi: number): void;
   /**
    * For this vector, assigns.
+   *
+   * - the values theXv, theYv and theZv to its three coordinates.
    */
   SetCoord(theXv: number, theYv: number, theZv: number): void;
   /**
@@ -1520,6 +1721,8 @@ export declare class gp_Vec {
   Z(): number;
   /**
    * For this vector, returns.
+   *
+   * - its three coordinates as a number triple
    */
   XYZ(): gp_XYZ;
   /**
@@ -1527,23 +1730,26 @@ export declare class gp_Vec {
    */
   IsEqual(theOther: gp_Vec, theLinearTolerance: number, theAngularTolerance: number): boolean;
   /**
-   * Returns True if abs(<me>.Angle(theOther) - PI/2.) <= theAngularTolerance Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or theOther.Magnitude() <= Resolution from gp.
+   * Returns True if abs(<me>.Angle(theOther) - PI/2.) <= theAngularTolerance Raises VectorWithNullMagnitude if <me>.`Magnitude()` <= Resolution or theOther.Magnitude() <= Resolution from gp.
    */
   IsNormal(theOther: gp_Vec, theAngularTolerance: number): boolean;
   /**
-   * Returns True if PI - <me>.Angle(theOther) <= theAngularTolerance Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or Other.Magnitude() <= Resolution from gp.
+   * Returns True if PI - <me>.Angle(theOther) <= theAngularTolerance Raises VectorWithNullMagnitude if <me>.`Magnitude()` <= Resolution or Other.Magnitude() <= Resolution from gp.
    */
   IsOpposite(theOther: gp_Vec, theAngularTolerance: number): boolean;
   /**
-   * Returns True if Angle(<me>, theOther) <= theAngularTolerance or PI - Angle(<me>, theOther) <= theAngularTolerance This definition means that two parallel vectors cannot define a plane but two vectors with opposite directions are considered as parallel. Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or Other.Magnitude() <= Resolution from gp.
+   * Returns True if Angle(<me>, theOther) <= theAngularTolerance or PI - Angle(<me>, theOther) <= theAngularTolerance This definition means that two parallel vectors cannot define a plane but two vectors with opposite directions are considered as parallel. Raises VectorWithNullMagnitude if <me>.`Magnitude()` <= Resolution or Other.Magnitude() <= Resolution from gp.
    */
   IsParallel(theOther: gp_Vec, theAngularTolerance: number): boolean;
   /**
-   * Computes the angular value between <me> and <theOther> Returns the angle value between 0 and PI in radian. Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution from gp or theOther.Magnitude() <= Resolution because the angular value is indefinite if one of the vectors has a null magnitude.
+   * Computes the angular value between <me> and <theOther> Returns the angle value between 0 and PI in radian. Raises VectorWithNullMagnitude if <me>.`Magnitude()` <= Resolution from gp or theOther.Magnitude() <= Resolution because the angular value is indefinite if one of the vectors has a null magnitude.
    */
   Angle(theOther: gp_Vec): number;
   /**
-   * Computes the angle, in radians, between this vector and vector theOther. The result is a value between -Pi and Pi. For this, theVRef defines the positive sense of rotation: the angular value is positive, if the cross product this ^ theOther has the same orientation as theVRef relative to the plane defined by the vectors this and theOther. Otherwise, the angular value is negative. Exceptions gp_VectorWithNullMagnitude if the magnitude of this vector, the vector theOther, or the vector theVRef is less than or equal to gp::Resolution(). Standard_DomainError if this vector, the vector theOther, and the vector theVRef are coplanar, unless this vector and the vector theOther are parallel.
+   * Computes the angle, in radians, between this vector and vector theOther. The result is a value between -Pi and Pi.
+   * For this, theVRef defines the positive sense of rotation: the angular value is positive, if the cross product this ^ theOther has the same orientation as theVRef relative to the plane defined by the vectors this and theOther. Otherwise, the angular value is negative.
+   * Exceptions gp_VectorWithNullMagnitude if the magnitude of this vector, the vector theOther, or the vector theVRef is less than or equal to `gp::Resolution()`.
+   * Standard_DomainError if this vector, the vector theOther, and the vector theVRef are coplanar, unless this vector and the vector theOther are parallel.
    */
   AngleWithRef(theOther: gp_Vec, theVRef: gp_Vec): number;
   /**
@@ -1697,7 +1903,12 @@ export declare class gp_Vec {
 }
 
 /**
- * Describes an ellipse in the plane (2D space). An ellipse is defined by its major and minor radii and positioned in the plane with a coordinate system (a gp_Ax22d object) as follows:
+ * Describes an ellipse in the plane (2D space). An ellipse is defined by its major and minor radii and positioned in the plane with a coordinate system (a {@link gp_Ax22d | `gp_Ax22d`} object) as follows:
+ *
+ * - the origin of the coordinate system is the center of the ellipse,
+ * - its "X Direction" defines the major axis of the ellipse, and
+ * - its "Y Direction" defines the minor axis of the ellipse. This coordinate system is the "local coordinate system" of the ellipse. Its orientation (direct or indirect) gives an implicit orientation to the ellipse.
+ * In this coordinate system, the equation of the ellipse is: X*X/(`MajorRadius`**2)+Y*Y/(`MinorRadius`**2)=1.0 See Also {@link gce_MakeElips2d | `gce_MakeElips2d`} which provides functions for more complex ellipse constructions {@link Geom2d_Ellipse | `Geom2d_Ellipse`} which provides additional functions for constructing ellipses and works, in particular, with the parametric equations of ellipses
  */
 export declare class gp_Elips2d {
   /**
@@ -1706,10 +1917,20 @@ export declare class gp_Elips2d {
   constructor();
   /**
    * Creates an ellipse with radii MajorRadius and MinorRadius, positioned in the plane by coordinate system theA where:
+   *
+   * - the origin of theA is the center of the ellipse,
+   * - the "X Direction" of theA defines the major axis of the ellipse, that is, the major radius MajorRadius is measured along this axis, and
+   * - the "Y Direction" of theA defines the minor axis of the ellipse, that is, the minor radius theMinorRadius is measured along this axis, and
+   * - the orientation (direct or indirect sense) of theA gives the orientation of the ellipse. Warnings : It is possible to create an ellipse with theMajorRadius = theMinorRadius. Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
    */
   constructor(theA: gp_Ax22d, theMajorRadius: number, theMinorRadius: number);
   /**
    * Creates an ellipse with radii MajorRadius and MinorRadius, positioned in the plane by coordinate system theA where:
+   *
+   * - the origin of theA is the center of the ellipse,
+   * - the "X Direction" of theA defines the major axis of the ellipse, that is, the major radius MajorRadius is measured along this axis, and
+   * - the "Y Direction" of theA defines the minor axis of the ellipse, that is, the minor radius theMinorRadius is measured along this axis, and
+   * - the orientation (direct or indirect sense) of theA gives the orientation of the ellipse. Warnings : It is possible to create an ellipse with theMajorRadius = theMinorRadius. Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
    */
   constructor(theMajorAxis: gp_Ax2d, theMajorRadius: number, theMinorRadius: number);
   /**
@@ -1718,6 +1939,8 @@ export declare class gp_Elips2d {
   constructor(theMajorAxis: gp_Ax2d, theMajorRadius: number, theMinorRadius: number, theIsSense?: boolean);
   /**
    * Modifies this ellipse, by redefining its local coordinate system so that.
+   *
+   * - its origin becomes theP.
    */
   SetLocation(theP: gp_Pnt2d): void;
   /**
@@ -1750,10 +1973,14 @@ export declare class gp_Elips2d {
   Coefficients(): { theA: number; theB: number; theC: number; theD: number; theE: number; theF: number };
   /**
    * This directrix is the line normal to the XAxis of the ellipse in the local plane (Z = 0) at a distance d = MajorRadius / e from the center of the ellipse, where e is the eccentricity of the ellipse. This line is parallel to the "YAxis". The intersection point between directrix1 and the "XAxis" is the location point of the directrix1. This point is on the positive side of the "XAxis".
+   *
+   * Raised if Eccentricity = 0.0. (The ellipse degenerates into a circle)
    */
   Directrix1(): gp_Ax2d;
   /**
    * This line is obtained by the symmetrical transformation of "Directrix1" with respect to the minor axis of the ellipse.
+   *
+   * Raised if Eccentricity = 0.0. (The ellipse degenerates into a circle).
    */
   Directrix2(): gp_Ax2d;
   /**
@@ -1844,7 +2071,16 @@ export declare class gp_Elips2d {
 }
 
 /**
- * Defines a non persistent transformation in 2D space. This transformation is a general transformation. It can be a gp_Trsf2d, an affinity, or you can define your own transformation giving the corresponding matrix of transformation.
+ * Defines a non persistent transformation in 2D space. This transformation is a general transformation. It can be a {@link gp_Trsf2d | `gp_Trsf2d`}, an affinity, or you can define your own transformation giving the corresponding matrix of transformation.
+ *
+ * With a {@link gp_GTrsf2d | `gp_GTrsf2d`} you can transform only a doublet of coordinates {@link gp_XY | `gp_XY`}. It is not possible to transform other geometric objects because these transformations can change the nature of non-elementary geometric objects. A {@link gp_GTrsf2d | `gp_GTrsf2d`} is represented with a 2 rows * 3 columns matrix:
+ *
+ * ```
+ * V1V2TXYXY |a11a12a14||x||x'| |a21a22a24||y|=|y'| |001||1||1|
+ * ```
+ *
+ * where {V1, V2} defines the vectorial part of the transformation and T defines the translation part of the transformation. Warning A {@link gp_GTrsf2d | `gp_GTrsf2d`} transformation is only applicable on coordinates.
+ * Be careful if you apply such a transformation to all the points of a geometric object, as this can change the nature of the object and thus render it incoherent! Typically, a circle is transformed into an ellipse by an affinity transformation. To avoid modifying the nature of an object, use a {@link gp_Trsf2d | `gp_Trsf2d`} transformation instead, as objects of this class respect the nature of geometric objects.
  */
 export declare class gp_GTrsf2d {
   /**
@@ -1852,7 +2088,7 @@ export declare class gp_GTrsf2d {
    */
   constructor();
   /**
-   * Converts the gp_Trsf2d transformation theT into a general transformation.
+   * Converts the {@link gp_Trsf2d | `gp_Trsf2d`} transformation theT into a general transformation.
    */
   constructor(theT: gp_Trsf2d);
   /**
@@ -1884,7 +2120,7 @@ export declare class gp_GTrsf2d {
    */
   IsNegative(): boolean;
   /**
-   * Returns true if this transformation is singular (and therefore, cannot be inverted). Note: The Gauss LU decomposition is used to invert the transformation matrix. Consequently, the transformation is considered as singular if the largest pivot found is less than or equal to gp::Resolution(). Warning If this transformation is singular, it cannot be inverted.
+   * Returns true if this transformation is singular (and therefore, cannot be inverted). Note: The Gauss LU decomposition is used to invert the transformation matrix. Consequently, the transformation is considered as singular if the largest pivot found is less than or equal to `gp::Resolution()`. Warning If this transformation is singular, it cannot be inverted.
    */
   IsSingular(): boolean;
   /**
@@ -1910,6 +2146,10 @@ export declare class gp_GTrsf2d {
   Inverted(): gp_GTrsf2d;
   /**
    * Computes the transformation composed with theT and <me>. In a C++ implementation you can also write Tcomposed = <me> * theT. Example :
+   *
+   * ```
+   * gp_GTrsf2dT1,T2,Tcomp;............... //composition: Tcomp=T2.Multiplied(T1);//or(Tcomp=T2*T1) //transformationofapoint gp_XYP(10.,3.); gp_XYP1(P); Tcomp.Transforms(P1);//usingTcomp gp_XYP2(P); T1.Transforms(P2);//usingT1thenT2 T2.Transforms(P2);//P1=P2!!!
+   * ```
    */
   Multiplied(theT: gp_GTrsf2d): gp_GTrsf2d;
   Multiply(theT: gp_GTrsf2d): void;
@@ -1919,17 +2159,27 @@ export declare class gp_GTrsf2d {
   PreMultiply(theT: gp_GTrsf2d): void;
   Power(theN: number): void;
   /**
-   * Computes the following composition of transformations <me> * <me> * .......* <me>, theN time. if theN = 0 <me> = Identity if theN < 0 <me> = <me>.Inverse() ........... <me>.Inverse().
+   * Computes the following composition of transformations <me> * <me> * .......* <me>, theN time. if theN = 0 <me> = Identity if theN < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+   *
+   * Raises an exception if theN < 0 and if the matrix of the transformation is not inversible.
    */
   Powered(theN: number): gp_GTrsf2d;
   Transforms(theCoord: gp_XY): void;
   /**
    * Applies this transformation to the coordinates:
+   *
+   * - of the number pair Coord, or
+   * - X and Y.
+   *
+   * Note:
+   *
+   * - Transforms modifies theX, theY, or the coordinate pair Coord, while
+   * - Transformed creates a new coordinate pair.
    */
   Transforms(): { theX: number; theY: number };
   Transformed(theCoord: gp_XY): gp_XY;
   /**
-   * Converts this transformation into a gp_Trsf2d transformation. Exceptions Standard_ConstructionError if this transformation cannot be converted, i.e. if its form is gp_Other.
+   * Converts this transformation into a {@link gp_Trsf2d | `gp_Trsf2d`} transformation. Exceptions Standard_ConstructionError if this transformation cannot be converted, i.e. if its form is gp_Other.
    */
   Trsf2d(): gp_Trsf2d;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -1939,6 +2189,11 @@ export declare class gp_GTrsf2d {
 
 /**
  * Describes an axis in 3D space. An axis is defined by:
+ *
+ * - its origin (also referred to as its "Location point"), and
+ * - its unit vector (referred to as its "Direction" or "main Direction"). An axis is used:
+ * - to describe 3D geometric entities (for example, the axis of a revolution entity). It serves the same purpose as the STEP function "axis placement one axis", or
+ * - to define geometric transformations (axis of symmetry, axis of rotation, and so on). For example, this entity can be used to locate a geometric entity or to define a symmetry axis.
  */
 export declare class gp_Ax1 {
   /**
@@ -1946,7 +2201,7 @@ export declare class gp_Ax1 {
    */
   constructor();
   /**
-   * Creates an axis at the origin with the given standard direction. Replaces gp::OX(), gp::OY(), gp::OZ() static functions.
+   * Creates an axis at the origin with the given standard direction. Replaces `gp::OX()`, `gp::OY()`, `gp::OZ()` static functions.
    */
   constructor(theDir: gp_Dir_D);
   /**
@@ -1974,7 +2229,7 @@ export declare class gp_Ax1 {
    */
   Location(): gp_Pnt;
   /**
-   * Returns True if: . the angle between <me> and <Other> is lower or equal to <AngularTolerance> and . the distance between <me>.Location() and <Other> is lower or equal to <LinearTolerance> and . the distance between <Other>.Location() and <me> is lower or equal to LinearTolerance.
+   * Returns True if: . the angle between <me> and <Other> is lower or equal to <AngularTolerance> and . the distance between <me>.`Location()` and <Other> is lower or equal to <LinearTolerance> and . the distance between <Other>.`Location()` and <me> is lower or equal to LinearTolerance.
    */
   IsCoaxial(Other: gp_Ax1, AngularTolerance: number, LinearTolerance: number): boolean;
   /**
@@ -2035,10 +2290,16 @@ export declare class gp_Ax1 {
   Rotated(theA1: gp_Ax1, theAngRad: number): gp_Ax1;
   /**
    * Applies a scaling transformation to this axis with:
+   *
+   * - scale factor theS, and
+   * - center theP and assigns the result to this axis.
    */
   Scale(theP: gp_Pnt, theS: number): void;
   /**
    * Applies a scaling transformation to this axis with:
+   *
+   * - scale factor theS, and
+   * - center theP and creates a new axis.
    */
   Scaled(theP: gp_Pnt, theS: number): gp_Ax1;
   /**
@@ -2047,6 +2308,8 @@ export declare class gp_Ax1 {
   Transform(theT: gp_Trsf): void;
   /**
    * Applies the transformation theT to this axis and creates a new one.
+   *
+   * Translates an axis plaxement in the direction of the vector <V>. The magnitude of the translation is the vector's magnitude.
    */
   Transformed(theT: gp_Trsf): gp_Ax1;
   /**
@@ -2072,6 +2335,12 @@ export declare class gp_Ax1 {
 
 /**
  * Defines a non-persistent transformation in 3D space. The following transformations are implemented : . Translation, Rotation, Scale . Symmetry with respect to a point, a line, a plane. Complex transformations can be obtained by combining the previous elementary transformations using the method Multiply. The transformations can be represented as follow :
+ *
+ * ```
+ * V1V2V3TXYZXYZ |a11a12a13a14||x||x'| |a21a22a23a24||y||y'| |a31a32a33a34||z|=|z'| |0001||1||1|
+ * ```
+ *
+ * where {V1, V2, V3} defines the vectorial part of the transformation and T defines the translation part of the transformation. This transformation never change the nature of the objects.
  */
 export declare class gp_Trsf {
   /**
@@ -2079,7 +2348,8 @@ export declare class gp_Trsf {
    */
   constructor();
   /**
-   * Creates a 3D transformation from the 2D transformation theT. The resulting transformation has a homogeneous vectorial part, V3, and a translation part, T3, built from theT: a11 a12 0 a13 V3 = a21 a22 0 T3 = a23 0 0 1. 0 It also has the same scale factor as theT. This guarantees (by projection) that the transformation which would be performed by theT in a plane (2D space) is performed by the resulting transformation in the xOy plane of the 3D space, (i.e. in the plane defined by the origin (0., 0., 0.) and the vectors DX (1., 0., 0.), and DY (0., 1., 0.)). The scale factor is applied to the entire space.
+   * Creates a 3D transformation from the 2D transformation theT. The resulting transformation has a homogeneous vectorial part, V3, and a translation part, T3, built from theT: a11 a12 0 a13 V3 = a21 a22 0 T3 = a23 0 0 1. 0 It also has the same scale factor as theT.
+   * This guarantees (by projection) that the transformation which would be performed by theT in a plane (2D space) is performed by the resulting transformation in the xOy plane of the 3D space, (i.e. in the plane defined by the origin (0., 0., 0.) and the vectors DX (1., 0., 0.), and DY (0., 1., 0.)). The scale factor is applied to the entire space.
    */
   constructor(theT: gp_Trsf2d);
   /**
@@ -2112,14 +2382,29 @@ export declare class gp_Trsf {
   SetScale(theP: gp_Pnt, theS: number): void;
   /**
    * Modifies this transformation so that it transforms the coordinate system defined by theFromSystem1 into the one defined by theToSystem2. After this modification, this transformation transforms:
+   *
+   * - the origin of theFromSystem1 into the origin of theToSystem2,
+   * - the "X Direction" of theFromSystem1 into the "X Direction" of theToSystem2,
+   * - the "Y Direction" of theFromSystem1 into the "Y Direction" of theToSystem2, and
+   * - the "main Direction" of theFromSystem1 into the "main Direction" of theToSystem2. Warning When you know the coordinates of a point in one coordinate system and you want to express these coordinates in another one, do not use the transformation resulting from this function. Use the transformation that results from SetTransformation instead. SetDisplacement and SetTransformation create related transformations: the vectorial part of one is the inverse of the vectorial part of the other.
    */
   SetDisplacement(theFromSystem1: gp_Ax3, theToSystem2: gp_Ax3): void;
   /**
    * Modifies this transformation so that it transforms the coordinates of any point, (x, y, z), relative to a source coordinate system into the coordinates (x', y', z') which are relative to a target coordinate system, but which represent the same point The transformation is from the default coordinate system.
+   *
+   * ```
+   * {P(0.,0.,0.),VX(1.,0.,0.),VY(0.,1.,0.),VZ(0.,0.,1.)}
+   * ```
+   *
+   * to the local coordinate system defined with the Ax3 theToSystem. Use in the same way as the previous method. FromSystem1 is defaulted to the absolute coordinate system.
    */
   SetTransformation(theToSystem: gp_Ax3): void;
   /**
    * Modifies this transformation so that it transforms the coordinates of any point, (x, y, z), relative to a source coordinate system into the coordinates (x', y', z') which are relative to a target coordinate system, but which represent the same point The transformation is from the coordinate system "theFromSystem1" to the coordinate system "theToSystem2". Example :
+   *
+   * ```
+   * gp_Ax3theFromSystem1,theToSystem2; doublex1,y1,z1;//arethecoordinatesofapointinthelocalsystemtheFromSystem1 doublex2,y2,z2;//arethecoordinatesofapointinthelocalsystemtheToSystem2 gp_PntP1(x1,y1,z1) gp_TrsfT; T.SetTransformation(theFromSystem1,theToSystem2); gp_PntP2=P1.Transformed(T); P2.Coord(x2,y2,z2);
+   * ```
    */
   SetTransformation(theFromSystem1: gp_Ax3, theToSystem2: gp_Ax3): void;
   /**
@@ -2145,6 +2430,12 @@ export declare class gp_Trsf {
   SetForm(theP: unknown): void;
   /**
    * Sets the coefficients of the transformation. The transformation of the point x,y,z is the point x',y',z' with :
+   *
+   * ```
+   * x'=a11x+a12y+a13z+a14 y'=a21x+a22y+a23z+a24 z'=a31x+a32y+a33z+a34
+   * ```
+   *
+   * The method Value(i,j) will return aij. Raises ConstructionError if the determinant of the aij is null. The matrix is orthogonalized before future using.
    */
   SetValues(a11: number, a12: number, a13: number, a14: number, a21: number, a22: number, a23: number, a24: number, a31: number, a32: number, a33: number, a34: number): void;
   /**
@@ -2164,7 +2455,7 @@ export declare class gp_Trsf {
    */
   TranslationPart(): gp_XYZ;
   /**
-   * Returns the boolean True if there is non-zero rotation. In the presence of rotation, the output parameters store the axis and the angle of rotation. The method always returns positive value "theAngle", i.e., 0. < theAngle <= PI. Note that this rotation is defined only by the vectorial part of the transformation; generally you would need to check also the translational part to obtain the axis (gp_Ax1) of rotation.
+   * Returns the boolean True if there is non-zero rotation. In the presence of rotation, the output parameters store the axis and the angle of rotation. The method always returns positive value "theAngle", i.e., 0. < theAngle <= PI. Note that this rotation is defined only by the vectorial part of the transformation; generally you would need to check also the translational part to obtain the axis ({@link gp_Ax1 | `gp_Ax1`}) of rotation.
    */
   GetRotation(theAxis: gp_XYZ): { result: boolean; theAngle: number };
   /**
@@ -2186,6 +2477,10 @@ export declare class gp_Trsf {
   Invert(): void;
   /**
    * Computes the reverse transformation Raises an exception if the matrix of the transformation is not inversible, it means that the scale factor is lower or equal to Resolution from package gp. Computes the transformation composed with T and <me>. In a C++ implementation you can also write Tcomposed = <me> * T. Example :
+   *
+   * ```
+   * gp_TrsfT1,T2,Tcomp;............... Tcomp=T2.Multiplied(T1);//or(Tcomp=T2*T1) gp_PntP1(10.,3.,4.); gp_PntP2=P1.Transformed(Tcomp);//usingTcomp gp_PntP3=P1.Transformed(T1);//usingT1thenT2 P3.Transform(T2);//P3=P2!!!
+   * ```
    */
   Inverted(): gp_Trsf;
   Multiplied(theT: gp_Trsf): gp_Trsf;
@@ -2199,7 +2494,9 @@ export declare class gp_Trsf {
   PreMultiply(theT: gp_Trsf): void;
   Power(theN: number): void;
   /**
-   * Computes the following composition of transformations <me> * <me> * .......* <me>, theN time. if theN = 0 <me> = Identity if theN < 0 <me> = <me>.Inverse() ........... <me>.Inverse().
+   * Computes the following composition of transformations <me> * <me> * .......* <me>, theN time. if theN = 0 <me> = Identity if theN < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+   *
+   * Raises if theN < 0 and if the matrix of the transformation not inversible.
    */
   Powered(theN: number): gp_Trsf;
   Transforms(): { theX: number; theY: number; theZ: number };
@@ -2350,7 +2647,13 @@ export declare class gp_Pnt {
 }
 
 /**
- * Describes an ellipse in 3D space. An ellipse is defined by its major and minor radii and positioned in space with a coordinate system (a gp_Ax2 object) as follows:
+ * Describes an ellipse in 3D space. An ellipse is defined by its major and minor radii and positioned in space with a coordinate system (a {@link gp_Ax2 | `gp_Ax2`} object) as follows:
+ *
+ * - the origin of the coordinate system is the center of the ellipse,
+ * - its "X Direction" defines the major axis of the ellipse, and
+ * - its "Y Direction" defines the minor axis of the ellipse. Together, the origin, "X Direction" and "Y Direction" of this coordinate system define the plane of the ellipse. This coordinate system is the "local coordinate system" of the ellipse.
+ * In this coordinate system, the equation of the ellipse is: X*X/(`MajorRadius`**2)+Y*Y/(`MinorRadius`**2)=1.0 The "main Direction" of the local coordinate system gives the normal vector to the plane of the ellipse. This vector gives an implicit orientation to the ellipse (definition of the trigonometric sense). We refer to the "main Axis" of the local coordinate system as the "Axis" of the ellipse.
+ * See Also {@link gce_MakeElips | `gce_MakeElips`} which provides functions for more complex ellipse constructions {@link Geom_Ellipse | `Geom_Ellipse`} which provides additional functions for constructing ellipses and works, in particular, with the parametric equations of ellipses
  */
 export declare class gp_Elips {
   /**
@@ -2363,6 +2666,8 @@ export declare class gp_Elips {
   constructor(theA2: gp_Ax2, theMajorRadius: number, theMinorRadius: number);
   /**
    * Changes the axis normal to the plane of the ellipse. It modifies the definition of this plane. The "XAxis" and the "YAxis" are recomputed. The local coordinate system is redefined so that:
+   *
+   * - its origin and "main Direction" become those of the axis theA1 (the "X Direction" and "Y Direction" are then recomputed in the same way as for any {@link gp_Ax2 | `gp_Ax2`}), or Raises ConstructionError if the direction of theA1 is parallel to the direction of the "XAxis" of the ellipse.
    */
   SetAxis(theA1: gp_Ax1): void;
   /**
@@ -2390,7 +2695,9 @@ export declare class gp_Elips {
    */
   Axis(): gp_Ax1;
   /**
-   * Computes the first or second directrix of this ellipse. These are the lines, in the plane of the ellipse, normal to the major axis, at a distance equal to MajorRadius/e from the center of the ellipse, where e is the eccentricity of the ellipse. The first directrix (Directrix1) is on the positive side of the major axis. The second directrix (Directrix2) is on the negative side. The directrix is returned as an axis (gp_Ax1 object), the origin of which is situated on the "X Axis" of the local coordinate system of this ellipse. Exceptions Standard_ConstructionError if the eccentricity is null (the ellipse has degenerated into a circle).
+   * Computes the first or second directrix of this ellipse.
+   * These are the lines, in the plane of the ellipse, normal to the major axis, at a distance equal to MajorRadius/e from the center of the ellipse, where e is the eccentricity of the ellipse. The first directrix (Directrix1) is on the positive side of the major axis. The second directrix (Directrix2) is on the negative side.
+   * The directrix is returned as an axis ({@link gp_Ax1 | `gp_Ax1`} object), the origin of which is situated on the "X Axis" of the local coordinate system of this ellipse. Exceptions Standard_ConstructionError if the eccentricity is null (the ellipse has degenerated into a circle).
    */
   Directrix1(): gp_Ax1;
   /**
@@ -2487,7 +2794,18 @@ export declare class gp_Elips {
 }
 
 /**
- * Describes a coordinate system in 3D space. Unlike a gp_Ax2 coordinate system, a gp_Ax3 can be right-handed ("direct sense") or left-handed ("indirect sense"). A coordinate system is defined by:
+ * Describes a coordinate system in 3D space. Unlike a {@link gp_Ax2 | `gp_Ax2`} coordinate system, a {@link gp_Ax3 | `gp_Ax3`} can be right-handed ("direct sense") or left-handed ("indirect sense"). A coordinate system is defined by:
+ *
+ * - its origin (also referred to as its "Location point"), and
+ * - three orthogonal unit vectors, termed the "X Direction", the "Y Direction" and the "Direction" (also referred to as the "main Direction"). The "Direction" of the coordinate system is called its "main Direction" because whenever this unit vector is modified, the "X Direction" and the "Y Direction" are recomputed. However, when we modify either the "X Direction" or the "Y Direction", "Direction" is not modified. "Direction" is also the "Z Direction". The "main Direction" is always parallel to the cross product of its "X Direction" and "Y Direction".
+ * If the coordinate system is right-handed, it satisfies the equation: "main Direction" = "X Direction" ^ "Y Direction" and if it is left-handed, it satisfies the equation: "main Direction" = -"X Direction" ^ "Y Direction" A coordinate system is used:
+ * - to describe geometric entities, in particular to position them. The local coordinate system of a geometric entity serves the same purpose as the STEP function "axis placement three axes", or
+ * - to define geometric transformations. Note:
+ * - We refer to the "X Axis", "Y Axis" and "Z Axis", respectively, as the axes having:
+ * - the origin of the coordinate system as their origin, and
+ * - the unit vectors "X Direction", "Y Direction" and "main Direction", respectively, as their unit vectors.
+ * - The "Z Axis" is also the "main Axis".
+ * - {@link gp_Ax2 | `gp_Ax2`} is used to define a coordinate system that must be always right-handed.
  */
 export declare class gp_Ax3 {
   /**
@@ -2532,10 +2850,16 @@ export declare class gp_Ax3 {
   ZReverse(): void;
   /**
    * Assigns the origin and "main Direction" of the axis theA1 to this coordinate system, then recomputes its "X Direction" and "Y Direction". Note:
+   *
+   * - The new "X Direction" is computed as follows: new "X Direction" = V1 ^(previous "X Direction" ^ V) where V is the "Direction" of theA1.
+   * - The orientation of this coordinate system (right-handed or left-handed) is not modified. Raises ConstructionError if the "Direction" of <theA1> and the "XDirection" of <me> are parallel (same or opposite orientation) because it is impossible to calculate the new "XDirection" and the new "YDirection".
    */
   SetAxis(theA1: gp_Ax1): void;
   /**
    * Changes the main direction of this coordinate system, then recomputes its "X Direction" and "Y Direction". Note:
+   *
+   * - The new "X Direction" is computed as follows: new "X Direction" = theV ^ (previous "X Direction" ^ theV).
+   * - The orientation of this coordinate system (left- or right-handed) is not modified. Raises ConstructionError if <theV> and the previous "XDirection" are parallel because it is impossible to calculate the new "XDirection" and the new "YDirection".
    */
   SetDirection(theV: gp_Dir): void;
   /**
@@ -2579,7 +2903,7 @@ export declare class gp_Ax3 {
    */
   YDirection(): gp_Dir;
   /**
-   * Returns True if the coordinate system is right-handed. i.e. XDirection().Crossed(YDirection()).Dot(Direction()) > 0.
+   * Returns True if the coordinate system is right-handed. i.e. `XDirection()`.Crossed(YDirection()).Dot(Direction()) > 0.
    */
   Direct(): boolean;
   /**
@@ -2637,6 +2961,14 @@ export declare class gp_Ax3 {
 
 /**
  * Describes a right-handed coordinate system in 3D space. A coordinate system is defined by:
+ *
+ * - its origin (also referred to as its "Location point"), and
+ * - three orthogonal unit vectors, termed respectively the "X Direction", the "Y Direction" and the "Direction" (also referred to as the "main Direction"). The "Direction" of the coordinate system is called its "main Direction" because whenever this unit vector is modified, the "X Direction" and the "Y Direction" are recomputed. However, when we modify either the "X Direction" or the "Y Direction", "Direction" is not modified. The "main Direction" is also the "Z Direction".
+ * Since an Ax2 coordinate system is right-handed, its "main Direction" is always equal to the cross product of its "X Direction" and "Y Direction". (To define a left-handed coordinate system, use {@link gp_Ax3 | `gp_Ax3`}.) A coordinate system is used:
+ * - to describe geometric entities, in particular to position them. The local coordinate system of a geometric entity serves the same purpose as the STEP function "axis placement two axes", or
+ * - to define geometric transformations. Note: we refer to the "X Axis", "Y Axis" and "Z Axis", respectively, as to axes having:
+ * - the origin of the coordinate system as their origin, and
+ * - the unit vectors "X Direction", "Y Direction" and "main Direction", respectively, as their unit vectors. The "Z Axis" is also the "main Axis".
  */
 export declare class gp_Ax2 {
   /**
@@ -2644,7 +2976,7 @@ export declare class gp_Ax2 {
    */
   constructor();
   /**
-   * Creates a coordinate system at the origin with the given standard main direction. Replaces gp::XOY(), gp::YOZ(), gp::ZOX() static functions.
+   * Creates a coordinate system at the origin with the given standard main direction. Replaces `gp::XOY()`, `gp::YOZ()`, `gp::ZOX()` static functions.
    */
   constructor(theV: gp_Dir_D);
   /**
@@ -2657,6 +2989,9 @@ export declare class gp_Ax2 {
   constructor(theP: gp_Pnt, theV: gp_Dir_D);
   /**
    * Creates an axis placement with an origin P such that:
+   *
+   * - N is the Direction, and
+   * - the "X Direction" is normal to N, in the plane defined by the vectors (N, Vx): "X Direction" = (N ^ Vx) ^ N, Exception: raises ConstructionError if N and Vx are parallel (same or opposite orientation).
    */
   constructor(P: gp_Pnt, N: gp_Dir, Vx: gp_Dir);
   /**
@@ -2714,26 +3049,62 @@ export declare class gp_Ax2 {
   IsCoplanar(A1: gp_Ax1, LinearTolerance: number, AngularTolerance: number): boolean;
   /**
    * Performs a symmetrical transformation of this coordinate system with respect to:
+   *
+   * - the point P, and assigns the result to this coordinate system. Warning This transformation is always performed on the origin. In case of a reflection with respect to a point:
+   * - the main direction of the coordinate system is not changed, and
+   * - the "X Direction" and the "Y Direction" are simply reversed In case of a reflection with respect to an axis or a plane:
+   * - the transformation is applied to the "X Direction" and the "Y Direction", then
+   * - the "main Direction" is recomputed as the cross product "X Direction" ^ "Y Direction". This maintains the right-handed property of the coordinate system.
    */
   Mirror(P: gp_Pnt): void;
   /**
    * Performs a symmetrical transformation of this coordinate system with respect to:
+   *
+   * - the axis A1, and assigns the result to this coordinate system. Warning This transformation is always performed on the origin. In case of a reflection with respect to a point:
+   * - the main direction of the coordinate system is not changed, and
+   * - the "X Direction" and the "Y Direction" are simply reversed In case of a reflection with respect to an axis or a plane:
+   * - the transformation is applied to the "X Direction" and the "Y Direction", then
+   * - the "main Direction" is recomputed as the cross product "X Direction" ^ "Y Direction". This maintains the right-handed property of the coordinate system.
    */
   Mirror(A1: gp_Ax1): void;
   /**
    * Performs a symmetrical transformation of this coordinate system with respect to:
+   *
+   * - the plane defined by the origin, "X Direction" and "Y Direction" of coordinate system A2 and assigns the result to this coordinate system. Warning This transformation is always performed on the origin. In case of a reflection with respect to a point:
+   * - the main direction of the coordinate system is not changed, and
+   * - the "X Direction" and the "Y Direction" are simply reversed In case of a reflection with respect to an axis or a plane:
+   * - the transformation is applied to the "X Direction" and the "Y Direction", then
+   * - the "main Direction" is recomputed as the cross product "X Direction" ^ "Y Direction". This maintains the right-handed property of the coordinate system.
    */
   Mirror(A2: gp_Ax2): void;
   /**
    * Performs a symmetrical transformation of this coordinate system with respect to:
+   *
+   * - the point P, and creates a new one. Warning This transformation is always performed on the origin. In case of a reflection with respect to a point:
+   * - the main direction of the coordinate system is not changed, and
+   * - the "X Direction" and the "Y Direction" are simply reversed In case of a reflection with respect to an axis or a plane:
+   * - the transformation is applied to the "X Direction" and the "Y Direction", then
+   * - the "main Direction" is recomputed as the cross product "X Direction" ^ "Y Direction". This maintains the right-handed property of the coordinate system.
    */
   Mirrored(P: gp_Pnt): gp_Ax2;
   /**
    * Performs a symmetrical transformation of this coordinate system with respect to:
+   *
+   * - the axis A1, and creates a new one. Warning This transformation is always performed on the origin. In case of a reflection with respect to a point:
+   * - the main direction of the coordinate system is not changed, and
+   * - the "X Direction" and the "Y Direction" are simply reversed In case of a reflection with respect to an axis or a plane:
+   * - the transformation is applied to the "X Direction" and the "Y Direction", then
+   * - the "main Direction" is recomputed as the cross product "X Direction" ^ "Y Direction". This maintains the right-handed property of the coordinate system.
    */
   Mirrored(A1: gp_Ax1): gp_Ax2;
   /**
    * Performs a symmetrical transformation of this coordinate system with respect to:
+   *
+   * - the plane defined by the origin, "X Direction" and "Y Direction" of coordinate system A2 and creates a new one. Warning This transformation is always performed on the origin. In case of a reflection with respect to a point:
+   * - the main direction of the coordinate system is not changed, and
+   * - the "X Direction" and the "Y Direction" are simply reversed In case of a reflection with respect to an axis or a plane:
+   * - the transformation is applied to the "X Direction" and the "Y Direction", then
+   * - the "main Direction" is recomputed as the cross product "X Direction" ^ "Y Direction". This maintains the right-handed property of the coordinate system.
    */
   Mirrored(A2: gp_Ax2): gp_Ax2;
   Rotate(theA1: gp_Ax1, theAng: number): void;
@@ -2743,7 +3114,7 @@ export declare class gp_Ax2 {
   Rotated(theA1: gp_Ax1, theAng: number): gp_Ax2;
   Scale(theP: gp_Pnt, theS: number): void;
   /**
-   * Applies a scaling transformation on the axis placement. The "Location" point of the axisplacement is modified. Warnings: If the scale  is negative: . the main direction of the axis placement is not changed. . The "XDirection" and the "YDirection" are reversed. So the axis placement stay right handed.
+   * Applies a scaling transformation on the axis placement. The "Location" point of the axisplacement is modified. Warnings: If the scale is negative: . the main direction of the axis placement is not changed. . The "XDirection" and the "YDirection" are reversed. So the axis placement stay right handed.
    */
   Scaled(theP: gp_Pnt, theS: number): gp_Ax2;
   Transform(theT: gp_Trsf): void;
@@ -2945,12 +3316,25 @@ export declare class gp_XY {
   IsEqual(theOther: gp_XY, theTolerance: number): boolean;
   /**
    * Computes the sum of this number pair and number pair theOther.
+   *
+   * ```
+   * <me>.X()=<me>.X()+theOther.X() <me>.Y()=<me>.Y()+theOther.Y()
+   * ```
    */
   Add(theOther: gp_XY): void;
   /**
    * Computes the sum of this number pair and number pair theOther.
+   *
+   * ```
+   * new.X()=<me>.X()+theOther.X() new.Y()=<me>.Y()+theOther.Y()
+   * ```
    */
   Added(theOther: gp_XY): gp_XY;
+  /**
+   * ```
+   * doubleD=<me>.X()*theOther.Y()-<me>.Y()*theOther.X()
+   * ```
+   */
   Crossed(theOther: gp_XY): number;
   /**
    * computes the magnitude of the cross product between <me> and theRight. Returns || <me> ^ theRight ||
@@ -2972,39 +3356,109 @@ export declare class gp_XY {
    * Computes the scalar product between <me> and theOther.
    */
   Dot(theOther: gp_XY): number;
+  /**
+   * ```
+   * <me>.X()=<me>.X()*theScalar; <me>.Y()=<me>.Y()*theScalar;
+   * ```
+   */
   Multiply(theScalar: number): void;
+  /**
+   * ```
+   * <me>.X()=<me>.X()*theOther.X(); <me>.Y()=<me>.Y()*theOther.Y();
+   * ```
+   */
   Multiply(theOther: gp_XY): void;
   /**
    * <me> = theMatrix * <me>
    */
   Multiply(theMatrix: unknown): void;
+  /**
+   * ```
+   * New.X()=<me>.X()*theScalar; New.Y()=<me>.Y()*theScalar;
+   * ```
+   */
   Multiplied(theScalar: number): gp_XY;
+  /**
+   * ```
+   * new.X()=<me>.X()*theOther.X(); new.Y()=<me>.Y()*theOther.Y();
+   * ```
+   */
   Multiplied(theOther: gp_XY): gp_XY;
   /**
    * New = theMatrix * <me>.
    */
   Multiplied(theMatrix: unknown): gp_XY;
+  /**
+   * ```
+   * <me>.X()=<me>.X()/<me>.Modulus() <me>.Y()=<me>.Y()/<me>.Modulus()
+   * ```
+   *
+   * Raises ConstructionError if <me>.`Modulus()` <= Resolution from gp
+   */
   Normalize(): void;
+  /**
+   * ```
+   * New.X()=<me>.X()/<me>.Modulus() New.Y()=<me>.Y()/<me>.Modulus()
+   * ```
+   *
+   * Raises ConstructionError if <me>.`Modulus()` <= Resolution from gp
+   */
   Normalized(): gp_XY;
+  /**
+   * ```
+   * <me>.X()=-<me>.X() <me>.Y()=-<me>.Y()
+   * ```
+   */
   Reverse(): void;
+  /**
+   * ```
+   * New.X()=-<me>.X() New.Y()=-<me>.Y()
+   * ```
+   */
   Reversed(): gp_XY;
   /**
    * Computes the following linear combination and assigns the result to this number pair:
+   *
+   * ```
+   * theA1*theXY1+theA2*theXY2
+   * ```
    */
   SetLinearForm(theA1: number, theXY1: gp_XY, theA2: number, theXY2: gp_XY): void;
   /**
    * Computes the following linear combination and assigns the result to this number pair:
+   *
+   * ```
+   * theA1*theXY1+theA2*theXY2+theXY3
+   * ```
    */
   SetLinearForm(theA1: number, theXY1: gp_XY, theA2: number, theXY2: gp_XY, theXY3: gp_XY): void;
   /**
    * Computes the following linear combination and assigns the result to this number pair:
+   *
+   * ```
+   * theA1*theXY1+theXY2
+   * ```
    */
   SetLinearForm(theA1: number, theXY1: gp_XY, theXY2: gp_XY): void;
   /**
    * Computes the following linear combination and assigns the result to this number pair:
+   *
+   * ```
+   * theXY1+theXY2
+   * ```
    */
   SetLinearForm(theXY1: gp_XY, theXY2: gp_XY): void;
+  /**
+   * ```
+   * <me>.X()=<me>.X()-theOther.X() <me>.Y()=<me>.Y()-theOther.Y()
+   * ```
+   */
   Subtract(theOther: gp_XY): void;
+  /**
+   * ```
+   * new.X()=<me>.X()-theOther.X() new.Y()=<me>.Y()-theOther.Y()
+   * ```
+   */
   Subtracted(theOther: gp_XY): gp_XY;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -3012,7 +3466,7 @@ export declare class gp_XY {
 }
 
 /**
- * Describes a unit vector in 3D space. This unit vector is also called "Direction". See Also gce_MakeDir which provides functions for more complex unit vector constructions Geom_Direction which provides additional functions for constructing unit vectors and works, in particular, with the parametric equations of unit vectors.
+ * Describes a unit vector in 3`D` space. This unit vector is also called "Direction". See Also {@link gce_MakeDir | `gce_MakeDir`} which provides functions for more complex unit vector constructions {@link Geom_Direction | `Geom_Direction`} which provides additional functions for constructing unit vectors and works, in particular, with the parametric equations of unit vectors.
  */
 export declare class gp_Dir {
   /**
@@ -3025,39 +3479,54 @@ export declare class gp_Dir {
   constructor(theDir: gp_Dir_D);
   /**
    * Normalizes the vector theV and creates a direction. Raises ConstructionError if theV.Magnitude() <= Resolution.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   constructor(theV: gp_Vec);
   /**
    * Creates a direction from a triplet of coordinates. Raises ConstructionError if theCoord.Modulus() <= Resolution from gp.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   constructor(theCoord: gp_XYZ);
   constructor(a0: gp_Dir);
   /**
    * Creates a direction with its 3 cartesian coordinates. Raises ConstructionError if std::sqrt(theXv*theXv + theYv*theYv + theZv*theZv) <= Resolution Modification of the direction's coordinates If std::sqrt (theXv*theXv + theYv*theYv + theZv*theZv) <= Resolution from gp where theXv, theYv ,theZv are the new coordinates it is not possible to construct the direction and the method raises the exception ConstructionError.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   constructor(theXv: number, theYv: number, theZv: number);
   /**
    * For this unit vector, assigns the value Xi to:
+   *
+   * - the X coordinate if theIndex is 1, or
+   * - the Y coordinate if theIndex is 2, or
+   * - the Z coordinate if theIndex is 3, and then normalizes it. Warning: Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly. Exceptions Standard_OutOfRange if theIndex is not 1, 2, or 3. Standard_ConstructionError if either of the following is less than or equal to `gp::Resolution()`:
+   * - std::sqrt(Xv*Xv + Yv*Yv + Zv*Zv), or
+   * - the modulus of the number triple formed by the new value theXi and the two other coordinates of this vector that were not directly modified.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   SetCoord(theIndex: number, theXi: number): void;
   /**
    * For this unit vector, assigns the values theXv, theYv and theZv to its three coordinates. Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   SetCoord(theXv: number, theYv: number, theZv: number): void;
   /**
    * Assigns the given value to the X coordinate of this unit vector.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   SetX(theX: number): void;
   /**
    * Assigns the given value to the Y coordinate of this unit vector.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   SetY(theY: number): void;
   /**
    * Assigns the given value to the Z coordinate of this unit vector.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   SetZ(theZ: number): void;
   /**
    * Assigns the three coordinates of theCoord to this unit vector.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   SetXYZ(theCoord: gp_XYZ): void;
   /**
@@ -3101,7 +3570,7 @@ export declare class gp_Dir {
    */
   IsParallel(theOther: gp_Dir, theAngularTolerance: number): boolean;
   /**
-   * Computes the angular value in radians between <me> and <theOther>. This value is always positive in 3D space. Returns the angle in the range [0, PI].
+   * Computes the angular value in radians between <me> and <theOther>. This value is always positive in 3`D` space. Returns the angle in the range [0, PI].
    */
   Angle(theOther: gp_Dir): number;
   /**
@@ -3110,15 +3579,25 @@ export declare class gp_Dir {
   AngleWithRef(theOther: gp_Dir, theVRef: gp_Dir): number;
   /**
    * Computes the cross product between two directions Raises the exception ConstructionError if the two directions are parallel because the computed vector cannot be normalized to create a direction.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   Cross(theRight: gp_Dir): void;
   /**
    * Computes the triple vector product. <me> ^ (V1 ^ V2) Raises the exception ConstructionError if V1 and V2 are parallel or <me> and (V1^V2) are parallel because the computed vector can't be normalized to create a direction.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   Crossed(theRight: gp_Dir): gp_Dir;
+  /**
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
+   */
   CrossCross(theV1: gp_Dir, theV2: gp_Dir): void;
   /**
    * Computes the double vector product this ^ (theV1 ^ theV2).
+   *
+   * - CrossCrossed creates a new unit vector. Exceptions Standard_ConstructionError if:
+   * - theV1 and theV2 are parallel, or
+   * - this unit vector and (theV1 ^ theV2) are parallel. This is because, in these conditions, the computed vector is null and cannot be normalized.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   CrossCrossed(theV1: gp_Dir, theV2: gp_Dir): gp_Dir;
   /**
@@ -3166,7 +3645,7 @@ export declare class gp_Dir {
 
 export type gp_Dir_D = typeof gp_Dir_D[keyof typeof gp_Dir_D];
 /**
- * Standard directions in 3D space for optimized constexpr construction.
+ * {@link Standard | `Standard`} directions in 3`D` space for optimized constexpr construction.
  */
 export declare const gp_Dir_D: {
   /**
@@ -3197,6 +3676,13 @@ export declare const gp_Dir_D: {
 
 /**
  * Describes a coordinate system in a plane (2D space). A coordinate system is defined by:
+ *
+ * - its origin (also referred to as its "Location point"), and
+ * - two orthogonal unit vectors, respectively, called the "X Direction" and the "Y Direction". A {@link gp_Ax22d | `gp_Ax22d`} may be right-handed ("direct sense") or left-handed ("inverse" or "indirect sense"). You use a {@link gp_Ax22d | `gp_Ax22d`} to:
+ * - describe 2D geometric entities, in particular to position them. The local coordinate system of a geometric entity serves for the same purpose as the STEP function "axis placement two axes", or
+ * - define geometric transformations. Note: we refer to the "X Axis" and "Y Axis" as the axes having:
+ * - the origin of the coordinate system as their origin, and
+ * - the unit vectors "X Direction" and "Y Direction", respectively, as their unit vectors.
  */
 export declare class gp_Ax22d {
   /**
@@ -3209,18 +3695,30 @@ export declare class gp_Ax22d {
   constructor(theA: gp_Ax2d);
   /**
    * Creates a coordinate system where its origin is the origin of theA and its "X Direction" is the unit vector of theA, which is:
+   *
+   * - right-handed if theIsSense is true (default value), or
+   * - left-handed if theIsSense is false.
    */
   constructor(theA: gp_Ax2d, theIsSense: boolean);
   /**
    * Creates a coordinate system where its origin is the origin of theA and its "X Direction" is the unit vector of theA, which is:
+   *
+   * - right-handed if theIsSense is true (default value), or
+   * - left-handed if theIsSense is false.
    */
   constructor(theP: gp_Pnt2d, theV: gp_Dir2d);
   /**
    * Creates a coordinate system with origin theP and where:
+   *
+   * - theVx is the "X Direction", and
+   * - the "Y Direction" is orthogonal to theVx and oriented so that the cross products theVx^"Y Direction" and theVx^theVy have the same sign. Raises ConstructionError if theVx and theVy are parallel (same or opposite orientation).
    */
   constructor(theP: gp_Pnt2d, theVx: gp_Dir2d, theVy: gp_Dir2d);
   /**
    * Creates a coordinate system with origin theP and "X Direction" theV, which is:
+   *
+   * - right-handed if theIsSense is true (default value), or
+   * - left-handed if theIsSense is false
    */
   constructor(theP: gp_Pnt2d, theV: gp_Dir2d, theIsSense: boolean);
   /**
@@ -3249,10 +3747,16 @@ export declare class gp_Ax22d {
   SetYDirection(theVy: gp_Dir2d): void;
   /**
    * Returns an axis, for which.
+   *
+   * - the origin is that of this coordinate system, and
+   * - the unit vector is either the "X Direction" of this coordinate system. Note: the result is the "X Axis" of this coordinate system.
    */
   XAxis(): gp_Ax2d;
   /**
    * Returns an axis, for which.
+   *
+   * - the origin is that of this coordinate system, and
+   * - the unit vector is either the "Y Direction" of this coordinate system. Note: the result is the "Y Axis" of this coordinate system.
    */
   YAxis(): gp_Ax2d;
   /**
@@ -3341,6 +3845,8 @@ export declare class gp_XYZ {
   SetZ(theZ: number): void;
   /**
    * returns the coordinate of range theIndex : theIndex = 1 => X is returned theIndex = 2 => Y is returned theIndex = 3 => Z is returned
+   *
+   * Raises OutOfRange if theIndex != {1, 2, 3}.
    */
   Coord(theIndex: number): number;
   Coord(): { theX: number; theY: number; theZ: number };
@@ -3377,9 +3883,29 @@ export declare class gp_XYZ {
    * Returns True if he coordinates of this XYZ object are equal to the respective coordinates Other, within the specified tolerance theTolerance.
    */
   IsEqual(theOther: gp_XYZ, theTolerance: number): boolean;
+  /**
+   * ```
+   * <me>.X()=<me>.X()+theOther.X() <me>.Y()=<me>.Y()+theOther.Y() <me>.Z()=<me>.Z()+theOther.Z()
+   * ```
+   */
   Add(theOther: gp_XYZ): void;
+  /**
+   * ```
+   * new.X()=<me>.X()+theOther.X() new.Y()=<me>.Y()+theOther.Y() new.Z()=<me>.Z()+theOther.Z()
+   * ```
+   */
   Added(theOther: gp_XYZ): gp_XYZ;
+  /**
+   * ```
+   * <me>.X()=<me>.Y()*theOther.Z()-<me>.Z()*theOther.Y() <me>.Y()=<me>.Z()*theOther.X()-<me>.X()*theOther.Z() <me>.Z()=<me>.X()*theOther.Y()-<me>.Y()*theOther.X()
+   * ```
+   */
   Cross(theOther: gp_XYZ): void;
+  /**
+   * ```
+   * new.X()=<me>.Y()*theOther.Z()-<me>.Z()*theOther.Y() new.Y()=<me>.Z()*theOther.X()-<me>.X()*theOther.Z() new.Z()=<me>.X()*theOther.Y()-<me>.Y()*theOther.X()
+   * ```
+   */
   Crossed(theOther: gp_XYZ): gp_XYZ;
   /**
    * Computes the magnitude of the cross product between <me> and theRight. Returns || <me> ^ theRight ||.
@@ -3413,46 +3939,124 @@ export declare class gp_XYZ {
    * Computes the triple scalar product.
    */
   DotCross(theCoord1: gp_XYZ, theCoord2: gp_XYZ): number;
+  /**
+   * ```
+   * <me>.X()=<me>.X()*theScalar; <me>.Y()=<me>.Y()*theScalar; <me>.Z()=<me>.Z()*theScalar;
+   * ```
+   */
   Multiply(theScalar: number): void;
+  /**
+   * ```
+   * <me>.X()=<me>.X()*theOther.X(); <me>.Y()=<me>.Y()*theOther.Y(); <me>.Z()=<me>.Z()*theOther.Z();
+   * ```
+   */
   Multiply(theOther: gp_XYZ): void;
   /**
    * <me> = theMatrix * <me>
    */
   Multiply(theMatrix: unknown): void;
+  /**
+   * ```
+   * New.X()=<me>.X()*theScalar; New.Y()=<me>.Y()*theScalar; New.Z()=<me>.Z()*theScalar;
+   * ```
+   */
   Multiplied(theScalar: number): gp_XYZ;
+  /**
+   * ```
+   * new.X()=<me>.X()*theOther.X(); new.Y()=<me>.Y()*theOther.Y(); new.Z()=<me>.Z()*theOther.Z();
+   * ```
+   */
   Multiplied(theOther: gp_XYZ): gp_XYZ;
   /**
    * New = theMatrix * <me>.
    */
   Multiplied(theMatrix: unknown): gp_XYZ;
+  /**
+   * ```
+   * <me>.X()=<me>.X()/<me>.Modulus() <me>.Y()=<me>.Y()/<me>.Modulus() <me>.Z()=<me>.Z()/<me>.Modulus()
+   * ```
+   *
+   * Raised if <me>.`Modulus()` <= Resolution from gp
+   */
   Normalize(): void;
+  /**
+   * ```
+   * New.X()=<me>.X()/<me>.Modulus() New.Y()=<me>.Y()/<me>.Modulus() New.Z()=<me>.Z()/<me>.Modulus()
+   * ```
+   *
+   * Raised if <me>.`Modulus()` <= Resolution from gp
+   */
   Normalized(): gp_XYZ;
+  /**
+   * ```
+   * <me>.X()=-<me>.X() <me>.Y()=-<me>.Y() <me>.Z()=-<me>.Z()
+   * ```
+   */
   Reverse(): void;
+  /**
+   * ```
+   * New.X()=-<me>.X() New.Y()=-<me>.Y() New.Z()=-<me>.Z()
+   * ```
+   */
   Reversed(): gp_XYZ;
+  /**
+   * ```
+   * <me>.X()=<me>.X()-theOther.X() <me>.Y()=<me>.Y()-theOther.Y() <me>.Z()=<me>.Z()-theOther.Z()
+   * ```
+   */
   Subtract(theOther: gp_XYZ): void;
+  /**
+   * ```
+   * new.X()=<me>.X()-theOther.X() new.Y()=<me>.Y()-theOther.Y() new.Z()=<me>.Z()-theOther.Z()
+   * ```
+   */
   Subtracted(theOther: gp_XYZ): gp_XYZ;
   /**
    * <me> is set to the following linear form :
+   *
+   * ```
+   * theA1*theXYZ1+theA2*theXYZ2+theA3*theXYZ3+theXYZ4
+   * ```
    */
   SetLinearForm(theA1: number, theXYZ1: gp_XYZ, theA2: number, theXYZ2: gp_XYZ, theA3: number, theXYZ3: gp_XYZ, theXYZ4: gp_XYZ): void;
   /**
    * <me> is set to the following linear form :
+   *
+   * ```
+   * theA1*theXYZ1+theA2*theXYZ2+theA3*theXYZ3
+   * ```
    */
   SetLinearForm(theA1: number, theXYZ1: gp_XYZ, theA2: number, theXYZ2: gp_XYZ, theA3: number, theXYZ3: gp_XYZ): void;
   /**
    * <me> is set to the following linear form :
+   *
+   * ```
+   * theA1*theXYZ1+theA2*theXYZ2+theXYZ3
+   * ```
    */
   SetLinearForm(theA1: number, theXYZ1: gp_XYZ, theA2: number, theXYZ2: gp_XYZ, theXYZ3: gp_XYZ): void;
   /**
    * <me> is set to the following linear form :
+   *
+   * ```
+   * theA1*theXYZ1+theA2*theXYZ2
+   * ```
    */
   SetLinearForm(theA1: number, theXYZ1: gp_XYZ, theA2: number, theXYZ2: gp_XYZ): void;
   /**
    * <me> is set to the following linear form :
+   *
+   * ```
+   * theA1*theXYZ1+theXYZ2
+   * ```
    */
   SetLinearForm(theA1: number, theXYZ1: gp_XYZ, theXYZ2: gp_XYZ): void;
   /**
    * <me> is set to the following linear form :
+   *
+   * ```
+   * theXYZ1+theXYZ2
+   * ```
    */
   SetLinearForm(theXYZ1: gp_XYZ, theXYZ2: gp_XYZ): void;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -3461,7 +4065,10 @@ export declare class gp_XYZ {
 }
 
 /**
- * Describes an infinite cylindrical surface. A cylinder is defined by its radius and positioned in space with a coordinate system (a gp_Ax3 object), the "main Axis" of which is the axis of the cylinder. This coordinate system is the "local coordinate system" of the cylinder. Note: when a gp_Cylinder cylinder is converted into a Geom_CylindricalSurface cylinder, some implicit properties of its local coordinate system are used explicitly:
+ * Describes an infinite cylindrical surface. A cylinder is defined by its radius and positioned in space with a coordinate system (a {@link gp_Ax3 | `gp_Ax3`} object), the "main Axis" of which is the axis of the cylinder. This coordinate system is the "local coordinate system" of the cylinder. Note: when a {@link gp_Cylinder | `gp_Cylinder`} cylinder is converted into a {@link Geom_CylindricalSurface | `Geom_CylindricalSurface`} cylinder, some implicit properties of its local coordinate system are used explicitly:
+ *
+ * - its origin, "X Direction", "Y Direction" and "main Direction" are used directly to define the parametric directions on the cylinder and the origin of the parameters,
+ * - its implicit orientation (right-handed or left-handed) gives an orientation (direct or indirect) to the {@link Geom_CylindricalSurface | `Geom_CylindricalSurface`} cylinder. See Also {@link gce_MakeCylinder | `gce_MakeCylinder`} which provides functions for more complex cylinder constructions {@link Geom_CylindricalSurface | `Geom_CylindricalSurface`} which provides additional functions for constructing cylinders and works, in particular, with the parametric equations of cylinders {@link gp_Ax3 | `gp_Ax3`}
  */
 export declare class gp_Cylinder {
   /**
@@ -3574,7 +4181,7 @@ export declare class gp_Cylinder {
 }
 
 /**
- * Describes a unit vector in the plane (2D space). This unit vector is also called "Direction". See Also gce_MakeDir2d which provides functions for more complex unit vector constructions Geom2d_Direction which provides additional functions for constructing unit vectors and works, in particular, with the parametric equations of unit vectors.
+ * Describes a unit vector in the plane (2`D` space). This unit vector is also called "Direction". See Also {@link gce_MakeDir2d | `gce_MakeDir2d`} which provides functions for more complex unit vector constructions {@link Geom2d_Direction | `Geom2d_Direction`} which provides additional functions for constructing unit vectors and works, in particular, with the parametric equations of unit vectors.
  */
 export declare class gp_Dir2d {
   /**
@@ -3587,34 +4194,61 @@ export declare class gp_Dir2d {
   constructor(theDir: gp_Dir2d_D);
   /**
    * Normalizes the vector theV and creates a Direction. Raises ConstructionError if theV.Magnitude() <= Resolution from gp.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   constructor(theV: gp_Vec2d);
   /**
    * Creates a Direction from a doublet of coordinates. Raises ConstructionError if theCoord.Modulus() <= Resolution from gp.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   constructor(theCoord: gp_XY);
   /**
    * Creates a Direction with its 2 cartesian coordinates. Raises ConstructionError if std::sqrt(theXv*theXv + theYv*theYv) <= Resolution from gp.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   constructor(theXv: number, theYv: number);
   /**
    * For this unit vector, assigns: the value theXi to:
+   *
+   * - the X coordinate if theIndex is 1, or
+   * - the Y coordinate if theIndex is 2, and then normalizes it. Warning Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly. Exceptions Standard_OutOfRange if theIndex is not 1 or 2. Standard_ConstructionError if either of the following is less than or equal to `gp::Resolution()`:
+   * - std::sqrt(theXv*theXv + theYv*theYv), or
+   * - the modulus of the number pair formed by the new value theXi and the other coordinate of this vector that was not directly modified. Raises OutOfRange if theIndex != {1, 2}.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   SetCoord(theIndex: number, theXi: number): void;
   /**
    * For this unit vector, assigns:
+   *
+   * - the values theXv and theYv to its two coordinates, Warning Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly. Exceptions Standard_OutOfRange if theIndex is not 1 or 2. Standard_ConstructionError if either of the following is less than or equal to `gp::Resolution()`:
+   * - std::sqrt(theXv*theXv + theYv*theYv), or
+   * - the modulus of the number pair formed by the new value Xi and the other coordinate of this vector that was not directly modified. Raises OutOfRange if theIndex != {1, 2}.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   SetCoord(theXv: number, theYv: number): void;
   /**
-   * Assigns the given value to the X coordinate of this unit vector, and then normalizes it. Warning Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly. Exceptions Standard_ConstructionError if either of the following is less than or equal to gp::Resolution():
+   * Assigns the given value to the X coordinate of this unit vector, and then normalizes it. Warning Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly. Exceptions Standard_ConstructionError if either of the following is less than or equal to `gp::Resolution()`:
+   *
+   * - the modulus of Coord, or
+   * - the modulus of the number pair formed from the new X or Y coordinate and the other coordinate of this vector that was not directly modified.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   SetX(theX: number): void;
   /**
-   * Assigns the given value to the Y coordinate of this unit vector, and then normalizes it. Warning Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly. Exceptions Standard_ConstructionError if either of the following is less than or equal to gp::Resolution():
+   * Assigns the given value to the Y coordinate of this unit vector, and then normalizes it. Warning Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly. Exceptions Standard_ConstructionError if either of the following is less than or equal to `gp::Resolution()`:
+   *
+   * - the modulus of Coord, or
+   * - the modulus of the number pair formed from the new X or Y coordinate and the other coordinate of this vector that was not directly modified.
+   * @remarks **Note:** Constexpr-compatible when result is already normalized.
    */
   SetY(theY: number): void;
   /**
    * Assigns:
+   *
+   * - the two coordinates of theCoord to this unit vector, and then normalizes it. Warning Remember that all the coordinates of a unit vector are implicitly modified when any single one is changed directly. Exceptions Standard_ConstructionError if either of the following is less than or equal to `gp::Resolution()`:
+   * - the modulus of theCoord, or
+   * - the modulus of the number pair formed from the new X or Y coordinate and the other coordinate of this vector that was not directly modified.
+   * @remarks **Note:** Constexpr-compatible when input is already normalized.
    */
   SetXY(theCoord: gp_XY): void;
   /**
@@ -3697,7 +4331,7 @@ export declare class gp_Dir2d {
 
 export type gp_Dir2d_D = typeof gp_Dir2d_D[keyof typeof gp_Dir2d_D];
 /**
- * Standard directions in 2D space for optimized constexpr construction.
+ * {@link Standard | `Standard`} directions in 2`D` space for optimized constexpr construction.
  */
 export declare const gp_Dir2d_D: {
   /**
@@ -3719,7 +4353,13 @@ export declare const gp_Dir2d_D: {
 };
 
 /**
- * Describes a circle in 3D space. A circle is defined by its radius and positioned in space with a coordinate system (a gp_Ax2 object) as follows:
+ * Describes a circle in 3D space. A circle is defined by its radius and positioned in space with a coordinate system (a {@link gp_Ax2 | `gp_Ax2`} object) as follows:
+ *
+ * - the origin of the coordinate system is the center of the circle, and
+ * - the origin, "X Direction" and "Y Direction" of the coordinate system define the plane of the circle. This positioning coordinate system is the "local coordinate system" of the circle. Its "main Direction" gives the normal vector to the plane of the circle. The "main Axis" of the coordinate system is referred to as the "Axis" of the circle. Note: when a {@link gp_Circ | `gp_Circ`} circle is converted into a {@link Geom_Circle | `Geom_Circle`} circle, some implicit properties of the circle are used explicitly:
+ * - the "main Direction" of the local coordinate system gives an implicit orientation to the circle (and defines its trigonometric sense),
+ * - this orientation corresponds to the direction in which parameter values increase,
+ * - the starting point for parameterization is that of the "X Axis" of the local coordinate system (i.e. the "X Axis" of the circle). See Also {@link gce_MakeCirc | `gce_MakeCirc`} which provides functions for more complex circle constructions {@link Geom_Circle | `Geom_Circle`} which provides additional functions for constructing circles and works, in particular, with the parametric equations of circles
  */
 export declare class gp_Circ {
   /**
@@ -3837,6 +4477,14 @@ export declare class gp_Circ {
 
 /**
  * Describes an axis in the plane (2D space). An axis is defined by:
+ *
+ * - its origin (also referred to as its "Location point"), and
+ * - its unit vector (referred to as its "Direction"). An axis implicitly defines a direct, right-handed coordinate system in 2D space by:
+ * - its origin,
+ * - its "Direction" (giving the "X Direction" of the coordinate system), and
+ * - the unit vector normal to "Direction" (positive angle measured in the trigonometric sense). An axis is used:
+ * - to describe 2D geometric entities (for example, the axis which defines angular coordinates on a circle). It serves for the same purpose as the STEP function "axis placement one axis", or
+ * - to define geometric transformations (axis of symmetry, axis of rotation, and so on). Note: to define a left-handed 2D coordinate system, use {@link gp_Ax22d | `gp_Ax22d`}.
  */
 export declare class gp_Ax2d {
   /**
@@ -3844,7 +4492,7 @@ export declare class gp_Ax2d {
    */
   constructor();
   /**
-   * Creates an axis at the origin with the given standard direction. Replaces gp::OX2d(), gp::OY2d() static functions.
+   * Creates an axis at the origin with the given standard direction. Replaces `gp::OX2d()`, `gp::OY2d()` static functions.
    */
   constructor(theDir: gp_Dir2d_D);
   /**
@@ -3872,7 +4520,7 @@ export declare class gp_Ax2d {
    */
   Direction(): gp_Dir2d;
   /**
-   * Returns True if: . the angle between <me> and <Other> is lower or equal to <AngularTolerance> and . the distance between <me>.Location() and <Other> is lower or equal to <LinearTolerance> and . the distance between <Other>.Location() and <me> is lower or equal to LinearTolerance.
+   * Returns True if: . the angle between <me> and <Other> is lower or equal to <AngularTolerance> and . the distance between <me>.`Location()` and <Other> is lower or equal to <LinearTolerance> and . the distance between <Other>.`Location()` and <me> is lower or equal to LinearTolerance.
    */
   IsCoaxial(Other: gp_Ax2d, AngularTolerance: number, LinearTolerance: number): boolean;
   /**
@@ -3940,7 +4588,10 @@ export declare class gp_Ax2d {
 }
 
 /**
- * Describes a sphere. A sphere is defined by its radius and positioned in space with a coordinate system (a gp_Ax3 object). The origin of the coordinate system is the center of the sphere. This coordinate system is the "local coordinate system" of the sphere. Note: when a gp_Sphere sphere is converted into a Geom_SphericalSurface sphere, some implicit properties of its local coordinate system are used explicitly:
+ * Describes a sphere. A sphere is defined by its radius and positioned in space with a coordinate system (a {@link gp_Ax3 | `gp_Ax3`} object). The origin of the coordinate system is the center of the sphere. This coordinate system is the "local coordinate system" of the sphere. Note: when a {@link gp_Sphere | `gp_Sphere`} sphere is converted into a {@link Geom_SphericalSurface | `Geom_SphericalSurface`} sphere, some implicit properties of its local coordinate system are used explicitly:
+ *
+ * - its origin, "X Direction", "Y Direction" and "main Direction" are used directly to define the parametric directions on the sphere and the origin of the parameters,
+ * - its implicit orientation (right-handed or left-handed) gives the orientation (direct, indirect) to the {@link Geom_SphericalSurface | `Geom_SphericalSurface`} sphere. See Also gce_MakeSphere which provides functions for more complex sphere constructions {@link Geom_SphericalSurface | `Geom_SphericalSurface`} which provides additional functions for constructing spheres and works, in particular, with the parametric equations of spheres.
  */
 export declare class gp_Sphere {
   /**
@@ -3969,6 +4620,10 @@ export declare class gp_Sphere {
   Area(): number;
   /**
    * Computes the coefficients of the implicit equation of the quadric in the absolute cartesian coordinates system :
+   *
+   * ```
+   * theA1.X**2+theA2.Y**2+theA3.Z**2+2.(theB1.X.Y+theB2.X.Z+theB3.Y.Z)+ 2.(theC1.X+theC2.Y+theC3.Z)+theD=0.0
+   * ```
    */
   Coefficients(): { theA1: number; theA2: number; theA3: number; theB1: number; theB2: number; theB3: number; theC1: number; theC2: number; theC3: number; theD: number };
   /**
@@ -3984,7 +4639,7 @@ export declare class gp_Sphere {
    */
   Direct(): boolean;
   /**
-   * Purpose ; Returns the center of the sphere.
+   * -- Purpose ; Returns the center of the sphere.
    */
   Location(): gp_Pnt;
   /**
@@ -4121,19 +4776,19 @@ export declare class gp_Vec2d {
    */
   IsEqual(theOther: gp_Vec2d, theLinearTolerance: number, theAngularTolerance: number): boolean;
   /**
-   * Returns True if abs(std::abs(<me>.Angle(theOther)) - PI/2.) <= theAngularTolerance Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or theOther.Magnitude() <= Resolution from gp.
+   * Returns True if abs(std::abs(<me>.Angle(theOther)) - PI/2.) <= theAngularTolerance Raises VectorWithNullMagnitude if <me>.`Magnitude()` <= Resolution or theOther.Magnitude() <= Resolution from gp.
    */
   IsNormal(theOther: gp_Vec2d, theAngularTolerance: number): boolean;
   /**
-   * Returns True if PI - std::abs(<me>.Angle(theOther)) <= theAngularTolerance Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or theOther.Magnitude() <= Resolution from gp.
+   * Returns True if PI - std::abs(<me>.Angle(theOther)) <= theAngularTolerance Raises VectorWithNullMagnitude if <me>.`Magnitude()` <= Resolution or theOther.Magnitude() <= Resolution from gp.
    */
   IsOpposite(theOther: gp_Vec2d, theAngularTolerance: number): boolean;
   /**
-   * Returns true if std::abs(Angle(<me>, theOther)) <= theAngularTolerance or PI - std::abs(Angle(<me>, theOther)) <= theAngularTolerance Two vectors with opposite directions are considered as parallel. Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or theOther.Magnitude() <= Resolution from gp.
+   * Returns true if std::abs(Angle(<me>, theOther)) <= theAngularTolerance or PI - std::abs(Angle(<me>, theOther)) <= theAngularTolerance Two vectors with opposite directions are considered as parallel. Raises VectorWithNullMagnitude if <me>.`Magnitude()` <= Resolution or theOther.Magnitude() <= Resolution from gp.
    */
   IsParallel(theOther: gp_Vec2d, theAngularTolerance: number): boolean;
   /**
-   * Computes the angular value between <me> and <theOther> returns the angle value between -PI and PI in radian. The orientation is from <me> to theOther. The positive sense is the trigonometric sense. Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution from gp or theOther.Magnitude() <= Resolution because the angular value is indefinite if one of the vectors has a null magnitude.
+   * Computes the angular value between <me> and <theOther> returns the angle value between -PI and PI in radian. The orientation is from <me> to theOther. The positive sense is the trigonometric sense. Raises VectorWithNullMagnitude if <me>.`Magnitude()` <= Resolution from gp or theOther.Magnitude() <= Resolution because the angular value is indefinite if one of the vectors has a null magnitude.
    */
   Angle(theOther: gp_Vec2d): number;
   /**
@@ -4248,6 +4903,9 @@ export declare class gp_Vec2d {
 
 /**
  * Defines a non-persistent transformation in 2D space. The following transformations are implemented :
+ *
+ * - Translation, Rotation, Scale
+ * - Symmetry with respect to a point and a line. Complex transformations can be obtained by combining the previous elementary transformations using the method Multiply. The transformations can be represented as follow : V1V2TXYXY |a11a12a13||`x`||`x`'| |a21a22a23||y||y'| |001||1||1| where {V1, V2} defines the vectorial part of the transformation and T defines the translation part of the transformation. This transformation never change the nature of the objects.
  */
 export declare class gp_Trsf2d {
   /**
@@ -4323,7 +4981,7 @@ export declare class gp_Trsf2d {
    */
   HVectorialPart(): unknown;
   /**
-   * Returns the angle corresponding to the rotational component of the transformation matrix (operation opposite to SetRotation()).
+   * Returns the angle corresponding to the rotational component of the transformation matrix (operation opposite to `SetRotation()`).
    */
   RotationPart(): number;
   /**
@@ -4346,7 +5004,9 @@ export declare class gp_Trsf2d {
   PreMultiply(theT: gp_Trsf2d): void;
   Power(theN: number): void;
   /**
-   * Computes the following composition of transformations <me> * <me> * .......* <me>, theN time. if theN = 0 <me> = Identity if theN < 0 <me> = <me>.Inverse() ........... <me>.Inverse().
+   * Computes the following composition of transformations <me> * <me> * .......* <me>, theN time. if theN = 0 <me> = Identity if theN < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+   *
+   * Raises if theN < 0 and if the matrix of the transformation not inversible.
    */
   Powered(theN: number): gp_Trsf2d;
   Transforms(): { theX: number; theY: number };
@@ -4356,6 +5016,12 @@ export declare class gp_Trsf2d {
   Transforms(theCoord: gp_XY): void;
   /**
    * Sets the coefficients of the transformation. The transformation of the point x,y is the point x',y' with :
+   *
+   * ```
+   * x'=a11x+a12y+a13 y'=a21x+a22y+a23
+   * ```
+   *
+   * The method Value(i,j) will return aij. Raises ConstructionError if the determinant of the aij is null. If the matrix as not a uniform scale it will be orthogonalized before future using.
    */
   SetValues(a11: number, a12: number, a13: number, a21: number, a22: number, a23: number): void;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -4364,7 +5030,17 @@ export declare class gp_Trsf2d {
 }
 
 /**
- * Defines a non-persistent transformation in 3D space. This transformation is a general transformation. It can be a gp_Trsf, an affinity, or you can define your own transformation giving the matrix of transformation.
+ * Defines a non-persistent transformation in 3D space. This transformation is a general transformation. It can be a {@link gp_Trsf | `gp_Trsf`}, an affinity, or you can define your own transformation giving the matrix of transformation.
+ *
+ * With a {@link gp_GTrsf | `gp_GTrsf`} you can transform only a triplet of coordinates {@link gp_XYZ | `gp_XYZ`}. It is not possible to transform other geometric objects because these transformations can change the nature of non-elementary geometric objects. The transformation {@link gp_GTrsf | `gp_GTrsf`} can be represented as follow:
+ *
+ * ```
+ * V1V2V3TXYZXYZ |a11a12a13a14||x||x'| |a21a22a23a24||y||y'| |a31a32a33a34||z|=|z'| |0001||1||1|
+ * ```
+ *
+ * where {V1, V2, V3} define the vectorial part of the transformation and T defines the translation part of the transformation. Warning A {@link gp_GTrsf | `gp_GTrsf`} transformation is only applicable to coordinates.
+ * Be careful if you apply such a transformation to all points of a geometric object, as this can change the nature of the object and thus render it incoherent! Typically, a circle is transformed into an ellipse by an affinity transformation.
+ * To avoid modifying the nature of an object, use a {@link gp_Trsf | `gp_Trsf`} transformation instead, as objects of this class respect the nature of geometric objects.
  */
 export declare class gp_GTrsf {
   /**
@@ -4372,7 +5048,7 @@ export declare class gp_GTrsf {
    */
   constructor();
   /**
-   * Converts the gp_Trsf transformation theT into a general transformation, i.e. Returns a GTrsf with the same matrix of coefficients as the Trsf theT.
+   * Converts the {@link gp_Trsf | `gp_Trsf`} transformation theT into a general transformation, i.e. Returns a GTrsf with the same matrix of coefficients as the Trsf theT.
    */
   constructor(theT: gp_Trsf);
   /**
@@ -4408,7 +5084,7 @@ export declare class gp_GTrsf {
    */
   IsNegative(): boolean;
   /**
-   * Returns true if this transformation is singular (and therefore, cannot be inverted). Note: The Gauss LU decomposition is used to invert the transformation matrix. Consequently, the transformation is considered as singular if the largest pivot found is less than or equal to gp::Resolution(). Warning If this transformation is singular, it cannot be inverted.
+   * Returns true if this transformation is singular (and therefore, cannot be inverted). Note: The Gauss LU decomposition is used to invert the transformation matrix. Consequently, the transformation is considered as singular if the largest pivot found is less than or equal to `gp::Resolution()`. Warning If this transformation is singular, it cannot be inverted.
    */
   IsSingular(): boolean;
   /**
@@ -4417,6 +5093,10 @@ export declare class gp_GTrsf {
   Form(): unknown;
   /**
    * verify and set the shape of the GTrsf Other or CompoundTrsf Ex :
+   *
+   * ```
+   * myGTrsf.SetValue(row1,col1,val1); myGTrsf.SetValue(row2,col2,val2); ... myGTrsf.SetForm();
+   * ```
    */
   SetForm(): void;
   /**
@@ -4438,6 +5118,10 @@ export declare class gp_GTrsf {
   Inverted(): gp_GTrsf;
   /**
    * Computes the transformation composed from theT and <me>. In a C++ implementation you can also write Tcomposed = <me> * theT. Example :
+   *
+   * ```
+   * gp_GTrsfT1,T2,Tcomp;............... //composition: Tcomp=T2.Multiplied(T1);//or(Tcomp=T2*T1) //transformationofapoint gp_XYZP(10.,3.,4.); gp_XYZP1(P); Tcomp.Transforms(P1);//usingTcomp gp_XYZP2(P); T1.Transforms(P2);//usingT1thenT2 T2.Transforms(P2);//P1=P2!!!
+   * ```
    */
   Multiplied(theT: gp_GTrsf): gp_GTrsf;
   /**
@@ -4451,6 +5135,11 @@ export declare class gp_GTrsf {
   Power(theN: number): void;
   /**
    * Computes:
+   *
+   * - the product of this transformation multiplied by itself theN times, if theN is positive, or
+   * - the product of the inverse of this transformation multiplied by itself |theN| times, if theN is negative. If theN equals zero, the result is equal to the Identity transformation. I.e.: <me> * <me> * .......* <me>, theN time. if theN =0 <me> = Identity if theN < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+   *
+   * Raises an exception if N < 0 and if the matrix of the transformation not inversible.
    */
   Powered(theN: number): gp_GTrsf;
   Transforms(theCoord: gp_XYZ): void;
@@ -4508,6 +5197,20 @@ export declare const GeomAbs_CurveType: {
 export type GeomAbs_Shape = typeof GeomAbs_Shape[keyof typeof GeomAbs_Shape];
 /**
  * Provides information about the continuity of a curve:
+ *
+ * - C0: only geometric continuity.
+ * - G1: for each point on the curve, the tangent vectors "on the right" and "on the left" are collinear with the same orientation.
+ * - C1: continuity of the first derivative. The "C1" curve is also "G1" but, in addition, the tangent vectors " on the right" and "on the left" are equal.
+ * - G2: for each point on the curve, the normalized normal vectors "on the right" and "on the left" are equal.
+ * - C2: continuity of the second derivative.
+ * - C3: continuity of the third derivative.
+ * - CN: continuity of the N-th derivative, whatever is the value given for N (infinite order of continuity). Also provides information about the continuity of a surface:
+ * - C0: only geometric continuity.
+ * - C1: continuity of the first derivatives; any isoparametric (in U or V) of a surface "C1" is also "C1".
+ * - G2: for BSpline curves only; "on the right" and "on the left" of a knot the computation of the "main curvature radii" and the "main directions" (when they exist) gives the same result.
+ * - C2: continuity of the second derivative.
+ * - C3: continuity of the third derivative.
+ * - CN: continuity of any N-th derivative, whatever is the value given for N (infinite order of continuity). We may also say that a surface is "Ci" in u, and "Cj" in v to indicate the continuity of its derivatives up to the order i in the u parametric direction, and j in the v parametric direction.
  */
 export declare const GeomAbs_Shape: {
   readonly GeomAbs_C0: 'GeomAbs_C0';
@@ -4521,6 +5224,16 @@ export declare const GeomAbs_Shape: {
 
 /**
  * Describes a bounding box in 2D space. A bounding box is parallel to the axes of the coordinates system. If it is finite, it is defined by the two intervals:
+ *
+ * - [ Xmin,Xmax ], and
+ * - [ Ymin,Ymax ]. A bounding box may be infinite (i.e. open) in one or more directions. It is said to be:
+ * - OpenXmin if it is infinite on the negative side of the "X Direction";
+ * - OpenXmax if it is infinite on the positive side of the "X Direction";
+ * - OpenYmin if it is infinite on the negative side of the "Y Direction";
+ * - OpenYmax if it is infinite on the positive side of the "Y Direction";
+ * - WholeSpace if it is infinite in all four directions. In this case, any point of the space is inside the box;
+ * - Void if it is empty. In this case, there is no point included in the box. A bounding box is defined by four bounds (Xmin, Xmax, Ymin and Ymax) which limit the bounding box if it is finite, six flags (OpenXmin, OpenXmax, OpenYmin, OpenYmax, WholeSpace and Void) which describe the bounding box if it is infinite or empty, and
+ * - a gap, which is included on both sides in any direction when consulting the finite bounds of the box.
  */
 export declare class Bnd_Box2d {
   constructor();
@@ -4534,6 +5247,8 @@ export declare class Bnd_Box2d {
   SetVoid(): void;
   /**
    * Sets this 2D bounding box so that it bounds the point P. This involves first setting this bounding box to be void and then adding the point PThe rectangle bounds the point.
+   *
+   * .
    */
   Set(thePnt: gp_Pnt2d): void;
   /**
@@ -4542,6 +5257,9 @@ export declare class Bnd_Box2d {
   Set(thePnt: gp_Pnt2d, theDir: gp_Dir2d): void;
   /**
    * Enlarges this 2D bounding box, if required, so that it contains at least:
+   *
+   * - interval [ aXmin,aXmax ] in the "X Direction",
+   * - interval [ aYmin,aYmax ] in the "Y Direction"
    */
   Update(aXmin: number, aYmin: number, aXmax: number, aYmax: number): void;
   /**
@@ -4557,23 +5275,23 @@ export declare class Bnd_Box2d {
    */
   Enlarge(theTol: number): void;
   /**
-   * Returns the Xmin value (IsOpenXmin() ? -Precision::Infinite() : Xmin - GetGap()).
+   * Returns the Xmin value (`IsOpenXmin()` ? -`Precision::Infinite()` : Xmin - `GetGap()`).
    */
   GetXMin(): number;
   /**
-   * Returns the Xmax value (IsOpenXmax() ? Precision::Infinite() : Xmax + GetGap()).
+   * Returns the Xmax value (`IsOpenXmax()` ? `Precision::Infinite()` : Xmax + `GetGap()`).
    */
   GetXMax(): number;
   /**
-   * Returns the Ymin value (IsOpenYmin() ? -Precision::Infinite() : Ymin - GetGap()).
+   * Returns the Ymin value (`IsOpenYmin()` ? -`Precision::Infinite()` : Ymin - `GetGap()`).
    */
   GetYMin(): number;
   /**
-   * Returns the Ymax value (IsOpenYmax() ? Precision::Infinite() : Ymax + GetGap()).
+   * Returns the Ymax value (`IsOpenYmax()` ? `Precision::Infinite()` : Ymax + `GetGap()`).
    */
   GetYMax(): number;
   /**
-   * Returns the center of this 2D bounding box. The gap is included. If this bounding box is infinite (i.e. "open"), returned values may be equal to +/- Precision::Infinite(). Returns std::nullopt if the box is void.
+   * Returns the center of this 2D bounding box. The gap is included. If this bounding box is infinite (i.e. "open"), returned values may be equal to +/- `Precision::Infinite()`. Returns std::nullopt if the box is void.
    */
   Center(): gp_Pnt2d | undefined;
   /**
@@ -4638,6 +5356,8 @@ export declare class Bnd_Box2d {
   Add(thePnt: gp_Pnt2d, theDir: gp_Dir2d): void;
   /**
    * Returns True if the 2d pnt.
+   *
+   * is out <me>.
    */
   IsOut(P: gp_Pnt2d): boolean;
   /**
@@ -4691,6 +5411,21 @@ export interface Bnd_Box2d_Limits {
 
 /**
  * Describes a bounding box in 3D space. A bounding box is parallel to the axes of the coordinates system. If it is finite, it is defined by the three intervals:
+ *
+ * - [ Xmin,Xmax ],
+ * - [ Ymin,Ymax ],
+ * - [ Zmin,Zmax ]. A bounding box may be infinite (i.e. open) in one or more directions. It is said to be:
+ * - OpenXmin if it is infinite on the negative side of the "X Direction";
+ * - OpenXmax if it is infinite on the positive side of the "X Direction";
+ * - OpenYmin if it is infinite on the negative side of the "Y Direction";
+ * - OpenYmax if it is infinite on the positive side of the "Y Direction";
+ * - OpenZmin if it is infinite on the negative side of the "Z Direction";
+ * - OpenZmax if it is infinite on the positive side of the "Z Direction";
+ * - WholeSpace if it is infinite in all six directions. In this case, any point of the space is inside the box;
+ * - Void if it is empty. In this case, there is no point included in the box. A bounding box is defined by:
+ * - six bounds (Xmin, Xmax, Ymin, Ymax, Zmin and Zmax) which limit the bounding box if it is finite,
+ * - eight flags (OpenXmin, OpenXmax, OpenYmin, OpenYmax, OpenZmin, OpenZmax, WholeSpace and Void) which describe the bounding box if it is infinite or empty, and
+ * - a gap, which is included on both sides in any direction when consulting the finite bounds of the box.
  */
 export declare class Bnd_Box {
   /**
@@ -4699,6 +5434,8 @@ export declare class Bnd_Box {
   constructor();
   /**
    * Creates a bounding box, it contains:
+   *
+   * - minimum/maximum point of bounding box, The constructed box is qualified Void. Its gap is null.
    */
   constructor(theMin: gp_Pnt, theMax: gp_Pnt);
   /**
@@ -4711,6 +5448,8 @@ export declare class Bnd_Box {
   SetVoid(): void;
   /**
    * Sets this bounding box so that it bounds.
+   *
+   * - the point P. This involves first setting this bounding box to be void and then adding the point P.
    */
   Set(P: gp_Pnt): void;
   /**
@@ -4719,6 +5458,10 @@ export declare class Bnd_Box {
   Set(P: gp_Pnt, D: gp_Dir): void;
   /**
    * Enlarges this bounding box, if required, so that it contains at least:
+   *
+   * - interval [ aXmin,aXmax ] in the "X Direction",
+   * - interval [ aYmin,aYmax ] in the "Y Direction",
+   * - interval [ aZmin,aZmax ] in the "Z Direction";
    */
   Update(aXmin: number, aYmin: number, aZmin: number, aXmax: number, aYmax: number, aZmax: number): void;
   /**
@@ -4734,39 +5477,39 @@ export declare class Bnd_Box {
    */
   Enlarge(Tol: number): void;
   /**
-   * Returns the Xmin value (IsOpenXmin() ? -Precision::Infinite() : Xmin - GetGap()).
+   * Returns the Xmin value (`IsOpenXmin()` ? -`Precision::Infinite()` : Xmin - `GetGap()`).
    */
   GetXMin(): number;
   /**
-   * Returns the Xmax value (IsOpenXmax() ? Precision::Infinite() : Xmax + GetGap()).
+   * Returns the Xmax value (`IsOpenXmax()` ? `Precision::Infinite()` : Xmax + `GetGap()`).
    */
   GetXMax(): number;
   /**
-   * Returns the Ymin value (IsOpenYmin() ? -Precision::Infinite() : Ymin - GetGap()).
+   * Returns the Ymin value (`IsOpenYmin()` ? -`Precision::Infinite()` : Ymin - `GetGap()`).
    */
   GetYMin(): number;
   /**
-   * Returns the Ymax value (IsOpenYmax() ? Precision::Infinite() : Ymax + GetGap()).
+   * Returns the Ymax value (`IsOpenYmax()` ? `Precision::Infinite()` : Ymax + `GetGap()`).
    */
   GetYMax(): number;
   /**
-   * Returns the Zmin value (IsOpenZmin() ? -Precision::Infinite() : Zmin - GetGap()).
+   * Returns the Zmin value (`IsOpenZmin()` ? -`Precision::Infinite()` : Zmin - `GetGap()`).
    */
   GetZMin(): number;
   /**
-   * Returns the Zmax value (IsOpenZmax() ? Precision::Infinite() : Zmax + GetGap()).
+   * Returns the Zmax value (`IsOpenZmax()` ? `Precision::Infinite()` : Zmax + `GetGap()`).
    */
   GetZMax(): number;
   /**
-   * Returns the lower corner of this bounding box. The gap is included. If this bounding box is infinite (i.e. "open"), returned values may be equal to +/- Precision::Infinite(). Standard_ConstructionError exception will be thrown if the box is void. if IsVoid().
+   * Returns the lower corner of this bounding box. The gap is included. If this bounding box is infinite (i.e. "open"), returned values may be equal to +/- `Precision::Infinite()`. Standard_ConstructionError exception will be thrown if the box is void. if `IsVoid()`.
    */
   CornerMin(): gp_Pnt;
   /**
-   * Returns the upper corner of this bounding box. The gap is included. If this bounding box is infinite (i.e. "open"), returned values may be equal to +/- Precision::Infinite(). Standard_ConstructionError exception will be thrown if the box is void. if IsVoid().
+   * Returns the upper corner of this bounding box. The gap is included. If this bounding box is infinite (i.e. "open"), returned values may be equal to +/- `Precision::Infinite()`. Standard_ConstructionError exception will be thrown if the box is void. if `IsVoid()`.
    */
   CornerMax(): gp_Pnt;
   /**
-   * Returns the center of this bounding box. The gap is included. If this bounding box is infinite (i.e. "open"), returned values may be equal to +/- Precision::Infinite(). Returns std::nullopt if the box is void.
+   * Returns the center of this bounding box. The gap is included. If this bounding box is infinite (i.e. "open"), returned values may be equal to +/- `Precision::Infinite()`. Returns std::nullopt if the box is void.
    */
   Center(): gp_Pnt | undefined;
   /**
@@ -4863,6 +5606,8 @@ export declare class Bnd_Box {
   Add(D: gp_Dir): void;
   /**
    * Extends <me> from the Pnt.
+   *
+   * in the direction <D>.
    */
   Add(P: gp_Pnt, D: gp_Dir): void;
   /**
@@ -4911,7 +5656,7 @@ export declare class Bnd_Box {
    */
   SquareExtent(): number;
   /**
-   * Returns a finite part of an infinite bounding box (returns self if this is already finite box). This can be a Void box in case if its sides has been defined as infinite (Open) without adding any finite points. WARNING! This method relies on Open flags, the infinite points added using Add() method will be returned as is.
+   * Returns a finite part of an infinite bounding box (returns self if this is already finite box). This can be a Void box in case if its sides has been defined as infinite (Open) without adding any finite points. WARNING! This method relies on Open flags, the infinite points added using `Add()` method will be returned as is.
    */
   FinitePart(): Bnd_Box;
   /**
@@ -4934,7 +5679,24 @@ export interface Bnd_Box_Limits {
 
 export type Convert_ParameterisationType = typeof Convert_ParameterisationType[keyof typeof Convert_ParameterisationType];
 /**
- * Identifies a type of parameterization of a circle or ellipse represented as a BSpline curve. For a circle with a center C and a radius R (for example a Geom2d_Circle or a Geom_Circle), the natural parameterization is angular. It uses the angle Theta made by the vector CM with the 'X Axis' of the circle's local coordinate system as parameter for the current point M. The coordinates of the point M are as follows: X = R cos ( Theta ) y = R * sin ( Theta ) Similarly, for an ellipse with a center C, a major radius R and a minor radius r, the circle Circ with center C and radius R (and located in the same plane as the ellipse) lends its natural angular parameterization to the ellipse. This is achieved by an affine transformation in the plane of the ellipse, in the ratio r / R, about the 'X Axis' of its local coordinate system. The coordinates of the current point M are as follows: X = R * cos ( Theta ) y = r * sin ( Theta ) The process of converting a circle or an ellipse into a rational or non-rational BSpline curve transforms the Theta angular parameter into a parameter t. This ensures the rational or polynomial parameterization of the resulting BSpline curve. Several types of parametric transformations are available. TgtThetaOver2 The most usual method is Convert_TgtThetaOver2 where the parameter t on the BSpline curve is obtained by means of transformation of the following type: t = tan ( Theta / 2 ) The result of this definition is: cos ( Theta ) = ( 1. - t**2 ) / ( 1. + t**2 ) sin ( Theta ) = 2. * t / ( 1. + t**2 ) which ensures the rational parameterization of the circle or the ellipse. However, this is not the most suitable parameterization method where the arc of the circle or ellipse has a large opening angle. In such cases, the curve will be represented by a BSpline with intermediate knots. Each span, i.e. each portion of curve between two different knot values, will use parameterization of this type. The number of spans is calculated using the following rule: ( 1.2.
+ * Identifies a type of parameterization of a circle or ellipse represented as a BSpline curve. For a circle with a center C and a radius R (for example a {@link Geom2d_Circle | `Geom2d_Circle`} or a {@link Geom_Circle | `Geom_Circle`}), the natural parameterization is angular. It uses the angle Theta made by the vector CM with the 'X Axis' of the circle's local coordinate system as parameter for the current point M.
+ * The coordinates of the point M are as follows: X = R *cos ( Theta ) y = R * sin ( Theta ) Similarly, for an ellipse with a center C, a major radius R and a minor radius r, the circle Circ with center C and radius R (and located in the same plane as the ellipse) lends its natural angular parameterization to the ellipse. This is achieved by an affine transformation in the plane of the ellipse, in the ratio r / R, about the 'X Axis' of its local coordinate system.
+ * The coordinates of the current point M are as follows: X = R * cos ( Theta ) y = r * sin ( Theta ) The process of converting a circle or an ellipse into a rational or non-rational BSpline curve transforms the Theta angular parameter into a parameter t. This ensures the rational or polynomial parameterization of the resulting BSpline curve. Several types of parametric transformations are available.
+ * TgtThetaOver2 The most usual method is Convert_TgtThetaOver2 where the parameter t on the BSpline curve is obtained by means of transformation of the following type: t = tan ( Theta / 2 ) The result of this definition is: cos ( Theta ) = ( 1. - t**2 ) / ( 1. + t**2 ) sin ( Theta ) = 2. * t / ( 1. + t**2 ) which ensures the rational parameterization of the circle or the ellipse.
+ * However, this is not the most suitable parameterization method where the arc of the circle or ellipse has a large opening angle. In such cases, the curve will be represented by a BSpline with intermediate knots. Each span, i.e. each portion of curve between two different knot values, will use parameterization of this type. The number of spans is calculated using the following rule: ( 1.2.*
+ *
+ * - Delta / Pi ) + 1 where Delta is equal to the opening angle (in radians) of the arc of the circle (Delta is equal to 2.
+ *
+ * Pi in the case of a complete circle). The resulting BSpline curve is "exact", i.e. computing any point of parameter t on the BSpline curve gives an exact point on the circle or the ellipse. TgtThetaOver2_N Where N is equal to 1, 2, 3 or 4, this ensures the same type of parameterization as Convert_TgtThetaOver2 but sets the number of spans in the resulting BSpline curve to N rather than allowing the algorithm to make this calculation. However, the opening angle Delta (parametric angle, given in radians) of the arc of the circle (or of the ellipse) must comply with the following:
+ *
+ * - Delta <= 0.9999 * Pi for the Convert_TgtThetaOver2_1 method, or
+ * - Delta <= 1.9999 * Pi for the Convert_TgtThetaOver2_2 method. QuasiAngular The Convert_QuasiAngular method of parameterization uses a different type of rational parameterization.
+ * This method ensures that the parameter t along the resulting BSpline curve is very close to the natural parameterization angle Theta of the circle or ellipse (i.e. which uses the functions sin ( Theta ) and cos ( Theta ).
+ * The resulting BSpline curve is "exact", i.e. computing any point of parameter t on the BSpline curve gives an exact point on the circle or the ellipse. RationalC1 The Convert_RationalC1 method of parameterization uses a further type of rational parameterization.
+ * This method ensures that the equation relating to the resulting BSpline curve has a "C1" continuous denominator, which is not the case with the above methods. RationalC1 enhances the degree of continuity at the junction point of the different spans of the curve.
+ * The resulting BSpline curve is "exact", i.e. computing any point of parameter t on the BSpline curve gives an exact point on the circle or the ellipse.
+ * Polynomial The Convert_Polynomial method is used to produce polynomial (i.e. non-rational) parameterization of the resulting BSpline curve with 8 poles (i.e. a polynomial degree equal to 7).
+ * However, the result is an approximation of the circle or ellipse (i.e. computing the point of parameter t on the BSpline curve does not give an exact point on the circle or the ellipse).
  */
 export declare const Convert_ParameterisationType: {
   readonly Convert_TgtThetaOver2: 'Convert_TgtThetaOver2';
@@ -4948,7 +5710,8 @@ export declare const Convert_ParameterisationType: {
 };
 
 /**
- * This class provides a polygon in 3D space, based on the triangulation of a surface. It may be the approximate representation of a curve on the surface, or more generally the shape. A PolygonOnTriangulation is defined by a table of nodes. Each node is an index in the table of nodes specific to a triangulation, and represents a point on the surface. If the polygon is closed, the index of the point of closure is repeated at the end of the table of nodes. If the polygon is an approximate representation of a curve on a surface, you can associate with each of its nodes the value of the parameter of the corresponding point on the curve.represents a 3d Polygon.
+ * This class provides a polygon in 3D space, based on the triangulation of a surface. It may be the approximate representation of a curve on the surface, or more generally the shape. A PolygonOnTriangulation is defined by a table of nodes. Each node is an index in the table of nodes specific to a triangulation, and represents a point on the surface. If the polygon is closed, the index of the point of closure is repeated at the end of the table of nodes.
+ * If the polygon is an approximate representation of a curve on a surface, you can associate with each of its nodes the value of the parameter of the corresponding point on the curve.represents a 3d Polygon.
  */
 export declare class Poly_PolygonOnTriangulation extends Standard_Transient {
   /**
@@ -4961,6 +5724,10 @@ export declare class Poly_PolygonOnTriangulation extends Standard_Transient {
   constructor(theNbNodes: number, theHasParams: boolean);
   /**
    * Constructs a 3D polygon on the triangulation of a shape, defined by:
+   *
+   * - the table of nodes, Nodes, and the table of parameters, <Parameters>. where:
+   * - a node value is an index in the table of nodes specific to an existing triangulation of a shape
+   * - and a parameter value is the value of the parameter of the corresponding point on the curve approximated by the constructed polygon. Warning The tables Nodes and Parameters must be the same size. This property is not checked at construction time.
    */
   constructor(Nodes: NCollection_Array1_int, Parameters: NCollection_Array1_double);
   static get_type_name(): string;
@@ -5014,7 +5781,13 @@ export declare class Poly_PolygonOnTriangulation extends Standard_Transient {
    * Returns the table of the parameters associated with each node in this polygon. Warning! Use the function HasParameters to check if parameters are associated with the nodes in this polygon.
    */
   Parameters(): NCollection_HArray1_double;
+  /**
+   * @deprecated
+   */
   ChangeNodes(): NCollection_Array1_int;
+  /**
+   * @deprecated
+   */
   ChangeParameters(): NCollection_Array1_double;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -5127,19 +5900,19 @@ export declare class Poly_MergeNodesTool extends Standard_Transient {
    */
   ChangeElementNode(theIndex: number): gp_XYZ;
   /**
-   * Add new triangle or quad with nodes specified by ChangeElementNode().
+   * Add new triangle or quad with nodes specified by `ChangeElementNode()`.
    */
   PushLastElement(theNbNodes: number): void;
   /**
-   * Add new triangle with nodes specified by ChangeElementNode().
+   * Add new triangle with nodes specified by `ChangeElementNode()`.
    */
   PushLastTriangle(): void;
   /**
-   * Add new quad with nodes specified by ChangeElementNode().
+   * Add new quad with nodes specified by `ChangeElementNode()`.
    */
   PushLastQuad(): void;
   /**
-   * Return current element node index defined by PushLastElement().
+   * Return current element node index defined by `PushLastElement()`.
    */
   ElementNodeIndex(theIndex: number): number;
   /**
@@ -5169,6 +5942,18 @@ export declare class Poly_MergeNodesTool extends Standard_Transient {
 
 /**
  * Provides a triangulation for a surface, a set of surfaces, or more generally a shape.
+ *
+ * A triangulation consists of an approximate representation of the actual shape, using a collection of points and triangles. The points are located on the surface. The edges of the triangles connect adjacent points with a straight line that approximates the true curve on the surface.
+ *
+ * A triangulation comprises:
+ *
+ * - A table of 3D nodes (3D points on the surface).
+ * - A table of triangles. Each triangle ({@link Poly_Triangle | `Poly_Triangle`} object) comprises a triplet of indices in the table of 3D nodes specific to the triangulation.
+ * - An optional table of 2D nodes (2D points), parallel to the table of 3D nodes. 2D point are the (u, v) parameters of the corresponding 3D point on the surface approximated by the triangulation.
+ * - An optional table of 3D vectors, parallel to the table of 3D nodes, defining normals to the surface at specified 3D point.
+ * - An optional deflection, which maximizes the distance from a point on the surface to the corresponding point on its approximate triangulation.
+ *
+ * In many cases, algorithms do not need to work with the exact representation of a surface. A triangular representation induces simpler and more robust adjusting, faster performances, and the results are as good.
  */
 export declare class Poly_Triangulation extends Standard_Transient {
   /**
@@ -5248,49 +6033,49 @@ export declare class Poly_Triangulation extends Standard_Transient {
   HasNormals(): boolean;
   /**
    * Returns a node at the given index.
-   * @param theIndex node index within [1, NbNodes()] range
+   * @param theIndex node index within [1, `NbNodes()`] range
    * @returns 3D point coordinates
    */
   Node(theIndex: number): gp_Pnt;
   /**
    * Sets a node coordinates.
-   * @param theIndex node index within [1, NbNodes()] range
+   * @param theIndex node index within [1, `NbNodes()`] range
    * @param thePnt 3D point coordinates
    */
   SetNode(theIndex: number, thePnt: gp_Pnt): void;
   /**
    * Returns UV-node at the given index.
-   * @param theIndex node index within [1, NbNodes()] range
+   * @param theIndex node index within [1, `NbNodes()`] range
    * @returns 2D point defining UV coordinates
    */
   UVNode(theIndex: number): gp_Pnt2d;
   /**
    * Sets an UV-node coordinates.
-   * @param theIndex node index within [1, NbNodes()] range
+   * @param theIndex node index within [1, `NbNodes()`] range
    * @param thePnt UV coordinates
    */
   SetUVNode(theIndex: number, thePnt: gp_Pnt2d): void;
   /**
    * Returns triangle at the given index.
-   * @param theIndex triangle index within [1, NbTriangles()] range
-   * @returns triangle node indices, with each node defined within [1, NbNodes()] range
+   * @param theIndex triangle index within [1, `NbTriangles()`] range
+   * @returns triangle node indices, with each node defined within [1, `NbNodes()`] range
    */
   Triangle(theIndex: number): Poly_Triangle;
   /**
    * Sets a triangle.
-   * @param theIndex triangle index within [1, NbTriangles()] range
-   * @param theTriangle triangle node indices, with each node defined within [1, NbNodes()] range
+   * @param theIndex triangle index within [1, `NbTriangles()`] range
+   * @param theTriangle triangle node indices, with each node defined within [1, `NbNodes()`] range
    */
   SetTriangle(theIndex: number, theTriangle: Poly_Triangle): void;
   /**
    * Returns normal at the given index.
-   * @param theIndex node index within [1, NbNodes()] range
+   * @param theIndex node index within [1, `NbNodes()`] range
    * @returns normalized 3D vector defining a surface normal
    */
   Normal(theIndex: number): gp_Dir;
   /**
    * Changes normal at the given index.
-   * @param theIndex node index within [1, NbNodes()] range
+   * @param theIndex node index within [1, `NbNodes()`] range
    * @param theNormal normalized 3D vector defining a surface normal
    */
   SetNormal(theIndex: number, theNormal: gp_Dir): void;
@@ -5320,6 +6105,10 @@ export declare class Poly_Triangulation extends Standard_Transient {
   UpdateCachedMinMax(): void;
   /**
    * Extends the passed box with bounding box of this triangulation. Uses cached min - max range when available and:
+   *
+   * - input transformation theTrsf has no rotation part;
+   * - theIsAccurate is set to FALSE;
+   * - no triangulation data available (e.g. it is deferred and not loaded). out] theBox bounding box to extend by this triangulation
    * @param theTrsf optional transformation
    * @param theIsAccurate when FALSE, allows using a cached min - max range of this triangulation even for non-identity transformation.
    * @returns FALSE if there is no any data to extend the passed box (no both triangulation and cached min - max range).
@@ -5366,27 +6155,27 @@ export declare class Poly_Triangulation extends Standard_Transient {
    */
   ComputeNormals(): void;
   /**
-   * Returns the table of 3D points for read-only access or NULL if nodes array is undefined. Poly_Triangulation::Node() should be used instead when possible. Returned object should not be used after Poly_Triangulation destruction.
+   * Returns the table of 3D points for read-only access or NULL if nodes array is undefined. `Poly_Triangulation::Node()` should be used instead when possible. Returned object should not be used after {@link Poly_Triangulation | `Poly_Triangulation`} destruction.
    */
   MapNodeArray(): NCollection_HArray1_gp_Pnt;
   /**
-   * Returns the triangle array for read-only access or NULL if triangle array is undefined. Poly_Triangulation::Triangle() should be used instead when possible. Returned object should not be used after Poly_Triangulation destruction.
+   * Returns the triangle array for read-only access or NULL if triangle array is undefined. `Poly_Triangulation::Triangle()` should be used instead when possible. Returned object should not be used after {@link Poly_Triangulation | `Poly_Triangulation`} destruction.
    */
   MapTriangleArray(): NCollection_HArray1_Poly_Triangle;
   /**
-   * Returns the table of 2D nodes for read-only access or NULL if UV nodes array is undefined. Poly_Triangulation::UVNode() should be used instead when possible. Returned object should not be used after Poly_Triangulation destruction.
+   * Returns the table of 2D nodes for read-only access or NULL if UV nodes array is undefined. `Poly_Triangulation::UVNode()` should be used instead when possible. Returned object should not be used after {@link Poly_Triangulation | `Poly_Triangulation`} destruction.
    */
   MapUVNodeArray(): NCollection_HArray1_gp_Pnt2d;
   /**
-   * Returns the table of per-vertex normals for read-only access or NULL if normals array is undefined. Poly_Triangulation::Normal() should be used instead when possible. Returned object should not be used after Poly_Triangulation destruction.
+   * Returns the table of per-vertex normals for read-only access or NULL if normals array is undefined. `Poly_Triangulation::Normal()` should be used instead when possible. Returned object should not be used after {@link Poly_Triangulation | `Poly_Triangulation`} destruction.
    */
   MapNormalArray(): NCollection_HArray1_float;
   /**
-   * Returns an internal array of triangles. Triangle()/SetTriangle() should be used instead in portable code.
+   * Returns an internal array of triangles. `Triangle()`/SetTriangle() should be used instead in portable code.
    */
   InternalTriangles(): NCollection_Array1_Poly_Triangle;
   /**
-   * Returns an internal array of nodes. Node()/SetNode() should be used instead in portable code.
+   * Returns an internal array of nodes. `Node()`/SetNode() should be used instead in portable code.
    */
   InternalNodes(): unknown;
   /**
@@ -5394,12 +6183,24 @@ export declare class Poly_Triangulation extends Standard_Transient {
    */
   InternalUVNodes(): unknown;
   /**
-   * Return an internal array of normals. Normal()/SetNormal() should be used instead in portable code.
+   * Return an internal array of normals. `Normal()`/SetNormal() should be used instead in portable code.
    */
   InternalNormals(): unknown;
+  /**
+   * @deprecated
+   */
   SetNormals(theNormals: NCollection_HArray1_float): void;
+  /**
+   * @deprecated
+   */
   Triangles(): NCollection_Array1_Poly_Triangle;
+  /**
+   * @deprecated
+   */
   ChangeTriangles(): NCollection_Array1_Poly_Triangle;
+  /**
+   * @deprecated
+   */
   ChangeTriangle(theIndex: number): Poly_Triangle;
   NbDeferredNodes(): number;
   NbDeferredTriangles(): number;
@@ -5413,7 +6214,7 @@ export declare class Poly_Triangulation extends Standard_Transient {
 }
 
 /**
- * Describes a component triangle of a triangulation (Poly_Triangulation object). A Triangle is defined by a triplet of nodes within [1, Poly_Triangulation::NbNodes()] range. Each node is an index in the table of nodes specific to an existing triangulation of a shape, and represents a point on the surface.
+ * Describes a component triangle of a triangulation ({@link Poly_Triangulation | `Poly_Triangulation`} object). A Triangle is defined by a triplet of nodes within [1, `Poly_Triangulation::NbNodes()`] range. Each node is an index in the table of nodes specific to an existing triangulation of a shape, and represents a point on the surface.
  */
 export declare class Poly_Triangle {
   /**
@@ -5437,7 +6238,7 @@ export declare class Poly_Triangle {
    */
   Get(): { theN1: number; theN2: number; theN3: number };
   /**
-   * Get the node of given Index. Raises OutOfRange from Standard if Index is not in 1,2,3.
+   * Get the node of given Index. Raises OutOfRange from {@link Standard | `Standard`} if Index is not in 1,2,3.
    */
   Value(theIndex: number): number;
   /**
@@ -5451,6 +6252,42 @@ export declare class Poly_Triangle {
 
 /**
  * A class each application has to implement. It is used to contain the application data. This abstract class, alongwith Label, is one of the cornerstones of Model Editor. The groundwork is to define the root of information. This information is to be attached to a Label, and could be of any of the following types:
+ *
+ * - a feature
+ * - a constraint
+ * - a comment
+ *
+ * **Contents:**
+ *
+ * Each software component who'd like to attach its own information to a label has to inherit from this class and has to add its own information as fields of this new class.
+ *
+ * **Identification:**
+ *
+ * An attribute can be identified by its ID. Every attributes used with the same meaning (for example: Integer, String, Topology...) have the same worldwide unique ID.
+ *
+ * **Addition:**
+ *
+ * An attribute can be added to a label only if there is no attribute yet with the same ID. Call-back methods are offered, called automatically before and after the addition action.
+ *
+ * **Removal:**
+ *
+ * An attribute can be removed from a label only if there is an attribute yet with the same ID. Call-back methods are offered, called automatically before and after the removal action. A removed attribute cannot be found again. After a removal, only an addition of an attribute with the sane ID is possible (no backup...).
+ *
+ * **Modification & Transaction:**
+ *
+ * An attribute can be backuped before a modification. Only one backup attribute by transaction is possible. The modification can be forgotten (abort transaction) or validated (commit transaction).
+ *
+ * BackupCopy and restore are methods used by the backup or abort transaction actions. BackupCopy is called by Backup to generate an attribute with the same contents as the current one. Restore is called when aborting a transaction to transfer the backuped contents into the current attribute. These methods must be implemented by end use inheriting classes.
+ *
+ * A standard implementation of BackupCopy is provided, but it is not necessary a good one for any use.
+ *
+ * **Copy use methods:**
+ *
+ * Paste and NewEmpty methods are used by the copy algorithms. The goal of "Paste" is to transfer an attribute new contents into another attribute. The goal of "NewEmpty" is to create an attribute without contents, to be further filled with the new contents of another one. These 2 methods must be implemented by end use inheriting classes.
+ *
+ * **AttributeDelta:**
+ *
+ * An AttributeDelta is the difference between to attribute values states. These methods must be implemented by end use inheriting classes, to profit from the delta services.
  */
 export declare class TDF_Attribute extends Standard_Transient {
   /**
@@ -5487,6 +6324,8 @@ export declare class TDF_Attribute extends Standard_Transient {
   IsNew(): boolean;
   /**
    * Returns true if the attribute forgotten status is set.
+   *
+   * **ShortCut Methods concerning associated attributes**
    */
   IsForgotten(): boolean;
   /**
@@ -5543,14 +6382,20 @@ export declare class TDF_Attribute extends Standard_Transient {
   BeforeCommitTransaction(): void;
   /**
    * Backups the attribute. The backuped attribute is flagged "Backuped" and not "Valid".
+   *
+   * The method does nothing:
+   *
+   * 1) If the attribute transaction number is equal to the current transaction number (the attribute has already been backuped).
+   *
+   * 2) If the attribute is not attached to a label.
    */
   Backup(): void;
   /**
-   * Returns true if the attribute backup status is set. This status is set/unset by the Backup() method.
+   * Returns true if the attribute backup status is set. This status is set/unset by the `Backup()` method.
    */
   IsBackuped(): boolean;
   /**
-   * Copies the attribute contents into a new other attribute. It is used by Backup().
+   * Copies the attribute contents into a new other attribute. It is used by `Backup()`.
    */
   BackupCopy(): TDF_Attribute;
   /**
@@ -5587,14 +6432,26 @@ export declare class TDF_Attribute extends Standard_Transient {
   NewEmpty(): TDF_Attribute;
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
+   *
+   * The given pasted attribute can be full or empty of its contents. But don't make a NEW! Just set the contents!
+   *
+   * It is possible to use <aRelocationTable> to get/set the relocation value of a source attribute.
    */
   Paste(intoAttribute: TDF_Attribute, aRelocationTable: unknown): void;
   /**
    * Adds the first level referenced attributes and labels to <aDataSet>.
+   *
+   * For this, use the AddLabel or AddAttribute of DataSet.
+   *
+   * If there is none, do not implement the method.
    */
   References(aDataSet: unknown): void;
   /**
    * Forgets the attribute. <aTransaction> is the current transaction in which the forget is done. A forgotten attribute is also flagged not "Valid".
+   *
+   * A forgotten attribute is invisible. Set also the "Valid" status to False. Obviously, DF cannot empty an attribute (this has a semantic signification), but can remove it from the structure. So, a forgotten attribute is NOT an empty one, but a soon DEAD one.
+   *
+   * Should be private.
    */
   Forget(aTransaction: number): void;
   static get_type_name(): string;
@@ -5606,7 +6463,17 @@ export declare class TDF_Attribute extends Standard_Transient {
 }
 
 /**
- * This class provides basic operations to define a label in a data structure. A label is a feature in the feature hierarchy. A label is always connected to a Data from TDF. To a label is attached attributes containing the software components information.
+ * This class provides basic operations to define a label in a data structure. A label is a feature in the feature hierarchy. A label is always connected to a Data from {@link TDF | `TDF`}. To a label is attached attributes containing the software components information.
+ *
+ * Label information:
+ *
+ * It is possible to know the tag, the father, the depth in the tree of the label, if the label is root, null or equal to another label.
+ *
+ * Comfort methods: Some methods useful on a label.
+ *
+ * Attributes:
+ *
+ * It is possible to get an attribute in accordance to an ID, or the yougest previous version of a current attribute.
  */
 export declare class TDF_Label {
   /**
@@ -5673,10 +6540,18 @@ export declare class TDF_Label {
   ResumeAttribute(anAttribute: TDF_Attribute): void;
   /**
    * Finds an attribute of the current label, according to <anID>. If anAttribute is not a valid one, false is returned.
+   *
+   * The method returns True if found, False otherwise.
+   *
+   * A removed attribute cannot be found.
    */
   FindAttribute(anID: unknown): { result: boolean; anAttribute: TDF_Attribute };
   /**
    * Finds an attribute of the current label, according to <anID> and <aTransaction>. This attribute has/had to be a valid one for the given transaction index. So, this attribute is not necessarily a valid one.
+   *
+   * The method returns True if found, False otherwise.
+   *
+   * A removed attribute cannot be found nor a backuped attribute of a removed one.
    */
   FindAttribute(anID: unknown, aTransaction: number): { result: boolean; anAttribute: TDF_Attribute };
   /**
@@ -5716,7 +6591,7 @@ export declare class TDF_Label {
    */
   NbChildren(): number;
   /**
-   * Finds a child label having <aTag> as tag. Creates The tag aTag identifies the label which will be the parent. If create is true and no child label is found, a new one is created. Example: //creating a label with tag 10 at Root TDF_Label lab1 = aDF->Root().FindChild(10); //creating labels 7 and 2 on label 10 TDF_Label lab2 = lab1.FindChild(7); TDF_Label lab3 = lab1.FindChild(2);.
+   * Finds a child label having <aTag> as tag. Creates The tag aTag identifies the label which will be the parent. If create is true and no child label is found, a new one is created. Example: //creating a label with tag 10 at Root {@link TDF_Label | `TDF_Label`} lab1 = aDF->`Root()`.FindChild(10); //creating labels 7 and 2 on label 10 {@link TDF_Label | `TDF_Label`} lab2 = lab1.FindChild(7); {@link TDF_Label | `TDF_Label`} lab3 = lab1.FindChild(2);.
    */
   FindChild(aTag: number, create: boolean): TDF_Label;
   /**
@@ -5729,10 +6604,14 @@ export declare class TDF_Label {
   Transaction(): number;
   /**
    * Returns true if node address of <me> is lower than <otherLabel> one. Used to quickly sort labels (not on entry criterion).
+   *
+   * -C++: inline
    */
   HasLowerNode(otherLabel: TDF_Label): boolean;
   /**
    * Returns true if node address of <me> is greater than <otherLabel> one. Used to quickly sort labels (not on entry criterion).
+   *
+   * -C++: inline
    */
   HasGreaterNode(otherLabel: TDF_Label): boolean;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -5745,9 +6624,24 @@ export declare class TDF_Label {
  */
 export declare class TDataStd_Name extends TDataStd_GenericExtString {
   constructor();
+  /**
+   * **class methods working on the name itself**
+   *
+   * Returns the GUID for name attributes.
+   */
   static GetID(): unknown;
   /**
    * Creates (if does not exist) and sets the name in the name attribute. from any label <L> search in father labels (L is not concerned) the first name attribute. if found set it in <father>.
+   *
+   * **class methods working on the name tree**
+   *
+   * Search in the whole {@link TDF_Data | `TDF_Data`} the Name attribute which fit with <fullPath>. Returns True if found. Search under <currentLabel> a label which fit with <name>. Returns True if found. Shortcut which avoids building a ListOfExtendedStrin. Search in the whole {@link TDF_Data | `TDF_Data`} the label which fit with name Returns True if found.
+   *
+   * **tools methods to translate path <-> pathlist**
+   *
+   * move to draw For Draw test we may provide this tool method which convert a path in a sequence of string to call after the FindLabel methods. Example: if it's given "Assembly:Part_1:Sketch_5" it will return in <pathlist> the list of 3 strings: "Assembly","Part_1","Sketch_5". move to draw from <pathlist> build the string path
+   *
+   * **Name methods**
    */
   static Set(label: TDF_Label, string_: TCollection_ExtendedString): TDataStd_Name;
   /**
@@ -5755,7 +6649,7 @@ export declare class TDataStd_Name extends TDataStd_GenericExtString {
    */
   static Set(label: TDF_Label, guid: unknown, string_: TCollection_ExtendedString): TDataStd_Name;
   /**
-   * Sets  as name. Raises if  is not a valid name.
+   * Sets as name. Raises if is not a valid name.
    */
   Set(S: TCollection_ExtendedString): void;
   /**
@@ -5785,6 +6679,10 @@ export declare class TDataStd_GenericEmpty extends TDF_Attribute {
   Restore(a0: TDF_Attribute): void;
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
+   *
+   * The given pasted attribute can be full or empty of its contents. But don't make a NEW! Just set the contents!
+   *
+   * It is possible to use <aRelocationTable> to get/set the relocation value of a source attribute.
    */
   Paste(a0: TDF_Attribute, a1: unknown): void;
   static get_type_name(): string;
@@ -5796,11 +6694,11 @@ export declare class TDataStd_GenericEmpty extends TDF_Attribute {
 }
 
 /**
- * An ancestor attribute for all attributes which have TCollection_ExtendedString field. If an attribute inherits this one it should not have drivers for persistence. Also this attribute provides functionality to have on the same label same attributes with different IDs.
+ * An ancestor attribute for all attributes which have {@link TCollection_ExtendedString | `TCollection_ExtendedString`} field. If an attribute inherits this one it should not have drivers for persistence. Also this attribute provides functionality to have on the same label same attributes with different IDs.
  */
 export declare class TDataStd_GenericExtString extends TDF_Attribute {
   /**
-   * Sets  as name. Raises if  is not a valid name.
+   * Sets as name. Raises if is not a valid name.
    */
   Set(S: TCollection_ExtendedString): void;
   /**
@@ -5825,6 +6723,10 @@ export declare class TDataStd_GenericExtString extends TDF_Attribute {
   Restore(with_: TDF_Attribute): void;
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
+   *
+   * The given pasted attribute can be full or empty of its contents. But don't make a NEW! Just set the contents!
+   *
+   * It is possible to use <aRelocationTable> to get/set the relocation value of a source attribute.
    */
   Paste(into: TDF_Attribute, RT: unknown): void;
   static get_type_name(): string;
@@ -5836,11 +6738,14 @@ export declare class TDataStd_GenericExtString extends TDF_Attribute {
 }
 
 /**
- * The contents of a TDocStd_Application, a document is a container for a data framework composed of labels and attributes. As such, TDocStd_Document is the entry point into the data framework. To gain access to the data, you create a document as follows: occ::handle<TDocStd_Document> MyDF = new TDocStd_Document The document also allows you to manage:
+ * The contents of a {@link TDocStd_Application | `TDocStd_Application`}, a document is a container for a data framework composed of labels and attributes. As such, {@link TDocStd_Document | `TDocStd_Document`} is the entry point into the data framework. To gain access to the data, you create a document as follows: `occ::handle<TDocStd_Document>` MyDF = new {@link TDocStd_Document | `TDocStd_Document`} The document also allows you to manage:
+ *
+ * - modifications, providing Undo and Redo functions.
+ * - command transactions. Warning: The only data saved is the framework ({@link TDF_Data | `TDF_Data`})
  */
 export declare class TDocStd_Document extends CDM_Document {
   /**
-   * Constructs a document object defined by the string astorageformat. If a document is created outside of an application using this constructor, it must be managed by a Handle. Otherwise memory problems could appear: call of TDocStd_Owner::GetDocument creates a occ::handle<TDocStd_Document>, so, releasing it will produce a crash.
+   * Constructs a document object defined by the string astorageformat. If a document is created outside of an application using this constructor, it must be managed by a Handle. Otherwise memory problems could appear: call of `TDocStd_Owner::GetDocument` creates a `occ::handle<TDocStd_Document>`, so, releasing it will produce a crash.
    */
   constructor(astorageformat: TCollection_ExtendedString);
   /**
@@ -5860,11 +6765,11 @@ export declare class TDocStd_Document extends CDM_Document {
    */
   SetSaved(): void;
   /**
-   * Say to document what it is not saved. Use value, returned earlier by GetSavedTime().
+   * Say to document what it is not saved. Use value, returned earlier by `GetSavedTime()`.
    */
   SetSavedTime(theTime: number): void;
   /**
-   * Returns value of <mySavedTime> to be used later in SetSavedTime().
+   * Returns value of <mySavedTime> to be used later in `SetSavedTime()`.
    */
   GetSavedTime(): number;
   /**
@@ -5976,7 +6881,7 @@ export declare class TDocStd_Document extends CDM_Document {
    */
   Recompute(): void;
   /**
-   * The Storage Format is the key which is used to determine in the application resources the storage driver plugin, the file extension and other data used to store the document.
+   * The {@link Storage | `Storage`} Format is the key which is used to determine in the application resources the storage driver plugin, the file extension and other data used to store the document.
    */
   StorageFormat(): TCollection_ExtendedString;
   /**
@@ -6032,7 +6937,16 @@ export declare class TDocStd_Document extends CDM_Document {
 }
 
 /**
- * An applicative document is an instance of a class inheriting CDM_Document. These documents have the following properties:
+ * An applicative document is an instance of a class inheriting {@link CDM_Document | `CDM_Document`}. These documents have the following properties:
+ *
+ * - they can have references to other documents.
+ * - the modifications of a document are propagated to the referencing documents.
+ * - a document can be stored in different formats, with or without a persistent model.
+ * - the drivers for storing and retrieving documents are plugged in when necessary.
+ * - a document has a modification counter. This counter is incremented when the document is modified. When a document is stored, the current counter value is memorized as the last storage version of the document. A document is considered to be modified when the counter value is different from the storage version. Once the document is saved the storage version and the counter value are identical. The document is now not considered to be modified.
+ * - a reference is a link between two documents. A reference has two components: the "From Document" and the "To Document". When a reference is created, an identifier of the reference is generated. This identifier is unique in the scope of the From Document and is conserved during storage and retrieval. This means that the referenced document will be always accessible through this identifier.
+ * - a reference memorizes the counter value of the To Document when the reference is created. The From Document is considered to be up to date relative to the To Document when the reference counter value is equal to the To Document counter value.
+ * - retrieval of a document having references does not imply the retrieving of the referenced documents.
  */
 export declare class CDM_Document extends Standard_Transient {
   /**
@@ -6041,10 +6955,12 @@ export declare class CDM_Document extends Standard_Transient {
   Update(ErrorString: TCollection_ExtendedString): boolean;
   /**
    * the following method should be used instead:
+   *
+   * Update(me:mutable; ErrorString: out ExtendedString from {@link TCollection | `TCollection`}) returns Boolean from {@link Standard | `Standard`}
    */
   Update(): void;
   /**
-   * The Storage Format is the key which is used to determine in the application resources the storage driver plugin, the file extension and other data used to store the document.
+   * The {@link Storage | `Storage`} Format is the key which is used to determine in the application resources the storage driver plugin, the file extension and other data used to store the document.
    */
   StorageFormat(): TCollection_ExtendedString;
   /**
@@ -6193,12 +7109,12 @@ export declare class CDM_Document extends Standard_Transient {
   LoadResources(): void;
   FindFileExtension(): boolean;
   /**
-   * gets the Desktop.Domain.Application.FileFormat.FileExtension resource.
+   * gets the Desktop.Domain.Application.`FileFormat`.FileExtension resource.
    */
   FileExtension(): TCollection_ExtendedString;
   FindDescription(): boolean;
   /**
-   * gets the FileFormat.Description resource.
+   * gets the `FileFormat`.Description resource.
    */
   Description(): TCollection_ExtendedString;
   /**
@@ -6235,7 +7151,25 @@ export declare class CDM_Document extends Standard_Transient {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_XY {
   constructor();
@@ -6278,9 +7212,21 @@ export declare class NCollection_Array1_gp_XY {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_XY): NCollection_Array1_gp_XY;
+  /**
+   * @returns first element
+   */
   First(): gp_XY;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): gp_XY;
+  /**
+   * @returns last element
+   */
   Last(): gp_XY;
+  /**
+   * @returns last element
+   */
   ChangeLast(): gp_XY;
   /**
    * Constant value access.
@@ -6323,7 +7269,25 @@ export declare class NCollection_Vector_BOPDS_InterfZZ {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepShape_ShapeDimensionRepresentationItem {
   constructor();
@@ -6366,9 +7330,21 @@ export declare class NCollection_Array1_StepShape_ShapeDimensionRepresentationIt
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepShape_ShapeDimensionRepresentationItem): NCollection_Array1_StepShape_ShapeDimensionRepresentationItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -6404,7 +7380,25 @@ export declare class NCollection_Array1_StepShape_ShapeDimensionRepresentationIt
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepShape_GeometricSetSelect {
   constructor();
@@ -6447,9 +7441,21 @@ export declare class NCollection_Array1_StepShape_GeometricSetSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepShape_GeometricSetSelect): NCollection_Array1_StepShape_GeometricSetSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -6485,7 +7491,7 @@ export declare class NCollection_Array1_StepShape_GeometricSetSelect {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingInterectionSelect {
   /**
@@ -6534,6 +7540,9 @@ export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingIn
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData {
   /**
    * Empty constructor.
@@ -6667,7 +7676,7 @@ export declare class NCollection_Sequence_RWGltf_GltfPrimArrayData {
 }
 
 /**
- * Template class for Handle-managed 2D arrays. Inherits from both NCollection_Array2<TheItemType> and Standard_Transient, providing reference-counted 2D array functionality.
+ * Template class for Handle-managed 2D arrays. Inherits from both `NCollection_Array2<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted 2D array functionality.
  */
 export declare class NCollection_HArray2_gp_XYZ {
   /**
@@ -6716,7 +7725,25 @@ export declare class NCollection_Vector_BRepGraph_CompoundId {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_DateAndTimeItem {
   constructor();
@@ -6759,9 +7786,21 @@ export declare class NCollection_Array1_StepAP214_DateAndTimeItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_DateAndTimeItem): NCollection_Array1_StepAP214_DateAndTimeItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -6811,7 +7850,7 @@ export declare class NCollection_Vector_BRepGraph_CoEdgeId {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_PresentationStyleSelect {
   /**
@@ -6868,7 +7907,7 @@ export declare class NCollection_Vector_BOPDS_InterfVF {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_BoxCharacteristicSelect {
   /**
@@ -6925,6 +7964,15 @@ export declare class ReplicadMeshExtractor {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
+ *
+ * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
+ *
+ * anItem = aMap(aKey); aMap(aKey) = anItem;
+ *
+ * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
+ */
 export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -7055,6 +8103,9 @@ export declare class NCollection_DataMap_TopoDS_Shape_RWMesh_NodeAttributes_TopT
     constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_BOPTools_ConnexityBlock extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -7132,7 +8183,7 @@ export declare class NCollection_List_BOPTools_ConnexityBlock extends NCollectio
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_PersonOrganizationItem {
   /**
@@ -7182,7 +8233,7 @@ export declare class NCollection_HArray1_StepAP203_PersonOrganizationItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_DocumentReferenceItem {
   /**
@@ -7231,6 +8282,9 @@ export declare class NCollection_HArray1_StepAP214_DocumentReferenceItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntTools_CommonPrt {
   /**
    * Empty constructor.
@@ -7364,7 +8418,7 @@ export declare class NCollection_Sequence_IntTools_CommonPrt {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_SpecifiedItem {
   /**
@@ -7414,7 +8468,25 @@ export declare class NCollection_HArray1_StepAP203_SpecifiedItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_Plate_PinpointConstraint {
   constructor();
@@ -7457,9 +8529,21 @@ export declare class NCollection_Array1_Plate_PinpointConstraint {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_Plate_PinpointConstraint): NCollection_Array1_Plate_PinpointConstraint;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -7501,6 +8585,9 @@ export declare class NCollection_Vector_BOPDS_InterfEF {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntPatch_Point {
   /**
    * Empty constructor.
@@ -7643,7 +8730,25 @@ export declare class GeomToolsWrapper {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingUnionSelect {
   constructor();
@@ -7686,9 +8791,21 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingUni
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_CameraModelD3MultiClippingUnionSelect): NCollection_Array1_StepVisual_CameraModelD3MultiClippingUnionSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -7723,6 +8840,9 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingUni
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntTools_PntOn2Faces {
   /**
    * Empty constructor.
@@ -7856,7 +8976,7 @@ export declare class NCollection_Sequence_IntTools_PntOn2Faces {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_gp_Pnt2d {
   /**
@@ -7906,7 +9026,25 @@ export declare class NCollection_HArray1_gp_Pnt2d {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_OrganizationItem {
   constructor();
@@ -7949,9 +9087,21 @@ export declare class NCollection_Array1_StepAP214_OrganizationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_OrganizationItem): NCollection_Array1_StepAP214_OrganizationItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -7987,7 +9137,7 @@ export declare class NCollection_Array1_StepAP214_OrganizationItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_ChFiDS_CircSection {
   /**
@@ -8037,7 +9187,7 @@ export declare class NCollection_HArray1_ChFiDS_CircSection {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_WorkItem {
   /**
@@ -8087,7 +9237,25 @@ export declare class NCollection_HArray1_StepAP203_WorkItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_TopoDS_Shape {
   constructor();
@@ -8130,9 +9298,21 @@ export declare class NCollection_Array1_TopoDS_Shape {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_TopoDS_Shape): NCollection_Array1_TopoDS_Shape;
+  /**
+   * @returns first element
+   */
   First(): TopoDS_Shape;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): TopoDS_Shape;
+  /**
+   * @returns last element
+   */
   Last(): TopoDS_Shape;
+  /**
+   * @returns last element
+   */
   ChangeLast(): TopoDS_Shape;
   /**
    * Constant value access.
@@ -8167,6 +9347,9 @@ export declare class NCollection_Array1_TopoDS_Shape {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_IntTools_CurveRangeSample extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -8243,6 +9426,9 @@ export declare class NCollection_List_IntTools_CurveRangeSample extends NCollect
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_TCollection_ExtendedString {
   /**
    * Empty constructor.
@@ -8376,7 +9562,7 @@ export declare class NCollection_Sequence_TCollection_ExtendedString {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepShape_ValueQualifier {
   /**
@@ -8426,7 +9612,7 @@ export declare class NCollection_HArray1_StepShape_ValueQualifier {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_TextOrCharacter {
   /**
@@ -8476,7 +9662,7 @@ export declare class NCollection_HArray1_StepVisual_TextOrCharacter {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_bool {
   /**
@@ -8526,7 +9712,7 @@ export declare class NCollection_HArray1_bool {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_StartRequestItem {
   /**
@@ -8576,7 +9762,7 @@ export declare class NCollection_HArray1_StepAP203_StartRequestItem {
 }
 
 /**
- * Template class for Handle-managed 2D arrays. Inherits from both NCollection_Array2<TheItemType> and Standard_Transient, providing reference-counted 2D array functionality.
+ * Template class for Handle-managed 2D arrays. Inherits from both `NCollection_Array2<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted 2D array functionality.
  */
 export declare class NCollection_HArray2_gp_Pnt2d {
   /**
@@ -8618,7 +9804,7 @@ export declare class NCollection_HArray2_gp_Pnt2d {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_AnnotationPlaneElement {
   /**
@@ -8667,6 +9853,9 @@ export declare class NCollection_HArray1_StepVisual_AnnotationPlaneElement {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_double extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -8744,7 +9933,7 @@ export declare class NCollection_List_double extends NCollection_BaseList {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_LayeredItem {
   /**
@@ -8793,6 +9982,9 @@ export declare class NCollection_HArray1_StepVisual_LayeredItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_BOPAlgo_CheckResult extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -8870,7 +10062,7 @@ export declare class NCollection_List_BOPAlgo_CheckResult extends NCollection_Ba
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_ClassifiedItem {
   /**
@@ -8920,7 +10112,7 @@ export declare class NCollection_HArray1_StepAP203_ClassifiedItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_uint8_t {
   /**
@@ -8970,7 +10162,25 @@ export declare class NCollection_HArray1_uint8_t {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_AnnotationPlaneElement {
   constructor();
@@ -9013,9 +10223,21 @@ export declare class NCollection_Array1_StepVisual_AnnotationPlaneElement {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_AnnotationPlaneElement): NCollection_Array1_StepVisual_AnnotationPlaneElement;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -9058,7 +10280,7 @@ export declare class NCollection_Vector_BRepGraph_SolidId {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_Poly_Triangle {
   /**
@@ -9108,7 +10330,25 @@ export declare class NCollection_HArray1_Poly_Triangle {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem {
   constructor();
@@ -9151,9 +10391,21 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem): NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -9188,6 +10440,9 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndTimeItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_gp_Pnt {
   /**
    * Empty constructor.
@@ -9321,7 +10576,25 @@ export declare class NCollection_Sequence_gp_Pnt {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_ExternalIdentificationItem {
   constructor();
@@ -9364,9 +10637,21 @@ export declare class NCollection_Array1_StepAP214_ExternalIdentificationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_ExternalIdentificationItem): NCollection_Array1_StepAP214_ExternalIdentificationItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -9401,9 +10686,20 @@ export declare class NCollection_Array1_StepAP214_ExternalIdentificationItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The class Array2 represents bi-dimensional arrays of fixed size known at run time. The ranges of indices are user defined.
+ *
+ * Class allocates one 1D array storing full data (all Rows and Columns) and extra 1D array storing pointers to each Row.
+ *
+ * Warning: Programs clients of such class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * for (i = A.LowerRow(); i <= A.UpperRow(); i++) for (j = A.LowerCol(); j <= A.UpperCol(); j++)
+ */
 export declare class NCollection_Array2_TopoDS_Shape {
   /**
    * Empty constructor; should be used with caution.
+   * @see `Resize()`
+   * @see `Move()`
    */
   constructor();
   /**
@@ -9536,7 +10832,7 @@ export declare class NCollection_Vector_BRepGraphInc_CompSolidDef {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_gp_Pnt {
   /**
@@ -9585,6 +10881,9 @@ export declare class NCollection_HArray1_gp_Pnt {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_IntTools_SurfaceRangeSample extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -9661,6 +10960,9 @@ export declare class NCollection_List_IntTools_SurfaceRangeSample extends NColle
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif {
   /**
    * Empty constructor.
@@ -9794,7 +11096,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DimensionModif {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_TessellatedEdgeOrVertex {
   /**
@@ -9844,7 +11146,7 @@ export declare class NCollection_HArray1_StepVisual_TessellatedEdgeOrVertex {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_SecurityClassificationItem {
   /**
@@ -9894,7 +11196,7 @@ export declare class NCollection_HArray1_StepAP214_SecurityClassificationItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepShape_GeometricSetSelect {
   /**
@@ -9944,7 +11246,7 @@ export declare class NCollection_HArray1_StepShape_GeometricSetSelect {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_gp_Vec {
   /**
@@ -9994,7 +11296,25 @@ export declare class NCollection_HArray1_gp_Vec {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_DocumentReferenceItem {
   constructor();
@@ -10037,9 +11357,21 @@ export declare class NCollection_Array1_StepAP214_DocumentReferenceItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_DocumentReferenceItem): NCollection_Array1_StepAP214_DocumentReferenceItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -10075,7 +11407,25 @@ export declare class NCollection_Array1_StepAP214_DocumentReferenceItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_ApprovedItem {
   constructor();
@@ -10118,9 +11468,21 @@ export declare class NCollection_Array1_StepAP203_ApprovedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_ApprovedItem): NCollection_Array1_StepAP203_ApprovedItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -10155,6 +11517,9 @@ export declare class NCollection_Array1_StepAP203_ApprovedItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_BOPDS_Pave extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -10232,7 +11597,25 @@ export declare class NCollection_List_BOPDS_Pave extends NCollection_BaseList {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_Lin {
   constructor();
@@ -10275,9 +11658,21 @@ export declare class NCollection_Array1_gp_Lin {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_Lin): NCollection_Array1_gp_Lin;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -10320,7 +11715,25 @@ export declare class NCollection_Vector_BRepGraph_ShellId {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_CertifiedItem {
   constructor();
@@ -10363,9 +11776,21 @@ export declare class NCollection_Array1_StepAP203_CertifiedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_CertifiedItem): NCollection_Array1_StepAP203_CertifiedItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -10400,6 +11825,9 @@ export declare class NCollection_Array1_StepAP203_CertifiedItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntSurf_PathPoint {
   /**
    * Empty constructor.
@@ -10533,7 +11961,7 @@ export declare class NCollection_Sequence_IntSurf_PathPoint {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_AutoDesignGeneralOrgItem {
   /**
@@ -10583,7 +12011,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignGeneralOrgItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_FillStyleSelect {
   /**
@@ -10633,7 +12061,7 @@ export declare class NCollection_HArray1_StepVisual_FillStyleSelect {
 }
 
 /**
- * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and Standard_Transient, providing reference-counted sequence functionality.
+ * Template class for Handle-managed sequences. Inherits from both `NCollection_Sequence<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
 export declare class NCollection_HSequence_TCollection_ExtendedString {
   /**
@@ -10675,6 +12103,9 @@ export declare class NCollection_HSequence_TCollection_ExtendedString {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_BRepOffset_Interval extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -10752,7 +12183,25 @@ export declare class NCollection_List_BRepOffset_Interval extends NCollection_Ba
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_double {
   constructor();
@@ -10795,9 +12244,21 @@ export declare class NCollection_Array1_double {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_double): NCollection_Array1_double;
+  /**
+   * @returns first element
+   */
   First(): number;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): number;
+  /**
+   * @returns last element
+   */
   Last(): number;
+  /**
+   * @returns last element
+   */
   ChangeLast(): number;
   /**
    * Constant value access.
@@ -10840,7 +12301,25 @@ export declare class NCollection_Vector_BRepMesh_Circle {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepDimTol_DatumSystemOrReference {
   constructor();
@@ -10883,9 +12362,21 @@ export declare class NCollection_Array1_StepDimTol_DatumSystemOrReference {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepDimTol_DatumSystemOrReference): NCollection_Array1_StepDimTol_DatumSystemOrReference;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -10921,7 +12412,25 @@ export declare class NCollection_Array1_StepDimTol_DatumSystemOrReference {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_TCollection_ExtendedString {
   constructor();
@@ -10964,9 +12473,21 @@ export declare class NCollection_Array1_TCollection_ExtendedString {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_TCollection_ExtendedString): NCollection_Array1_TCollection_ExtendedString;
+  /**
+   * @returns first element
+   */
   First(): TCollection_ExtendedString;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): TCollection_ExtendedString;
+  /**
+   * @returns last element
+   */
   Last(): TCollection_ExtendedString;
+  /**
+   * @returns last element
+   */
   ChangeLast(): TCollection_ExtendedString;
   /**
    * Constant value access.
@@ -11001,6 +12522,9 @@ export declare class NCollection_Array1_TCollection_ExtendedString {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_Plate_PinpointConstraint {
   /**
    * Empty constructor.
@@ -11141,7 +12665,7 @@ export declare class NCollection_Vector_int {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepDimTol_DatumSystemOrReference {
   /**
@@ -11191,7 +12715,7 @@ export declare class NCollection_HArray1_StepDimTol_DatumSystemOrReference {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_gp_Vec2d {
   /**
@@ -11240,6 +12764,9 @@ export declare class NCollection_HArray1_gp_Vec2d {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntTools_Root {
   /**
    * Empty constructor.
@@ -11372,6 +12899,9 @@ export declare class NCollection_Sequence_IntTools_Root {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_TCollection_AsciiString extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -11449,7 +12979,25 @@ export declare class NCollection_List_TCollection_AsciiString extends NCollectio
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_Dir {
   constructor();
@@ -11492,9 +13040,21 @@ export declare class NCollection_Array1_gp_Dir {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_Dir): NCollection_Array1_gp_Dir;
+  /**
+   * @returns first element
+   */
   First(): gp_Dir;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): gp_Dir;
+  /**
+   * @returns last element
+   */
   Last(): gp_Dir;
+  /**
+   * @returns last element
+   */
   ChangeLast(): gp_Dir;
   /**
    * Constant value access.
@@ -11530,7 +13090,25 @@ export declare class NCollection_Array1_gp_Dir {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_GroupItem {
   constructor();
@@ -11573,9 +13151,21 @@ export declare class NCollection_Array1_StepAP214_GroupItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_GroupItem): NCollection_Array1_StepAP214_GroupItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -11611,7 +13201,25 @@ export declare class NCollection_Array1_StepAP214_GroupItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_AutoDesignReferencingItem {
   constructor();
@@ -11654,9 +13262,21 @@ export declare class NCollection_Array1_StepAP214_AutoDesignReferencingItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignReferencingItem): NCollection_Array1_StepAP214_AutoDesignReferencingItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -11692,7 +13312,7 @@ export declare class NCollection_Array1_StepAP214_AutoDesignReferencingItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_DateItem {
   /**
@@ -11749,7 +13369,7 @@ export declare class NCollection_Vector_BRepGraph_OccurrenceId {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_TCollection_AsciiString {
   /**
@@ -11805,6 +13425,9 @@ export declare class NCollection_Vector_BOPDS_InterfFZ {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_IntSurf_PntOn2S extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -11882,7 +13505,7 @@ export declare class NCollection_List_IntSurf_PntOn2S extends NCollection_BaseLi
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepShape_Shell {
   /**
@@ -11932,7 +13555,7 @@ export declare class NCollection_HArray1_StepShape_Shell {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepGeom_PcurveOrSurface {
   /**
@@ -11981,6 +13604,9 @@ export declare class NCollection_HArray1_StepGeom_PcurveOrSurface {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_BRepExtrema_SolutionElem {
   /**
    * Empty constructor.
@@ -12128,7 +13754,7 @@ export declare class NCollection_Vector_BRepGraphInc_WireDef {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_Bnd_Box {
   /**
@@ -12178,7 +13804,25 @@ export declare class NCollection_HArray1_Bnd_Box {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_XYZ {
   constructor();
@@ -12221,9 +13865,21 @@ export declare class NCollection_Array1_gp_XYZ {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_XYZ): NCollection_Array1_gp_XYZ;
+  /**
+   * @returns first element
+   */
   First(): gp_XYZ;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): gp_XYZ;
+  /**
+   * @returns last element
+   */
   Last(): gp_XYZ;
+  /**
+   * @returns last element
+   */
   ChangeLast(): gp_XYZ;
   /**
    * Constant value access.
@@ -12259,7 +13915,25 @@ export declare class NCollection_Array1_gp_XYZ {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_bool {
   constructor();
@@ -12302,9 +13976,21 @@ export declare class NCollection_Array1_bool {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_bool): NCollection_Array1_bool;
+  /**
+   * @returns first element
+   */
   First(): boolean;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): boolean;
+  /**
+   * @returns last element
+   */
   Last(): boolean;
+  /**
+   * @returns last element
+   */
   ChangeLast(): boolean;
   /**
    * Constant value access.
@@ -12340,7 +14026,25 @@ export declare class NCollection_Array1_bool {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_AppParCurves_ConstraintCouple {
   constructor();
@@ -12383,9 +14087,21 @@ export declare class NCollection_Array1_AppParCurves_ConstraintCouple {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_AppParCurves_ConstraintCouple): NCollection_Array1_AppParCurves_ConstraintCouple;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -12421,7 +14137,7 @@ export declare class NCollection_Array1_AppParCurves_ConstraintCouple {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_PresentedItemSelect {
   /**
@@ -12471,7 +14187,25 @@ export declare class NCollection_HArray1_StepAP214_PresentedItemSelect {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_int {
   constructor();
@@ -12514,9 +14248,21 @@ export declare class NCollection_Array1_int {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_int): NCollection_Array1_int;
+  /**
+   * @returns first element
+   */
   First(): number;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): number;
+  /**
+   * @returns last element
+   */
   Last(): number;
+  /**
+   * @returns last element
+   */
   ChangeLast(): number;
   /**
    * Constant value access.
@@ -12552,7 +14298,25 @@ export declare class NCollection_Array1_int {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect {
   constructor();
@@ -12595,9 +14359,21 @@ export declare class NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect 
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect): NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -12632,6 +14408,9 @@ export declare class NCollection_Array1_StepAP214_AutoDesignPresentedItemSelect 
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_ShapeFix_WireSegment {
   /**
    * Empty constructor.
@@ -12764,6 +14543,15 @@ export declare class NCollection_Sequence_ShapeFix_WireSegment {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
+ *
+ * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
+ *
+ * anItem = aMap(aKey); aMap(aKey) = anItem;
+ *
+ * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
+ */
 export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -12901,6 +14689,13 @@ export declare class NCollection_Vector_BRepGraphInc_WireRef {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: An indexed map is used to store keys and to bind an index to them. Each new key stored in the map gets an index. Index are incremented as keys are stored in the map. A key can be found by the index and an index by the key. No key but the last can be removed so the indices are in the range 1.. Extent. An Item is stored with each key.
+ *
+ * This class is similar to IndexedMap from NCollection with the Item as a new feature. Note the important difference on the operator (). In the IndexedMap this operator returns the Key. In the IndexedDataMap this operator returns the Item.
+ *
+ * See the class Map from NCollection for a discussion about the number of buckets.
+ */
 export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
@@ -13071,7 +14866,7 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_double_TopTools_Sha
   }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_TDF_Label {
   /**
@@ -13120,6 +14915,9 @@ export declare class NCollection_HArray1_TDF_Label {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: An indexed map is used to store keys and to bind an index to them. Each new key stored in the map gets an index. Index are incremented as keys are stored in the map. A key can be found by the index and an index by the key. No key but the last can be removed so the indices are in the range 1..Extent. See the class Map from NCollection for a discussion about the number of buckets.
+ */
 export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
@@ -13247,7 +15045,7 @@ export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher
   }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_InvisibleItem {
   /**
@@ -13297,7 +15095,7 @@ export declare class NCollection_HArray1_StepVisual_InvisibleItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_PersonAndOrganizationItem {
   /**
@@ -13347,7 +15145,7 @@ export declare class NCollection_HArray1_StepAP214_PersonAndOrganizationItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepFEA_DegreeOfFreedom {
   /**
@@ -13404,7 +15202,7 @@ export declare class NCollection_Vector_BOPDS_Point {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_float {
   /**
@@ -13453,6 +15251,15 @@ export declare class NCollection_HArray1_float {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
+ *
+ * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
+ *
+ * anItem = aMap(aKey); aMap(aKey) = anItem;
+ *
+ * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
+ */
 export declare class NCollection_DataMap_TopoDS_Shape_BRepOffset_Offset_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -13591,7 +15398,25 @@ export declare class NCollection_Vector_BRepGraphInc_OccurrenceDef {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepGeom_SurfaceBoundary {
   constructor();
@@ -13634,9 +15459,21 @@ export declare class NCollection_Array1_StepGeom_SurfaceBoundary {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepGeom_SurfaceBoundary): NCollection_Array1_StepGeom_SurfaceBoundary;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -13679,7 +15516,25 @@ export declare class NCollection_Vector_BRepGraph_CompSolidId {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_AutoDesignDatedItem {
   constructor();
@@ -13722,9 +15577,21 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDatedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignDatedItem): NCollection_Array1_StepAP214_AutoDesignDatedItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -13759,6 +15626,9 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDatedItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_TCollection_AsciiString {
   /**
    * Empty constructor.
@@ -13891,6 +15761,9 @@ export declare class NCollection_Sequence_TCollection_AsciiString {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -13967,6 +15840,15 @@ export declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList 
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
+ *
+ * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
+ *
+ * anItem = aMap(aKey); aMap(aKey) = anItem;
+ *
+ * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
+ */
 export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -14097,6 +15979,9 @@ export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_Shap
     constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_AppParCurves_MultiCurve {
   /**
    * Empty constructor.
@@ -14230,7 +16115,25 @@ export declare class NCollection_Sequence_AppParCurves_MultiCurve {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_DateTimeItem {
   constructor();
@@ -14273,9 +16176,21 @@ export declare class NCollection_Array1_StepAP203_DateTimeItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_DateTimeItem): NCollection_Array1_StepAP203_DateTimeItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -14311,7 +16226,25 @@ export declare class NCollection_Array1_StepAP203_DateTimeItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepGeom_TrimmingSelect {
   constructor();
@@ -14354,9 +16287,21 @@ export declare class NCollection_Array1_StepGeom_TrimmingSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepGeom_TrimmingSelect): NCollection_Array1_StepGeom_TrimmingSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -14391,9 +16336,20 @@ export declare class NCollection_Array1_StepGeom_TrimmingSelect {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The class Array2 represents bi-dimensional arrays of fixed size known at run time. The ranges of indices are user defined.
+ *
+ * Class allocates one 1D array storing full data (all Rows and Columns) and extra 1D array storing pointers to each Row.
+ *
+ * Warning: Programs clients of such class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * for (i = A.LowerRow(); i <= A.UpperRow(); i++) for (j = A.LowerCol(); j <= A.UpperCol(); j++)
+ */
 export declare class NCollection_Array2_gp_Vec {
   /**
    * Empty constructor; should be used with caution.
+   * @see `Resize()`
+   * @see `Move()`
    */
   constructor();
   /**
@@ -14518,6 +16474,13 @@ export declare class NCollection_Array2_gp_Vec {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: An indexed map is used to store keys and to bind an index to them. Each new key stored in the map gets an index. Index are incremented as keys are stored in the map. A key can be found by the index and an index by the key. No key but the last can be removed so the indices are in the range 1.. Extent. An Item is stored with each key.
+ *
+ * This class is similar to IndexedMap from NCollection with the Item as a new feature. Note the important difference on the operator (). In the IndexedMap this operator returns the Key. In the IndexedDataMap this operator returns the Item.
+ *
+ * See the class Map from NCollection for a discussion about the number of buckets.
+ */
 export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
@@ -14687,6 +16650,9 @@ export declare class NCollection_IndexedDataMap_TopoDS_Shape_XCAFPrs_Style_TopTo
     constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_int extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -14763,9 +16729,20 @@ export declare class NCollection_List_int extends NCollection_BaseList {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The class Array2 represents bi-dimensional arrays of fixed size known at run time. The ranges of indices are user defined.
+ *
+ * Class allocates one 1D array storing full data (all Rows and Columns) and extra 1D array storing pointers to each Row.
+ *
+ * Warning: Programs clients of such class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * for (i = A.LowerRow(); i <= A.UpperRow(); i++) for (j = A.LowerCol(); j <= A.UpperCol(); j++)
+ */
 export declare class NCollection_Array2_gp_Pnt {
   /**
    * Empty constructor; should be used with caution.
+   * @see `Resize()`
+   * @see `Move()`
    */
   constructor();
   /**
@@ -14891,7 +16868,25 @@ export declare class NCollection_Array2_gp_Pnt {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect {
   constructor();
@@ -14934,9 +16929,21 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingInt
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect): NCollection_Array1_StepVisual_CameraModelD3MultiClippingInterectionSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -14972,7 +16979,7 @@ export declare class NCollection_Array1_StepVisual_CameraModelD3MultiClippingInt
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_AutoDesignDatedItem {
   /**
@@ -15022,7 +17029,25 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDatedItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_SecurityClassificationItem {
   constructor();
@@ -15065,9 +17090,21 @@ export declare class NCollection_Array1_StepAP214_SecurityClassificationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_SecurityClassificationItem): NCollection_Array1_StepAP214_SecurityClassificationItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -15103,7 +17140,25 @@ export declare class NCollection_Array1_StepAP214_SecurityClassificationItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_AppParCurves_MultiPoint {
   constructor();
@@ -15146,9 +17201,21 @@ export declare class NCollection_Array1_AppParCurves_MultiPoint {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: unknown): unknown;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -15191,7 +17258,7 @@ export declare class NCollection_Vector_BRepGraphInc_CoEdgeRef {
 }
 
 /**
- * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and Standard_Transient, providing reference-counted sequence functionality.
+ * Template class for Handle-managed sequences. Inherits from both `NCollection_Sequence<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
 export declare class NCollection_HSequence_double {
   /**
@@ -15234,7 +17301,7 @@ export declare class NCollection_HSequence_double {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_ExternalIdentificationItem {
   /**
@@ -15296,7 +17363,25 @@ export declare class ReplicadEdgeMeshData {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_HLRAlgo_PolyHidingData {
   constructor();
@@ -15339,9 +17424,21 @@ export declare class NCollection_Array1_HLRAlgo_PolyHidingData {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_HLRAlgo_PolyHidingData): NCollection_Array1_HLRAlgo_PolyHidingData;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -15377,7 +17474,7 @@ export declare class NCollection_Array1_HLRAlgo_PolyHidingData {
 }
 
 /**
- * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and Standard_Transient, providing reference-counted sequence functionality.
+ * Template class for Handle-managed sequences. Inherits from both `NCollection_Sequence<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
 export declare class NCollection_HSequence_int {
   /**
@@ -15426,6 +17523,9 @@ export declare class NCollection_Vector_BRepGraphInc_CoEdgeDef {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_XCAFDimTolObjects_GeomToleranceModif {
   /**
    * Empty constructor.
@@ -15565,6 +17665,15 @@ export declare class NCollection_Vector_TopoDS_Face {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
+ *
+ * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
+ *
+ * anItem = aMap(aKey); aMap(aKey) = anItem;
+ *
+ * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
+ */
 export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -15695,6 +17804,9 @@ export declare class NCollection_DataMap_TopoDS_Shape_Bnd_Box_TopTools_ShapeMapH
     constructor(theHasher: unknown, theNbBuckets: number, theAllocator: unknown);
   }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_gp_Pnt2d {
   /**
    * Empty constructor.
@@ -15828,7 +17940,25 @@ export declare class NCollection_Sequence_gp_Pnt2d {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_DraughtingCalloutElement {
   constructor();
@@ -15871,9 +18001,21 @@ export declare class NCollection_Array1_StepVisual_DraughtingCalloutElement {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_DraughtingCalloutElement): NCollection_Array1_StepVisual_DraughtingCalloutElement;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -15909,7 +18051,25 @@ export declare class NCollection_Array1_StepVisual_DraughtingCalloutElement {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_PresentedItemSelect {
   constructor();
@@ -15952,9 +18112,21 @@ export declare class NCollection_Array1_StepAP214_PresentedItemSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_PresentedItemSelect): NCollection_Array1_StepAP214_PresentedItemSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -15990,7 +18162,7 @@ export declare class NCollection_Array1_StepAP214_PresentedItemSelect {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_AppParCurves_ConstraintCouple {
   /**
@@ -16039,6 +18211,9 @@ export declare class NCollection_HArray1_AppParCurves_ConstraintCouple {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_Extrema_POnCurv2d {
   /**
    * Empty constructor.
@@ -16172,7 +18347,25 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_ApprovalItem {
   constructor();
@@ -16215,9 +18408,21 @@ export declare class NCollection_Array1_StepAP214_ApprovalItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_ApprovalItem): NCollection_Array1_StepAP214_ApprovalItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -16253,7 +18458,7 @@ export declare class NCollection_Array1_StepAP214_ApprovalItem {
 }
 
 /**
- * Template class for Handle-managed 2D arrays. Inherits from both NCollection_Array2<TheItemType> and Standard_Transient, providing reference-counted 2D array functionality.
+ * Template class for Handle-managed 2D arrays. Inherits from both `NCollection_Array2<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted 2D array functionality.
  */
 export declare class NCollection_HArray2_double {
   /**
@@ -16295,7 +18500,25 @@ export declare class NCollection_HArray2_double {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_ContractedItem {
   constructor();
@@ -16338,9 +18561,21 @@ export declare class NCollection_Array1_StepAP203_ContractedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_ContractedItem): NCollection_Array1_StepAP203_ContractedItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -16375,6 +18610,9 @@ export declare class NCollection_Array1_StepAP203_ContractedItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_BRepCheck_Status extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -16451,9 +18689,20 @@ export declare class NCollection_List_BRepCheck_Status extends NCollection_BaseL
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The class Array2 represents bi-dimensional arrays of fixed size known at run time. The ranges of indices are user defined.
+ *
+ * Class allocates one 1D array storing full data (all Rows and Columns) and extra 1D array storing pointers to each Row.
+ *
+ * Warning: Programs clients of such class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * for (i = A.LowerRow(); i <= A.UpperRow(); i++) for (j = A.LowerCol(); j <= A.UpperCol(); j++)
+ */
 export declare class NCollection_Array2_int {
   /**
    * Empty constructor; should be used with caution.
+   * @see `Resize()`
+   * @see `Move()`
    */
   constructor();
   /**
@@ -16586,7 +18835,25 @@ export declare class NCollection_Vector_BRepGraph_WireId {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_ChFiDS_CircSection {
   constructor();
@@ -16629,9 +18896,21 @@ export declare class NCollection_Array1_ChFiDS_CircSection {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_ChFiDS_CircSection): NCollection_Array1_ChFiDS_CircSection;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -16666,6 +18945,9 @@ export declare class NCollection_Array1_ChFiDS_CircSection {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntTools_Curve {
   /**
    * Empty constructor.
@@ -16799,7 +19081,25 @@ export declare class NCollection_Sequence_IntTools_Curve {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepShape_Shell {
   constructor();
@@ -16842,9 +19142,21 @@ export declare class NCollection_Array1_StepShape_Shell {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepShape_Shell): NCollection_Array1_StepShape_Shell;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -16880,7 +19192,25 @@ export declare class NCollection_Array1_StepShape_Shell {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_WorkItem {
   constructor();
@@ -16923,9 +19253,21 @@ export declare class NCollection_Array1_StepAP203_WorkItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_WorkItem): NCollection_Array1_StepAP203_WorkItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -16961,7 +19303,7 @@ export declare class NCollection_Array1_StepAP203_WorkItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_TCollection_ExtendedString {
   /**
@@ -17011,7 +19353,25 @@ export declare class NCollection_HArray1_TCollection_ExtendedString {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_HLRAlgo_TriangleData {
   constructor();
@@ -17054,9 +19414,21 @@ export declare class NCollection_Array1_HLRAlgo_TriangleData {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_HLRAlgo_TriangleData): NCollection_Array1_HLRAlgo_TriangleData;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -17092,7 +19464,7 @@ export declare class NCollection_Array1_HLRAlgo_TriangleData {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_DirectionCountSelect {
   /**
@@ -17142,7 +19514,7 @@ export declare class NCollection_HArray1_StepVisual_DirectionCountSelect {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_ApprovalItem {
   /**
@@ -17192,7 +19564,7 @@ export declare class NCollection_HArray1_StepAP214_ApprovalItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_GroupItem {
   /**
@@ -17242,7 +19614,7 @@ export declare class NCollection_HArray1_StepAP214_GroupItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_DateAndTimeItem {
   /**
@@ -17292,7 +19664,25 @@ export declare class NCollection_HArray1_StepAP214_DateAndTimeItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_ClassifiedItem {
   constructor();
@@ -17335,9 +19725,21 @@ export declare class NCollection_Array1_StepAP203_ClassifiedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_ClassifiedItem): NCollection_Array1_StepAP203_ClassifiedItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -17373,7 +19775,7 @@ export declare class NCollection_Array1_StepAP203_ClassifiedItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepGeom_TrimmingSelect {
   /**
@@ -17423,7 +19825,25 @@ export declare class NCollection_HArray1_StepGeom_TrimmingSelect {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem {
   constructor();
@@ -17466,9 +19886,21 @@ export declare class NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem): NCollection_Array1_StepAP214_AutoDesignGeneralOrgItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -17518,7 +19950,25 @@ export declare class NCollection_Vector_BRepMesh_Vertex {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_FillStyleSelect {
   constructor();
@@ -17561,9 +20011,21 @@ export declare class NCollection_Array1_StepVisual_FillStyleSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_FillStyleSelect): NCollection_Array1_StepVisual_FillStyleSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -17598,6 +20060,9 @@ export declare class NCollection_Array1_StepVisual_FillStyleSelect {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_PCDM_Reference {
   /**
    * Empty constructor.
@@ -17731,7 +20196,25 @@ export declare class NCollection_Sequence_PCDM_Reference {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_PersonAndOrganizationItem {
   constructor();
@@ -17774,9 +20257,21 @@ export declare class NCollection_Array1_StepAP214_PersonAndOrganizationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_PersonAndOrganizationItem): NCollection_Array1_StepAP214_PersonAndOrganizationItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -17812,7 +20307,7 @@ export declare class NCollection_Array1_StepAP214_PersonAndOrganizationItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_AutoDesignGroupedItem {
   /**
@@ -17862,7 +20357,7 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignGroupedItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepDimTol_ToleranceZoneTarget {
   /**
@@ -17926,7 +20421,25 @@ export declare class NCollection_Vector_BOPDS_Curve {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepDimTol_GeometricToleranceModifier {
   constructor();
@@ -17969,9 +20482,21 @@ export declare class NCollection_Array1_StepDimTol_GeometricToleranceModifier {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepDimTol_GeometricToleranceModifier): NCollection_Array1_StepDimTol_GeometricToleranceModifier;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -18007,7 +20532,7 @@ export declare class NCollection_Array1_StepDimTol_GeometricToleranceModifier {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_HLRAlgo_PolyHidingData {
   /**
@@ -18057,7 +20582,25 @@ export declare class NCollection_HArray1_HLRAlgo_PolyHidingData {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_Quantity_Color {
   constructor();
@@ -18100,9 +20643,21 @@ export declare class NCollection_Array1_Quantity_Color {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_Quantity_Color): NCollection_Array1_Quantity_Color;
+  /**
+   * @returns first element
+   */
   First(): Quantity_Color;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): Quantity_Color;
+  /**
+   * @returns last element
+   */
   Last(): Quantity_Color;
+  /**
+   * @returns last element
+   */
   ChangeLast(): Quantity_Color;
   /**
    * Constant value access.
@@ -18137,6 +20692,9 @@ export declare class NCollection_Array1_Quantity_Color {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_gp_Pnt2d extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -18214,7 +20772,25 @@ export declare class NCollection_List_gp_Pnt2d extends NCollection_BaseList {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_TessellatedEdgeOrVertex {
   constructor();
@@ -18257,9 +20833,21 @@ export declare class NCollection_Array1_StepVisual_TessellatedEdgeOrVertex {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_TessellatedEdgeOrVertex): NCollection_Array1_StepVisual_TessellatedEdgeOrVertex;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -18301,6 +20889,19 @@ export declare class NCollection_Vector_BRepGraph_UID {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Single hashed Map. This Map is used to store and retrieve keys in linear time.
+ *
+ * The `Iterator` class can be used to explore the content of the map. It is not wise to iterate and modify a map in parallel.
+ *
+ * To compute the hashcode of the key the function ::HashCode must be defined in the global namespace
+ *
+ * To compare two keys the function `IsEqual` must be defined in the global namespace.
+ *
+ * The performance of a Map is conditioned by its number of buckets that should be kept greater to the number of keys. This map has an automatic management of the number of buckets. It is resized when the number of Keys becomes greater than the number of buckets.
+ *
+ * If you have a fair idea of the number of objects you can save on automatic resizing by giving a number of buckets at creation or using the ReSize method. This should be consider only for crucial optimisation issues.
+ */
 export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
@@ -18378,7 +20979,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
    */
   Union(theLeft: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher, theRight: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher): void;
   /**
-   * Apply to this Map the boolean operation union (aka addition, fuse, merge, boolean OR) with another (given) Map. The result contains the values that were previously contained in this map or contained in the given (operand) map. This algorithm is similar to method Union(). Returns True if contents of this map is changed.
+   * Apply to this Map the boolean operation union (aka addition, fuse, merge, boolean OR) with another (given) Map. The result contains the values that were previously contained in this map or contained in the given (operand) map. This algorithm is similar to method `Union()`. Returns True if contents of this map is changed.
    * @deprecated
    */
   Unite(theOther: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher): boolean;
@@ -18393,7 +20994,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
    */
   Intersection(theLeft: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher, theRight: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher): void;
   /**
-   * Apply to this Map the intersection operation (aka multiplication, common, boolean AND) with another (given) Map. The result contains only the values that are contained in both this and the given maps. This algorithm is similar to method Intersection(). Returns True if contents of this map is changed.
+   * Apply to this Map the intersection operation (aka multiplication, common, boolean AND) with another (given) Map. The result contains only the values that are contained in both this and the given maps. This algorithm is similar to method `Intersection()`. Returns True if contents of this map is changed.
    * @deprecated
    */
   Intersect(theOther: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher): boolean;
@@ -18403,7 +21004,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
    */
   Subtraction(theLeft: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher, theRight: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher): void;
   /**
-   * Apply to this Map the subtraction (aka set-theoretic difference, relative complement, exclude, cut, boolean NOT) operation with another (given) Map. The result contains only the values that were previously contained in this map and not contained in this map. This algorithm is similar to method Subtract() with two operands. Returns True if contents of this map is changed.
+   * Apply to this Map the subtraction (aka set-theoretic difference, relative complement, exclude, cut, boolean NOT) operation with another (given) Map. The result contains only the values that were previously contained in this map and not contained in this map. This algorithm is similar to method `Subtract()` with two operands. Returns True if contents of this map is changed.
    * @deprecated
    */
   Subtract(theOther: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher): boolean;
@@ -18413,7 +21014,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
    */
   Difference(theLeft: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher, theRight: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher): void;
   /**
-   * Apply to this Map the symmetric difference (aka exclusive disjunction, boolean XOR) operation with another (given) Map. The result contains the values that are contained only in this or the operand map, but not in both. This algorithm is similar to method Difference(). Returns True if contents of this map is changed.
+   * Apply to this Map the symmetric difference (aka exclusive disjunction, boolean XOR) operation with another (given) Map. The result contains the values that are contained only in this or the operand map, but not in both. This algorithm is similar to method `Difference()`. Returns True if contents of this map is changed.
    * @deprecated
    */
   Differ(theOther: NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher): boolean;
@@ -18455,7 +21056,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
   }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_RenderingPropertiesSelect {
   /**
@@ -18504,6 +21105,9 @@ export declare class NCollection_HArray1_StepVisual_RenderingPropertiesSelect {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_HLRAlgo_BiPoint extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -18580,9 +21184,20 @@ export declare class NCollection_List_HLRAlgo_BiPoint extends NCollection_BaseLi
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The class Array2 represents bi-dimensional arrays of fixed size known at run time. The ranges of indices are user defined.
+ *
+ * Class allocates one 1D array storing full data (all Rows and Columns) and extra 1D array storing pointers to each Row.
+ *
+ * Warning: Programs clients of such class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * for (i = A.LowerRow(); i <= A.UpperRow(); i++) for (j = A.LowerCol(); j <= A.UpperCol(); j++)
+ */
 export declare class NCollection_Array2_gp_XYZ {
   /**
    * Empty constructor; should be used with caution.
+   * @see `Resize()`
+   * @see `Move()`
    */
   constructor();
   /**
@@ -18708,7 +21323,7 @@ export declare class NCollection_Array2_gp_XYZ {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_HLRAlgo_TriangleData {
   /**
@@ -18757,6 +21372,9 @@ export declare class NCollection_HArray1_HLRAlgo_TriangleData {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_HLRAlgo_Interference extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -18834,7 +21452,7 @@ export declare class NCollection_List_HLRAlgo_Interference extends NCollection_B
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepShape_ShapeDimensionRepresentationItem {
   /**
@@ -18884,7 +21502,7 @@ export declare class NCollection_HArray1_StepShape_ShapeDimensionRepresentationI
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_StyleContextSelect {
   /**
@@ -18934,7 +21552,7 @@ export declare class NCollection_HArray1_StepVisual_StyleContextSelect {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_AutoDesignReferencingItem {
   /**
@@ -18983,6 +21601,9 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignReferencingItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_int {
   /**
    * Empty constructor.
@@ -19115,6 +21736,9 @@ export declare class NCollection_Sequence_int {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntSurf_InteriorPoint {
   /**
    * Empty constructor.
@@ -19264,7 +21888,25 @@ export declare class ReplicadMeshData {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_Trsf {
   constructor();
@@ -19307,9 +21949,21 @@ export declare class NCollection_Array1_gp_Trsf {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_Trsf): NCollection_Array1_gp_Trsf;
+  /**
+   * @returns first element
+   */
   First(): gp_Trsf;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): gp_Trsf;
+  /**
+   * @returns last element
+   */
   Last(): gp_Trsf;
+  /**
+   * @returns last element
+   */
   ChangeLast(): gp_Trsf;
   /**
    * Constant value access.
@@ -19345,7 +21999,25 @@ export declare class NCollection_Array1_gp_Trsf {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_DirectionCountSelect {
   constructor();
@@ -19388,9 +22060,21 @@ export declare class NCollection_Array1_StepVisual_DirectionCountSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_DirectionCountSelect): NCollection_Array1_StepVisual_DirectionCountSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -19425,6 +22109,9 @@ export declare class NCollection_Array1_StepVisual_DirectionCountSelect {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_gp_XY {
   /**
    * Empty constructor.
@@ -19557,6 +22244,9 @@ export declare class NCollection_Sequence_gp_XY {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_gp_Pnt extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -19648,7 +22338,7 @@ export declare class NCollection_Vector_BRepGraphInc_ShellDef {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_OrganizationItem {
   /**
@@ -19698,7 +22388,7 @@ export declare class NCollection_HArray1_StepAP214_OrganizationItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_DateTimeItem {
   /**
@@ -19748,7 +22438,25 @@ export declare class NCollection_HArray1_StepAP203_DateTimeItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_float {
   constructor();
@@ -19791,9 +22499,21 @@ export declare class NCollection_Array1_float {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_float): NCollection_Array1_float;
+  /**
+   * @returns first element
+   */
   First(): number;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): number;
+  /**
+   * @returns last element
+   */
   Last(): number;
+  /**
+   * @returns last element
+   */
   ChangeLast(): number;
   /**
    * Constant value access.
@@ -19828,6 +22548,9 @@ export declare class NCollection_Array1_float {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_double {
   /**
    * Empty constructor.
@@ -19961,7 +22684,25 @@ export declare class NCollection_Sequence_double {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_Bnd_Box {
   constructor();
@@ -20004,9 +22745,21 @@ export declare class NCollection_Array1_Bnd_Box {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_Bnd_Box): NCollection_Array1_Bnd_Box;
+  /**
+   * @returns first element
+   */
   First(): Bnd_Box;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): Bnd_Box;
+  /**
+   * @returns last element
+   */
   Last(): Bnd_Box;
+  /**
+   * @returns last element
+   */
   ChangeLast(): Bnd_Box;
   /**
    * Constant value access.
@@ -20049,7 +22802,25 @@ export declare class NCollection_Vector_TopoDS_Shape {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_TextOrCharacter {
   constructor();
@@ -20092,9 +22863,21 @@ export declare class NCollection_Array1_StepVisual_TextOrCharacter {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_TextOrCharacter): NCollection_Array1_StepVisual_TextOrCharacter;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -20129,6 +22912,9 @@ export declare class NCollection_Array1_StepVisual_TextOrCharacter {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_uint8_t extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -20206,7 +22992,25 @@ export declare class NCollection_List_uint8_t extends NCollection_BaseList {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_StartRequestItem {
   constructor();
@@ -20249,9 +23053,21 @@ export declare class NCollection_Array1_StepAP203_StartRequestItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_StartRequestItem): NCollection_Array1_StepAP203_StartRequestItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -20294,7 +23110,25 @@ export declare class NCollection_Vector_gp_XYZ {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepElement_MeasureOrUnspecifiedValue {
   constructor();
@@ -20337,9 +23171,21 @@ export declare class NCollection_Array1_StepElement_MeasureOrUnspecifiedValue {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepElement_MeasureOrUnspecifiedValue): NCollection_Array1_StepElement_MeasureOrUnspecifiedValue;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -20374,6 +23220,9 @@ export declare class NCollection_Array1_StepElement_MeasureOrUnspecifiedValue {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntRes2d_IntersectionPoint {
   /**
    * Empty constructor.
@@ -20506,6 +23355,9 @@ export declare class NCollection_Sequence_IntRes2d_IntersectionPoint {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_TCollection_ExtendedString extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -20583,7 +23435,25 @@ export declare class NCollection_List_TCollection_ExtendedString extends NCollec
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_SurfaceStyleElementSelect {
   constructor();
@@ -20626,9 +23496,21 @@ export declare class NCollection_Array1_StepVisual_SurfaceStyleElementSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_SurfaceStyleElementSelect): NCollection_Array1_StepVisual_SurfaceStyleElementSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -20664,7 +23546,7 @@ export declare class NCollection_Array1_StepVisual_SurfaceStyleElementSelect {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_double {
   /**
@@ -20720,6 +23602,9 @@ export declare class NCollection_Vector_BOPDS_InterfEZ {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_Extrema_POnSurf {
   /**
    * Empty constructor.
@@ -20853,7 +23738,25 @@ export declare class NCollection_Sequence_Extrema_POnSurf {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_TCollection_AsciiString {
   constructor();
@@ -20896,9 +23799,21 @@ export declare class NCollection_Array1_TCollection_AsciiString {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_TCollection_AsciiString): NCollection_Array1_TCollection_AsciiString;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -20934,7 +23849,25 @@ export declare class NCollection_Array1_TCollection_AsciiString {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_PersonOrganizationItem {
   constructor();
@@ -20977,9 +23910,21 @@ export declare class NCollection_Array1_StepAP203_PersonOrganizationItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_PersonOrganizationItem): NCollection_Array1_StepAP203_PersonOrganizationItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -21015,7 +23960,25 @@ export declare class NCollection_Array1_StepAP203_PersonOrganizationItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_AutoDesignGroupedItem {
   constructor();
@@ -21058,9 +24021,21 @@ export declare class NCollection_Array1_StepAP214_AutoDesignGroupedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignGroupedItem): NCollection_Array1_StepAP214_AutoDesignGroupedItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -21096,7 +24071,7 @@ export declare class NCollection_Array1_StepAP214_AutoDesignGroupedItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_ChangeRequestItem {
   /**
@@ -21146,7 +24121,7 @@ export declare class NCollection_HArray1_StepAP203_ChangeRequestItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_DraughtingCalloutElement {
   /**
@@ -21196,7 +24171,7 @@ export declare class NCollection_HArray1_StepVisual_DraughtingCalloutElement {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndPersonItem {
   /**
@@ -21246,7 +24221,25 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndPersonItem {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_StyleContextSelect {
   constructor();
@@ -21289,9 +24282,21 @@ export declare class NCollection_Array1_StepVisual_StyleContextSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_StyleContextSelect): NCollection_Array1_StepVisual_StyleContextSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -21327,7 +24332,25 @@ export declare class NCollection_Array1_StepVisual_StyleContextSelect {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_Vec {
   constructor();
@@ -21370,9 +24393,21 @@ export declare class NCollection_Array1_gp_Vec {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_Vec): NCollection_Array1_gp_Vec;
+  /**
+   * @returns first element
+   */
   First(): gp_Vec;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): gp_Vec;
+  /**
+   * @returns last element
+   */
   Last(): gp_Vec;
+  /**
+   * @returns last element
+   */
   ChangeLast(): gp_Vec;
   /**
    * Constant value access.
@@ -21408,7 +24443,25 @@ export declare class NCollection_Array1_gp_Vec {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_BoxCharacteristicSelect {
   constructor();
@@ -21451,9 +24504,21 @@ export declare class NCollection_Array1_StepVisual_BoxCharacteristicSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_BoxCharacteristicSelect): NCollection_Array1_StepVisual_BoxCharacteristicSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -21489,7 +24554,25 @@ export declare class NCollection_Array1_StepVisual_BoxCharacteristicSelect {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepShape_ValueQualifier {
   constructor();
@@ -21532,9 +24615,21 @@ export declare class NCollection_Array1_StepShape_ValueQualifier {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepShape_ValueQualifier): NCollection_Array1_StepShape_ValueQualifier;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -21577,7 +24672,25 @@ export declare class NCollection_Vector_BOPDS_InterfVZ {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_Pnt {
   constructor();
@@ -21620,9 +24733,21 @@ export declare class NCollection_Array1_gp_Pnt {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_Pnt): NCollection_Array1_gp_Pnt;
+  /**
+   * @returns first element
+   */
   First(): gp_Pnt;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): gp_Pnt;
+  /**
+   * @returns last element
+   */
   Last(): gp_Pnt;
+  /**
+   * @returns last element
+   */
   ChangeLast(): gp_Pnt;
   /**
    * Constant value access.
@@ -21658,7 +24783,7 @@ export declare class NCollection_Array1_gp_Pnt {
 }
 
 /**
- * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and Standard_Transient, providing reference-counted sequence functionality.
+ * Template class for Handle-managed sequences. Inherits from both `NCollection_Sequence<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
 export declare class NCollection_HSequence_TopoDS_Shape {
   /**
@@ -21701,7 +24826,25 @@ export declare class NCollection_HSequence_TopoDS_Shape {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_PresentationStyleSelect {
   constructor();
@@ -21744,9 +24887,21 @@ export declare class NCollection_Array1_StepVisual_PresentationStyleSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_PresentationStyleSelect): NCollection_Array1_StepVisual_PresentationStyleSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -21788,6 +24943,15 @@ export declare class NCollection_Vector_BOPDS_FaceInfo {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
+ *
+ * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
+ *
+ * anItem = aMap(aKey); aMap(aKey) = anItem;
+ *
+ * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
+ */
 export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -21919,7 +25083,25 @@ export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMa
   }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_ChangeRequestItem {
   constructor();
@@ -21962,9 +25144,21 @@ export declare class NCollection_Array1_StepAP203_ChangeRequestItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_ChangeRequestItem): NCollection_Array1_StepAP203_ChangeRequestItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -22007,7 +25201,25 @@ export declare class NCollection_Vector_BRepGraphInc_ShellRef {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepFEA_DegreeOfFreedom {
   constructor();
@@ -22050,9 +25262,21 @@ export declare class NCollection_Array1_StepFEA_DegreeOfFreedom {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepFEA_DegreeOfFreedom): NCollection_Array1_StepFEA_DegreeOfFreedom;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -22087,6 +25311,9 @@ export declare class NCollection_Array1_StepFEA_DegreeOfFreedom {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_TDF_Label {
   /**
    * Empty constructor.
@@ -22220,7 +25447,7 @@ export declare class NCollection_Sequence_TDF_Label {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_CameraModelD3MultiClippingUnionSelect {
   /**
@@ -22284,6 +25511,9 @@ export declare class OCJS_ShapeHasher {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_Poly_Triangle extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -22368,7 +25598,25 @@ export declare class NCollection_Vector_BOPDS_InterfVE {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepDimTol_ToleranceZoneTarget {
   constructor();
@@ -22411,9 +25659,21 @@ export declare class NCollection_Array1_StepDimTol_ToleranceZoneTarget {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: unknown): unknown;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -22448,6 +25708,9 @@ export declare class NCollection_Array1_StepDimTol_ToleranceZoneTarget {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_bool {
   /**
    * Empty constructor.
@@ -22588,7 +25851,25 @@ export declare class NCollection_Vector_BRepGraphInc_CompoundDef {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_uint8_t {
   constructor();
@@ -22631,9 +25912,21 @@ export declare class NCollection_Array1_uint8_t {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_uint8_t): NCollection_Array1_uint8_t;
+  /**
+   * @returns first element
+   */
   First(): number;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): number;
+  /**
+   * @returns last element
+   */
   Last(): number;
+  /**
+   * @returns last element
+   */
   ChangeLast(): number;
   /**
    * Constant value access.
@@ -22699,7 +25992,7 @@ export declare class BRepToolsWrapper {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepDimTol_GeometricToleranceModifier {
   /**
@@ -22748,6 +26041,9 @@ export declare class NCollection_HArray1_StepDimTol_GeometricToleranceModifier {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_TDF_Label extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -22824,6 +26120,9 @@ export declare class NCollection_List_TDF_Label extends NCollection_BaseList {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_Standard_GUID extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -22900,6 +26199,9 @@ export declare class NCollection_List_Standard_GUID extends NCollection_BaseList
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_Extrema_POnCurv {
   /**
    * Empty constructor.
@@ -23033,7 +26335,25 @@ export declare class NCollection_Sequence_Extrema_POnCurv {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_Poly_Triangle {
   constructor();
@@ -23076,9 +26396,21 @@ export declare class NCollection_Array1_Poly_Triangle {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_Poly_Triangle): NCollection_Array1_Poly_Triangle;
+  /**
+   * @returns first element
+   */
   First(): Poly_Triangle;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): Poly_Triangle;
+  /**
+   * @returns last element
+   */
   Last(): Poly_Triangle;
+  /**
+   * @returns last element
+   */
   ChangeLast(): Poly_Triangle;
   /**
    * Constant value access.
@@ -23114,7 +26446,7 @@ export declare class NCollection_Array1_Poly_Triangle {
 }
 
 /**
- * Template class for Handle-managed 2D arrays. Inherits from both NCollection_Array2<TheItemType> and Standard_Transient, providing reference-counted 2D array functionality.
+ * Template class for Handle-managed 2D arrays. Inherits from both `NCollection_Array2<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted 2D array functionality.
  */
 export declare class NCollection_HArray2_TopoDS_Shape {
   /**
@@ -23176,6 +26508,9 @@ export declare class NCollection_Vector_gp_Pnt2d {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_gp_Trsf {
   /**
    * Empty constructor.
@@ -23309,7 +26644,7 @@ export declare class NCollection_Sequence_gp_Trsf {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_ApprovedItem {
   /**
@@ -23358,6 +26693,9 @@ export declare class NCollection_HArray1_StepAP203_ApprovedItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_TopoDS_Shape {
   /**
    * Empty constructor.
@@ -23491,7 +26829,7 @@ export declare class NCollection_Sequence_TopoDS_Shape {
 }
 
 /**
- * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and Standard_Transient, providing reference-counted sequence functionality.
+ * Template class for Handle-managed sequences. Inherits from both `NCollection_Sequence<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
 export declare class NCollection_HSequence_TCollection_AsciiString {
   /**
@@ -23533,6 +26871,9 @@ export declare class NCollection_HSequence_TCollection_AsciiString {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_Bnd_Range extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -23610,7 +26951,7 @@ export declare class NCollection_List_Bnd_Range extends NCollection_BaseList {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_gp_XYZ {
   /**
@@ -23660,7 +27001,25 @@ export declare class NCollection_HArray1_gp_XYZ {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_Pnt2d {
   constructor();
@@ -23703,9 +27062,21 @@ export declare class NCollection_Array1_gp_Pnt2d {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_Pnt2d): NCollection_Array1_gp_Pnt2d;
+  /**
+   * @returns first element
+   */
   First(): gp_Pnt2d;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): gp_Pnt2d;
+  /**
+   * @returns last element
+   */
   Last(): gp_Pnt2d;
+  /**
+   * @returns last element
+   */
   ChangeLast(): gp_Pnt2d;
   /**
    * Constant value access.
@@ -23740,6 +27111,9 @@ export declare class NCollection_Array1_gp_Pnt2d {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
+ */
 export declare class NCollection_List_BOPTools_CoupleOfShape extends NCollection_BaseList {
   /**
    * Empty constructor.
@@ -23817,7 +27191,7 @@ export declare class NCollection_List_BOPTools_CoupleOfShape extends NCollection
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_ContractedItem {
   /**
@@ -23867,7 +27241,7 @@ export declare class NCollection_HArray1_StepAP203_ContractedItem {
 }
 
 /**
- * Template class for Handle-managed 2D arrays. Inherits from both NCollection_Array2<TheItemType> and Standard_Transient, providing reference-counted 2D array functionality.
+ * Template class for Handle-managed 2D arrays. Inherits from both `NCollection_Array2<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted 2D array functionality.
  */
 export declare class NCollection_HArray2_int {
   /**
@@ -23909,7 +27283,7 @@ export declare class NCollection_HArray2_int {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP203_CertifiedItem {
   /**
@@ -23958,6 +27332,15 @@ export declare class NCollection_HArray1_StepAP203_CertifiedItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
+ *
+ * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
+ *
+ * anItem = aMap(aKey); aMap(aKey) = anItem;
+ *
+ * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
+ */
 export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -24089,7 +27472,25 @@ export declare class NCollection_DataMap_TopoDS_Shape_gp_XYZ_TopTools_ShapeMapHa
   }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepDimTol_DatumReferenceModifier {
   constructor();
@@ -24132,9 +27533,21 @@ export declare class NCollection_Array1_StepDimTol_DatumReferenceModifier {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepDimTol_DatumReferenceModifier): NCollection_Array1_StepDimTol_DatumReferenceModifier;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -24185,7 +27598,25 @@ export declare class ReplicadEdgeMeshExtractor {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_RenderingPropertiesSelect {
   constructor();
@@ -24228,9 +27659,21 @@ export declare class NCollection_Array1_StepVisual_RenderingPropertiesSelect {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_RenderingPropertiesSelect): NCollection_Array1_StepVisual_RenderingPropertiesSelect;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -24273,7 +27716,25 @@ export declare class NCollection_Vector_BOPDS_InterfEE {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_DateItem {
   constructor();
@@ -24316,9 +27777,21 @@ export declare class NCollection_Array1_StepAP214_DateItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_DateItem): NCollection_Array1_StepAP214_DateItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -24354,7 +27827,7 @@ export declare class NCollection_Array1_StepAP214_DateItem {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepDimTol_DatumReferenceModifier {
   /**
@@ -24404,7 +27877,25 @@ export declare class NCollection_HArray1_StepDimTol_DatumReferenceModifier {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_LayeredItem {
   constructor();
@@ -24447,9 +27938,21 @@ export declare class NCollection_Array1_StepVisual_LayeredItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_LayeredItem): NCollection_Array1_StepVisual_LayeredItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -24484,9 +27987,20 @@ export declare class NCollection_Array1_StepVisual_LayeredItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The class Array2 represents bi-dimensional arrays of fixed size known at run time. The ranges of indices are user defined.
+ *
+ * Class allocates one 1D array storing full data (all Rows and Columns) and extra 1D array storing pointers to each Row.
+ *
+ * Warning: Programs clients of such class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * for (i = A.LowerRow(); i <= A.UpperRow(); i++) for (j = A.LowerCol(); j <= A.UpperCol(); j++)
+ */
 export declare class NCollection_Array2_double {
   /**
    * Empty constructor; should be used with caution.
+   * @see `Resize()`
+   * @see `Move()`
    */
   constructor();
   /**
@@ -24612,7 +28126,7 @@ export declare class NCollection_Array2_double {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_int {
   /**
@@ -24662,7 +28176,25 @@ export declare class NCollection_HArray1_int {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepGeom_PcurveOrSurface {
   constructor();
@@ -24705,9 +28237,21 @@ export declare class NCollection_Array1_StepGeom_PcurveOrSurface {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepGeom_PcurveOrSurface): NCollection_Array1_StepGeom_PcurveOrSurface;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -24743,7 +28287,25 @@ export declare class NCollection_Array1_StepGeom_PcurveOrSurface {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP203_SpecifiedItem {
   constructor();
@@ -24786,9 +28348,21 @@ export declare class NCollection_Array1_StepAP203_SpecifiedItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP203_SpecifiedItem): NCollection_Array1_StepAP203_SpecifiedItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -24830,6 +28404,9 @@ export declare class NCollection_Vector_BOPDS_InterfVV {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif {
   /**
    * Empty constructor.
@@ -24963,7 +28540,7 @@ export declare class NCollection_Sequence_XCAFDimTolObjects_DatumSingleModif {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepVisual_SurfaceStyleElementSelect {
   /**
@@ -25026,9 +28603,20 @@ export declare class NCollection_Vector_BRepGraph_RefId {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The class Array2 represents bi-dimensional arrays of fixed size known at run time. The ranges of indices are user defined.
+ *
+ * Class allocates one 1D array storing full data (all Rows and Columns) and extra 1D array storing pointers to each Row.
+ *
+ * Warning: Programs clients of such class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * for (i = A.LowerRow(); i <= A.UpperRow(); i++) for (j = A.LowerCol(); j <= A.UpperCol(); j++)
+ */
 export declare class NCollection_Array2_gp_Pnt2d {
   /**
    * Empty constructor; should be used with caution.
+   * @see `Resize()`
+   * @see `Move()`
    */
   constructor();
   /**
@@ -25154,7 +28742,7 @@ export declare class NCollection_Array2_gp_Pnt2d {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_AutoDesignPresentedItemSelect {
   /**
@@ -25203,6 +28791,15 @@ export declare class NCollection_HArray1_StepAP214_AutoDesignPresentedItemSelect
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
+ *
+ * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
+ *
+ * anItem = aMap(aKey); aMap(aKey) = anItem;
+ *
+ * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
+ */
 export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -25334,7 +28931,25 @@ export declare class NCollection_DataMap_TopoDS_Shape_double_TopTools_ShapeMapHa
   }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem {
   constructor();
@@ -25377,9 +28992,21 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem): NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -25414,6 +29041,9 @@ export declare class NCollection_Array1_StepAP214_AutoDesignDateAndPersonItem {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_IntTools_Range {
   /**
    * Empty constructor.
@@ -25547,7 +29177,25 @@ export declare class NCollection_Sequence_IntTools_Range {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_gp_Vec2d {
   constructor();
@@ -25590,9 +29238,21 @@ export declare class NCollection_Array1_gp_Vec2d {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_gp_Vec2d): NCollection_Array1_gp_Vec2d;
+  /**
+   * @returns first element
+   */
   First(): gp_Vec2d;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): gp_Vec2d;
+  /**
+   * @returns last element
+   */
   Last(): gp_Vec2d;
+  /**
+   * @returns last element
+   */
   ChangeLast(): gp_Vec2d;
   /**
    * Constant value access.
@@ -25628,7 +29288,7 @@ export declare class NCollection_Array1_gp_Vec2d {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_gp_XY {
   /**
@@ -25678,7 +29338,7 @@ export declare class NCollection_HArray1_gp_XY {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_Quantity_Color {
   /**
@@ -25728,7 +29388,7 @@ export declare class NCollection_HArray1_Quantity_Color {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepGeom_SurfaceBoundary {
   /**
@@ -25778,7 +29438,25 @@ export declare class NCollection_HArray1_StepGeom_SurfaceBoundary {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_TDF_Label {
   constructor();
@@ -25821,9 +29499,21 @@ export declare class NCollection_Array1_TDF_Label {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_TDF_Label): NCollection_Array1_TDF_Label;
+  /**
+   * @returns first element
+   */
   First(): TDF_Label;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): TDF_Label;
+  /**
+   * @returns last element
+   */
   Last(): TDF_Label;
+  /**
+   * @returns last element
+   */
   ChangeLast(): TDF_Label;
   /**
    * Constant value access.
@@ -25859,7 +29549,7 @@ export declare class NCollection_Array1_TDF_Label {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_TopoDS_Shape {
   /**
@@ -25909,7 +29599,7 @@ export declare class NCollection_HArray1_TopoDS_Shape {
 }
 
 /**
- * Template class for Handle-managed 2D arrays. Inherits from both NCollection_Array2<TheItemType> and Standard_Transient, providing reference-counted 2D array functionality.
+ * Template class for Handle-managed 2D arrays. Inherits from both `NCollection_Array2<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted 2D array functionality.
  */
 export declare class NCollection_HArray2_gp_Pnt {
   /**
@@ -25950,6 +29640,9 @@ export declare class NCollection_HArray2_gp_Pnt {
   [Symbol.dispose](): void;
 }
 
+/**
+ * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
+ */
 export declare class NCollection_Sequence_HLRBRep_ShapeBounds {
   /**
    * Empty constructor.
@@ -26083,7 +29776,7 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepElement_MeasureOrUnspecifiedValue {
   /**
@@ -26133,7 +29826,7 @@ export declare class NCollection_HArray1_StepElement_MeasureOrUnspecifiedValue {
 }
 
 /**
- * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and Standard_Transient, providing reference-counted array functionality.
+ * Template class for Handle-managed 1D arrays. Inherits from both `NCollection_Array1<TheItemType>` and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
 export declare class NCollection_HArray1_StepAP214_AutoDesignDateAndTimeItem {
   /**
@@ -26190,7 +29883,25 @@ export declare class NCollection_Vector_BOPDS_InterfFF {
 }
 
 /**
- * The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ * The class `NCollection_Array1` represents unidimensional arrays of fixed size known at run time. The range of the index is user defined. An array1 can be constructed with a "C array". This functionality is useful to call methods expecting an Array1. It allows to carry the bounds inside the arrays.
+ *
+ * Examples:
+ *
+ * ```
+ * Itemtab[100];//anexamplewithaCarray NCollection_Array1<Item>ttab(tab[0],1,100); NCollection_Array1<Item>tttab(ttab(10),10,20);//asliceofttab
+ * ```
+ *
+ * If you want to reindex an array from 1 to Length do:
+ *
+ * ```
+ * NCollection_Array1<Item>tab1(tab(tab.Lower()),1,tab.Length());
+ * ```
+ *
+ * Warning: Programs client of such a class must be independent of the range of the first element. Then, a C++ for loop must be written like this
+ *
+ * ```
+ * for(i=A.Lower();i<=A.Upper();i++)
+ * ```
  */
 export declare class NCollection_Array1_StepVisual_InvisibleItem {
   constructor();
@@ -26233,9 +29944,21 @@ export declare class NCollection_Array1_StepVisual_InvisibleItem {
    * Move assignment. This array will borrow all the data from theOther. The moved object will keep pointer to the memory buffer and range, but it will not free the buffer on destruction.
    */
   Move(theOther: NCollection_Array1_StepVisual_InvisibleItem): NCollection_Array1_StepVisual_InvisibleItem;
+  /**
+   * @returns first element
+   */
   First(): unknown;
+  /**
+   * @returns first element
+   */
   ChangeFirst(): unknown;
+  /**
+   * @returns last element
+   */
   Last(): unknown;
+  /**
+   * @returns last element
+   */
   ChangeLast(): unknown;
   /**
    * Constant value access.
@@ -26283,6 +30006,26 @@ export declare const BRepFill_TypeOfContact: {
 export type BOPAlgo_GlueEnum = typeof BOPAlgo_GlueEnum[keyof typeof BOPAlgo_GlueEnum];
 /**
  * The Enumeration describes an additional option for the algorithms in the Boolean Component such as General Fuse, Boolean operations, Section, Maker Volume, Splitter and Cells Builder algorithms.
+ *
+ * The Gluing options have been designed to speed up the computation of the interference among arguments of the operations on special cases, in which the arguments may be overlapping but do not have real intersections between their sub-shapes.
+ *
+ * This option cannot be used on the shapes having real intersections, like intersection vertex between edges, or intersection vertex between edge and a face or intersection line between faces.
+ *
+ * There are two possibilities of overlapping shapes:
+ *
+ * 1. The shapes can be partially coinciding - the faces do not have intersection curves, but overlapping. The faces of such arguments will be split during the operation;
+ * 2. The shapes can be fully coinciding - there should be no partial overlapping of the faces, thus no intersection of type EDGE/FACE at all. In such cases the faces will not be split during the operation.
+ *
+ * Even though there are no real intersections on such cases without Gluing options the algorithm will still intersect the sub-shapes of the arguments with interfering bounding boxes.
+ *
+ * The performance improvement in gluing mode is achieved by excluding the most time consuming computations according to the given Gluing parameter:
+ *
+ * 1. Computation of FACE/FACE intersections for partial coincidence;
+ * 2. And computation of VERTEX/FACE, EDGE/FACE and FACE/FACE intersections for full coincidence.
+ *
+ * By setting the Gluing option for the operation user should guarantee that the arguments are really coinciding. The algorithms do not check this itself. Setting inappropriate option for the operation is likely to lead to incorrect result.
+ *
+ * There are following items in the enumeration: **BOPAlgo_GlueOff** - default value for the algorithms, Gluing is switched off; **BOPAlgo_GlueShift** - Glue option for shapes with partial coincidence; **BOPAlgo_GlueFull** - Glue option for shapes with full coincidence.
  */
 export declare const BOPAlgo_GlueEnum: {
   readonly BOPAlgo_GlueOff: 'BOPAlgo_GlueOff';
@@ -26292,6 +30035,12 @@ export declare const BOPAlgo_GlueEnum: {
 
 /**
  * The class provides the following options for the algorithms in Boolean Component:
+ *
+ * - *Memory allocation tool* - tool for memory allocations;
+ * - *Error and warning reporting* - allows recording warnings and errors occurred during the operation. Error means that the algorithm has failed.
+ * - *Parallel processing mode* - provides the possibility to perform operation in parallel mode;
+ * - *Fuzzy tolerance* - additional tolerance for the operation to detect touching or coinciding cases;
+ * - *Using the Oriented Bounding Boxes* - Allows using the Oriented Bounding Boxes of the shapes for filtering the intersections.
  */
 export declare class BOPAlgo_Options {
   /**
@@ -26370,6 +30119,24 @@ export declare class BRepAlgoAPI_Cut extends BRepAlgoAPI_BooleanOperation {
 
 /**
  * The class contains API level of the General Fuse algorithm.
+ *
+ * Additionally to the options defined in the base class, the algorithm has the following options:
+ *
+ * - *Safe processing mode* - allows to avoid modification of the input shapes during the operation (by default it is off);
+ * - *Gluing options* - allows to speed up the calculation of the intersections on the special cases, in which some sub-shapes are coinciding.
+ * - *Disabling the check for inverted solids* - Disables/Enables the check of the input solids for inverted status (holes in the space). The default value is TRUE, i.e. the check is performed. Setting this flag to FALSE for inverted solids, most likely will lead to incorrect results.
+ * - *Disabling history collection* - allows disabling the collection of the history of shapes modifications during the operation.
+ *
+ * It returns the following Error statuses:
+ *
+ * - 0 - in case of success;
+ * - *BOPAlgo_AlertTooFewArguments* - in case there are no enough arguments to perform the operation;
+ * - *BOPAlgo_AlertIntersectionFailed* - in case the intersection of the arguments has failed;
+ * - *BOPAlgo_AlertBuilderFailed* - in case building of the result shape has failed.
+ *
+ * Warnings statuses from underlying DS Filler and Builder algorithms are collected in the report.
+ *
+ * The class provides possibility to simplify the resulting shape by unification of the tangential edges and faces. It is performed by the method *SimplifyResult*. See description of this method for more details.
  */
 export declare class BRepAlgoAPI_BuilderAlgo extends BRepAlgoAPI_Algo {
   constructor();
@@ -26436,6 +30203,11 @@ export declare class BRepAlgoAPI_Common extends BRepAlgoAPI_BooleanOperation {
 
 /**
  * The algorithm is to build a Section operation between arguments and tools. The result of Section operation consists of vertices and edges. The result of Section operation contains:
+ *
+ * 1. new vertices that are subjects of V/V, E/E, E/F, F/F interferences
+ * 2. vertices that are subjects of V/E, V/F interferences
+ * 3. new edges that are subjects of F/F interferences
+ * 4. edges that are Common Blocks
  */
 export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
@@ -26532,11 +30304,16 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
    */
   Build(theRange: Message_ProgressRange): void;
   /**
-   * get the face of the first part giving section edge <E>. Returns True on the 3 following conditions : 1/ <E> is an edge returned by the Shape() metwod. 2/ First part of section performed is a shape. 3/ <E> is built on a intersection curve (i.e <E> is not the result of common edges) When False, F remains untouched. Obsolete
+   * get the face of the first part giving section edge <E>. Returns True on the 3 following conditions : 1/ <E> is an edge returned by the `Shape()` metwod. 2/ First part of section performed is a shape. 3/ <E> is built on a intersection curve (i.e <E> is not the result of common edges) When False, F remains untouched. Obsolete
    */
   HasAncestorFaceOn1(E: TopoDS_Shape, F: TopoDS_Shape): boolean;
   /**
    * Identifies the ancestor faces of the intersection edge E resulting from the last computation performed in this framework, that is, the faces of the two original shapes on which the edge E lies:
+   *
+   * - HasAncestorFaceOn1 gives the ancestor face in the first shape, and
+   * - HasAncestorFaceOn2 gives the ancestor face in the second shape. These functions return true if an ancestor face F is found, or false if not. An ancestor face is identifiable for the edge E if the following conditions are satisfied:
+   * - the first part on which this algorithm performed its last computation is a shape, that is, it was not given as a surface or a plane at the time of construction of this algorithm or at a later time by the Init1 function,
+   * - E is one of the elementary edges built by the last computation of this section algorithm. To use these functions properly, you have to test the returned Boolean value before using the ancestor face: F is significant only if the returned Boolean value equals true. Obsolete
    */
   HasAncestorFaceOn2(E: TopoDS_Shape, F: TopoDS_Shape): boolean;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -26559,6 +30336,24 @@ export declare class BRepAlgoAPI_Algo extends BRepBuilderAPI_MakeShape {
 
 /**
  * The root API class for performing Boolean Operations on arbitrary shapes.
+ *
+ * The arguments of the operation are divided in two groups - *Objects* and *Tools*. Each group can contain any number of shapes, but each shape should be valid in terms of *{@link BRepCheck_Analyzer | `BRepCheck_Analyzer`}* and *{@link BOPAlgo_ArgumentAnalyzer | `BOPAlgo_ArgumentAnalyzer`}*. The algorithm builds the splits of the given arguments using the intersection results and combines the result of Boolean Operation of given type:
+ *
+ * - *FUSE* - union of two groups of objects;
+ * - *COMMON* - intersection of two groups of objects;
+ * - *CUT* - subtraction of one group from the other;
+ * - *SECTION* - section edges and vertices of all arguments;
+ *
+ * The rules for the arguments and type of the operation are the following:
+ *
+ * - For Boolean operation *FUSE* all arguments should have equal dimensions;
+ * - For Boolean operation *CUT* the minimal dimension of *Tools* should not be less than the maximal dimension of *Objects*;
+ * - For Boolean operation *COMMON* the arguments can have any dimension.
+ * - For Boolean operation *SECTION* the arguments can be of any type.
+ *
+ * Additionally to the errors of the base class the algorithm returns the following Errors:
+ *
+ * - *BOPAlgo_AlertBOPNotSet* - in case the type of Boolean Operation is not set.
  */
 export declare class BRepAlgoAPI_BooleanOperation extends BRepAlgoAPI_BuilderAlgo {
   constructor();
@@ -26613,11 +30408,11 @@ export declare class BRepAlgoAPI_Fuse extends BRepAlgoAPI_BooleanOperation {
  */
 export declare class Law_Composite extends Law_Function {
   /**
-   * Construct an empty Law.
+   * Construct an empty {@link Law | `Law`}.
    */
   constructor();
   /**
-   * Construct an empty, trimmed Law.
+   * Construct an empty, trimmed {@link Law | `Law`}.
    */
   constructor(First: number, Last: number, Tol: number);
   Continuity(): GeomAbs_Shape;
@@ -26626,7 +30421,7 @@ export declare class Law_Composite extends Law_Function {
    */
   NbIntervals(S: GeomAbs_Shape): number;
   /**
-   * Stores in <T> the parameters bounding the intervals of continuity . The array must provide enough room to accommodate for the parameters, i.e. T.Length() > NbIntervals().
+   * Stores in <T> the parameters bounding the intervals of continuity . The array must provide enough room to accommodate for the parameters, i.e. T.Length() > `NbIntervals()`.
    */
   Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
   /**
@@ -26642,7 +30437,7 @@ export declare class Law_Composite extends Law_Function {
    */
   D2(X: number): { F: number; D: number; D2: number };
   /**
-   * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the Law is not Cn.
+   * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the {@link Law | `Law`} is not Cn.
    */
   Trim(PFirst: number, PLast: number, Tol: number): Law_Function;
   /**
@@ -26674,10 +30469,16 @@ export declare class Law_Interpol extends Law_BSpFunc {
   constructor();
   /**
    * Defines this evolution law by interpolating the set of 2D points ParAndRad. The Y coordinate of a point of ParAndRad is the value of the function at the parameter point given by its X coordinate. If Periodic is true, this function is assumed to be periodic. Warning.
+   *
+   * - The X coordinates of points in the table ParAndRad must be given in ascendant order.
+   * - If Periodic is true, the first and last Y coordinates of points in the table ParAndRad are assumed to be equal. In addition, with the second syntax, Dd and Df are also assumed to be equal. If this is not the case, Set uses the first value(s) as last value(s).
    */
   Set(ParAndRad: NCollection_Array1_gp_Pnt2d, Periodic: boolean): void;
   /**
    * Defines this evolution law by interpolating the set of 2D points ParAndRad. The Y coordinate of a point of ParAndRad is the value of the function at the parameter point given by its X coordinate. If Periodic is true, this function is assumed to be periodic. In the second syntax, Dd and Df define the values of the first derivative of the function at its first and last points. Warning.
+   *
+   * - The X coordinates of points in the table ParAndRad must be given in ascendant order.
+   * - If Periodic is true, the first and last Y coordinates of points in the table ParAndRad are assumed to be equal. In addition, with the second syntax, Dd and Df are also assumed to be equal. If this is not the case, Set uses the first value(s) as last value(s).
    */
   Set(ParAndRad: NCollection_Array1_gp_Pnt2d, Dd: number, Df: number, Periodic: boolean): void;
   SetInRelative(ParAndRad: NCollection_Array1_gp_Pnt2d, Ud: number, Uf: number, Periodic: boolean): void;
@@ -26691,7 +30492,7 @@ export declare class Law_Interpol extends Law_BSpFunc {
 }
 
 /**
- * Law Function based on a BSpline curve 1d. Package methods and classes are implemented in package Law to construct the basis curve with several constraints.
+ * {@link Law | `Law`} Function based on a BSpline curve 1d. Package methods and classes are implemented in package {@link Law | `Law`} to construct the basis curve with several constraints.
  */
 export declare class Law_BSpFunc extends Law_Function {
   constructor();
@@ -26702,7 +30503,7 @@ export declare class Law_BSpFunc extends Law_Function {
    */
   NbIntervals(S: GeomAbs_Shape): number;
   /**
-   * Stores in <T> the parameters bounding the intervals of continuity . The array must provide enough room to accommodate for the parameters, i.e. T.Length() > NbIntervals().
+   * Stores in <T> the parameters bounding the intervals of continuity . The array must provide enough room to accommodate for the parameters, i.e. T.Length() > `NbIntervals()`.
    */
   Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
   /**
@@ -26718,7 +30519,7 @@ export declare class Law_BSpFunc extends Law_Function {
    */
   D2(X: number): { F: number; D: number; D2: number };
   /**
-   * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the Law is not Cn.
+   * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the {@link Law | `Law`} is not Cn.
    */
   Trim(PFirst: number, PLast: number, Tol: number): Law_Function;
   /**
@@ -26745,10 +30546,17 @@ export declare class Law_S extends Law_BSpFunc {
   constructor();
   /**
    * Defines this S evolution law by assigning both:
+   *
+   * - the bounds Pdeb and Pfin of the parameter, and
+   * - the values Valdeb and Valfin of the function at these two parametric bounds. The function is assumed to have the first derivatives equal to 0 at the two parameter points Pdeb and Pfin.
    */
   Set(Pdeb: number, Valdeb: number, Pfin: number, Valfin: number): void;
   /**
    * Defines this S evolution law by assigning.
+   *
+   * - the bounds Pdeb and Pfin of the parameter,
+   * - the values Valdeb and Valfin of the function at these two parametric bounds, and
+   * - the values Ddeb and Dfin of the first derivative of the function at these two parametric bounds.
    */
   Set(Pdeb: number, Valdeb: number, Ddeb: number, Pfin: number, Valfin: number, Dfin: number): void;
   static get_type_name(): string;
@@ -26769,6 +30577,9 @@ export declare class Law_Linear extends Law_Function {
   constructor();
   /**
    * Defines this linear evolution law by assigning both:
+   *
+   * - the bounds Pdeb and Pfin of the parameter, and
+   * - the values Valdeb and Valfin of the function at these two parametric bounds.
    */
   Set(Pdeb: number, Valdeb: number, Pfin: number, Valfin: number): void;
   /**
@@ -26780,7 +30591,7 @@ export declare class Law_Linear extends Law_Function {
    */
   NbIntervals(S: GeomAbs_Shape): number;
   /**
-   * Stores in <T> the parameters bounding the intervals of continuity . The array must provide enough room to accommodate for the parameters, i.e. T.Length() > NbIntervals().
+   * Stores in <T> the parameters bounding the intervals of continuity . The array must provide enough room to accommodate for the parameters, i.e. T.Length() > `NbIntervals()`.
    */
   Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
   /**
@@ -26796,7 +30607,7 @@ export declare class Law_Linear extends Law_Function {
    */
   D2(X: number): { F: number; D: number; D2: number };
   /**
-   * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the Law is not Cn.
+   * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the {@link Law | `Law`} is not Cn.
    */
   Trim(PFirst: number, PLast: number, Tol: number): Law_Function;
   /**
@@ -26821,7 +30632,7 @@ export declare class Law_Function extends Standard_Transient {
    */
   NbIntervals(S: GeomAbs_Shape): number;
   /**
-   * Stores in <T> the parameters bounding the intervals of continuity . The array must provide enough room to accommodate for the parameters, i.e. T.Length() > NbIntervals().
+   * Stores in <T> the parameters bounding the intervals of continuity . The array must provide enough room to accommodate for the parameters, i.e. T.Length() > `NbIntervals()`.
    */
   Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
   /**
@@ -26837,7 +30648,7 @@ export declare class Law_Function extends Standard_Transient {
    */
   D2(X: number): { F: number; D: number; D2: number };
   /**
-   * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the Law is not Cn.
+   * Returns a law equivalent of <me> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. It is usfule to determines the derivatives in these values <First> and <Last> if the {@link Law | `Law`} is not Cn.
    */
   Trim(PFirst: number, PLast: number, Tol: number): Law_Function;
   /**
@@ -26854,6 +30665,12 @@ export declare class Law_Function extends Standard_Transient {
 
 /**
  * This class implements methods for computing.
+ *
+ * - the intersections between two 2D curves,
+ * - the self-intersections of a 2D curve. Using the InterCurveCurve algorithm allows to get the following results:
+ * - intersection points in the case of cross intersections,
+ * - intersection segments in the case of tangential intersections,
+ * - nothing in the case of no intersections.
  */
 export declare class Geom2dAPI_InterCurveCurve {
   /**
@@ -26897,7 +30714,9 @@ export declare class Geom2dAPI_InterCurveCurve {
    */
   NbSegments(): number;
   /**
-   * Use this syntax only to get solutions of tangential intersection between two curves. Output values Curve1 and Curve2 are the intersection segments on the first curve and on the second curve accordingly. Parameter Index defines a number of computed solution. An intersection segment is a portion of an initial curve limited by two points. The distance from each point of this segment to the other curve is less or equal to the tolerance value assigned at the time of construction or in function Init (this value is defaulted to 1.0e-6). Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbSegments ], where NbSegments is the number of computed tangential intersections. Standard_NullObject if the algorithm is initialized for the computing of self-intersections on a curve.
+   * Use this syntax only to get solutions of tangential intersection between two curves. Output values Curve1 and Curve2 are the intersection segments on the first curve and on the second curve accordingly. Parameter Index defines a number of computed solution. An intersection segment is a portion of an initial curve limited by two points.
+   * The distance from each point of this segment to the other curve is less or equal to the tolerance value assigned at the time of construction or in function Init (this value is defaulted to 1.0e-6).
+   * Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbSegments ], where NbSegments is the number of computed tangential intersections. Standard_NullObject if the algorithm is initialized for the computing of self-intersections on a curve.
    */
   Segment(Index: number): { Curve1: Geom2d_Curve; Curve2: Geom2d_Curve };
   /**
@@ -26919,14 +30738,20 @@ export declare class Geom2dAPI_ProjectPointOnCurve {
   constructor();
   /**
    * Create the projection of a point.
+   *
+   * on a curve <Curve>
    */
   constructor(P: gp_Pnt2d, Curve: Geom2d_Curve);
   /**
    * Create the projection of a point.
+   *
+   * on a curve <Curve> limited by the two points of parameter Umin and Usup. Warning Use the function NbPoints to obtain the number of solutions. If projection fails, NbPoints returns 0.
    */
   constructor(P: gp_Pnt2d, Curve: Geom2d_Curve, Umin: number, Usup: number);
   /**
    * Initializes this algorithm with the given arguments, and computes the orthogonal projections of a point.
+   *
+   * on a curve <Curve>
    */
   Init(P: gp_Pnt2d, Curve: Geom2d_Curve): void;
   /**
@@ -26980,10 +30805,21 @@ export declare class Geom2dAPI_ProjectPointOnCurve {
 
 /**
  * Describes functions for computing all the extrema between two 2D curves. An ExtremaCurveCurve algorithm minimizes or maximizes the distance between a point on the first curve and a point on the second curve. Thus, it computes the start point and end point of perpendiculars common to the two curves (an intersection point is not an extremum except where the two curves are tangential at this point). Solutions consist of pairs of points, and an extremum is considered to be a segment joining the two points of a solution. An ExtremaCurveCurve object provides a framework for:
+ *
+ * - defining the construction of the extrema,
+ * - implementing the construction algorithm, and
+ * - consulting the results. Warning In some cases, the nearest points between two curves do not correspond to one of the computed extrema. Instead, they may be given by:
+ * - a limit point of one curve and one of the following:
+ * - its orthogonal projection on the other curve,
+ * - a limit point of the other curve; or
+ * - an intersection point between the two curves.
  */
 export declare class Geom2dAPI_ExtremaCurveCurve {
   /**
    * Computes the extrema between.
+   *
+   * - the portion of the curve C1 limited by the two points of parameter (U1min,U1max), and
+   * - the portion of the curve C2 limited by the two points of parameter (U2min,U2max). Warning Use the function NbExtrema to obtain the number of solutions. If this algorithm fails, NbExtrema returns 0.
    */
   constructor(C1: Geom2d_Curve, C2: Geom2d_Curve, U1min: number, U1max: number, U2min: number, U2max: number);
   /**
@@ -27022,6 +30858,10 @@ export declare class Geom2dAPI_ExtremaCurveCurve {
 
 /**
  * This class is used to approximate a BsplineCurve passing through an array of points, with a given Continuity. Describes functions for building a 2D BSpline curve which approximates a set of points. A PointsToBSpline object provides a framework for:
+ *
+ * - defining the data of the BSpline curve to be built,
+ * - implementing the approximation algorithm, and
+ * - consulting the results
  */
 export declare class Geom2dAPI_PointsToBSpline {
   /**
@@ -27118,6 +30958,16 @@ export declare class Geom2dAPI_PointsToBSpline {
   constructor(Points: NCollection_Array1_gp_Pnt2d, Weight1: number, Weight2: number, Weight3: number, DegMax: number, Continuity: GeomAbs_Shape);
   /**
    * Approximate a BSpline Curve passing through an array of Point. Of coordinates :
+   *
+   * X = X0 + DX * (i-YValues.Lower()) Y = YValues(i)
+   *
+   * With i in the range YValues.Lower(), YValues.Upper()
+   *
+   * The BSpline will be parametrized from t = X0 to X0 + DX * (YValues.Upper() - YValues.Lower())
+   *
+   * And will satisfy X(t) = t
+   *
+   * The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol2D
    */
   constructor(YValues: NCollection_Array1_double, X0: number, DX: number, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol2D: number);
   /**
@@ -27138,6 +30988,16 @@ export declare class Geom2dAPI_PointsToBSpline {
   Init(Points: NCollection_Array1_gp_Pnt2d, Parameters: NCollection_Array1_double, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol2D: number): void;
   /**
    * Approximate a BSpline Curve passing through an array of Point. Of coordinates :
+   *
+   * X = X0 + DX * (i-YValues.Lower()) Y = YValues(i)
+   *
+   * With i in the range YValues.Lower(), YValues.Upper()
+   *
+   * The BSpline will be parametrized from t = X0 to X0 + DX * (YValues.Upper() - YValues.Lower())
+   *
+   * And will satisfy X(t) = t
+   *
+   * The resulting BSpline will have the following properties: 1- his degree will be in the range [Degmin,Degmax] 2- his continuity will be at least <Continuity> 3- the distance from the point <Points> to the BSpline will be lower to Tol2D
    */
   Init(YValues: NCollection_Array1_double, X0: number, DX: number, DegMin: number, DegMax: number, Continuity: GeomAbs_Shape, Tol2D: number): void;
   /**
@@ -27156,6 +31016,9 @@ export declare class Geom2dAPI_PointsToBSpline {
 
 /**
  * This class is used to approximate a BsplineCurve passing through an array of points, with a given Continuity. Describes functions for building a 3D BSpline curve which approximates a set of points. A PointsToBSpline object provides a framework for:
+ *
+ * - defining the data of the BSpline curve to be built,
+ * - implementing the approximation algorithm, and consulting the results.
  */
 export declare class GeomAPI_PointsToBSpline {
   /**
@@ -27278,14 +31141,22 @@ export declare class GeomAPI_ProjectPointOnSurf {
   constructor(P: gp_Pnt, Surface: Geom_Surface);
   /**
    * Create the projection of a point.
+   *
+   * on a surface <Surface>
    */
   constructor(P: gp_Pnt, Surface: Geom_Surface, Algo: Extrema_ExtAlgo);
   /**
    * Create the projection of a point.
+   *
+   * on a surface <Surface>
    */
   constructor(P: gp_Pnt, Surface: Geom_Surface, Tolerance: number);
   /**
    * Create the projection of a point.
+   *
+   * on a surface <Surface> Create the projection of a point
+   *
+   * on a surface <Surface>. The solution are computed in the domain [Umin,Usup] [Vmin,Vsup] of the surface.
    */
   constructor(P: gp_Pnt, Surface: Geom_Surface, Tolerance: number, Algo?: Extrema_ExtAlgo);
   /**
@@ -27294,15 +31165,21 @@ export declare class GeomAPI_ProjectPointOnSurf {
   constructor(P: gp_Pnt, Surface: Geom_Surface, Umin: number, Usup: number, Vmin: number, Vsup: number);
   /**
    * Init the projection of a point.
+   *
+   * on a surface <Surface>
    */
   constructor(P: gp_Pnt, Surface: Geom_Surface, Umin: number, Usup: number, Vmin: number, Vsup: number, Algo: Extrema_ExtAlgo);
   /**
    * Init the projection of a point.
+   *
+   * on a surface <Surface>
    */
   constructor(P: gp_Pnt, Surface: Geom_Surface, Umin: number, Usup: number, Vmin: number, Vsup: number, Tolerance: number);
   constructor(P: gp_Pnt, Surface: Geom_Surface, Umin: number, Usup: number, Vmin: number, Vsup: number, Tolerance: number, Algo?: Extrema_ExtAlgo);
   /**
    * Init the projection of a point.
+   *
+   * on a surface <Surface>. The solution are computed in the domain [Umin,Usup] [Vmin,Vsup] of the surface.
    */
   Init(P: gp_Pnt, Surface: Geom_Surface, Algo: Extrema_ExtAlgo): void;
   Init(P: gp_Pnt, Surface: Geom_Surface, Tolerance: number, Algo: Extrema_ExtAlgo): void;
@@ -27361,6 +31238,19 @@ export declare class GeomAPI_ProjectPointOnSurf {
 
 /**
  * Describes functions to build linear swept topologies, called prisms. A prism is defined by:
+ *
+ * - a basis shape, which is swept, and
+ * - a sweeping direction, which is:
+ * - a vector for finite prisms, or
+ * - a direction for infinite or semi-infinite prisms. The basis shape must not contain any solids. The profile generates objects according to the following rules:
+ * - Vertices generate Edges
+ * - Edges generate Faces.
+ * - Wires generate Shells.
+ * - Faces generate Solids.
+ * - Shells generate Composite Solids A MakePrism object provides a framework for:
+ * - defining the construction of a prism,
+ * - implementing the construction algorithm, and
+ * - consulting the result.
  */
 export declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
   /**
@@ -27400,23 +31290,23 @@ export declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
    */
   Build(theRange: Message_ProgressRange): void;
   /**
-   * Returns the TopoDS Shape of the bottom of the prism.
+   * Returns the `TopoDS` Shape of the bottom of the prism.
    */
   FirstShape(): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the bottom of the prism. generated with theShape (subShape of the generating shape).
+   * Returns the `TopoDS` Shape of the bottom of the prism. generated with theShape (subShape of the generating shape).
    */
   FirstShape(theShape: TopoDS_Shape): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the top of the prism. In the case of a finite prism, FirstShape returns the basis of the prism, in other words, S if Copy is false; otherwise, the copy of S belonging to the prism. LastShape returns the copy of S translated by V at the time of construction.
+   * Returns the `TopoDS` Shape of the top of the prism. In the case of a finite prism, FirstShape returns the basis of the prism, in other words, S if Copy is false; otherwise, the copy of S belonging to the prism. LastShape returns the copy of S translated by V at the time of construction.
    */
   LastShape(): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the top of the prism. generated with theShape (subShape of the generating shape).
+   * Returns the `TopoDS` Shape of the top of the prism. generated with theShape (subShape of the generating shape).
    */
   LastShape(theShape: TopoDS_Shape): TopoDS_Shape;
   /**
-   * Returns ListOfShape from TopTools.
+   * Returns ListOfShape from {@link TopTools | `TopTools`}.
    */
   Generated(S: TopoDS_Shape): NCollection_List_TopoDS_Shape;
   /**
@@ -27430,6 +31320,10 @@ export declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
 
 /**
  * Describes functions to build spheres or portions of spheres. A MakeSphere object provides a framework for:
+ *
+ * - defining the construction of a sphere,
+ * - implementing the construction algorithm, and
+ * - consulting the result.
  */
 export declare class BRepPrimAPI_MakeSphere extends BRepPrimAPI_MakeOneAxis {
   /**
@@ -27528,6 +31422,29 @@ export declare class BRepPrimAPI_MakeSphere extends BRepPrimAPI_MakeOneAxis {
 
 /**
  * Class to make revolved sweep topologies.
+ *
+ * a revolved sweep is defined by :
+ *
+ * - A basis topology which is swept.
+ *
+ * The basis topology must not contain solids (neither composite solids.).
+ *
+ * The basis topology may be copied or shared in the result.
+ *
+ * - A rotation axis and angle :
+ * - The axis is an Ax1 from gp.
+ * - The angle is in [0, 2*Pi].
+ * - The angle default value is 2*Pi.
+ *
+ * The result is a topology with a higher dimension :
+ *
+ * - Vertex -> Edge.
+ * - Edge -> Face.
+ * - Wire -> Shell.
+ * - Face -> Solid.
+ * - Shell -> CompSolid.
+ *
+ * Sweeping a Compound sweeps the elements of the compound and creates a compound with the results.
  */
 export declare class BRepPrimAPI_MakeRevol extends BRepPrimAPI_MakeSweep {
   /**
@@ -27559,15 +31476,15 @@ export declare class BRepPrimAPI_MakeRevol extends BRepPrimAPI_MakeSweep {
    */
   FirstShape(): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the beginning of the revolution, generated with theShape (subShape of the generating shape).
+   * Returns the `TopoDS` Shape of the beginning of the revolution, generated with theShape (subShape of the generating shape).
    */
   FirstShape(theShape: TopoDS_Shape): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the end of the revol.
+   * Returns the `TopoDS` Shape of the end of the revol.
    */
   LastShape(): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the end of the revolution, generated with theShape (subShape of the generating shape).
+   * Returns the `TopoDS` Shape of the end of the revolution, generated with theShape (subShape of the generating shape).
    */
   LastShape(theShape: TopoDS_Shape): TopoDS_Shape;
   /**
@@ -27593,14 +31510,22 @@ export declare class BRepPrimAPI_MakeRevol extends BRepPrimAPI_MakeSweep {
 
 /**
  * The abstract class MakeSweep is the root class of swept primitives. Sweeps are objects you obtain by sweeping a profile along a path. The profile can be any topology and the path is usually a curve or a wire. The profile generates objects according to the following rules:
+ *
+ * - Vertices generate Edges
+ * - Edges generate Faces.
+ * - Wires generate Shells.
+ * - Faces generate Solids.
+ * - Shells generate Composite Solids. You are not allowed to sweep Solids and Composite Solids. Two kinds of sweeps are implemented in the BRepPrimAPI package:
+ * - The linear sweep called a Prism
+ * - The rotational sweep called a Revol Swept constructions along complex profiles such as BSpline curves are also available in the BRepOffsetAPI package..
  */
 export declare class BRepPrimAPI_MakeSweep extends BRepBuilderAPI_MakeShape {
   /**
-   * Returns the TopoDS Shape of the bottom of the sweep.
+   * Returns the `TopoDS` Shape of the bottom of the sweep.
    */
   FirstShape(): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the top of the sweep.
+   * Returns the `TopoDS` Shape of the top of the sweep.
    */
   LastShape(): TopoDS_Shape;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -27610,6 +31535,10 @@ export declare class BRepPrimAPI_MakeSweep extends BRepBuilderAPI_MakeShape {
 
 /**
  * Describes functions to build cylinders or portions of cylinders. A MakeCylinder object provides a framework for:
+ *
+ * - defining the construction of a cylinder,
+ * - implementing the construction algorithm, and
+ * - consulting the result.
  */
 export declare class BRepPrimAPI_MakeCylinder extends BRepPrimAPI_MakeOneAxis {
   /**
@@ -27634,6 +31563,18 @@ export declare class BRepPrimAPI_MakeCylinder extends BRepPrimAPI_MakeOneAxis {
   constructor(Axes: gp_Ax2, R: number, H: number);
   /**
    * Make a cylinder of radius R and length H with angle H. Constructs.
+   *
+   * - a cylinder of radius R and height H, or
+   * - a portion of cylinder of radius R and height H, and of the angle Angle defining the missing portion of the cylinder. The cylinder is constructed about the "Z Axis" of either:
+   * - the global coordinate system, or
+   * - the local coordinate system Axes. It is limited in this coordinate system as follows:
+   * - in the v parametric direction (the Z axis), by the two parameter values 0 and H,
+   * - and in the u parametric direction (the rotation angle around the Z Axis), in the case of a portion of a cylinder, by the two parameter values 0 and Angle. Angle is given in radians. The resulting shape is composed of:
+   * - a lateral cylindrical face,
+   * - two planar faces in the planes z = 0 and z = H (in the case of a complete cylinder, these faces are circles), and
+   * - in case of a portion of a cylinder, two additional planar faces to close the shape.(two rectangles in the planes u = 0 and u = Angle). Exceptions Standard_DomainError if:
+   * - R is less than or equal to `Precision::Confusion()`, or
+   * - H is less than or equal to `Precision::Confusion()`.
    */
   constructor(Axes: gp_Ax2, R: number, H: number, Angle: number);
   /**
@@ -27672,6 +31613,16 @@ export declare class BRepPrimAPI_MakeOneAxis extends BRepBuilderAPI_MakeShape {
 
 /**
  * Describes functions to build parallelepiped boxes. A MakeBox object provides a framework for:
+ *
+ * - defining the construction of a box,
+ * - implementing the construction algorithm, and
+ * - consulting the result. Constructs a box such that its sides are parallel to the axes of
+ * - the global coordinate system, or
+ * - the local coordinate system Axis. and
+ * - with a corner at (0, 0, 0) and of size (dx, dy, dz), or
+ * - with a corner at point P and of size (dx, dy, dz), or
+ * - with corners at points P1 and P2. Exceptions Standard_DomainError if: dx, dy, dz are less than or equal to `Precision::Confusion()`, or
+ * - the vector joining the points P1 and P2 has a component projected onto the global coordinate system less than or equal to `Precision::Confusion()`. In these cases, the box would be flat.
  */
 export declare class BRepPrimAPI_MakeBox extends BRepBuilderAPI_MakeShape {
   /**
@@ -27779,15 +31730,15 @@ export declare class HLRBRep_InternalAlgo extends Standard_Transient {
    */
   Load(S: unknown, nbIso: number): void;
   /**
-   * return the index of the Shape  and return 0 if the Shape  is not found.
+   * return the index of the Shape and return 0 if the Shape is not found.
    */
   Index(S: unknown): number;
   /**
-   * remove the Shape of Index .
+   * remove the Shape of Index *.*
    */
   Remove(I: number): void;
   /**
-   * Change the Shape Data of the Shape of index .
+   * Change the Shape Data of the Shape of index *.*
    */
   ShapeData(I: number, SData: Standard_Transient): void;
   SeqOfShapeBounds(): NCollection_Sequence_HLRBRep_ShapeBounds;
@@ -27802,7 +31753,7 @@ export declare class HLRBRep_InternalAlgo extends Standard_Transient {
    */
   Select(): void;
   /**
-   * select only the Shape of index .
+   * select only the Shape of index *.*
    */
   Select(I: number): void;
   /**
@@ -27838,7 +31789,7 @@ export declare class HLRBRep_InternalAlgo extends Standard_Transient {
    */
   Hide(): void;
   /**
-   * hide the Shape  by itself.
+   * hide the Shape by itself.
    */
   Hide(I: number): void;
   /**
@@ -27857,11 +31808,30 @@ export declare class HLRBRep_InternalAlgo extends Standard_Transient {
 }
 
 /**
- * Inherited from InternalAlgo to provide methods with Shape from TopoDS. A framework to compute a shape as seen in a projection plane. This is done by calculating the visible and the hidden parts of the shape. HLRBRep_Algo works with three types of entity:
+ * Inherited from InternalAlgo to provide methods with Shape from `TopoDS`. A framework to compute a shape as seen in a projection plane. This is done by calculating the visible and the hidden parts of the shape. {@link HLRBRep_Algo | `HLRBRep_Algo`} works with three types of entity:
+ *
+ * - shapes to be visualized
+ * - edges in these shapes (these edges are the basic entities which will be visualized or hidden), and
+ * - faces in these shapes which hide the edges. {@link HLRBRep_Algo | `HLRBRep_Algo`} is based on the principle of comparing each edge of the shape to be visualized with each of its faces, and calculating the visible and the hidden parts of each edge. For a given projection, {@link HLRBRep_Algo | `HLRBRep_Algo`} calculates a set of lines characteristic of the object being represented. It is also used in conjunction with the {@link HLRBRep_HLRToShape | `HLRBRep_HLRToShape`} extraction utilities, which reconstruct a new, simplified shape from a selection of calculation results.
+ * This new shape is made up of edges, which represent the shape visualized in the projection. {@link HLRBRep_Algo | `HLRBRep_Algo`} takes the shape itself into account whereas {@link HLRBRep_PolyAlgo | `HLRBRep_PolyAlgo`} works with a polyhedral simplification of the shape.
+ * When you use {@link HLRBRep_Algo | `HLRBRep_Algo`}, you obtain an exact result, whereas, when you use {@link HLRBRep_PolyAlgo | `HLRBRep_PolyAlgo`}, you reduce computation time but obtain polygonal segments. In the case of complicated shapes, {@link HLRBRep_Algo | `HLRBRep_Algo`} may be time-consuming. An {@link HLRBRep_Algo | `HLRBRep_Algo`} object provides a framework for:
+ * - defining the point of view
+ * - identifying the shape or shapes to be visualized
+ * - calculating the outlines
+ * - calculating the visible and hidden lines of the shape. Warning
+ * - Superimposed lines are not eliminated by this algorithm.
+ * - There must be no unfinished objects inside the shape you wish to visualize.
+ * - Points are not treated.
+ * - Note that this is not the sort of algorithm used in generating shading, which calculates the visible and hidden parts of each face in a shape to be visualized by comparing each face in the shape with every other face in the same shape.
  */
 export declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
   /**
    * Constructs an empty framework for the calculation of visible and hidden lines of a shape in a projection. Use the function:
+   *
+   * - Projector to define the point of view
+   * - Add to select the shape or shapes to be visualized
+   * - Update to compute the outlines of the shape, and
+   * - Hide to compute the visible and hidden lines of the shape.
    */
   constructor();
   constructor(A: HLRBRep_Algo);
@@ -27874,11 +31844,11 @@ export declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
    */
   Add(S: TopoDS_Shape, nbIso: number): void;
   /**
-   * return the index of the Shape  and return 0 if the Shape  is not found.
+   * return the index of the Shape and return 0 if the Shape is not found.
    */
   Index(S: TopoDS_Shape): number;
   /**
-   * return the index of the Shape  and return 0 if the Shape  is not found.
+   * return the index of the Shape and return 0 if the Shape is not found.
    */
   Index(S: unknown): number;
   /**
@@ -27894,11 +31864,22 @@ export declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
 }
 
 /**
- * A framework for filtering the computation results of an HLRBRep_Algo algorithm by extraction. From the results calculated by the algorithm on a shape, a filter returns the type of edge you want to identify. You can choose any of the following types of output:
+ * A framework for filtering the computation results of an {@link HLRBRep_Algo | `HLRBRep_Algo`} algorithm by extraction. From the results calculated by the algorithm on a shape, a filter returns the type of edge you want to identify. You can choose any of the following types of output:
+ *
+ * - visible sharp edges
+ * - hidden sharp edges
+ * - visible smooth edges
+ * - hidden smooth edges
+ * - visible sewn edges
+ * - hidden sewn edges
+ * - visible outline edges
+ * - hidden outline edges.
+ * - visible isoparameters and
+ * - hidden isoparameters. Sharp edges present a C0 continuity (non G1). Smooth edges present a G1 continuity (non G2). Sewn edges present a C2 continuity. The result is composed of 2D edges in the projection plane of the view which the algorithm has worked with. These 2D edges are not included in the data structure of the visualized shape. In order to obtain a complete image, you must combine the shapes given by each of the chosen filters. The construction of the shape does not call a new computation of the algorithm, but only reads its internal results. The methods of this shape are almost identic to those of the HLRBrep_PolyHLRToShape class.
  */
 export declare class HLRBRep_HLRToShape {
   /**
-   * Constructs a framework for filtering the results of the HLRBRep_Algo algorithm, A. Use the extraction filters to obtain the results you want for A.
+   * Constructs a framework for filtering the results of the {@link HLRBRep_Algo | `HLRBRep_Algo`} algorithm, A. Use the extraction filters to obtain the results you want for A.
    */
   constructor(A: HLRBRep_Algo);
   /**
@@ -28000,6 +31981,9 @@ export declare class HLRBRep_HLRToShape {
 
 /**
  * Implements a projector object. To transform and project Points and Planes. This object is designed to be used in the removal of hidden lines and is returned by the Prs3d_Projector::Projector function. You define the projection of the selected shape by calling one of the following functions:
+ *
+ * - `HLRBRep_Algo::Projector`, or
+ * - `HLRBRep_PolyAlgo::Projector` The choice depends on the algorithm, which you are using. The parameters of the view are defined at the time of construction of a Prs3d_Projector object.
  */
 export declare class HLRAlgo_Projector {
   constructor();
@@ -28123,6 +32107,10 @@ export declare class BRepMesh_IncrementalMesh extends BRepMesh_DiscretRoot {
 export type BRepOffset_Mode = typeof BRepOffset_Mode[keyof typeof BRepOffset_Mode];
 /**
  * Lists the offset modes. These are the following:
+ *
+ * - BRepOffset_Skin which describes the offset along the surface of a solid, used to obtain a manifold topological space,
+ * - BRepOffset_Pipe which describes the offset of a curve, used to obtain a pre-surface,
+ * - BRepOffset_RectoVerso which describes the offset of a given surface shell along both sides of the surface.
  */
 export declare const BRepOffset_Mode: {
   readonly BRepOffset_Skin: 'BRepOffset_Skin';
@@ -28131,7 +32119,11 @@ export declare const BRepOffset_Mode: {
 };
 
 /**
- * Describes functions to build hollowed solids. A hollowed solid is built from an initial solid and a set of faces on this solid, which are to be removed. The remaining faces of the solid become the walls of the hollowed solid, their thickness defined at the time of construction. the solid is built from an initial solid  and a set of faces {Fi} from , builds a solid composed by two shells closed by the {Fi}. First shell <SS> is composed by all the faces of  expected {Fi}. Second shell is the offset shell of <SS>. A MakeThickSolid object provides a framework for:
+ * Describes functions to build hollowed solids. A hollowed solid is built from an initial solid and a set of faces on this solid, which are to be removed. The remaining faces of the solid become the walls of the hollowed solid, their thickness defined at the time of construction. the solid is built from an initial solid and a set of faces {Fi} from , builds a solid composed by two shells closed by the {Fi}. First shell <SS> is composed by all the faces of expected {Fi}. Second shell is the offset shell of <SS>. A MakeThickSolid object provides a framework for:
+ *
+ * - defining the cross-section of a hollowed solid,
+ * - implementing the construction algorithm, and
+ * - consulting the result.
  */
 export declare class BRepOffsetAPI_MakeThickSolid extends BRepOffsetAPI_MakeOffsetShape {
   /**
@@ -28144,6 +32136,15 @@ export declare class BRepOffsetAPI_MakeThickSolid extends BRepOffsetAPI_MakeOffs
   MakeThickSolidBySimple(theS: TopoDS_Shape, theOffsetValue: number): void;
   /**
    * Constructs a hollowed solid from the solid S by removing the set of faces ClosingFaces from S, where: Offset defines the thickness of the walls. Its sign indicates which side of the surface of the solid the hollowed shape is built on;.
+   *
+   * - Tol defines the tolerance criterion for coincidence in generated shapes;
+   * - Mode defines the construction type of parallels applied to free edges of shape S. Currently, only one construction type is implemented, namely the one where the free edges do not generate parallels; this corresponds to the default value BRepOffset_Skin; Intersection specifies how the algorithm must work in order to limit the parallels to two adjacent shapes:
+   * - if Intersection is false (default value), the intersection is calculated with the parallels to the two adjacent shapes,
+   * - if Intersection is true, the intersection is calculated by taking account of all parallels generated; this computation method is more general as it avoids self-intersections generated in the offset shape from features of small dimensions on shape S, however this method has not been completely implemented and therefore is not recommended for use;
+   * - SelfInter tells the algorithm whether a computation to eliminate self-intersections needs to be applied to the resulting shape. However, as this functionality is not yet implemented, you should use the default value (false);
+   * - Join defines how to fill the holes that may appear between parallels to the two adjacent faces. It may take values GeomAbs_Arc or GeomAbs_Intersection:
+   * - if Join is equal to GeomAbs_Arc, then pipes are generated between two free edges of two adjacent parallels, and spheres are generated on "images" of vertices; it is the default value,
+   * - if Join is equal to GeomAbs_Intersection, then the parallels to the two adjacent faces are enlarged and intersected, so that there are no free edges on parallels to faces. RemoveIntEdges flag defines whether to remove the INTERNAL edges from the result or not. Warnings Since the algorithm of MakeThickSolid is based on MakeOffsetShape algorithm, the warnings are the same as for MakeOffsetShape.
    */
   MakeThickSolidByJoin(S: TopoDS_Shape, ClosingFaces: NCollection_List_TopoDS_Shape, Offset: number, Tol: number, Mode: BRepOffset_Mode, Intersection: boolean, SelfInter: boolean, Join: GeomAbs_JoinType, RemoveIntEdges: boolean, theRange: Message_ProgressRange): void;
   /**
@@ -28161,10 +32162,40 @@ export declare class BRepOffsetAPI_MakeThickSolid extends BRepOffsetAPI_MakeOffs
 
 /**
  * N-Side Filling This algorithm avoids to build a face from:
+ *
+ * - a set of edges defining the bounds of the face and some constraints the surface of the face has to satisfy
+ * - a set of edges and points defining some constraints the support surface has to satisfy
+ * - an initial surface to deform for satisfying the constraints
+ * - a set of parameters to control the constraints.
+ *
+ * The support surface of the face is computed by deformation of the initial surface in order to satisfy the given constraints. The set of bounding edges defines the wire of the face.
+ *
+ * If no initial surface is given, the algorithm computes it automatically. If the set of edges is not connected (Free constraint) missing edges are automatically computed.
+ *
+ * Limitations:
+ *
+ * - If some constraints are not compatible The algorithm does not take them into account. So the constraints will not be satisfyed in an area containing the incompatibilitries.
+ * - The constraints defining the bound of the face have to be entered in order to have a continuous wire.
+ *
+ * Other Applications:
+ *
+ * - Deformation of a face to satisfy internal constraints
+ * - Deformation of a face to improve Gi continuity with connected faces
  */
 export declare class BRepOffsetAPI_MakeFilling extends BRepBuilderAPI_MakeShape {
   /**
    * Constructs a wire filling object defined by.
+   *
+   * - the energy minimizing criterion Degree
+   * - the number of points on the curve NbPntsOnCur
+   * - the number of iterations NbIter
+   * - the Boolean Anisotropie
+   * - the 2D tolerance Tol2d
+   * - the 3D tolerance Tol3d
+   * - the angular tolerance TolAng
+   * - the tolerance for curvature TolCur
+   * - the highest polynomial degree MaxDeg
+   * - the greatest number of segments MaxSeg. If the Boolean Anistropie is true, the algorithm's performance is better in cases where the ratio of the length U and the length V indicate a great difference between the two. In other words, when the surface is, for example, extremely long.
    */
   constructor(Degree?: number, NbPtsOnCur?: number, NbIter?: number, Anisotropie?: boolean, Tol2d?: number, Tol3d?: number, TolAng?: number, TolCurv?: number, MaxDeg?: number, MaxSegments?: number);
   /**
@@ -28177,10 +32208,15 @@ export declare class BRepOffsetAPI_MakeFilling extends BRepBuilderAPI_MakeShape 
   SetResolParam(Degree: number, NbPtsOnCur: number, NbIter: number, Anisotropie: boolean): void;
   /**
    * Sets the parameters used to approximate the filling surface. These include:
+   *
+   * - MaxDeg - the highest degree which the polynomial defining the filling surface can have
+   * - MaxSegments - the greatest number of segments which the filling surface can have.
    */
   SetApproxParam(MaxDeg: number, MaxSegments: number): void;
   /**
-   * Loads the initial surface Surf to begin the construction of the surface. This optional function is useful if the surface resulting from construction for the algorithm is likely to be complex. The support surface of the face under construction is computed by a deformation of Surf which satisfies the given constraints. The set of bounding edges defines the wire of the face. If no initial surface is given, the algorithm computes it automatically. If the set of edges is not connected (Free constraint), missing edges are automatically computed. Important: the initial surface must have orthogonal local coordinates, i.e. partial derivatives dS/du and dS/dv must be orthogonal at each point of surface. If this condition breaks, distortions of resulting surface are possible.
+   * Loads the initial surface Surf to begin the construction of the surface. This optional function is useful if the surface resulting from construction for the algorithm is likely to be complex.
+   * The support surface of the face under construction is computed by a deformation of Surf which satisfies the given constraints. The set of bounding edges defines the wire of the face. If no initial surface is given, the algorithm computes it automatically. If the set of edges is not connected (Free constraint), missing edges are automatically computed.
+   * Important: the initial surface must have orthogonal local coordinates, i.e. partial derivatives dS/du and dS/dv must be orthogonal at each point of surface. If this condition breaks, distortions of resulting surface are possible.
    */
   LoadInitSurface(Surf: TopoDS_Face): void;
   /**
@@ -28246,6 +32282,10 @@ export declare class BRepOffsetAPI_MakeFilling extends BRepBuilderAPI_MakeShape 
 
 /**
  * Describes functions to build a shell out of a shape. The result is an unlooped shape parallel to the source shape. A MakeOffsetShape object provides a framework for:
+ *
+ * - defining the construction of a shell
+ * - implementing the construction algorithm
+ * - consulting the result.
  */
 export declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeShape {
   /**
@@ -28258,6 +32298,26 @@ export declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeSh
   PerformBySimple(theS: TopoDS_Shape, theOffsetValue: number): void;
   /**
    * Constructs a shape parallel to the shape S, where.
+   *
+   * - S may be a face, a shell, a solid or a compound of these shape kinds;
+   * - Offset is the offset value. The offset shape is constructed:
+   * - outside S, if Offset is positive,
+   * - inside S, if Offset is negative;
+   * - Tol defines the coincidence tolerance criterion for generated shapes;
+   * - Mode defines the construction type of parallels applied to the free edges of shape S; currently, only one construction type is implemented, namely the one where the free edges do not generate parallels; this corresponds to the default value BRepOffset_Skin;
+   * - Intersection specifies how the algorithm must work in order to limit the parallels to two adjacent shapes:
+   * - if Intersection is false (default value), the intersection is calculated with the parallels to the two adjacent shapes,
+   * - if Intersection is true, the intersection is calculated by taking all generated parallels into account; this computation method is more general as it avoids some self-intersections generated in the offset shape from features of small dimensions on shape S, however this method has not been completely implemented and therefore is not recommended for use;
+   * - SelfInter tells the algorithm whether a computation to eliminate self-intersections must be applied to the resulting shape; however, as this functionality is not yet implemented, it is recommended to use the default value (false);
+   * - Join defines how to fill the holes that may appear between parallels to the two adjacent faces. It may take values GeomAbs_Arc or GeomAbs_Intersection:
+   * - if Join is equal to GeomAbs_Arc, then pipes are generated between two free edges of two adjacent parallels, and spheres are generated on "images" of vertices; it is the default value,
+   * - if Join is equal to GeomAbs_Intersection, then the parallels to the two adjacent faces are enlarged and intersected, so that there are no free edges on parallels to faces. RemoveIntEdges flag defines whether to remove the INTERNAL edges from the result or not. Warnings
+   *
+   * 1. All the faces of the shape S should be based on the surfaces with continuity at least C1.
+   * 2. The offset value should be sufficiently small to avoid self-intersections in resulting shape. Otherwise these self-intersections may appear inside an offset face if its initial surface is not plane or sphere or cylinder, also some non-adjacent offset faces may intersect each other. Also, some offset surfaces may "turn inside out".
+   * 3. The algorithm may fail if the shape S contains vertices where more than 3 edges converge.
+   * 4. Since 3d-offset algorithm involves intersection of surfaces, it is under limitations of surface intersection algorithm.
+   * 5. A result cannot be generated if the underlying geometry of S is BSpline with continuity C0. Exceptions Geom_UndefinedDerivative if the underlying geometry of S is BSpline with continuity C0.
    */
   PerformByJoin(S: TopoDS_Shape, Offset: number, Tol: number, Mode: BRepOffset_Mode, Intersection: boolean, SelfInter: boolean, Join: GeomAbs_JoinType, RemoveIntEdges: boolean, theRange: Message_ProgressRange): void;
   /**
@@ -28295,10 +32355,18 @@ export declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeSh
 export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape {
   /**
    * Initializes an algorithm for building a shell or a solid passing through a set of sections, where:
+   *
+   * - isSolid is set to true if the construction algorithm is required to build a solid or to false if it is required to build a shell (the default value),
+   * - ruled is set to true if the faces generated between the edges of two consecutive wires are ruled surfaces or to false (the default value) if they are smoothed out by approximation,
+   * - pres3d defines the precision criterion used by the approximation algorithm; the default value is 1.0e-6. Use AddWire and AddVertex to define the successive sections of the shell or solid to be built.
    */
   constructor(isSolid?: boolean, ruled?: boolean, pres3d?: number);
   /**
    * Initializes this algorithm for building a shell or a solid passing through a set of sections, where:
+   *
+   * - isSolid is set to true if this construction algorithm is required to build a solid or to false if it is required to build a shell. false is the default value;
+   * - ruled is set to true if the faces generated between the edges of two consecutive wires are ruled surfaces or to false (the default value) if they are smoothed out by approximation,
+   * - pres3d defines the precision criterion used by the approximation algorithm; the default value is 1.0e-6. Use AddWire and AddVertex to define the successive sections of the shell or solid to be built.
    */
   Init(isSolid: boolean, ruled: boolean, pres3d: number): void;
   /**
@@ -28327,6 +32395,8 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
   SetContinuity(C: GeomAbs_Shape): void;
   /**
    * define the Weights associed to the criterium used in the optimization.
+   *
+   * if Wi <= 0
    */
   SetCriteriumWeight(W1: number, W2: number, W3: number): void;
   /**
@@ -28354,15 +32424,15 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
    */
   CriteriumWeight(): { W1: number; W2: number; W3: number };
   /**
-   * This is called by Shape(). It does nothing but may be redefined.
+   * This is called by `Shape()`. It does nothing but may be redefined.
    */
   Build(theRange: Message_ProgressRange): void;
   /**
-   * Returns the TopoDS Shape of the bottom of the loft if solid.
+   * Returns the `TopoDS` Shape of the bottom of the loft if solid.
    */
   FirstShape(): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the top of the loft if solid.
+   * Returns the `TopoDS` Shape of the top of the loft if solid.
    */
   LastShape(): TopoDS_Shape;
   /**
@@ -28374,7 +32444,7 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
    */
   SetMutableInput(theIsMutableInput: boolean): void;
   /**
-   * Returns a list of new shapes generated from the shape S by the shell-generating algorithm. This function is redefined from BRepBuilderAPI_MakeShape::Generated. S can be an edge or a vertex of a given Profile (see methods AddWire and AddVertex).
+   * Returns a list of new shapes generated from the shape S by the shell-generating algorithm. This function is redefined from `BRepBuilderAPI_MakeShape::Generated`. S can be an edge or a vertex of a given Profile (see methods AddWire and AddVertex).
    */
   Generated(S: TopoDS_Shape): NCollection_List_TopoDS_Shape;
   /**
@@ -28396,6 +32466,10 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
 
 /**
  * Describes algorithms for offsetting wires from a set of wires contained in a planar face. A MakeOffset object provides a framework for:
+ *
+ * - defining the construction of an offset,
+ * - implementing the construction algorithm, and
+ * - consulting the result.
  */
 export declare class BRepOffsetAPI_MakeOffset extends BRepBuilderAPI_MakeShape {
   /**
@@ -28462,6 +32536,16 @@ export declare class BRepOffsetAPI_MakeOffset extends BRepBuilderAPI_MakeShape {
 
 /**
  * This class provides for a framework to construct a shell or a solid along a spine consisting in a wire. To produce a solid, the initial wire must be closed. Two approaches are used:
+ *
+ * - definition by section
+ * - by a section and a scaling law
+ * - by addition of successive intermediary sections
+ * - definition by sweep mode.
+ * - pseudo-Frenet
+ * - constant
+ * - binormal constant
+ * - normal defined by a surface support
+ * - normal defined by a guiding contour. The two global approaches can also be combined. You can also close the surface later in order to form a solid. Warning: some limitations exist - Mode with auxiliary spine is incompatible with hometetic laws - Mode with auxiliary spine and keep contact produce only CO surface.
  */
 export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
   /**
@@ -28485,7 +32569,15 @@ export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
    */
   SetMode(SpineSupport: TopoDS_Shape): boolean;
   /**
-   * Sets an auxiliary spine to define the Normal For each Point of the Spine P, an Point Q is evaluated on <AuxiliarySpine> If <CurvilinearEquivalence> Q split <AuxiliarySpine> with the same length ratio than P split <Spline>. Else the plan define by P and the tangent to the <Spine> intersect <AuxiliarySpine> in Q. If <KeepContact> equals BRepFill_NoContact: The Normal is defined by the vector PQ. If <KeepContact> equals BRepFill_Contact: The Normal is defined to achieve that the sweeped section is in contact to the auxiliarySpine. The width of section is constant all along the path. In other words, the auxiliary spine lies on the swept surface, but not necessarily is a boundary of this surface. However, the auxiliary spine has to be close enough to the main spine to provide intersection with any section all along the path. If <KeepContact> equals BRepFill_ContactOnBorder: The auxiliary spine becomes a boundary of the swept surface and the width of section varies along the path. Give section to sweep. Possibilities are:
+   * Sets an auxiliary spine to define the Normal For each Point of the Spine P, an Point Q is evaluated on <AuxiliarySpine> If <CurvilinearEquivalence> Q split <AuxiliarySpine> with the same length ratio than P split <Spline>. Else the plan define by P and the tangent to the <Spine> intersect <AuxiliarySpine> in Q. If <KeepContact> equals BRepFill_NoContact: The Normal is defined by the vector PQ.
+   * If <KeepContact> equals BRepFill_Contact: The Normal is defined to achieve that the sweeped section is in contact to the auxiliarySpine. The width of section is constant all along the path. In other words, the auxiliary spine lies on the swept surface, but not necessarily is a boundary of this surface.
+   * However, the auxiliary spine has to be close enough to the main spine to provide intersection with any section all along the path.
+   * If <KeepContact> equals BRepFill_ContactOnBorder: The auxiliary spine becomes a boundary of the swept surface and the width of section varies along the path. Give section to sweep. Possibilities are:
+   *
+   * - Give one or several section
+   * - Give one profile and an homotetic law.
+   * - Automatic compute of correspondence between spine, and section on the sweeped shape
+   * - correspondence between spine, and section on the sweeped shape defined by a vertex of the spine
    */
   SetMode(AuxiliarySpine: TopoDS_Wire, CurvilinearEquivalence: boolean, KeepContact: BRepFill_TypeOfContact): void;
   /**
@@ -28493,7 +32585,7 @@ export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
    */
   SetDiscreteMode(): void;
   /**
-   * Adds the section Profile to this framework. First and last sections may be punctual, so the shape Profile may be both wire and vertex. Correspondent point on spine is computed automatically. If WithContact is true, the section is translated to be in contact with the spine. If WithCorrection is true, the section is rotated to be orthogonal to the spine?s tangent in the correspondent point. This option has no sense if the section is punctual (Profile is of type TopoDS_Vertex).
+   * Adds the section Profile to this framework. First and last sections may be punctual, so the shape Profile may be both wire and vertex. Correspondent point on spine is computed automatically. If WithContact is true, the section is translated to be in contact with the spine. If WithCorrection is true, the section is rotated to be orthogonal to the spine?s tangent in the correspondent point. This option has no sense if the section is punctual (Profile is of type {@link TopoDS_Vertex | `TopoDS_Vertex`}).
    */
   Add(Profile: TopoDS_Shape, WithContact: boolean, WithCorrection: boolean): void;
   /**
@@ -28522,6 +32614,10 @@ export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
   GetStatus(): unknown;
   /**
    * Sets the following tolerance values.
+   *
+   * - 3D tolerance Tol3d
+   * - boundary tolerance BoundTol
+   * - angular tolerance TolAngular.
    */
   SetTolerance(Tol3d: number, BoundTol: number, TolAngular: number): void;
   /**
@@ -28538,6 +32634,11 @@ export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
   SetForceApproxC1(ForceApproxC1: boolean): void;
   /**
    * Sets the transition mode to manage discontinuities on the swept shape caused by fractures on the spine. The transition mode can be BRepBuilderAPI_Transformed (default value), BRepBuilderAPI_RightCorner, BRepBuilderAPI_RoundCorner:
+   *
+   * - RepBuilderAPI_Transformed: discontinuities are treated by modification of the sweeping mode. The pipe is "transformed" at the fractures of the spine. This mode assumes building a self-intersected shell.
+   * - BRepBuilderAPI_RightCorner: discontinuities are treated like right corner. Two pieces of the pipe corresponding to two adjacent segments of the spine are extended and intersected at a fracture of the spine.
+   * - BRepBuilderAPI_RoundCorner: discontinuities are treated like round corner. The corner is treated as rotation of the profile around an axis which passes through the point of the spine's fracture. This axis is based on cross product of directions tangent to the adjacent segments of the spine at their common point.
+   * Warnings The mode BRepBuilderAPI_RightCorner provides a valid result if intersection of two pieces of the pipe (corresponding to two adjacent segments of the spine) in the neighborhood of the spine?s fracture is connected and planar. This condition can be violated if the spine is non-linear in some neighborhood of the fracture or if the profile was set with a scaling law. The last mode, BRepBuilderAPI_RoundCorner, will assuredly provide a good result only if a profile was set with option WithCorrection = True, i.e. it is strictly orthogonal to the spine.
    */
   SetTransitionMode(Mode: BRepBuilderAPI_TransitionMode): void;
   /**
@@ -28553,11 +32654,11 @@ export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
    */
   MakeSolid(): boolean;
   /**
-   * Returns the TopoDS Shape of the bottom of the sweep.
+   * Returns the `TopoDS` Shape of the bottom of the sweep.
    */
   FirstShape(): TopoDS_Shape;
   /**
-   * Returns the TopoDS Shape of the top of the sweep.
+   * Returns the `TopoDS` Shape of the top of the sweep.
    */
   LastShape(): TopoDS_Shape;
   /**
@@ -28595,27 +32696,27 @@ export declare class BRepExtrema_DistShapeShape {
    */
   constructor();
   /**
-   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is Precision::Confusion().
+   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is `Precision::Confusion()`.
    * @param Shape1 - the first shape for distance computation
    * @param Shape2 - the second shape for distance computation
    */
   constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape);
   /**
-   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is Precision::Confusion().
+   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is `Precision::Confusion()`.
    * @param Shape1 - the first shape for distance computation
    * @param Shape2 - the second shape for distance computation
    * @param F and
    */
   constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: unknown);
   /**
-   * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is Precision::Confusion().
+   * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is `Precision::Confusion()`.
    * @param Shape1 - the first shape for distance computation
    * @param Shape2 - the second shape for distance computation
    * @param theDeflection - the presition of distance computation
    */
   constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number);
   /**
-   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is Precision::Confusion().
+   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is `Precision::Confusion()`.
    * @param Shape1 - the first shape for distance computation
    * @param Shape2 - the second shape for distance computation
    * @param F and
@@ -28623,7 +32724,7 @@ export declare class BRepExtrema_DistShapeShape {
    */
   constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: unknown, A: Extrema_ExtAlgo);
   /**
-   * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is Precision::Confusion().
+   * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is `Precision::Confusion()`.
    * @param Shape1 - the first shape for distance computation
    * @param Shape2 - the second shape for distance computation
    * @param theDeflection - the presition of distance computation
@@ -28631,7 +32732,7 @@ export declare class BRepExtrema_DistShapeShape {
    */
   constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number, F: unknown);
   /**
-   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is Precision::Confusion().
+   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is `Precision::Confusion()`.
    * @param Shape1 - the first shape for distance computation
    * @param Shape2 - the second shape for distance computation
    * @param F and
@@ -28640,7 +32741,7 @@ export declare class BRepExtrema_DistShapeShape {
    */
   constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, F: unknown, A: Extrema_ExtAlgo, theRange: Message_ProgressRange);
   /**
-   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is Precision::Confusion().
+   * create tool and computation of the minimum distance (value and pair of points) using default deflection in single thread mode. Default deflection value is `Precision::Confusion()`.
    * @param Shape1 - the first shape for distance computation
    * @param Shape2 - the second shape for distance computation
    * @param F and
@@ -28648,7 +32749,7 @@ export declare class BRepExtrema_DistShapeShape {
    */
   constructor(Shape1: TopoDS_Shape, Shape2: TopoDS_Shape, theDeflection: number, F: unknown, A: Extrema_ExtAlgo);
   /**
-   * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is Precision::Confusion().
+   * create tool and computation of the minimum distance (value and pair of points) in single thread mode. Default deflection value is `Precision::Confusion()`.
    * @param Shape1 - the first shape for distance computation
    * @param Shape2 - the second shape for distance computation
    * @param theDeflection - the presition of distance computation
@@ -28757,6 +32858,12 @@ export declare class BRepBndLib {
   constructor();
   /**
    * Adds the shape S to the bounding box B. More precisely are successively added to B:
+   *
+   * - each face of S; the triangulation of the face is used if it exists,
+   * - then each edge of S which does not belong to a face, the polygon of the edge is used if it exists
+   * - and last each vertex of S which does not belong to an edge. After each elementary operation, the bounding box B is enlarged by the tolerance value of the relative sub-shape. When working with the triangulation of a face this value of enlargement is the sum of the triangulation deflection and the face tolerance. When working with the polygon of an edge this value of enlargement is the sum of the polygon deflection and the edge tolerance. Warning
+   * - This algorithm is time consuming if triangulation has not been inserted inside the data structure of the shape S.
+   * - The resulting bounding box may be somewhat larger than the object.
    */
   static Add(S: TopoDS_Shape, B: Bnd_Box, useTriangulation: boolean): void;
   /**
@@ -28764,11 +32871,12 @@ export declare class BRepBndLib {
    */
   static AddClose(S: TopoDS_Shape, B: Bnd_Box): void;
   /**
-   * Adds the shape S to the bounding box B. This algorithm builds precise bounding box, which differs from exact geometry boundaries of shape only on shape entities tolerances Algorithm is the same as for method Add(..), but uses more precise methods for building boxes for geometry objects. If useShapeTolerance = True, bounding box is enlardged by shape tolerances and these tolerances are used for numerical methods of bounding box size calculations, otherwise bounding box is built according to sizes of uderlined geometrical entities, numerical calculation use tolerance Precision::Confusion().
+   * Adds the shape S to the bounding box B. This algorithm builds precise bounding box, which differs from exact geometry boundaries of shape only on shape entities tolerances Algorithm is the same as for method Add(..), but uses more precise methods for building boxes for geometry objects. If useShapeTolerance = True, bounding box is enlardged by shape tolerances and these tolerances are used for numerical methods of bounding box size calculations, otherwise bounding box is built according to sizes of uderlined geometrical entities, numerical calculation use tolerance `Precision::Confusion()`.
    */
   static AddOptimal(S: TopoDS_Shape, B: Bnd_Box, useTriangulation: boolean, useShapeTolerance: boolean): void;
   /**
-   * Computes the Oriented Bounding box for the shape <theS>. Two independent methods of computation are implemented: first method based on set of points (so, it demands the triangulated shape or shape with planar faces and linear edges). The second method is based on use of inertia axes and is called if use of the first method is impossible. If theIsTriangulationUsed == FALSE then the triangulation will be ignored at all. If theIsShapeToleranceUsed == TRUE then resulting box will be extended on the tolerance of the shape. theIsOptimal flag defines whether to look for the more tight OBB for the cost of performance or not.
+   * Computes the Oriented Bounding box for the shape <theS>. Two independent methods of computation are implemented: first method based on set of points (so, it demands the triangulated shape or shape with planar faces and linear edges). The second method is based on use of inertia axes and is called if use of the first method is impossible. If theIsTriangulationUsed == FALSE then the triangulation will be ignored at all.
+   * If theIsShapeToleranceUsed == TRUE then resulting box will be extended on the tolerance of the shape. theIsOptimal flag defines whether to look for the more tight OBB for the cost of performance or not.
    */
   static AddOBB(theS: TopoDS_Shape, theOBB: unknown, theIsTriangulationUsed: boolean, theIsOptimal: boolean, theIsShapeToleranceUsed: boolean): void;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -28779,6 +32887,11 @@ export declare class BRepBndLib {
 export type BRepBuilderAPI_WireError = typeof BRepBuilderAPI_WireError[keyof typeof BRepBuilderAPI_WireError];
 /**
  * Indicates the outcome of wire construction, i.e. whether it is successful or not, as explained below:
+ *
+ * - BRepBuilderAPI_WireDone No error occurred. The wire is correctly built.
+ * - BRepBuilderAPI_EmptyWire No initialization of the algorithm. Only an empty constructor was used.
+ * - BRepBuilderAPI_DisconnectedWire The last edge which you attempted to add was not connected to the wire.
+ * - BRepBuilderAPI_NonManifoldWire The wire with some singularity.
  */
 export declare const BRepBuilderAPI_WireError: {
   readonly BRepBuilderAPI_WireDone: 'BRepBuilderAPI_WireDone';
@@ -28789,6 +32902,24 @@ export declare const BRepBuilderAPI_WireError: {
 
 /**
  * Provides methods to build edges.
+ *
+ * The methods have the following syntax, where TheCurve is one of Lin, Circ, ...
+ *
+ * Create(C : TheCurve)
+ *
+ * Makes an edge on the whole curve. Add vertices on finite curves.
+ *
+ * Create(C : TheCurve; p1,p2 : Real)
+ *
+ * Make an edge on the curve between parameters p1 and p2. if p2 < p1 the edge will be REVERSED. If p1 or p2 is infinite the curve will be open in that direction. Vertices are created for finite values of p1 and p2.
+ *
+ * Create(C : TheCurve; P1, P2 : Pnt from gp)
+ *
+ * Make an edge on the curve between the points P1 and P2. The points are projected on the curve and the previous method is used. An error is raised if the points are not on the curve.
+ *
+ * Create(C : TheCurve; V1, V2 : Vertex from `TopoDS`)
+ *
+ * Make an edge on the curve between the vertices V1 and V2. Same as the previous but no vertices are created. If a vertex is Null the curve will be open in this direction.
  */
 export declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
   constructor();
@@ -28827,6 +32958,27 @@ export declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
   constructor(L: Geom2d_Curve, S: Geom_Surface, P1: gp_Pnt, P2: gp_Pnt, p1: number, p2: number);
   /**
    * The general method to directly create an edge is to give.
+   *
+   * - a 3D curve C as the support (geometric domain) of the edge,
+   * - two vertices V1 and V2 to limit the curve (definition of the restriction of the edge), and
+   * - two real values p1 and p2 which are the parameters for the vertices V1 and V2 on the curve. The curve may be defined as a 2d curve in the parametric space of a surface: a pcurve. The surface on which the edge is built is then kept at the level of the edge. The default tolerance will be associated with this edge. Rules applied to the arguments: For the curve:
+   * - The curve must not be a 'null handle'.
+   * - If the curve is a trimmed curve the basis curve is used. For the vertices:
+   * - Vertices may be null shapes. When V1 or V2 is null the edge is open in the corresponding direction and the parameter value p1 or p2 must be infinite (remember that `Precision::Infinite()` defines an infinite value).
+   * - The two vertices must be identical if they have the same 3D location. Identical vertices are used in particular when the curve is closed. For the parameters:
+   * - The parameters must be in the parametric range of the curve (or the basis curve if the curve is trimmed). If this condition is not satisfied the edge is not built, and the Error function will return BRepAPI_ParameterOutOfRange.
+   * - Parameter values must not be equal. If this condition is not satisfied (i.e. if | p1 - p2 | ) the edge is not built, and the Error function will return BRepAPI_LineThroughIdenticPoints. Parameter values are expected to be given in increasing order: C->FirstParameter()
+   * - If the parameter values are given in decreasing order the vertices are switched, i.e. the "first vertex" is on the point of parameter p2 and the "second vertex" is on the point of parameter p1. In such a case, to keep the original intent of the construction, the edge will be oriented "reversed".
+   * - On a periodic curve the parameter values p1 and p2 are adjusted by adding or subtracting the period to obtain p1 in the parametric range of the curve, and p2] such that [ p1 , where Period is the period of the curve.
+   * - A parameter value may be infinite. The edge is open in the corresponding direction. However the corresponding vertex must be a null shape. If this condition is not satisfied the edge is not built, and the Error function will return BRepAPI_PointWithInfiniteParameter.
+   * - The distance between the vertex and the point evaluated on the curve with the parameter, must be lower than the precision of the vertex. If this condition is not satisfied the edge is not built, and the Error function will return BRepAPI_DifferentsPointAndParameter. Other edge constructions
+   * - The parameter values can be omitted, they will be computed by projecting the vertices on the curve. Note that projection is the only way to evaluate the parameter values of the vertices on the curve: vertices must be given on the curve, i.e. the distance from a vertex to the curve must be less than or equal to the precision of the vertex. If this condition is not satisfied the edge is not built, and the Error function will return BRepAPI_PointProjectionFailed.
+   * - 3D points can be given in place of vertices. Vertices will be created from the points (with the default topological precision `Precision::Confusion()`). Note:
+   * - Giving vertices is useful when creating a connected edge.
+   * - If the parameter values correspond to the extremities of a closed curve, points must be identical, or at least coincident. If this condition is not satisfied the edge is not built, and the Error function will return BRepAPI_DifferentPointsOnClosedCurve.
+   * - The vertices or points can be omitted if the parameter values are given. The points will be computed from the parameters on the curve. The vertices or points and the parameter values can be omitted. The first and last parameters of the curve will then be used.
+   *
+   * Auxiliary methods
    */
   constructor(L: Geom2d_Curve, S: Geom_Surface, V1: TopoDS_Vertex, V2: TopoDS_Vertex, p1: number, p2: number);
   Init(C: Geom_Curve): void;
@@ -28850,6 +33002,9 @@ export declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
   IsDone(): boolean;
   /**
    * Returns the construction status.
+   *
+   * - BRepBuilderAPI_EdgeDone if the edge is built, or
+   * - another value of the `BRepBuilderAPI_EdgeError` enumeration indicating the reason of construction failure.
    */
   Error(): unknown;
   /**
@@ -28862,6 +33017,11 @@ export declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
   Vertex1(): TopoDS_Vertex;
   /**
    * Returns the second vertex of the edge. May be Null.
+   *
+   * Warning The returned vertex in each function corresponds respectively to
+   *
+   * - the lowest, or
+   * - the highest parameter on the curve along which the edge is built. It does not correspond to the first or second vertex given at the time of the construction, if the edge is oriented reversed. Exceptions StdFail_NotDone if the edge is not built.
    */
   Vertex2(): TopoDS_Vertex;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -28880,7 +33040,12 @@ export declare const BRepBuilderAPI_TransitionMode: {
 };
 
 /**
- * Implements the methods of MakeShape for the constant topology modifications. The methods are implemented when the modification uses a Modifier from BRepTools. Some of them have to be redefined if the modification is implemented with another tool (see Transform from BRepBuilderAPI for example). The BRepBuilderAPI package provides the following frameworks to perform modifications of this sort:
+ * Implements the methods of MakeShape for the constant topology modifications. The methods are implemented when the modification uses a Modifier from {@link BRepTools | `BRepTools`}. Some of them have to be redefined if the modification is implemented with another tool (see Transform from {@link BRepBuilderAPI | `BRepBuilderAPI`} for example). The {@link BRepBuilderAPI | `BRepBuilderAPI`} package provides the following frameworks to perform modifications of this sort:
+ *
+ * - {@link BRepBuilderAPI_Copy | `BRepBuilderAPI_Copy`} to produce the copy of a shape,
+ * - {@link BRepBuilderAPI_Transform | `BRepBuilderAPI_Transform`} and {@link BRepBuilderAPI_GTransform | `BRepBuilderAPI_GTransform`} to apply a geometric transformation to a shape,
+ * - {@link BRepBuilderAPI_NurbsConvert | `BRepBuilderAPI_NurbsConvert`} to convert the whole geometry of a shape into NURBS geometry,
+ * - {@link BRepOffsetAPI_DraftAngle | `BRepOffsetAPI_DraftAngle`} to build a tapered shape.
  */
 export declare class BRepBuilderAPI_ModifyShape extends BRepBuilderAPI_MakeShape {
   /**
@@ -28888,7 +33053,7 @@ export declare class BRepBuilderAPI_ModifyShape extends BRepBuilderAPI_MakeShape
    */
   Modified(S: TopoDS_Shape): NCollection_List_TopoDS_Shape;
   /**
-   * Returns the modified shape corresponding to . S can correspond to the entire initial shape or to its subshape. Exceptions Standard_NoSuchObject if S is not the initial shape or a subshape of the initial shape to which the transformation has been applied. Raises NoSuchObject from Standard if S is not the initial shape or a sub-shape of the initial shape.
+   * Returns the modified shape corresponding to . S can correspond to the entire initial shape or to its subshape. Exceptions Standard_NoSuchObject if S is not the initial shape or a subshape of the initial shape to which the transformation has been applied. Raises NoSuchObject from {@link Standard | `Standard`} if S is not the initial shape or a sub-shape of the initial shape.
    */
   ModifiedShape(S: TopoDS_Shape): TopoDS_Shape;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -28898,6 +33063,24 @@ export declare class BRepBuilderAPI_ModifyShape extends BRepBuilderAPI_MakeShape
 
 /**
  * Provides methods to.
+ *
+ * - identify possible contiguous boundaries (for control afterwards (of continuity: C0, C1, ...))
+ * - assemble contiguous shapes into one shape. Only manifold shapes will be found. Sewing will not be done in case of multiple edges.
+ *
+ * For sewing, use this function as following:
+ *
+ * - create an empty object
+ * - default tolerance 1.E-06
+ * - with face analysis on
+ * - with sewing operation on
+ * - set the cutting option as you need (default True)
+ * - define a tolerance
+ * - add shapes to be sewed -> Add
+ * - compute -> Perform
+ * - output the resulted shapes
+ * - output free edges if necessary
+ * - output multiple edges if necessary
+ * - output the problems if any
  */
 export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
   /**
@@ -29074,6 +33257,8 @@ export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
   SetNonManifoldMode(theNonManifoldMode: boolean): void;
   /**
    * Gets mode for non-manifold sewing.
+   *
+   * INTERNAL FUNCTIONS --
    */
   NonManifoldMode(): boolean;
   static get_type_name(): string;
@@ -29086,6 +33271,19 @@ export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
 
 /**
  * Provides methods to build faces.
+ *
+ * A face may be built:
+ *
+ * - From a surface.
+ * - Elementary surface from gp.
+ * - Surface from Geom.
+ * - From a surface and U,V values.
+ * - From a wire.
+ * - Find the surface automatically if possible.
+ * - From a surface and a wire.
+ * - A flag Inside is given, when this flag is True the wire is oriented to bound a finite area on the surface.
+ * - From a face and a wire.
+ * - The new wire is a perforation.
  */
 export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
@@ -29130,30 +33328,128 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   constructor(W: TopoDS_Wire, OnlyPlane: boolean);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
+   *
+   * - a surface S as the support (the geometric domain) of the face,
+   * - and a wire W to bound it.
+   * The bounds of the face can also be defined by four parameter values umin, umax, vmin, vmax which determine isoparametric limitations on the parametric space of the surface. In this way, a patch is defined. The parameter values are optional. If they are omitted, the natural bounds of the surface are used. A wire is automatically built using the defined bounds.
+   * Up to four edges and four vertices are created with this wire (no edge is created when the corresponding parameter value is infinite). Wires can then be added using the function Add to define other restrictions on the face. These restrictions represent holes.
+   * More than one wire may be added by this way, provided that the wires do not cross each other and that they define only one area on the surface. (Be careful, however, as this is not checked).
+   * Forbidden addition of wires Note that in this schema, the third case is valid if edges of the wire W are declared internal to the face. As a result, these edges are no longer bounds of the face.
+   * A default tolerance (`Precision::Confusion()`) is given to the face, this tolerance may be increased during construction of the face using various algorithms. Rules applied to the arguments For the surface:
+   * - The surface must not be a 'null handle'.
+   * - If the surface is a trimmed surface, the basis surface is used.
+   * - For the wire: the wire is composed of connected edges, each edge having a parametric curve description in the parametric domain of the surface; in other words, as a pcurve. For the parameters:
+   * - The parameter values must be in the parametric range of the surface (or the basis surface, if the surface is trimmed). If this condition is not satisfied, the face is not built, and the Error function will return BRepBuilderAPI_ParametersOutOfRange.
+   * - The bounding parameters p1 and p2 are adjusted on a periodic surface in a given parametric direction by adding or subtracting the period to obtain p1 in the parametric range of the surface and such p2, that p2 - p1 <= Period, where Period is the period of the surface in this parametric direction.
+   * - A parameter value may be infinite. There will be no edge and no vertex in the corresponding direction.
    */
   constructor(F: TopoDS_Face, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
+   *
+   * - a surface S as the support (the geometric domain) of the face,
+   * - and a wire W to bound it.
+   * The bounds of the face can also be defined by four parameter values umin, umax, vmin, vmax which determine isoparametric limitations on the parametric space of the surface. In this way, a patch is defined. The parameter values are optional. If they are omitted, the natural bounds of the surface are used. A wire is automatically built using the defined bounds.
+   * Up to four edges and four vertices are created with this wire (no edge is created when the corresponding parameter value is infinite). Wires can then be added using the function Add to define other restrictions on the face. These restrictions represent holes.
+   * More than one wire may be added by this way, provided that the wires do not cross each other and that they define only one area on the surface. (Be careful, however, as this is not checked).
+   * Forbidden addition of wires Note that in this schema, the third case is valid if edges of the wire W are declared internal to the face. As a result, these edges are no longer bounds of the face.
+   * A default tolerance (`Precision::Confusion()`) is given to the face, this tolerance may be increased during construction of the face using various algorithms. Rules applied to the arguments For the surface:
+   * - The surface must not be a 'null handle'.
+   * - If the surface is a trimmed surface, the basis surface is used.
+   * - For the wire: the wire is composed of connected edges, each edge having a parametric curve description in the parametric domain of the surface; in other words, as a pcurve. For the parameters:
+   * - The parameter values must be in the parametric range of the surface (or the basis surface, if the surface is trimmed). If this condition is not satisfied, the face is not built, and the Error function will return BRepBuilderAPI_ParametersOutOfRange.
+   * - The bounding parameters p1 and p2 are adjusted on a periodic surface in a given parametric direction by adding or subtracting the period to obtain p1 in the parametric range of the surface and such p2, that p2 - p1 <= Period, where Period is the period of the surface in this parametric direction.
+   * - A parameter value may be infinite. There will be no edge and no vertex in the corresponding direction.
    */
   constructor(P: unknown, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
+   *
+   * - a surface S as the support (the geometric domain) of the face,
+   * - and a wire W to bound it.
+   * The bounds of the face can also be defined by four parameter values umin, umax, vmin, vmax which determine isoparametric limitations on the parametric space of the surface. In this way, a patch is defined. The parameter values are optional. If they are omitted, the natural bounds of the surface are used. A wire is automatically built using the defined bounds.
+   * Up to four edges and four vertices are created with this wire (no edge is created when the corresponding parameter value is infinite). Wires can then be added using the function Add to define other restrictions on the face. These restrictions represent holes.
+   * More than one wire may be added by this way, provided that the wires do not cross each other and that they define only one area on the surface. (Be careful, however, as this is not checked).
+   * Forbidden addition of wires Note that in this schema, the third case is valid if edges of the wire W are declared internal to the face. As a result, these edges are no longer bounds of the face.
+   * A default tolerance (`Precision::Confusion()`) is given to the face, this tolerance may be increased during construction of the face using various algorithms. Rules applied to the arguments For the surface:
+   * - The surface must not be a 'null handle'.
+   * - If the surface is a trimmed surface, the basis surface is used.
+   * - For the wire: the wire is composed of connected edges, each edge having a parametric curve description in the parametric domain of the surface; in other words, as a pcurve. For the parameters:
+   * - The parameter values must be in the parametric range of the surface (or the basis surface, if the surface is trimmed). If this condition is not satisfied, the face is not built, and the Error function will return BRepBuilderAPI_ParametersOutOfRange.
+   * - The bounding parameters p1 and p2 are adjusted on a periodic surface in a given parametric direction by adding or subtracting the period to obtain p1 in the parametric range of the surface and such p2, that p2 - p1 <= Period, where Period is the period of the surface in this parametric direction.
+   * - A parameter value may be infinite. There will be no edge and no vertex in the corresponding direction.
    */
   constructor(C: gp_Cylinder, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
+   *
+   * - a surface S as the support (the geometric domain) of the face,
+   * - and a wire W to bound it.
+   * The bounds of the face can also be defined by four parameter values umin, umax, vmin, vmax which determine isoparametric limitations on the parametric space of the surface. In this way, a patch is defined. The parameter values are optional. If they are omitted, the natural bounds of the surface are used. A wire is automatically built using the defined bounds.
+   * Up to four edges and four vertices are created with this wire (no edge is created when the corresponding parameter value is infinite). Wires can then be added using the function Add to define other restrictions on the face. These restrictions represent holes.
+   * More than one wire may be added by this way, provided that the wires do not cross each other and that they define only one area on the surface. (Be careful, however, as this is not checked).
+   * Forbidden addition of wires Note that in this schema, the third case is valid if edges of the wire W are declared internal to the face. As a result, these edges are no longer bounds of the face.
+   * A default tolerance (`Precision::Confusion()`) is given to the face, this tolerance may be increased during construction of the face using various algorithms. Rules applied to the arguments For the surface:
+   * - The surface must not be a 'null handle'.
+   * - If the surface is a trimmed surface, the basis surface is used.
+   * - For the wire: the wire is composed of connected edges, each edge having a parametric curve description in the parametric domain of the surface; in other words, as a pcurve. For the parameters:
+   * - The parameter values must be in the parametric range of the surface (or the basis surface, if the surface is trimmed). If this condition is not satisfied, the face is not built, and the Error function will return BRepBuilderAPI_ParametersOutOfRange.
+   * - The bounding parameters p1 and p2 are adjusted on a periodic surface in a given parametric direction by adding or subtracting the period to obtain p1 in the parametric range of the surface and such p2, that p2 - p1 <= Period, where Period is the period of the surface in this parametric direction.
+   * - A parameter value may be infinite. There will be no edge and no vertex in the corresponding direction.
    */
   constructor(C: unknown, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
+   *
+   * - a surface S as the support (the geometric domain) of the face,
+   * - and a wire W to bound it.
+   * The bounds of the face can also be defined by four parameter values umin, umax, vmin, vmax which determine isoparametric limitations on the parametric space of the surface. In this way, a patch is defined. The parameter values are optional. If they are omitted, the natural bounds of the surface are used. A wire is automatically built using the defined bounds.
+   * Up to four edges and four vertices are created with this wire (no edge is created when the corresponding parameter value is infinite). Wires can then be added using the function Add to define other restrictions on the face. These restrictions represent holes.
+   * More than one wire may be added by this way, provided that the wires do not cross each other and that they define only one area on the surface. (Be careful, however, as this is not checked).
+   * Forbidden addition of wires Note that in this schema, the third case is valid if edges of the wire W are declared internal to the face. As a result, these edges are no longer bounds of the face.
+   * A default tolerance (`Precision::Confusion()`) is given to the face, this tolerance may be increased during construction of the face using various algorithms. Rules applied to the arguments For the surface:
+   * - The surface must not be a 'null handle'.
+   * - If the surface is a trimmed surface, the basis surface is used.
+   * - For the wire: the wire is composed of connected edges, each edge having a parametric curve description in the parametric domain of the surface; in other words, as a pcurve. For the parameters:
+   * - The parameter values must be in the parametric range of the surface (or the basis surface, if the surface is trimmed). If this condition is not satisfied, the face is not built, and the Error function will return BRepBuilderAPI_ParametersOutOfRange.
+   * - The bounding parameters p1 and p2 are adjusted on a periodic surface in a given parametric direction by adding or subtracting the period to obtain p1 in the parametric range of the surface and such p2, that p2 - p1 <= Period, where Period is the period of the surface in this parametric direction.
+   * - A parameter value may be infinite. There will be no edge and no vertex in the corresponding direction.
    */
   constructor(S: gp_Sphere, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
+   *
+   * - a surface S as the support (the geometric domain) of the face,
+   * - and a wire W to bound it.
+   * The bounds of the face can also be defined by four parameter values umin, umax, vmin, vmax which determine isoparametric limitations on the parametric space of the surface. In this way, a patch is defined. The parameter values are optional. If they are omitted, the natural bounds of the surface are used. A wire is automatically built using the defined bounds.
+   * Up to four edges and four vertices are created with this wire (no edge is created when the corresponding parameter value is infinite). Wires can then be added using the function Add to define other restrictions on the face. These restrictions represent holes.
+   * More than one wire may be added by this way, provided that the wires do not cross each other and that they define only one area on the surface. (Be careful, however, as this is not checked).
+   * Forbidden addition of wires Note that in this schema, the third case is valid if edges of the wire W are declared internal to the face. As a result, these edges are no longer bounds of the face.
+   * A default tolerance (`Precision::Confusion()`) is given to the face, this tolerance may be increased during construction of the face using various algorithms. Rules applied to the arguments For the surface:
+   * - The surface must not be a 'null handle'.
+   * - If the surface is a trimmed surface, the basis surface is used.
+   * - For the wire: the wire is composed of connected edges, each edge having a parametric curve description in the parametric domain of the surface; in other words, as a pcurve. For the parameters:
+   * - The parameter values must be in the parametric range of the surface (or the basis surface, if the surface is trimmed). If this condition is not satisfied, the face is not built, and the Error function will return BRepBuilderAPI_ParametersOutOfRange.
+   * - The bounding parameters p1 and p2 are adjusted on a periodic surface in a given parametric direction by adding or subtracting the period to obtain p1 in the parametric range of the surface and such p2, that p2 - p1 <= Period, where Period is the period of the surface in this parametric direction.
+   * - A parameter value may be infinite. There will be no edge and no vertex in the corresponding direction.
    */
   constructor(C: unknown, W: TopoDS_Wire);
   /**
    * Adds the wire <W> in the face <F> A general method to create a face is to give.
+   *
+   * - a surface S as the support (the geometric domain) of the face,
+   * - and a wire W to bound it.
+   * The bounds of the face can also be defined by four parameter values umin, umax, vmin, vmax which determine isoparametric limitations on the parametric space of the surface. In this way, a patch is defined. The parameter values are optional. If they are omitted, the natural bounds of the surface are used. A wire is automatically built using the defined bounds.
+   * Up to four edges and four vertices are created with this wire (no edge is created when the corresponding parameter value is infinite). Wires can then be added using the function Add to define other restrictions on the face. These restrictions represent holes.
+   * More than one wire may be added by this way, provided that the wires do not cross each other and that they define only one area on the surface. (Be careful, however, as this is not checked).
+   * Forbidden addition of wires Note that in this schema, the third case is valid if edges of the wire W are declared internal to the face. As a result, these edges are no longer bounds of the face.
+   * A default tolerance (`Precision::Confusion()`) is given to the face, this tolerance may be increased during construction of the face using various algorithms. Rules applied to the arguments For the surface:
+   * - The surface must not be a 'null handle'.
+   * - If the surface is a trimmed surface, the basis surface is used.
+   * - For the wire: the wire is composed of connected edges, each edge having a parametric curve description in the parametric domain of the surface; in other words, as a pcurve. For the parameters:
+   * - The parameter values must be in the parametric range of the surface (or the basis surface, if the surface is trimmed). If this condition is not satisfied, the face is not built, and the Error function will return BRepBuilderAPI_ParametersOutOfRange.
+   * - The bounding parameters p1 and p2 are adjusted on a periodic surface in a given parametric direction by adding or subtracting the period to obtain p1 in the parametric range of the surface and such p2, that p2 - p1 <= Period, where Period is the period of the surface in this parametric direction.
+   * - A parameter value may be infinite. There will be no edge and no vertex in the corresponding direction.
    */
   constructor(S: Geom_Surface, W: TopoDS_Wire);
   /**
@@ -29214,10 +33510,12 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   Init(S: Geom_Surface, Bound: boolean, TolDegen: number): void;
   /**
    * Initializes (or reinitializes) the construction of a face on the surface S, limited in the u parametric direction by the two parameter values UMin and UMax and in the v parametric direction by the two parameter values VMin and VMax. Warning Error returns:
+   *
+   * - BRepBuilderAPI_ParametersOutOfRange when the parameters given are outside the bounds of the surface or the basis surface of a trimmed surface. TolDegen parameter is used for resolution of degenerated edges.
    */
   Init(S: Geom_Surface, UMin: number, UMax: number, VMin: number, VMax: number, TolDegen: number): void;
   /**
-   * Adds the wire W to the constructed face as a hole. Warning W must not cross the other bounds of the face, and all the bounds must define only one area on the surface. (Be careful, however, as this is not checked.) Example // a cylinder gp_Cylinder C = ..; // a wire TopoDS_Wire W = ...; BRepBuilderAPI_MakeFace MF(C); MF.Add(W); TopoDS_Face F = MF;.
+   * Adds the wire W to the constructed face as a hole. Warning W must not cross the other bounds of the face, and all the bounds must define only one area on the surface. (Be careful, however, as this is not checked.) Example // a cylinder {@link gp_Cylinder | `gp_Cylinder`} C = ..; // a wire {@link TopoDS_Wire | `TopoDS_Wire`} W = ...; {@link BRepBuilderAPI_MakeFace | `BRepBuilderAPI_MakeFace`} MF(C); MF.Add(W); {@link TopoDS_Face | `TopoDS_Face`} F = MF;.
    */
   Add(W: TopoDS_Wire): void;
   /**
@@ -29226,6 +33524,8 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   IsDone(): boolean;
   /**
    * Returns the construction status BRepBuilderAPI_FaceDone if the face is built, or.
+   *
+   * - another value of the `BRepBuilderAPI_FaceError` enumeration indicating why the construction failed, in particular when the given parameters are outside the bounds of the surface.
    */
   Error(): unknown;
   /**
@@ -29238,7 +33538,13 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
 }
 
 /**
- * Geometric transformation on a shape. The transformation to be applied is defined as a gp_Trsf transformation, i.e. a transformation which does not modify the underlying geometry of shapes. The transformation is applied to:
+ * Geometric transformation on a shape. The transformation to be applied is defined as a {@link gp_Trsf | `gp_Trsf`} transformation, i.e. a transformation which does not modify the underlying geometry of shapes. The transformation is applied to:
+ *
+ * - all curves which support edges of a shape, and
+ * - all surfaces which support its faces. A Transform object provides a framework for:
+ * - defining the geometric transformation to be applied,
+ * - implementing the transformation algorithm, and
+ * - consulting the results.
  */
 export declare class BRepBuilderAPI_Transform extends BRepBuilderAPI_ModifyShape {
   /**
@@ -29254,11 +33560,15 @@ export declare class BRepBuilderAPI_Transform extends BRepBuilderAPI_ModifyShape
    */
   constructor(theShape: TopoDS_Shape, theTrsf: gp_Trsf, theCopyGeom: boolean);
   /**
-   * Creates a transformation from the gp_Trsf <theTrsf>, and applies it to the shape <theShape>. If the transformation is direct and isometric (determinant = 1) and <theCopyGeom> = false, the resulting shape is <theShape> on which a new location has been set. Otherwise, the transformation is applied on a duplication of <theShape>. If <theCopyMesh> is true, the triangulation will be copied, and the copy will be assigned to the result shape.
+   * Creates a transformation from the {@link gp_Trsf | `gp_Trsf`} <theTrsf>, and applies it to the shape <theShape>. If the transformation is direct and isometric (determinant = 1) and <theCopyGeom> = false, the resulting shape is <theShape> on which a new location has been set. Otherwise, the transformation is applied on a duplication of <theShape>. If <theCopyMesh> is true, the triangulation will be copied, and the copy will be assigned to the result shape.
    */
   constructor(theShape: TopoDS_Shape, theTrsf: gp_Trsf, theCopyGeom?: boolean, theCopyMesh?: boolean);
   /**
    * Applies the geometric transformation defined at the time of construction of this framework to the shape S.
+   *
+   * - If the transformation T is direct and isometric, in other words, if the determinant of the vectorial part of T is equal to 1., and if theCopyGeom equals false (the default value), the resulting shape is the same as the original but with a new location assigned to it.
+   * - In all other cases, the transformation is applied to a duplicate of theShape.
+   * - If theCopyMesh is true, the triangulation will be copied, and the copy will be assigned to the result shape. Use the function Shape to access the result. Note: this framework can be reused to apply the same geometric transformation to other shapes. You only need to specify them by calling the function Perform again.
    */
   Perform(theShape: TopoDS_Shape, theCopyGeom: boolean, theCopyMesh: boolean): void;
   /**
@@ -29275,11 +33585,14 @@ export declare class BRepBuilderAPI_Transform extends BRepBuilderAPI_ModifyShape
 }
 
 /**
- * Describes functions to build BRepBuilder vertices directly from 3D geometric points. A vertex built using a MakeVertex object is only composed of a 3D point and a default precision value (Precision::Confusion()). Later on, 2D representations can be added, for example, when inserting a vertex in an edge. A MakeVertex object provides a framework for:
+ * Describes functions to build BRepBuilder vertices directly from 3D geometric points. A vertex built using a MakeVertex object is only composed of a 3D point and a default precision value (`Precision::Confusion()`). Later on, 2D representations can be added, for example, when inserting a vertex in an edge. A MakeVertex object provides a framework for:
+ *
+ * - defining and implementing the construction of a vertex, and
+ * - consulting the result.
  */
 export declare class BRepBuilderAPI_MakeVertex extends BRepBuilderAPI_MakeShape {
   /**
-   * Constructs a vertex from point P. Example create a vertex from a 3D point. gp_Pnt P(0,0,10); TopoDS_Vertex V = BRepBuilderAPI_MakeVertex(P);.
+   * Constructs a vertex from point P. Example create a vertex from a 3D point. {@link gp_Pnt | `gp_Pnt`} P(0,0,10); {@link TopoDS_Vertex | `TopoDS_Vertex`} V = `BRepBuilderAPI_MakeVertex(P)`;.
    */
   constructor(P: gp_Pnt);
   /**
@@ -29293,10 +33606,12 @@ export declare class BRepBuilderAPI_MakeVertex extends BRepBuilderAPI_MakeShape 
 
 /**
  * This is the root class for all shape constructions. It stores the result.
+ *
+ * It provides deferred methods to trace the history of sub-shapes.
  */
 export declare class BRepBuilderAPI_MakeShape extends BRepBuilderAPI_Command {
   /**
-   * This is called by Shape(). It does nothing but may be redefined.
+   * This is called by `Shape()`. It does nothing but may be redefined.
    */
   Build(theRange: Message_ProgressRange): void;
   /**
@@ -29322,6 +33637,17 @@ export declare class BRepBuilderAPI_MakeShape extends BRepBuilderAPI_Command {
 
 /**
  * Describes functions to build wires from edges. A wire can be built from any number of edges. To build a wire you first initialize the construction, then add edges in sequence. An unlimited number of edges can be added. The initialization of construction is done with:
+ *
+ * - no edge (an empty wire), or
+ * - edges of an existing wire, or
+ * - up to four connectable edges. In order to be added to a wire under construction, an edge (unless it is the first one) must satisfy the following condition: one of its vertices must be geometrically coincident with one of the vertices of the wire (provided that the highest tolerance factor is assigned to the two vertices). It could also be the same vertex.
+ * - The given edge is shared by the wire if it contains:
+ * - two vertices, identical to two vertices of the wire under construction (a general case of the wire closure), or
+ * - one vertex, identical to a vertex of the wire under construction; the other vertex not being geometrically coincident with another vertex of the wire.
+ * - In other cases, when one of the vertices of the edge is simply geometrically coincident with a vertex of the wire under construction (provided that the highest tolerance factor is assigned to the two vertices), the given edge is first copied and the coincident vertex is replaced in this new edge, by the coincident vertex of the wire. Note: it is possible to build non manifold wires using this construction tool. A MakeWire object provides a framework for:
+ * - initializing the construction of a wire,
+ * - adding edges to the wire under construction, and
+ * - consulting the result.
  */
 export declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
   /**
@@ -29350,10 +33676,20 @@ export declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
   constructor(E1: TopoDS_Edge, E2: TopoDS_Edge, E3: TopoDS_Edge);
   /**
    * Make a Wire from four edges. Constructs a wire.
+   *
+   * - from the {@link TopoDS_Wire | `TopoDS_Wire`} W composed of the edge E, or
+   * - from edge E, or
+   * - from two edges E1 and E2, or
+   * - from three edges E1, E2 and E3, or
+   * - from four edges E1, E2, E3 and E4. Further edges can be added using the function Add. Given edges are added in a sequence.
+   * Each of them must be connectable to the wire under construction, and so must satisfy the following condition (unless it is the first edge of the wire): one of its vertices must be geometrically coincident with one of the vertices of the wire (provided that the highest tolerance factor is assigned to the two vertices). It could also be the same vertex. Warning If an edge is not connectable to the wire under construction it is not added.
+   * The function Error will return BRepBuilderAPI_DisconnectedWire, the function IsDone will return false and the function Wire will raise an error, until a new connectable edge is added.
    */
   constructor(E1: TopoDS_Edge, E2: TopoDS_Edge, E3: TopoDS_Edge, E4: TopoDS_Edge);
   /**
-   * Adds the edge E to the wire under construction. E must be connectable to the wire under construction, and, unless it is the first edge of the wire, must satisfy the following condition: one of its vertices must be geometrically coincident with one of the vertices of the wire (provided that the highest tolerance factor is assigned to the two vertices). It could also be the same vertex. Warning If E is not connectable to the wire under construction it is not added. The function Error will return BRepBuilderAPI_DisconnectedWire, the function IsDone will return false and the function Wire will raise an error, until a new connectable edge is added.
+   * Adds the edge E to the wire under construction.
+   * E must be connectable to the wire under construction, and, unless it is the first edge of the wire, must satisfy the following condition: one of its vertices must be geometrically coincident with one of the vertices of the wire (provided that the highest tolerance factor is assigned to the two vertices). It could also be the same vertex. Warning If E is not connectable to the wire under construction it is not added.
+   * The function Error will return BRepBuilderAPI_DisconnectedWire, the function IsDone will return false and the function Wire will raise an error, until a new connectable edge is added.
    */
   Add(E: TopoDS_Edge): void;
   /**
@@ -29361,15 +33697,21 @@ export declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
    */
   Add(W: TopoDS_Wire): void;
   /**
-   * Adds the edges of <L> to the current wire. The edges are not to be consecutive. But they are to be all connected geometrically or topologically. If some of them are not connected the Status give DisconnectedWire but the "Maker" is Done() and you can get the partial result. (i.e. connected to the first edgeof the list <L>).
+   * Adds the edges of <L> to the current wire. The edges are not to be consecutive. But they are to be all connected geometrically or topologically. If some of them are not connected the Status give DisconnectedWire but the "Maker" is `Done()` and you can get the partial result. (i.e. connected to the first edgeof the list <L>).
    */
   Add(L: NCollection_List_TopoDS_Shape): void;
   /**
    * Returns true if this algorithm contains a valid wire. IsDone returns false if:
+   *
+   * - there are no edges in the wire, or
+   * - the last edge which you tried to add was not connectable.
    */
   IsDone(): boolean;
   /**
    * Returns the construction status.
+   *
+   * - BRepBuilderAPI_WireDone if the wire is built, or
+   * - another value of the `BRepBuilderAPI_WireError` enumeration indicating why the construction failed.
    */
   Error(): BRepBuilderAPI_WireError;
   /**
@@ -29378,6 +33720,9 @@ export declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
   Wire(): TopoDS_Wire;
   /**
    * Returns the last edge added to the wire under construction. Warning.
+   *
+   * - This edge can be different from the original one (the argument of the function Add, for instance,)
+   * - A null edge is returned if there are no edges in the wire under construction, or if the last edge which you tried to add was not connectable..
    */
   Edge(): TopoDS_Edge;
   /**
@@ -29390,7 +33735,12 @@ export declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
 }
 
 /**
- * Describes functions to build a shape corresponding to the skin of a surface. Note that the term shell in the class name has the same definition as that of a shell in STEP, in other words the skin of a shape, and not a solid model defined by surface and thickness. If you want to build the second sort of shell, you must use BRepOffsetAPI_MakeOffsetShape. A shell is made of a series of faces connected by their common edges. If the underlying surface of a face is not C2 continuous and the flag Segment is True, MakeShell breaks the surface down into several faces which are all C2 continuous and which are connected along the non-regular curves on the surface. The resulting shell contains all these faces. Construction of a Shell from a non-C2 continuous Surface A MakeShell object provides a framework for:
+ * Describes functions to build a shape corresponding to the skin of a surface. Note that the term shell in the class name has the same definition as that of a shell in STEP, in other words the skin of a shape, and not a solid model defined by surface and thickness. If you want to build the second sort of shell, you must use {@link BRepOffsetAPI_MakeOffsetShape | `BRepOffsetAPI_MakeOffsetShape`}. A shell is made of a series of faces connected by their common edges.
+ * If the underlying surface of a face is not C2 continuous and the flag Segment is True, MakeShell breaks the surface down into several faces which are all C2 continuous and which are connected along the non-regular curves on the surface. The resulting shell contains all these faces. Construction of a Shell from a non-C2 continuous Surface A MakeShell object provides a framework for:
+ *
+ * - defining the construction of a shell,
+ * - implementing the construction algorithm, and
+ * - consulting the result. Warning The connected C2 faces in the shell resulting from a decomposition of the surface are not sewn. For a sewn result, you need to use `BRepOffsetAPI_Sewing`. For a shell with thickness, you need to use {@link BRepOffsetAPI_MakeOffsetShape | `BRepOffsetAPI_MakeOffsetShape`}.
  */
 export declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
   /**
@@ -29415,6 +33765,8 @@ export declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
   constructor(S: Geom_Surface, UMin: number, UMax: number, VMin: number, VMax: number, Segment?: boolean);
   /**
    * Defines or redefines the arguments for the construction of a shell. The construction is initialized with the surface S, limited in the u parametric direction by the two parameter values UMin and UMax, and in the v parametric direction by the two parameter values VMin and VMax. Warning The function Error returns:
+   *
+   * - BRepBuilderAPI_ShellParametersOutOfRange when the given parameters are outside the bounds of the surface or the basis surface if S is trimmed
    */
   Init(S: Geom_Surface, UMin: number, UMax: number, VMin: number, VMax: number, Segment: boolean): void;
   /**
@@ -29423,6 +33775,9 @@ export declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
   IsDone(): boolean;
   /**
    * Returns the construction status:
+   *
+   * - BRepBuilderAPI_ShellDone if the shell is built, or
+   * - another value of the `BRepBuilderAPI_ShellError` enumeration indicating why the construction failed. This is frequently BRepBuilderAPI_ShellParametersOutOfRange indicating that the given parameters are outside the bounds of the surface.
    */
   Error(): unknown;
   /**
@@ -29436,6 +33791,9 @@ export declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
 
 /**
  * Describes functions to build a solid from shells. A solid is made of one shell, or a series of shells, which do not intersect each other. One of these shells constitutes the outside skin of the solid. It may be closed (a finite solid) or open (an infinite solid). Other shells form hollows (cavities) in these previous ones. Each must bound a closed volume. A MakeSolid object provides a framework for:
+ *
+ * - defining and implementing the construction of a solid, and
+ * - consulting the result.
  */
 export declare class BRepBuilderAPI_MakeSolid extends BRepBuilderAPI_MakeShape {
   /**
@@ -29460,10 +33818,20 @@ export declare class BRepBuilderAPI_MakeSolid extends BRepBuilderAPI_MakeShape {
   constructor(S1: TopoDS_Shell, S2: TopoDS_Shell);
   /**
    * Add a shell to a solid.
+   *
+   * Constructs a solid:
+   *
+   * - from the solid So, to which shells can be added, or
+   * - by adding the shell S to the solid So. Warning No check is done to verify the conditions of coherence of the resulting solid. In particular S must not intersect the solid S0. Besides, after all shells have been added using the Add function, one of these shells should constitute the outside skin of the solid. It may be closed (a finite solid) or open (an infinite solid). Other shells form hollows (cavities) in the previous ones. Each must bound a closed volume.
    */
   constructor(So: TopoDS_Solid, S: TopoDS_Shell);
   /**
    * Make a solid from three shells. Constructs a solid.
+   *
+   * - covering the whole space, or
+   * - from shell S, or
+   * - from two shells S1 and S2, or
+   * - from three shells S1, S2 and S3, or Warning No check is done to verify the conditions of coherence of the resulting solid. In particular, S1, S2 (and S3) must not intersect each other. Besides, after all shells have been added using the Add function, one of these shells should constitute the outside skin of the solid; it may be closed (a finite solid) or open (an infinite solid). Other shells form hollows (cavities) in these previous ones. Each must bound a closed volume.
    */
   constructor(S1: TopoDS_Shell, S2: TopoDS_Shell, S3: TopoDS_Shell);
   /**
@@ -29488,7 +33856,13 @@ export declare class BRepBuilderAPI_MakeSolid extends BRepBuilderAPI_MakeShape {
 }
 
 /**
- * Root class for all commands in BRepBuilderAPI.
+ * Root class for all commands in {@link BRepBuilderAPI | `BRepBuilderAPI`}.
+ *
+ * Provides :
+ *
+ * - Managements of the notDone flag.
+ * - Catching of exceptions (not implemented).
+ * - Logging (not implemented).
  */
 export declare class BRepBuilderAPI_Command {
   IsDone(): boolean;
@@ -29502,12 +33876,15 @@ export declare class BRepBuilderAPI_Command {
 }
 
 /**
- * The BRepLib package provides general utilities for BRep.
+ * The {@link BRepLib | `BRepLib`} package provides general utilities for BRep.
+ *
+ * - FindSurface : Class to compute a surface through a set of edges.
+ * - Compute missing 3d curve on an edge.
  */
 export declare class BRepLib {
   constructor();
   /**
-   * Computes the max distance between edge and its 2d representation on the face. Sets the default precision. The current Precision is returned.
+   * Computes the max distance between edge and its 2d representation on the face. Sets the default precision. The current {@link Precision | `Precision`} is returned.
    */
   static Precision(P: number): void;
   /**
@@ -29535,11 +33912,11 @@ export declare class BRepLib {
    */
   static BuildCurve3d(E: TopoDS_Edge, Tolerance: number, Continuity: GeomAbs_Shape, MaxDegree: number, MaxSegment: number): boolean;
   /**
-   * Computes the 3d curves for all the edges of  return False if one of the computation failed. <MaxSegment> >= 30 in approximation.
+   * Computes the 3d curves for all the edges of return False if one of the computation failed. <MaxSegment> >= 30 in approximation.
    */
   static BuildCurves3d(S: TopoDS_Shape, Tolerance: number, Continuity: GeomAbs_Shape, MaxDegree: number, MaxSegment: number): boolean;
   /**
-   * Computes the 3d curves for all the edges of  return False if one of the computation failed.
+   * Computes the 3d curves for all the edges of return False if one of the computation failed.
    */
   static BuildCurves3d(S: TopoDS_Shape): boolean;
   /**
@@ -29560,6 +33937,8 @@ export declare class BRepLib {
   static UpdateEdgeTol(E: TopoDS_Edge, MinToleranceRequest: number, MaxToleranceToCheck: number): boolean;
   /**
    * Checks all the edges of the shape whose Tolerance is smaller than MaxToleranceToCheck Returns True if at least one edge was updated MinToleranceRequest is the minimum tolerance before it is useful to start testing. Usually it should be around 10e-5.
+   *
+   * Warning: The method is very slow as it checks all. Use only in interfaces or processing assimilate batch
    */
   static UpdateEdgeTolerance(S: TopoDS_Shape, MinToleranceRequest: number, MaxToleranceToCheck: number): boolean;
   /**
@@ -29571,7 +33950,7 @@ export declare class BRepLib {
    */
   static SameParameter(theEdge: TopoDS_Edge, theTolerance: number, IsUseOldEdge: boolean): { result: TopoDS_Edge; theNewTol: number };
   /**
-   * Computes new 2d curve(s) for all the edges of  to have the same parameter as the 3d curve. The algorithm is not done if the flag SameParameter was True on an Edge.
+   * Computes new 2d curve(s) for all the edges of to have the same parameter as the 3d curve. The algorithm is not done if the flag SameParameter was True on an Edge.
    */
   static SameParameter(S: TopoDS_Shape, Tolerance: number, forced: boolean): void;
   /**
@@ -29583,7 +33962,7 @@ export declare class BRepLib {
    */
   static UpdateTolerances(S: TopoDS_Shape, verifyFaceTolerance: boolean): void;
   /**
-   * Replaces tolerance of FACE EDGE VERTEX by the tolerance Max of their connected handling shapes. It is not necessary to use this call after SameParameter. (called in) theReshaper is used to record the modifications of input shape  to prevent any modifications on the shape itself. Thus the input shape (and its subshapes) will not be modified, instead the reshaper will contain a modified empty-copies of original subshapes as substitutions.
+   * Replaces tolerance of FACE EDGE VERTEX by the tolerance Max of their connected handling shapes. It is not necessary to use this call after SameParameter. (called in) theReshaper is used to record the modifications of input shape to prevent any modifications on the shape itself. Thus the input shape (and its subshapes) will not be modified, instead the reshaper will contain a modified empty-copies of original subshapes as substitutions.
    */
   static UpdateTolerances(S: TopoDS_Shape, theReshaper: unknown, verifyFaceTolerance: boolean): void;
   /**
@@ -29603,7 +33982,7 @@ export declare class BRepLib {
    */
   static EncodeRegularity(S: TopoDS_Shape, TolAng: number): void;
   /**
-   * Encodes the Regularity of edges in list <LE> on the shape  Warning: <TolAng> is an angular tolerance, expressed in Rad. Warning: If the edges's regularity are coded before, nothing is done.
+   * Encodes the Regularity of edges in list <LE> on the shape Warning: <TolAng> is an angular tolerance, expressed in Rad. Warning: If the edges's regularity are coded before, nothing is done.
    */
   static EncodeRegularity(S: TopoDS_Shape, LE: NCollection_List_TopoDS_Shape, TolAng: number): void;
   /**
@@ -29619,11 +33998,11 @@ export declare class BRepLib {
    */
   static ReverseSortFaces(S: TopoDS_Shape, LF: NCollection_List_TopoDS_Shape): void;
   /**
-   * Corrects the normals in Poly_Triangulation of faces, in such way that normals at nodes lying along smooth edges have the same value on both adjacent triangulations. Returns TRUE if any correction is done.
+   * Corrects the normals in {@link Poly_Triangulation | `Poly_Triangulation`} of faces, in such way that normals at nodes lying along smooth edges have the same value on both adjacent triangulations. Returns TRUE if any correction is done.
    */
   static EnsureNormalConsistency(S: TopoDS_Shape, theAngTol: number, ForceComputeNormals: boolean): boolean;
   /**
-   * Updates value of deflection in Poly_Triangulation of faces by the maximum deviation measured on existing triangulation.
+   * Updates value of deflection in {@link Poly_Triangulation | `Poly_Triangulation`} of faces by the maximum deviation measured on existing triangulation.
    */
   static UpdateDeflection(S: TopoDS_Shape): void;
   /**
@@ -29656,31 +34035,55 @@ export declare class BRepLib {
 
 /**
  * Provides global functions to compute a shape's global properties for lines, surfaces or volumes, and bring them together with the global properties already computed for a geometric system. The global properties computed for a system are :
+ *
+ * - its mass,
+ * - its center of mass,
+ * - its matrix of inertia,
+ * - its moment about an axis,
+ * - its radius of gyration about an axis,
+ * - and its principal properties of inertia such as principal axis, principal moments, principal radius of gyration.
  */
 export declare class BRepGProp {
   constructor();
   /**
-   * Computes the linear global properties of the shape S, i.e. the global properties induced by each edge of the shape S, and brings them together with the global properties still retained by the framework LProps. If the current system of LProps was empty, its global properties become equal to the linear global properties of S. For this computation no linear density is attached to the edges. So, for example, the added mass corresponds to the sum of the lengths of the edges of S. The density of the composed systems, i.e. that of each component of the current system of LProps, and that of S which is considered to be equal to 1, must be coherent. Note that this coherence cannot be checked. You are advised to use a separate framework for each density, and then to bring these frameworks together into a global one. The point relative to which the inertia of the system is computed is the reference point of the framework LProps. Note: if your programming ensures that the framework LProps retains only linear global properties (brought together for example, by the function LinearProperties) for objects the density of which is equal to 1 (or is not defined), the function Mass will return the total length of edges of the system analysed by LProps. Warning No check is performed to verify that the shape S retains truly linear properties. If S is simply a vertex, it is not considered to present any additional global properties. SkipShared is a special flag, which allows taking in calculation shared topological entities or not. For ex., if SkipShared = True, edges, shared by two or more faces, are taken into calculation only once. If we have cube with sizes 1, 1, 1, its linear properties = 12 for SkipEdges = true and 24 for SkipEdges = false. UseTriangulation is a special flag, which defines preferable source of geometry data. If UseTriangulation = false, exact geometry objects (curves) are used, otherwise polygons of triangulation are used first.
+   * Computes the linear global properties of the shape S, i.e. the global properties induced by each edge of the shape S, and brings them together with the global properties still retained by the framework LProps. If the current system of LProps was empty, its global properties become equal to the linear global properties of S. For this computation no linear density is attached to the edges. So, for example, the added mass corresponds to the sum of the lengths of the edges of S.
+   * The density of the composed systems, i.e. that of each component of the current system of LProps, and that of S which is considered to be equal to 1, must be coherent. Note that this coherence cannot be checked.
+   * You are advised to use a separate framework for each density, and then to bring these frameworks together into a global one. The point relative to which the inertia of the system is computed is the reference point of the framework LProps.
+   * Note: if your programming ensures that the framework LProps retains only linear global properties (brought together for example, by the function LinearProperties) for objects the density of which is equal to 1 (or is not defined), the function Mass will return the total length of edges of the system analysed by LProps. Warning No check is performed to verify that the shape S retains truly linear properties. If S is simply a vertex, it is not considered to present any additional global properties. SkipShared is a special flag, which allows taking in calculation shared topological entities or not. For ex., if SkipShared = True, edges, shared by two or more faces, are taken into calculation only once. If we have cube with sizes 1, 1, 1, its linear properties = 12 for SkipEdges = true and 24 for SkipEdges = false. UseTriangulation is a special flag, which defines preferable source of geometry data.
+   * If UseTriangulation = false, exact geometry objects (curves) are used, otherwise polygons of triangulation are used first.
    */
   static LinearProperties(S: TopoDS_Shape, LProps: GProp_GProps, SkipShared: boolean, UseTriangulation: boolean): void;
   /**
-   * Computes the surface global properties of the shape S, i.e. the global properties induced by each face of the shape S, and brings them together with the global properties still retained by the framework SProps. If the current system of SProps was empty, its global properties become equal to the surface global properties of S. For this computation, no surface density is attached to the faces. Consequently, the added mass corresponds to the sum of the areas of the faces of S. The density of the component systems, i.e. that of each component of the current system of SProps, and that of S which is considered to be equal to 1, must be coherent. Note that this coherence cannot be checked. You are advised to use a framework for each different value of density, and then to bring these frameworks together into a global one. The point relative to which the inertia of the system is computed is the reference point of the framework SProps. Note : if your programming ensures that the framework SProps retains only surface global properties, brought together, for example, by the function SurfaceProperties, for objects the density of which is equal to 1 (or is not defined), the function Mass will return the total area of faces of the system analysed by SProps. Warning No check is performed to verify that the shape S retains truly surface properties. If S is simply a vertex, an edge or a wire, it is not considered to present any additional global properties. SkipShared is a special flag, which allows taking in calculation shared topological entities or not. For ex., if SkipShared = True, faces, shared by two or more shells, are taken into calculation only once. UseTriangulation is a special flag, which defines preferable source of geometry data. If UseTriangulation = false, exact geometry objects (surfaces) are used, otherwise face triangulations are used first.
+   * Computes the surface global properties of the shape S, i.e. the global properties induced by each face of the shape S, and brings them together with the global properties still retained by the framework SProps. If the current system of SProps was empty, its global properties become equal to the surface global properties of S. For this computation, no surface density is attached to the faces. Consequently, the added mass corresponds to the sum of the areas of the faces of S.
+   * The density of the component systems, i.e. that of each component of the current system of SProps, and that of S which is considered to be equal to 1, must be coherent. Note that this coherence cannot be checked.
+   * You are advised to use a framework for each different value of density, and then to bring these frameworks together into a global one. The point relative to which the inertia of the system is computed is the reference point of the framework SProps.
+   * Note : if your programming ensures that the framework SProps retains only surface global properties, brought together, for example, by the function SurfaceProperties, for objects the density of which is equal to 1 (or is not defined), the function Mass will return the total area of faces of the system analysed by SProps. Warning No check is performed to verify that the shape S retains truly surface properties. If S is simply a vertex, an edge or a wire, it is not considered to present any additional global properties. SkipShared is a special flag, which allows taking in calculation shared topological entities or not. For ex., if SkipShared = True, faces, shared by two or more shells, are taken into calculation only once. UseTriangulation is a special flag, which defines preferable source of geometry data. If UseTriangulation = false, exact geometry objects (surfaces) are used, otherwise face triangulations are used first.
    */
   static SurfaceProperties(S: TopoDS_Shape, SProps: GProp_GProps, SkipShared: boolean, UseTriangulation: boolean): void;
   /**
-   * Updates <SProps> with the shape , that contains its principal properties. The surface properties of all the faces in  are computed. Adaptive 2D Gauss integration is used. Parameter Eps sets maximal relative error of computed mass (area) for each face. Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values for two successive steps of adaptive integration. Method returns estimation of relative error reached for whole shape. WARNING: if Eps > 0.001 algorithm performs non-adaptive integration. SkipShared is a special flag, which allows taking in calculation shared topological entities or not For ex., if SkipShared = True, faces, shared by two or more shells, are taken into calculation only once.
+   * Updates <SProps> with the shape , that contains its principal properties. The surface properties of all the faces in are computed. Adaptive 2D Gauss integration is used. Parameter Eps sets maximal relative error of computed mass (area) for each face. Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values for two successive steps of adaptive integration. Method returns estimation of relative error reached for whole shape. WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
+   * SkipShared is a special flag, which allows taking in calculation shared topological entities or not For ex., if SkipShared = True, faces, shared by two or more shells, are taken into calculation only once.
    */
   static SurfaceProperties(S: TopoDS_Shape, SProps: GProp_GProps, Eps: number, SkipShared: boolean): number;
   /**
-   * Computes the global volume properties of the solid S, and brings them together with the global properties still retained by the framework VProps. If the current system of VProps was empty, its global properties become equal to the global properties of S for volume. For this computation, no volume density is attached to the solid. Consequently, the added mass corresponds to the volume of S. The density of the component systems, i.e. that of each component of the current system of VProps, and that of S which is considered to be equal to 1, must be coherent to each other. Note that this coherence cannot be checked. You are advised to use a separate framework for each density, and then to bring these frameworks together into a global one. The point relative to which the inertia of the system is computed is the reference point of the framework VProps. Note: if your programming ensures that the framework VProps retains only global properties of volume (brought together for example, by the function VolumeProperties) for objects the density of which is equal to 1 (or is not defined), the function Mass will return the total volume of the solids of the system analysed by VProps. Warning The shape S must represent an object whose global volume properties can be computed. It may be a finite solid, or a series of finite solids all oriented in a coherent way. Nonetheless, S must be exempt of any free boundary. Note that these conditions of coherence are not checked by this algorithm, and results will be false if they are not respected. SkipShared a is special flag, which allows taking in calculation shared topological entities or not. For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once. UseTriangulation is a special flag, which defines preferable source of geometry data. If UseTriangulation = false, exact geometry objects (surfaces) are used, otherwise face triangulations are used first.
+   * Computes the global volume properties of the solid S, and brings them together with the global properties still retained by the framework VProps. If the current system of VProps was empty, its global properties become equal to the global properties of S for volume. For this computation, no volume density is attached to the solid. Consequently, the added mass corresponds to the volume of S.
+   * The density of the component systems, i.e. that of each component of the current system of VProps, and that of S which is considered to be equal to 1, must be coherent to each other. Note that this coherence cannot be checked.
+   * You are advised to use a separate framework for each density, and then to bring these frameworks together into a global one. The point relative to which the inertia of the system is computed is the reference point of the framework VProps.
+   * Note: if your programming ensures that the framework VProps retains only global properties of volume (brought together for example, by the function VolumeProperties) for objects the density of which is equal to 1 (or is not defined), the function Mass will return the total volume of the solids of the system analysed by VProps. Warning The shape S must represent an object whose global volume properties can be computed. It may be a finite solid, or a series of finite solids all oriented in a coherent way. Nonetheless, S must be exempt of any free boundary.
+   * Note that these conditions of coherence are not checked by this algorithm, and results will be false if they are not respected. SkipShared a is special flag, which allows taking in calculation shared topological entities or not.
+   * For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once. UseTriangulation is a special flag, which defines preferable source of geometry data. If UseTriangulation = false, exact geometry objects (surfaces) are used, otherwise face triangulations are used first.
    */
   static VolumeProperties(S: TopoDS_Shape, VProps: GProp_GProps, OnlyClosed: boolean, SkipShared: boolean, UseTriangulation: boolean): void;
   /**
-   * Updates <VProps> with the shape , that contains its principal properties. The volume properties of all the FORWARD and REVERSED faces in  are computed. If OnlyClosed is True then computed faces must belong to closed Shells. Adaptive 2D Gauss integration is used. Parameter Eps sets maximal relative error of computed mass (volume) for each face. Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values for two successive steps of adaptive integration. Method returns estimation of relative error reached for whole shape. WARNING: if Eps > 0.001 algorithm performs non-adaptive integration. SkipShared is a special flag, which allows taking in calculation shared topological entities or not. For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once.
+   * Updates <VProps> with the shape , that contains its principal properties. The volume properties of all the FORWARD and REVERSED faces in are computed. If OnlyClosed is True then computed faces must belong to closed Shells. Adaptive 2D Gauss integration is used. Parameter Eps sets maximal relative error of computed mass (volume) for each face.
+   * Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values for two successive steps of adaptive integration. Method returns estimation of relative error reached for whole shape. WARNING: if Eps > 0.001 algorithm performs non-adaptive integration. SkipShared is a special flag, which allows taking in calculation shared topological entities or not.
+   * For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once.
    */
   static VolumeProperties(S: TopoDS_Shape, VProps: GProp_GProps, Eps: number, OnlyClosed: boolean, SkipShared: boolean): number;
   /**
-   * Updates <VProps> with the shape , that contains its principal properties. The volume properties of all the FORWARD and REVERSED faces in  are computed. If OnlyClosed is True then computed faces must belong to closed Shells. Adaptive 2D Gauss integration is used. Parameter IsUseSpan says if it is necessary to define spans on a face. This option has an effect only for BSpline faces. Parameter Eps sets maximal relative error of computed property for each face. Error is delivered by the adaptive Gauss-Kronrod method of integral computation that is used for properties computation. Method returns estimation of relative error reached for whole shape. Returns negative value if the computation is failed. SkipShared is a special flag, which allows taking in calculation shared topological entities or not. For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once.
+   * Updates <VProps> with the shape , that contains its principal properties. The volume properties of all the FORWARD and REVERSED faces in are computed. If OnlyClosed is True then computed faces must belong to closed Shells. Adaptive 2D Gauss integration is used. Parameter IsUseSpan says if it is necessary to define spans on a face. This option has an effect only for BSpline faces. Parameter Eps sets maximal relative error of computed property for each face.
+   * Error is delivered by the adaptive Gauss-Kronrod method of integral computation that is used for properties computation. Method returns estimation of relative error reached for whole shape. Returns negative value if the computation is failed. SkipShared is a special flag, which allows taking in calculation shared topological entities or not.
+   * For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once.
    */
   static VolumePropertiesGK(S: TopoDS_Shape, VProps: GProp_GProps, Eps: number, OnlyClosed: boolean, IsUseSpan: boolean, CGFlag: boolean, IFlag: boolean, SkipShared: boolean): number;
   static VolumePropertiesGK(S: TopoDS_Shape, VProps: GProp_GProps, thePln: unknown, Eps: number, OnlyClosed: boolean, IsUseSpan: boolean, CGFlag: boolean, IFlag: boolean, SkipShared: boolean): number;
@@ -29721,7 +34124,7 @@ export declare class BRepGProp_Face {
    */
   NaturalRestriction(): boolean;
   /**
-   * Returns the TopoDS face.
+   * Returns the `TopoDS` face.
    */
   GetFace(): TopoDS_Face;
   /**
@@ -29745,7 +34148,7 @@ export declare class BRepGProp_Face {
    */
   Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
-   * Computes the point of parameter U, V on the Face  and the normal to the face at this point.
+   * Computes the point of parameter U, V on the Face and the normal to the face at this point.
    */
   Normal(U: number, V: number, P: gp_Pnt, VNor: gp_Vec): void;
   /**
@@ -29778,6 +34181,9 @@ export declare class BRepGProp_Face {
    * @returns array of U knot values
    */
   GetUKnots_1(theUMin: number, theUMax: number): NCollection_HArray1_double;
+  /**
+   * @deprecated
+   */
   GetUKnots_2(theUMin: number, theUMax: number): { theUKnots: NCollection_HArray1_double };
   /**
    * Returns an array of combination of T knots of the arc and V knots of the face. The first and last elements of the array will be theTMin and theTMax. The middle elements will be the Knots of the arc and the values of parameters of arc on which the value points have V coordinates close to V knots of face. All the parameter will be greater then theTMin and lower then theTMax in increasing order. If the face is not a BSpline, the array initialized with theTMin and theTMax only.
@@ -29793,6 +34199,9 @@ export declare class BRepGProp_Face {
    * @returns array of T knot values
    */
   GetTKnots_1(theTMin: number, theTMax: number): NCollection_HArray1_double;
+  /**
+   * @deprecated
+   */
   GetTKnots_2(theTMin: number, theTMax: number): { theTKnots: NCollection_HArray1_double };
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -29802,6 +34211,10 @@ export declare class BRepGProp_Face {
 export type ChFi3d_FilletShape = typeof ChFi3d_FilletShape[keyof typeof ChFi3d_FilletShape];
 /**
  * Lists the types of fillet shapes. These include the following:
+ *
+ * - ChFi3d_Rational (default value), which is the standard NURBS representation of circles,
+ * - ChFi3d_QuasiAngular, which is a NURBS representation of circles where the parameters match those of the circle,
+ * - ChFi3d_Polynomial, which corresponds to a polynomial approximation of circles. This type facilitates the implementation of the construction algorithm.
  */
 export declare const ChFi3d_FilletShape: {
   readonly ChFi3d_Rational: 'ChFi3d_Rational';
@@ -29830,6 +34243,11 @@ export declare const ChFiDS_ChamfMode: {
 
 /**
  * Describes functions to build chamfers on edges of a shell or solid. Chamfered Edge of a Shell or Solid A MakeChamfer object provides a framework for:
+ *
+ * - initializing the construction algorithm with a given shape,
+ * - acquiring the data characterizing the chamfers,
+ * - building the chamfers and constructing the resulting shape, and
+ * - consulting the result.
  */
 export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperation {
   /**
@@ -29845,7 +34263,8 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
    */
   Add(Dis: number, E: TopoDS_Edge): void;
   /**
-   * Adds edge E to the table of edges used by this algorithm to build chamfers, where the parameters of the chamfer are given by the two distances Dis1 and Dis2; the face F identifies the side where Dis1 is measured. The Add function results in a contour being built by propagation from the edge E (i.e. the contour contains at least this edge). This contour is composed of edges of the shape which are tangential to one another and which delimit two series of tangential faces, with one series of faces being located on either side of the contour. Warning Nothing is done if edge E or the face F does not belong to the initial shape.
+   * Adds edge E to the table of edges used by this algorithm to build chamfers, where the parameters of the chamfer are given by the two distances Dis1 and Dis2; the face F identifies the side where Dis1 is measured. The Add function results in a contour being built by propagation from the edge E (i.e. the contour contains at least this edge).
+   * This contour is composed of edges of the shape which are tangential to one another and which delimit two series of tangential faces, with one series of faces being located on either side of the contour. Warning Nothing is done if edge E or the face F does not belong to the initial shape.
    */
   Add(Dis1: number, Dis2: number, E: TopoDS_Edge, F: TopoDS_Face): void;
   /**
@@ -29907,6 +34326,9 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
   NbEdges(I: number): number;
   /**
    * Returns the edge of index J in the contour of index I in the internal data structure of this algorithm. Warning Returns a null shape if:
+   *
+   * - I is outside the bounds of the table of contours, or
+   * - J is outside the bounds of the table of edges of the contour of index I.
    */
   Edge(I: number, J: number): TopoDS_Edge;
   /**
@@ -29927,10 +34349,16 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
   LastVertex(IC: number): TopoDS_Vertex;
   /**
    * Returns the curvilinear abscissa of the vertex V on the contour of index IC in the internal data structure of this algorithm. Warning Returns -1. if:
+   *
+   * - IC is outside the bounds of the table of contours, or
+   * - V is not on the contour of index IC.
    */
   Abscissa(IC: number, V: TopoDS_Vertex): number;
   /**
    * Returns the relative curvilinear abscissa (i.e. between 0 and 1) of the vertex V on the contour of index IC in the internal data structure of this algorithm. Warning Returns -1. if:
+   *
+   * - IC is outside the bounds of the table of contours, or
+   * - V is not on the contour of index IC.
    */
   RelativeAbscissa(IC: number, V: TopoDS_Vertex): number;
   /**
@@ -29942,7 +34370,11 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
    */
   Closed(IC: number): boolean;
   /**
-   * Builds the chamfers on all the contours in the internal data structure of this algorithm and constructs the resulting shape. Use the function IsDone to verify that the chamfered shape is built. Use the function Shape to retrieve the chamfered shape. Warning The construction of chamfers implements highly complex construction algorithms. Consequently, there may be instances where the algorithm fails, for example if the data defining the parameters of the chamfer is not compatible with the geometry of the initial shape. There is no initial analysis of errors and these only become evident at the construction stage. Additionally, in the current software release, the following cases are not handled:
+   * Builds the chamfers on all the contours in the internal data structure of this algorithm and constructs the resulting shape. Use the function IsDone to verify that the chamfered shape is built. Use the function Shape to retrieve the chamfered shape. Warning The construction of chamfers implements highly complex construction algorithms.
+   * Consequently, there may be instances where the algorithm fails, for example if the data defining the parameters of the chamfer is not compatible with the geometry of the initial shape. There is no initial analysis of errors and these only become evident at the construction stage. Additionally, in the current software release, the following cases are not handled:
+   *
+   * - the end point of the contour is the point of intersection of 4 or more edges of the shape, or
+   * - the intersection of the chamfer with a face which limits the contour is not fully contained in this face.
    */
   Build(theRange: Message_ProgressRange): void;
   /**
@@ -29975,6 +34407,11 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
 
 /**
  * Describes functions to build fillets on the broken edges of a shell or solid. A MakeFillet object provides a framework for:
+ *
+ * - initializing the construction algorithm with a given shape,
+ * - acquiring the data characterizing the fillets,
+ * - building the fillets and constructing the resulting shape, and
+ * - consulting the result.
  */
 export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperation {
   /**
@@ -29992,18 +34429,32 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
   Add(E: TopoDS_Edge): void;
   /**
    * Adds a fillet description in the builder.
+   *
+   * - builds a contour of tangent edges,
+   * - sets the radius.
    */
   Add(Radius: number, E: TopoDS_Edge): void;
   /**
    * Adds a fillet description in the builder.
+   *
+   * - builds a contour of tangent edges,
+   * - sest the radius evolution law.
    */
   Add(L: Law_Function, E: TopoDS_Edge): void;
   /**
    * Adds a fillet description in the builder.
+   *
+   * - builds a contour of tangent edges,
+   * - sets the radius evolution law interpolating the values given in the array UandR :
+   *
+   * p2d.X() = relative parameter on the spine [0,1] p2d.Y() = value of the radius.
    */
   Add(UandR: NCollection_Array1_gp_Pnt2d, E: TopoDS_Edge): void;
   /**
    * Adds a fillet description in the builder.
+   *
+   * - builds a contour of tangent edges,
+   * - sets a linear radius evolution law between the first and last vertex of the spine.
    */
   Add(R1: number, R2: number, E: TopoDS_Edge): void;
   /**
@@ -30016,6 +34467,9 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
   SetRadius(L: Law_Function, IC: number, IinC: number): void;
   /**
    * Sets the parameters of the fillet along the contour of index IC generated using the Add function in the internal data structure of this algorithm, where the radius of the fillet evolves according to the evolution law which interpolates the set of parameter and radius pairs given in the array UandR as follows:
+   *
+   * - the X coordinate of a point in UandR defines a relative parameter on the contour (i.e. a parameter between 0 and 1),
+   * - the Y coordinate of a point in UandR gives the corresponding value of the radius, and the radius evolves between the first and last vertices of the contour of index IC.
    */
   SetRadius(UandR: NCollection_Array1_gp_Pnt2d, IC: number, IinC: number): void;
   /**
@@ -30041,10 +34495,16 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
   IsConstant(IC: number, E: TopoDS_Edge): boolean;
   /**
    * Returns the radius of the fillet along the contour of index IC in the internal data structure of this algorithm Warning.
+   *
+   * - Use this function only if the radius is constant.
+   * - -1. is returned if IC is outside the bounds of the table of contours or if E does not belong to the contour of index IC.
    */
   Radius(IC: number): number;
   /**
    * Returns the radius of the fillet along the edge E of the contour of index IC in the internal data structure of this algorithm. Warning.
+   *
+   * - Use this function only if the radius is constant.
+   * - -1 is returned if IC is outside the bounds of the table of contours or if E does not belong to the contour of index IC.
    */
   Radius(IC: number, E: TopoDS_Edge): number;
   GetBounds(IC: number, E: TopoDS_Edge): { result: boolean; F: number; L: number };
@@ -30072,6 +34532,9 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
   NbEdges(I: number): number;
   /**
    * Returns the edge of index J in the contour of index I in the internal data structure of this algorithm. Warning Returns a null shape if:
+   *
+   * - I is outside the bounds of the table of contours, or
+   * - J is outside the bounds of the table of edges of the index I contour.
    */
   Edge(I: number, J: number): TopoDS_Edge;
   /**
@@ -30092,10 +34555,16 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
   LastVertex(IC: number): TopoDS_Vertex;
   /**
    * Returns the curvilinear abscissa of the vertex V on the contour of index IC in the internal data structure of this algorithm. Warning Returns -1. if:
+   *
+   * - IC is outside the bounds of the table of contours, or
+   * - V is not on the contour of index IC.
    */
   Abscissa(IC: number, V: TopoDS_Vertex): number;
   /**
    * Returns the relative curvilinear abscissa (i.e. between 0 and 1) of the vertex V on the contour of index IC in the internal data structure of this algorithm. Warning Returns -1. if:
+   *
+   * - IC is outside the bounds of the table of contours, or
+   * - V is not on the contour of index IC.
    */
   RelativeAbscissa(IC: number, V: TopoDS_Vertex): number;
   /**
@@ -30107,7 +34576,11 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
    */
   Closed(IC: number): boolean;
   /**
-   * Builds the fillets on all the contours in the internal data structure of this algorithm and constructs the resulting shape. Use the function IsDone to verify that the filleted shape is built. Use the function Shape to retrieve the filleted shape. Warning The construction of fillets implements highly complex construction algorithms. Consequently, there may be instances where the algorithm fails, for example if the data defining the radius of the fillet is not compatible with the geometry of the initial shape. There is no initial analysis of errors and they only become evident at the construction stage. Additionally, in the current software release, the following cases are not handled:
+   * Builds the fillets on all the contours in the internal data structure of this algorithm and constructs the resulting shape. Use the function IsDone to verify that the filleted shape is built. Use the function Shape to retrieve the filleted shape. Warning The construction of fillets implements highly complex construction algorithms.
+   * Consequently, there may be instances where the algorithm fails, for example if the data defining the radius of the fillet is not compatible with the geometry of the initial shape. There is no initial analysis of errors and they only become evident at the construction stage. Additionally, in the current software release, the following cases are not handled:
+   *
+   * - the end point of the contour is the point of intersection of 4 or more edges of the shape, or
+   * - the intersection of the fillet with a face which limits the contour is not fully contained in this face.
    */
   Build(theRange: Message_ProgressRange): void;
   /**
@@ -30135,7 +34608,7 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
    */
   NbSurfaces(): number;
   /**
-   * Return the faces created for surface .
+   * Return the faces created for surface *.*
    */
   NewFaces(I: number): NCollection_List_TopoDS_Shape;
   Simulate(IC: number): void;
@@ -30170,7 +34643,7 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
    */
   HasResult(): boolean;
   /**
-   * if (HasResult()) returns the partial result
+   * if (`HasResult()`) returns the partial result
    */
   BadShape(): TopoDS_Shape;
   /**
@@ -30256,6 +34729,26 @@ export declare class BRepFilletAPI_LocalOperation extends BRepBuilderAPI_MakeSha
 
 /**
  * This class provides a set of tools for repairing a wire.
+ *
+ * These are methods Fix...(), organised in two levels:
+ *
+ * Level 1: Advanced - each method in this level fixes one separate problem, usually dealing with either single edge or connection of the two adjacent edges. These methods should be used carefully and called in right sequence, because some of them depend on others.
+ *
+ * Level 2: Public (API) - methods which group several methods of level 1 and call them in a proper sequence in order to make some consistent set of fixes for a whole wire. It is possible to control calls to methods of the advanced level from methods of the public level by use of flags Fix..Mode() (see below).
+ *
+ * Fixes can be made in three ways:
+ *
+ * 1. Increasing tolerance of an edge or a vertex
+ * 2. Changing topology (adding/removing/replacing edge in the wire and/or replacing the vertex in the edge)
+ * 3. Changing geometry (shifting vertex or adjusting ends of edge curve to vertices, or recomputing curves of the edge)
+ *
+ * When fix can be made in more than one way (e.g., either by increasing tolerance or shifting a vertex), it is chosen according to the flags: ModifyTopologyMode - allows modification of the topology. This flag can be set when fixing a wire on the separate (free) face, and should be unset for face which is part of shell. ModifyGeometryMode - allows modification of the geometry.
+ *
+ * The order of descriptions of Fix() methods in this CDL approximately corresponds to the optimal order of calls.
+ *
+ * NOTE: most of fixing methods expect edges in the {@link ShapeExtend_WireData | `ShapeExtend_WireData`} to be ordered, so it is necessary to make call to `FixReorder()` before any other fixes
+ *
+ * {@link ShapeFix_Wire | `ShapeFix_Wire`} should be initialized prior to any fix by the following data: a) Wire (ether {@link TopoDS_Wire | `TopoDS_Wire`} or ShapeExtend_Wire) b) Face or surface c) {@link Precision | `Precision`} d) Maximal tail angle and width This can be done either by calling corresponding methods (LoadWire, SetFace or SetSurface, SetPrecision, SetMaxTailAngle and SetMaxTailWidth), or by loading already filled ShapeAnalisis_Wire with method Load
  */
 export declare class ShapeFix_Wire extends ShapeFix_Root {
   /**
@@ -30367,7 +34860,7 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
    */
   ModifyRemoveLoopMode(): number;
   /**
-   * Returns (modifiable) the flag which defines whether the wire is to be closed (by calling methods like FixDegenerated() and FixConnected() for last and first edges).
+   * Returns (modifiable) the flag which defines whether the wire is to be closed (by calling methods like `FixDegenerated()` and `FixConnected()` for last and first edges).
    */
   ClosedWireMode(): boolean;
   /**
@@ -30409,6 +34902,8 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
   FixTailMode(): number;
   /**
    * This method performs all the available fixes. If some fix is turned on or off explicitly by the Fix..Mode() flag, this fix is either called or not depending on that flag. Else (i.e. if flag is default) fix is called depending on the situation: some fixes are not called or are limited if order of edges in the wire is not OK, or depending on modes.
+   *
+   * The order of the fixes and default behaviour of `Perform()` are: FixReorder FixSmall (with lockvtx true if ! TopoMode or if wire is not ordered) FixConnected (if wire is ordered) FixEdgeCurves (without FixShifted if wire is not ordered) FixDegenerated (if wire is ordered) FixSelfIntersection (if wire is ordered and ClosedMode is True) FixLacking (if wire is ordered)
    */
   Perform(): boolean;
   /**
@@ -30425,18 +34920,20 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
   FixSmall(lockvtx: boolean, precsmall: number): number;
   /**
    * Fixes Null Length Edge to be removed If an Edge has Null Length (regarding preci, or <precsmall>.
+   *
+   * - what is smaller), it should be removed It can be with no problem if its two vertices are the same Else, if lockvtx is False, it is removed and its end vertex is put on the preceding edge But if lockvtx is True, this edge must be kept ...
    */
   FixSmall(num: number, lockvtx: boolean, precsmall: number): boolean;
   /**
-   * Applies FixConnected(num) to all edges in the wire Connection between first and last edges is treated only if flag ClosedMode is True If <prec> is -1 then MaxTolerance() is taken.
+   * Applies FixConnected(num) to all edges in the wire Connection between first and last edges is treated only if flag ClosedMode is True If <prec> is -1 then `MaxTolerance()` is taken.
    */
   FixConnected(prec: number): boolean;
   /**
-   * Fixes connected edges (preceding and current) Forces Vertices (end of preceding-begin of current) to be the same one Tests with starting preci or, if given greater, <prec> If <prec> is -1 then MaxTolerance() is taken.
+   * Fixes connected edges (preceding and current) Forces Vertices (end of preceding-begin of current) to be the same one Tests with starting preci or, if given greater, <prec> If <prec> is -1 then `MaxTolerance()` is taken.
    */
   FixConnected(num: number, prec: number): boolean;
   /**
-   * Groups the fixes dealing with 3d and pcurves of the edges. The order of the fixes and the default behaviour are: ShapeFix_Edge::FixReversed2d ShapeFix_Edge::FixRemovePCurve (only if forced) ShapeFix_Edge::FixAddPCurve ShapeFix_Edge::FixRemoveCurve3d (only if forced) ShapeFix_Edge::FixAddCurve3d FixSeam, FixShifted, ShapeFix_Edge::FixSameParameter.
+   * Groups the fixes dealing with 3d and pcurves of the edges. The order of the fixes and the default behaviour are: `ShapeFix_Edge::FixReversed2d` `ShapeFix_Edge::FixRemovePCurve` (only if forced) `ShapeFix_Edge::FixAddPCurve` `ShapeFix_Edge::FixRemoveCurve3d` (only if forced) `ShapeFix_Edge::FixAddCurve3d` FixSeam, FixShifted, `ShapeFix_Edge::FixSameParameter`.
    */
   FixEdgeCurves(): boolean;
   /**
@@ -30460,7 +34957,7 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
    */
   FixLacking(num: number, force: boolean): boolean;
   /**
-   * Fixes a wire to be well closed It performs FixConnected, FixDegenerated and FixLacking between last and first edges (independingly on flag ClosedMode and modes for these fixings) If <prec> is -1 then MaxTolerance() is taken.
+   * Fixes a wire to be well closed It performs FixConnected, FixDegenerated and FixLacking between last and first edges (independingly on flag ClosedMode and modes for these fixings) If <prec> is -1 then `MaxTolerance()` is taken.
    */
   FixClosed(prec: number): boolean;
   /**
@@ -30473,10 +34970,17 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
   FixGaps2d(): boolean;
   /**
    * Fixes a seam edge A Seam edge has two pcurves, one for forward. one for reversed The forward pcurve must be set as first.
+   *
+   * NOTE that correct order of pcurves in the seam edge depends on its orientation (i.e., on orientation of the wire, method of exploration of edges etc.). Since wire represented by the {@link ShapeExtend_WireData | `ShapeExtend_WireData`} is always forward (orientation is accounted by edges), it will work correct if:
+   *
+   * 1. Wire created from {@link ShapeExtend_WireData | `ShapeExtend_WireData`} with methods `ShapeExtend_WireData::Wire`..() is added into the FORWARD face (orientation can be applied later)
+   * 2. Wire is extracted from the face with orientation not composed with orientation of the face
    */
   FixSeam(num: number): boolean;
   /**
-   * Fixes edges which have pcurves shifted by whole parameter range on the closed surface (the case may occur if pcurve of edge was computed by projecting 3d curve, which goes along the seam). It compares each two consequent edges and tries to connect them if distance between ends is near to range of the surface. It also can detect and fix the case if all pcurves are connected, but lie out of parametric bounds of the surface. In addition to FixShifted from ShapeFix_Wire, more sophisticated check of degenerate points is performed, and special cases like sphere given by two meridians are treated.
+   * Fixes edges which have pcurves shifted by whole parameter range on the closed surface (the case may occur if pcurve of edge was computed by projecting 3d curve, which goes along the seam).
+   * It compares each two consequent edges and tries to connect them if distance between ends is near to range of the surface. It also can detect and fix the case if all pcurves are connected, but lie out of parametric bounds of the surface.
+   * In addition to FixShifted from {@link ShapeFix_Wire | `ShapeFix_Wire`}, more sophisticated check of degenerate points is performed, and special cases like sphere given by two meridians are treated.
    */
   FixShifted(): boolean;
   FixNotchedEdges(): boolean;
@@ -30538,7 +35042,7 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
    */
   Init(solid: TopoDS_Solid): void;
   /**
-   * Iterates on shells and performs fixes (calls ShapeFix_Shell for each subshell). The passed progress indicator allows user to consult the current progress stage and abort algorithm if needed.
+   * Iterates on shells and performs fixes (calls {@link ShapeFix_Shell | `ShapeFix_Shell`} for each subshell). The passed progress indicator allows user to consult the current progress stage and abort algorithm if needed.
    */
   Perform(theProgress: Message_ProgressRange): boolean;
   /**
@@ -30574,7 +35078,7 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
    */
   SetMaxTolerance(maxtol: number): void;
   /**
-   * Returns (modifiable) the mode for applying fixes of ShapeFix_Shell, by default True.
+   * Returns (modifiable) the mode for applying fixes of {@link ShapeFix_Shell | `ShapeFix_Shell`}, by default True.
    */
   FixShellMode(): number;
   /**
@@ -30582,7 +35086,7 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
    */
   FixShellOrientationMode(): number;
   /**
-   * Returns (modifiable) the mode for creation of solids. If mode myCreateOpenSolidMode is equal to true solids are created from open shells else solids are created from closed shells only. ShapeFix_Shell, by default False.
+   * Returns (modifiable) the mode for creation of solids. If mode myCreateOpenSolidMode is equal to true solids are created from open shells else solids are created from closed shells only. {@link ShapeFix_Shell | `ShapeFix_Shell`}, by default False.
    */
   CreateOpenSolidMode(): boolean;
   /**
@@ -30686,7 +35190,7 @@ export declare class ShapeFix_Root extends Standard_Transient {
 }
 
 /**
- * This operator allows to perform various fixes on face and its wires: fixes provided by ShapeFix_Wire, fixing orientation of wires, addition of natural bounds, fixing of missing seam edge, and detection and removal of null-area wires.
+ * This operator allows to perform various fixes on face and its wires: fixes provided by {@link ShapeFix_Wire | `ShapeFix_Wire`}, fixing orientation of wires, addition of natural bounds, fixing of missing seam edge, and detection and removal of null-area wires.
  */
 export declare class ShapeFix_Face extends ShapeFix_Root {
   /**
@@ -30730,7 +35234,7 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
    */
   SetMaxTolerance(maxtol: number): void;
   /**
-   * Returns (modifiable) the mode for applying fixes of ShapeFix_Wire, by default True.
+   * Returns (modifiable) the mode for applying fixes of {@link ShapeFix_Wire | `ShapeFix_Wire`}, by default True.
    */
   FixWireMode(): number;
   /**
@@ -30778,15 +35282,15 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
    */
   Face(): TopoDS_Face;
   /**
-   * Returns resulting shape (Face or Shell if split) To be used instead of Face() if FixMissingSeam involved.
+   * Returns resulting shape (Face or Shell if split) To be used instead of `Face()` if FixMissingSeam involved.
    */
   Result(): TopoDS_Shape;
   /**
-   * Add a wire to current face using BRep_Builder. Wire is added without taking into account orientation of face (as if face were FORWARD).
+   * Add a wire to current face using {@link BRep_Builder | `BRep_Builder`}. Wire is added without taking into account orientation of face (as if face were FORWARD).
    */
   Add(wire: TopoDS_Wire): void;
   /**
-   * Performs all the fixes, depending on modes Function Status returns the status of last call to Perform() ShapeExtend_OK : face was OK, nothing done ShapeExtend_DONE1: some wires are fixed ShapeExtend_DONE2: orientation of wires fixed ShapeExtend_DONE3: missing seam added ShapeExtend_DONE4: small area wire removed ShapeExtend_DONE5: natural bounds added ShapeExtend_FAIL1: some fails during fixing wires ShapeExtend_FAIL2: cannot fix orientation of wires ShapeExtend_FAIL3: cannot add missing seam ShapeExtend_FAIL4: cannot remove small area wire.
+   * Performs all the fixes, depending on modes Function Status returns the status of last call to `Perform()` ShapeExtend_OK : face was OK, nothing done ShapeExtend_DONE1: some wires are fixed ShapeExtend_DONE2: orientation of wires fixed ShapeExtend_DONE3: missing seam added ShapeExtend_DONE4: small area wire removed ShapeExtend_DONE5: natural bounds added ShapeExtend_FAIL1: some fails during fixing wires ShapeExtend_FAIL2: cannot fix orientation of wires ShapeExtend_FAIL3: cannot add missing seam ShapeExtend_FAIL4: cannot remove small area wire.
    */
   Perform(): boolean;
   /**
@@ -30799,6 +35303,9 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
   FixOrientation(MapWires: unknown): boolean;
   /**
    * Adds natural boundary on face if it is missing. Two cases are supported:
+   *
+   * - face has no wires
+   * - face lies on geometrically double-closed surface (sphere or torus) and none of wires is left-oriented Returns True if natural boundary was added
    */
   FixAddNaturalBound(): boolean;
   /**
@@ -30818,11 +35325,11 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
    */
   FixIntersectingWires(): boolean;
   /**
-   * If wire contains two coincidence edges it must be removed Queries on status after Perform().
+   * If wire contains two coincidence edges it must be removed Queries on status after `Perform()`.
    */
   FixWiresTwoCoincEdges(): boolean;
   /**
-   * Split face if there are more than one out wire using inrormation after FixOrientation().
+   * Split face if there are more than one out wire using inrormation after `FixOrientation()`.
    */
   FixSplitFace(MapWires: unknown): boolean;
   /**
@@ -30830,7 +35337,7 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
    */
   FixPeriodicDegenerated(): boolean;
   /**
-   * Returns the status of last call to Perform() ShapeExtend_OK : face was OK, nothing done ShapeExtend_DONE1: some wires are fixed ShapeExtend_DONE2: orientation of wires fixed ShapeExtend_DONE3: missing seam added ShapeExtend_DONE4: small area wire removed ShapeExtend_DONE5: natural bounds added ShapeExtend_DONE8: face may be splited ShapeExtend_FAIL1: some fails during fixing wires ShapeExtend_FAIL2: cannot fix orientation of wires ShapeExtend_FAIL3: cannot add missing seam ShapeExtend_FAIL4: cannot remove small area wire.
+   * Returns the status of last call to `Perform()` ShapeExtend_OK : face was OK, nothing done ShapeExtend_DONE1: some wires are fixed ShapeExtend_DONE2: orientation of wires fixed ShapeExtend_DONE3: missing seam added ShapeExtend_DONE4: small area wire removed ShapeExtend_DONE5: natural bounds added ShapeExtend_DONE8: face may be splited ShapeExtend_FAIL1: some fails during fixing wires ShapeExtend_FAIL2: cannot fix orientation of wires ShapeExtend_FAIL3: cannot add missing seam ShapeExtend_FAIL4: cannot remove small area wire.
    */
   Status(status: unknown): boolean;
   /**
@@ -30846,7 +35353,17 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
 }
 
 /**
- * This tool tries to unify faces and edges of the shape which lie on the same geometry. Faces/edges are considering as 'same-domain' if a group of neighbouring faces/edges are lying on coincident surfaces/curves. In this case these faces/edges can be unified into one face/edge. ShapeUpgrade_UnifySameDomain is initialized by a shape and the next optional parameters: UnifyFaces - tries to unify all possible faces UnifyEdges - tries to unify all possible edges ConcatBSplines - if this flag is set to true then all neighbouring edges, which lay on BSpline or Bezier curves with C1 continuity on their common vertices, will be merged into one common edge.
+ * This tool tries to unify faces and edges of the shape which lie on the same geometry. Faces/edges are considering as 'same-domain' if a group of neighbouring faces/edges are lying on coincident surfaces/curves.
+ * In this case these faces/edges can be unified into one face/edge. {@link ShapeUpgrade_UnifySameDomain | `ShapeUpgrade_UnifySameDomain`} is initialized by a shape and the next optional parameters: UnifyFaces - tries to unify all possible faces UnifyEdges - tries to unify all possible edges ConcatBSplines - if this flag is set to true then all neighbouring edges, which lay on BSpline or Bezier curves with C1 continuity on their common vertices, will be merged into one common edge.
+ *
+ * The input shape can be of any type containing faces or edges - compsolid, solid, shell, wire, compound of any kind of shapes. The algorithm preserves the structure of compsolids, solids, shells and wires. E.g., if two shells have a common edge and the faces sharing this edge lie on the same surface the algorithm will not unify these faces, otherwise the structure of shells would be broken. However, if such faces belong to different compounds of faces they will be unified.
+ *
+ * The output result of the tool is the unified shape.
+ *
+ * All the modifications of initial shape are recorded during unifying. Methods History are intended to:
+ *
+ * - set a place holder for the history of modifications of sub-shapes of the initial shape;
+ * - get the collected history. The algorithm provides a place holder for the history and collects the history by default. To avoid collecting of the history the place holder should be set to null handle.
  */
 export declare class ShapeUpgrade_UnifySameDomain extends Standard_Transient {
   /**
@@ -30890,11 +35407,11 @@ export declare class ShapeUpgrade_UnifySameDomain extends Standard_Transient {
    */
   SetSafeInputMode(theValue: boolean): void;
   /**
-   * Sets the linear tolerance. It plays the role of chord error when taking decision about merging of shapes. Default value is Precision::Confusion().
+   * Sets the linear tolerance. It plays the role of chord error when taking decision about merging of shapes. Default value is `Precision::Confusion()`.
    */
   SetLinearTolerance(theValue: number): void;
   /**
-   * Sets the angular tolerance. If two shapes form a connection angle greater than this value they will not be merged. Default value is Precision::Angular().
+   * Sets the angular tolerance. If two shapes form a connection angle greater than this value they will not be merged. Default value is `Precision::Angular()`.
    */
   SetAngularTolerance(theValue: number): void;
   /**
@@ -30919,6 +35436,21 @@ export declare class ShapeUpgrade_UnifySameDomain extends Standard_Transient {
 
 /**
  * Provides general functions to build form features. Form features can be depressions or protrusions and include the following types:
+ *
+ * - Cylinder
+ * - {@link Draft | `Draft`} Prism
+ * - Prism
+ * - Revolved feature
+ * - Pipe In each case, you have a choice of operation type between the following:
+ * - removing matter (a Boolean cut: Fuse setting 0)
+ * - adding matter (Boolean fusion: Fuse setting 1) The semantics of form feature creation is based on the construction of shapes:
+ * - along a length
+ * - up to a limiting face
+ * - from a limiting face to a height
+ * - above and/or below a plane The shape defining construction of the feature can be either the supporting edge or the concerned area of a face. In case of the supporting edge, this contour can be attached to a face of the basis shape by binding.
+ * When the contour is bound to this face, the information that the contour will slide on the face becomes available to the relevant class methods.
+ * In case of the concerned area of a face, you could, for example, cut it out and move it to a different height which will define the limiting face of a protrusion or depression.
+ * Topological definition with local operations of this sort makes calculations simpler and faster than a global operation. The latter would entail a second phase of removing unwanted matter to get the same result.
  */
 export declare class BRepFeat_Form extends BRepBuilderAPI_MakeShape {
   /**
@@ -30987,15 +35519,25 @@ export declare class BRepFeat_Form extends BRepBuilderAPI_MakeShape {
 
 /**
  * Describes functions to build draft prism topologies from basis shape surfaces. These can be depressions or protrusions. The semantics of draft prism feature creation is based on the construction of shapes:
+ *
+ * - along a length
+ * - up to a limiting face
+ * - from a limiting face to a height. The shape defining construction of the draft prism feature can be either the supporting edge or the concerned area of a face. In case of the supporting edge, this contour can be attached to a face of the basis shape by binding. When the contour is bound to this face, the information that the contour will slide on the face becomes available to the relevant class methods. In case of the concerned area of a face, you could, for example, cut it out and move it to a different height which will define the limiting face of a protrusion or depression.
  */
 export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
   constructor();
   /**
    * A face Pbase is selected in the shape Sbase to serve as the basis for the draft prism. The draft will be defined by the angle Angle and Fuse offers a choice between:
+   *
+   * - removing matter with a Boolean cut using the setting 0
+   * - adding matter with Boolean fusion using the setting 1. The sketch face Skface serves to determine the type of operation. If it is inside the basis shape, a local operation such as glueing can be performed. Initializes the draft prism class
    */
   constructor(Sbase: TopoDS_Shape, Pbase: TopoDS_Face, Skface: TopoDS_Face, Angle: number, Fuse: number, Modify: boolean);
   /**
    * Initializes this algorithm for building draft prisms along surfaces. A face Pbase is selected in the basis shape Sbase to serve as the basis from the draft prism. The draft will be defined by the angle Angle and Fuse offers a choice between:
+   *
+   * - removing matter with a Boolean cut using the setting 0
+   * - adding matter with Boolean fusion using the setting 1. The sketch face Skface serves to determine the type of operation. If it is inside the basis shape, a local operation such as glueing can be performed.
    */
   Init(Sbase: TopoDS_Shape, Pbase: TopoDS_Face, Skface: TopoDS_Face, Angle: number, Fuse: number, Modify: boolean): void;
   /**
@@ -31006,6 +35548,10 @@ export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
   Perform(Until: TopoDS_Shape): void;
   /**
    * Assigns one of the following semantics.
+   *
+   * - to a height Height
+   * - to a face Until
+   * - from a face From to a height Until. Reconstructs the feature topologically according to the semantic option chosen.
    */
   Perform(From: TopoDS_Shape, Until: TopoDS_Shape): void;
   /**
@@ -31021,7 +35567,7 @@ export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
    */
   PerformThruAll(): void;
   /**
-   * Assigns both a limiting shape, Until from TopoDS_Shape, and a height, Height at which to stop generation of the prism feature.
+   * Assigns both a limiting shape, Until from {@link TopoDS_Shape | `TopoDS_Shape`}, and a height, Height at which to stop generation of the prism feature.
    */
   PerformUntilHeight(Until: TopoDS_Shape, Height: number): void;
   Curves(S: unknown): void;
@@ -31031,11 +35577,11 @@ export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
    */
   BossEdges(sig: number): void;
   /**
-   * Returns the list of TopoDS Edges of the top of the boss.
+   * Returns the list of `TopoDS` Edges of the top of the boss.
    */
   TopEdges(): NCollection_List_TopoDS_Shape;
   /**
-   * Returns the list of TopoDS Edges of the bottom of the boss.
+   * Returns the list of `TopoDS` Edges of the bottom of the boss.
    */
   LatEdges(): NCollection_List_TopoDS_Shape;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -31045,6 +35591,11 @@ export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
 
 /**
  * Root class for 3D curves on which geometric algorithms work. An adapted curve is an interface between the services provided by a curve and those required of the curve by algorithms which use it. Two derived concrete classes are provided:
+ *
+ * - {@link GeomAdaptor_Curve | `GeomAdaptor_Curve`} for a curve from the Geom package
+ * - {@link Adaptor3d_CurveOnSurface | `Adaptor3d_CurveOnSurface`} for a curve lying on a surface from the Geom package.
+ *
+ * Polynomial coefficients of BSpline curves used for their evaluation are cached for better performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
  */
 export declare class Adaptor3d_Curve extends Standard_Transient {
   constructor();
@@ -31064,6 +35615,8 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
   NbIntervals(S: GeomAbs_Shape): number;
   /**
    * Stores in <T> the parameters bounding the intervals of continuity .
+   *
+   * The array must provide enough room to accommodate for the parameters. i.e. T.Length() > `NbIntervals()`
    */
   Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
   /**
@@ -31143,7 +35696,11 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
 }
 
 /**
- * Root class for surfaces on which geometric algorithms work. An adapted surface is an interface between the services provided by a surface and those required of the surface by algorithms which use it. A derived concrete class is provided: GeomAdaptor_Surface for a surface from the Geom package. The Surface class describes the standard behaviour of a surface for generic algorithms.
+ * Root class for surfaces on which geometric algorithms work. An adapted surface is an interface between the services provided by a surface and those required of the surface by algorithms which use it. A derived concrete class is provided: {@link GeomAdaptor_Surface | `GeomAdaptor_Surface`} for a surface from the Geom package. The Surface class describes the standard behaviour of a surface for generic algorithms.
+ *
+ * The Surface can be decomposed in intervals of any continuity in U and V using the method NbIntervals. A current interval can be set. Most of the methods apply to the current interval. Warning: All the methods are virtual and implemented with a raise to allow to redefined only the methods really used.
+ *
+ * Polynomial coefficients of BSpline surfaces used for their evaluation are cached for better performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
  */
 export declare class Adaptor3d_Surface extends Standard_Transient {
   constructor();
@@ -31191,7 +35748,7 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
   IsVPeriodic(): boolean;
   VPeriod(): number;
   /**
-   * Computes the point of parameters U,V on the surface. Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
+   * Computes the point of parameters U,V on the surface. Tip: use `GeomLib::NormEstim()` to calculate surface normal at specified (U, V) point.
    */
   Value(theU: number, theV: number): gp_Pnt;
   /**
@@ -31200,6 +35757,8 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
   D0(theU: number, theV: number, theP: gp_Pnt): void;
   /**
    * Computes the point and the first derivatives on the surface. Raised if the continuity of the current intervals is not C1.
+   *
+   * Tip: use `GeomLib::NormEstim()` to calculate surface normal at specified (U, V) point.
    */
   D1(theU: number, theV: number, theP: gp_Pnt, theD1U: gp_Vec, theD1V: gp_Vec): void;
   /**
@@ -31273,6 +35832,10 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
 
 /**
  * An adaptor for surfaces with an applied transformation.
+ *
+ * This class wraps a {@link GeomAdaptor_Surface | `GeomAdaptor_Surface`} and applies a {@link gp_Trsf | `gp_Trsf`} transformation to all point and derivative evaluations. It serves as a base class for {@link BRepAdaptor_Surface | `BRepAdaptor_Surface`} and allows batch evaluation with transformations in `GeomGridEval_Surface`.
+ *
+ * The evaluation methods (Value, D0, D1, D2, D3, DN) are marked final to enable optimizations in grid evaluation.
  */
 export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
   /**
@@ -31358,7 +35921,7 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
   Trsf(): gp_Trsf;
   Surface(): unknown;
   /**
-   * Returns the underlying GeomAdaptor_Surface.
+   * Returns the underlying {@link GeomAdaptor_Surface | `GeomAdaptor_Surface`}.
    * @deprecated
    */
   AdaptorSurfaceOriginal(): unknown;
@@ -31367,15 +35930,15 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
    */
   AdaptorSurfaceTransformed(): unknown;
   /**
-   * Returns the underlying original Geom_Surface without transformation applied.
+   * Returns the underlying original {@link Geom_Surface | `Geom_Surface`} without transformation applied.
    */
   GeomSurfaceOriginal(): Geom_Surface;
   /**
-   * Returns the transformed Geom_Surface cached for current state.
+   * Returns the transformed {@link Geom_Surface | `Geom_Surface`} cached for current state.
    */
   GeomSurfaceTransformed(): Geom_Surface;
   /**
-   * Returns the underlying Geom_Surface.
+   * Returns the underlying {@link Geom_Surface | `Geom_Surface`}.
    * @deprecated
    */
   GeomSurface(): Geom_Surface;
@@ -31484,6 +36047,10 @@ export type GeomEval_RepSurfaceDesc_Base = unknown;
 
 /**
  * An adaptor for curves with an applied transformation.
+ *
+ * This class wraps a {@link GeomAdaptor_Curve | `GeomAdaptor_Curve`} (or an {@link Adaptor3d_CurveOnSurface | `Adaptor3d_CurveOnSurface`}) and applies a {@link gp_Trsf | `gp_Trsf`} transformation to all point and derivative evaluations. It serves as a base class for {@link BRepAdaptor_Curve | `BRepAdaptor_Curve`} and allows batch evaluation with transformations in `GeomGridEval_Curve`.
+ *
+ * The evaluation methods (Value, D0, D1, D2, D3, DN) are marked final to enable optimizations in grid evaluation.
  */
 export declare class GeomAdaptor_TransformedCurve extends Adaptor3d_Curve {
   /**
@@ -31546,11 +36113,11 @@ export declare class GeomAdaptor_TransformedCurve extends Adaptor3d_Curve {
    */
   IsCurveOnSurface(): boolean;
   /**
-   * Returns the underlying GeomAdaptor_Curve.
+   * Returns the underlying {@link GeomAdaptor_Curve | `GeomAdaptor_Curve`}.
    */
   Curve(): unknown;
   /**
-   * Returns the underlying GeomAdaptor_Curve for modification.
+   * Returns the underlying {@link GeomAdaptor_Curve | `GeomAdaptor_Curve`} for modification.
    */
   ChangeCurve(): unknown;
   /**
@@ -31558,7 +36125,7 @@ export declare class GeomAdaptor_TransformedCurve extends Adaptor3d_Curve {
    */
   CurveOnSurface(): unknown;
   /**
-   * Returns the underlying Geom_Curve.
+   * Returns the underlying {@link Geom_Curve | `Geom_Curve`}.
    */
   GeomCurve(): Geom_Curve;
   FirstParameter(): number;
@@ -31570,6 +36137,8 @@ export declare class GeomAdaptor_TransformedCurve extends Adaptor3d_Curve {
   NbIntervals(theS: GeomAbs_Shape): number;
   /**
    * Stores in <T> the parameters bounding the intervals of continuity .
+   *
+   * The array must provide enough room to accommodate for the parameters. i.e. T.Length() > `NbIntervals()`
    */
   Intervals(theT: NCollection_Array1_double, theS: GeomAbs_Shape): void;
   /**
@@ -31629,6 +36198,15 @@ export type GeomEval_RepCurveDesc_Base = unknown;
 export type TopAbs_ShapeEnum = typeof TopAbs_ShapeEnum[keyof typeof TopAbs_ShapeEnum];
 /**
  * Identifies various topological shapes. This enumeration allows you to use dynamic typing of shapes. The values are listed in order of complexity, from the most complex to the most simple i.e. COMPOUND > COMPSOLID > SOLID > .... > VERTEX > SHAPE. Any shape can contain simpler shapes in its definition. Abstract topological data structure describes a basic entity, the shape (present in this enumeration as the SHAPE value), which can be divided into the following component topologies:
+ *
+ * - COMPOUND: A group of any of the shapes below.
+ * - COMPSOLID: A set of solids connected by their faces. This expands the notions of WIRE and SHELL to solids.
+ * - SOLID: A part of 3D space bounded by shells.
+ * - SHELL: A set of faces connected by some of the edges of their wire boundaries. A shell can be open or closed.
+ * - FACE: Part of a plane (in 2D geometry) or a surface (in 3D geometry) bounded by a closed wire. Its geometry is constrained (trimmed) by contours.
+ * - WIRE: A sequence of edges connected by their vertices. It can be open or closed depending on whether the edges are linked or not.
+ * - EDGE: A single dimensional shape corresponding to a curve, and bound by a vertex at each extremity.
+ * - VERTEX: A zero-dimensional shape corresponding to a point in geometry.
  */
 export declare const TopAbs_ShapeEnum: {
   readonly TopAbs_COMPOUND: 'TopAbs_COMPOUND';
@@ -31644,7 +36222,10 @@ export declare const TopAbs_ShapeEnum: {
 
 export type TopAbs_Orientation = typeof TopAbs_Orientation[keyof typeof TopAbs_Orientation];
 /**
- * Identifies the orientation of a topological shape. Orientation can represent a relation between two entities, or it can apply to a shape in its own right. When used to describe a relation between two shapes, orientation allows you to use the underlying entity in either direction. For example on a curve which is oriented FORWARD (say from left to right) you can have both a FORWARD and a REVERSED edge. The FORWARD edge will be oriented from left to right, and the REVERSED edge from right to left. In this way, you share the underlying entity. In other words, two faces of a cube can share an edge, and can also be used to build compound shapes. For each case in which an element is used as the boundary of a geometric domain of a higher dimension, this element defines two local regions of which one is arbitrarily considered as the default region. A change in orientation implies a switch of default region. This allows you to apply changes of orientation to the shape as a whole.
+ * Identifies the orientation of a topological shape. Orientation can represent a relation between two entities, or it can apply to a shape in its own right.
+ * When used to describe a relation between two shapes, orientation allows you to use the underlying entity in either direction.
+ * For example on a curve which is oriented FORWARD (say from left to right) you can have both a FORWARD and a REVERSED edge. The FORWARD edge will be oriented from left to right, and the REVERSED edge from right to left. In this way, you share the underlying entity. In other words, two faces of a cube can share an edge, and can also be used to build compound shapes.
+ * For each case in which an element is used as the boundary of a geometric domain of a higher dimension, this element defines two local regions of which one is arbitrarily considered as the default region. A change in orientation implies a switch of default region. This allows you to apply changes of orientation to the shape as a whole.
  */
 export declare const TopAbs_Orientation: {
   readonly TopAbs_FORWARD: 'TopAbs_FORWARD';
@@ -31655,14 +36236,32 @@ export declare const TopAbs_Orientation: {
 
 /**
  * Describes a portion of a curve (termed the "basis curve") limited by two parameter values inside the parametric domain of the basis curve. The trimmed curve is defined by:
+ *
+ * - the basis curve, and
+ * - the two parameter values which limit it. The trimmed curve can either have the same orientation as the basis curve or the opposite orientation.
  */
 export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
   /**
    * Constructs a trimmed curve from the basis curve C which is limited between parameter values U1 and U2. Note: - U1 can be greater or less than U2; in both cases, the returned curve is oriented from U1 to U2.
+   *
+   * - If the basis curve C is periodic, there is an ambiguity because two parts are available. In this case, the trimmed curve has the same orientation as the basis curve if Sense is true (default value) or the opposite orientation if Sense is false.
+   * - If the curve is closed but not periodic, it is not possible to keep the part of the curve which includes the junction point (except if the junction point is at the beginning or at the end of the trimmed curve). If you tried to do this, you could alter the fundamental characteristics of the basis curve, which are used, for example, to compute the derivatives of the trimmed curve. The rules for a closed curve are therefore the same as those for an open curve. Warning: The trimmed curve is built from a copy of curve C. Therefore, when C is modified, the trimmed curve is not modified.
+   * - If the basis curve is periodic and theAdjustPeriodic is True, the bounds of the trimmed curve may be different from U1 and U2 if the parametric origin of the basis curve is within the arc of the trimmed curve. In this case, the modified parameter will be equal to U1 or U2 plus or minus the period. When theAdjustPeriodic is False, parameters U1 and U2 will be the same, without adjustment into the first period. Exceptions Standard_ConstructionError if:
+   * - C is not periodic and U1 or U2 is outside the bounds of C, or
+   * - U1 is equal to U2.
    */
   constructor(C: Geom_Curve, U1: number, U2: number, Sense?: boolean, theAdjustPeriodic?: boolean);
   /**
    * Changes the orientation of this trimmed curve. As a result:
+   *
+   * - the basis curve is reversed,
+   * - the start point of the initial curve becomes the end point of the reversed curve,
+   * - the end point of the initial curve becomes the start point of the reversed curve,
+   * - the first and last parameters are recomputed. If the trimmed curve was defined by:
+   * - a basis curve whose parameter range is [ 0., 1. ],
+   * - the two trim values U1 (first parameter) and U2 (last parameter), the reversed trimmed curve is defined by:
+   * - the reversed basis curve, whose parameter range is still [ 0., 1. ],
+   * - the two trim values 1. - U2 (first parameter) and 1. - U1 (last parameter).
    */
   Reverse(): void;
   /**
@@ -31670,7 +36269,11 @@ export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
    */
   ReversedParameter(U: number): number;
   /**
-   * Changes this trimmed curve, by redefining the parameter values U1 and U2 which limit its basis curve. Note: If the basis curve is periodic, the trimmed curve has the same orientation as the basis curve if Sense is true (default value) or the opposite orientation if Sense is false. Warning If the basis curve is periodic and theAdjustPeriodic is True, the bounds of the trimmed curve may be different from U1 and U2 if the parametric origin of the basis curve is within the arc of the trimmed curve. In this case, the modified parameter will be equal to U1 or U2 plus or minus the period. When theAdjustPeriodic is False, parameters U1 and U2 will be the same, without adjustment into the first period. Exceptions Standard_ConstructionError if:
+   * Changes this trimmed curve, by redefining the parameter values U1 and U2 which limit its basis curve. Note: If the basis curve is periodic, the trimmed curve has the same orientation as the basis curve if Sense is true (default value) or the opposite orientation if Sense is false.
+   * Warning If the basis curve is periodic and theAdjustPeriodic is True, the bounds of the trimmed curve may be different from U1 and U2 if the parametric origin of the basis curve is within the arc of the trimmed curve. In this case, the modified parameter will be equal to U1 or U2 plus or minus the period. When theAdjustPeriodic is False, parameters U1 and U2 will be the same, without adjustment into the first period. Exceptions Standard_ConstructionError if:
+   *
+   * - the basis curve is not periodic, and either U1 or U2 are outside the bounds of the basis curve, or
+   * - U1 is equal to U2.
    */
   SetTrim(U1: number, U2: number, Sense: boolean, theAdjustPeriodic: boolean): void;
   /**
@@ -31715,6 +36318,8 @@ export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
   StartPoint(): gp_Pnt;
   /**
    * Returns the point of parameter U.
+   *
+   * If the basis curve is an OffsetCurve sometimes it is not possible to do the evaluation of the curve at the parameter U (see class OffsetCurve).
    */
   EvalD0(U: number): gp_Pnt;
   /**
@@ -31739,10 +36344,26 @@ export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
   Transform(T: gp_Trsf): void;
   /**
    * Returns the parameter on the transformed curve for the transform of the point of parameter U on <me>.
+   *
+   * me->Transformed(T)->Value(me->TransformedParameter(U,T))
+   *
+   * is the same point as
+   *
+   * me->Value(U).Transformed(T)
+   *
+   * This methods calls the basis curve method.
    */
   TransformedParameter(U: number, T: gp_Trsf): number;
   /**
    * Returns a coefficient to compute the parameter on the transformed curve for the transform of the point on <me>.
+   *
+   * Transformed(T)->Value(U * ParametricTransformation(T))
+   *
+   * is the same point as
+   *
+   * Value(U).Transformed(T)
+   *
+   * This methods calls the basis curve method.
    */
   ParametricTransformation(T: gp_Trsf): number;
   /**
@@ -31759,6 +36380,11 @@ export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
 
 /**
  * The abstract class BoundedCurve describes the common behavior of bounded curves in 3D space. A bounded curve is limited by two finite values of the parameter, termed respectively "first parameter" and "last parameter". The "first parameter" gives the "start point" of the bounded curve, and the "last parameter" gives the "end point" of the bounded curve. The length of a bounded curve is finite. The Geom package provides three concrete classes of bounded curves:
+ *
+ * - two frequently used mathematical formulations of complex curves:
+ * - {@link Geom_BezierCurve | `Geom_BezierCurve`},
+ * - {@link Geom_BSplineCurve | `Geom_BSplineCurve`}, and
+ * - {@link Geom_TrimmedCurve | `Geom_TrimmedCurve`} to trim a curve, i.e. to only take part of the curve limited by two values of the parameter of the basis curve.
  */
 export declare class Geom_BoundedCurve extends Geom_Curve {
   /**
@@ -31779,6 +36405,31 @@ export declare class Geom_BoundedCurve extends Geom_Curve {
 
 /**
  * Describes a BSpline surface. In each parametric direction, a BSpline surface can be:
+ *
+ * - uniform or non-uniform,
+ * - rational or non-rational,
+ * - periodic or non-periodic. A BSpline surface is defined by:
+ * - its degrees, in the u and v parametric directions,
+ * - its periodic characteristic, in the u and v parametric directions,
+ * - a table of poles, also called control points (together with the associated weights if the surface is rational), and
+ * - a table of knots, together with the associated multiplicities. The degree of a {@link Geom_BSplineSurface | `Geom_BSplineSurface`} is limited to a value (25) which is defined and controlled by the system. This value is returned by the function MaxDegree. Poles and Weights Poles and Weights are manipulated using two associative double arrays:
+ * - the poles table, which is a double array of {@link gp_Pnt | `gp_Pnt`} points, and
+ * - the weights table, which is a double array of reals. The bounds of the poles and weights arrays are:
+ * - 1 and NbUPoles for the row bounds (provided that the BSpline surface is not periodic in the u parametric direction), where NbUPoles is the number of poles of the surface in the u parametric direction, and
+ * - 1 and NbVPoles for the column bounds (provided that the BSpline surface is not periodic in the v parametric direction), where NbVPoles is the number of poles of the surface in the v parametric direction. The poles of the surface are the points used to shape and reshape the surface. They comprise a rectangular network. If the surface is not periodic:
+ * - The points (1, 1), (NbUPoles, 1), (1, NbVPoles), and (NbUPoles, NbVPoles) are the four parametric "corners" of the surface.
+ * - The first column of poles and the last column of poles define two BSpline curves which delimit the surface in the v parametric direction. These are the v isoparametric curves corresponding to the two bounds of the v parameter.
+ * - The first row of poles and the last row of poles define two BSpline curves which delimit the surface in the u parametric direction. These are the u isoparametric curves corresponding to the two bounds of the u parameter. If the surface is periodic, these geometric properties are not verified. It is more difficult to define a geometrical significance for the weights. However they are useful for representing a quadric surface precisely.
+ * Moreover, if the weights of all the poles are equal, the surface has a polynomial equation, and hence is a "non-rational surface". The non-rational surface is a special, but frequently used, case, where all poles have identical weights. The weights are defined and used only in the case of a rational surface. The rational characteristic is defined in each parametric direction. A surface can be rational in the u parametric direction, and non-rational in the v parametric direction.
+ * Knots and Multiplicities For a {@link Geom_BSplineSurface | `Geom_BSplineSurface`} the table of knots is made up of two increasing sequences of reals, without repetition, one for each parametric direction. The multiplicities define the repetition of the knots. A BSpline surface comprises multiple contiguous patches, which are themselves polynomial or rational surfaces. The knots are the parameters of the isoparametric curves which limit these contiguous patches.
+ * The multiplicity of a knot on a BSpline surface (in a given parametric direction) is related to the degree of continuity of the surface at that knot in that parametric direction: Degree of continuity at knot(i) = Degree - Multi(i) where:
+ * - Degree is the degree of the BSpline surface in the given parametric direction, and
+ * - Multi(i) is the multiplicity of knot number i in the given parametric direction. There are some special cases, where the knots are regularly spaced in one parametric direction (i.e. the difference between two consecutive knots is a constant).
+ * - "Uniform": all the multiplicities are equal to 1.
+ * - "Quasi-uniform": all the multiplicities are equal to 1, except for the first and last knots in this parametric direction, and these are equal to Degree + 1.
+ * - "Piecewise Bezier": all the multiplicities are equal to Degree except for the first and last knots, which are equal to Degree + 1. This surface is a concatenation of Bezier patches in the given parametric direction. If the BSpline surface is not periodic in a given parametric direction, the bounds of the knots and multiplicities tables are 1 and NbKnots, where NbKnots is the number of knots of the BSpline surface in that parametric direction. If the BSpline surface is periodic in a given parametric direction, and there are k periodic knots and p periodic poles in that parametric direction:
+ * - the period is such that: period = Knot(k+1) - Knot(1), and
+ * - the poles and knots tables in that parametric direction can be considered as infinite tables, such that: Knot(i+k) = Knot(i) + period, and Pole(i+p) = Pole(i) Note: The data structure tables for a periodic BSpline surface are more complex than those of a non-periodic one. References : . A survey of curve and surface methods in CADG Wolfgang BOHM CAGD 1 (1984) . On de Boor-like algorithms and blossoming Wolfgang BOEHM cagd 5 (1988) . Blossoming and knot insertion algorithms for B-spline curves Ronald N. GOLDMAN . Modelisation des surfaces en CAO, Henri GIAUME Peugeot SA . Curves and Surfaces for Computer Aided Geometric Design, a practical guide Gerald Farin
  */
 export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
@@ -31787,27 +36438,52 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
    */
   constructor(theOther: Geom_BSplineSurface);
   /**
-   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole). On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
+   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
    */
   constructor(Poles: NCollection_Array2_gp_Pnt, UKnots: NCollection_Array1_double, VKnots: NCollection_Array1_double, UMults: NCollection_Array1_int, VMults: NCollection_Array1_int, UDegree: number, VDegree: number);
   /**
-   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole). On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
+   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
    */
   constructor(Poles: NCollection_Array2_gp_Pnt, UKnots: NCollection_Array1_double, VKnots: NCollection_Array1_double, UMults: NCollection_Array1_int, VMults: NCollection_Array1_int, UDegree: number, VDegree: number, UPeriodic: boolean);
   /**
-   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole). On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
+   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
    */
   constructor(Poles: NCollection_Array2_gp_Pnt, Weights: NCollection_Array2_double, UKnots: NCollection_Array1_double, VKnots: NCollection_Array1_double, UMults: NCollection_Array1_int, VMults: NCollection_Array1_int, UDegree: number, VDegree: number);
   /**
-   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole). On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
+   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
    */
   constructor(Poles: NCollection_Array2_gp_Pnt, UKnots: NCollection_Array1_double, VKnots: NCollection_Array1_double, UMults: NCollection_Array1_int, VMults: NCollection_Array1_int, UDegree: number, VDegree: number, UPeriodic: boolean, VPeriodic: boolean);
   /**
-   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole). On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
+   * Creates a non-rational b-spline surface (weights default value is 1.). The following conditions must be verified. 0 < UDegree <= MaxDegree. UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i)) except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
    */
   constructor(Poles: NCollection_Array2_gp_Pnt, Weights: NCollection_Array2_double, UKnots: NCollection_Array1_double, VKnots: NCollection_Array1_double, UMults: NCollection_Array1_int, VMults: NCollection_Array1_int, UDegree: number, VDegree: number, UPeriodic: boolean);
   /**
    * Creates a non-rational b-spline surface (weights default value is 1.).
+   *
+   * The following conditions must be verified. 0 < UDegree <= MaxDegree.
+   *
+   * UKnots.Length() == UMults.Length() >= 2
+   *
+   * UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree
+   *
+   * On a non uperiodic surface the first and last umultiplicities may be UDegree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   *
+   * On a uperiodic surface the first and the last umultiplicities must be the same.
+   *
+   * on non-uperiodic surfaces
+   *
+   * Poles.ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2
+   *
+   * on uperiodic surfaces
+   *
+   * Poles.ColLength() == Sum(UMults(i)) except the first or last
+   *
+   * The previous conditions for U holds also for V, with the RowLength of the poles.
    */
   constructor(Poles: NCollection_Array2_gp_Pnt, Weights: NCollection_Array2_double, UKnots: NCollection_Array1_double, VKnots: NCollection_Array1_double, UMults: NCollection_Array1_int, VMults: NCollection_Array1_int, UDegree: number, VDegree: number, UPeriodic?: boolean, VPeriodic?: boolean);
   /**
@@ -31828,14 +36504,21 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   ClearEvalRepresentation(): void;
   /**
    * Exchanges the u and v parametric directions on this BSpline surface. As a consequence:
+   *
+   * - the poles and weights tables are transposed,
+   * - the knots and multiplicities tables are exchanged,
+   * - degrees of continuity, and rational, periodic and uniform characteristics are exchanged, and
+   * - the orientation of the surface is inverted.
    */
   ExchangeUV(): void;
   /**
-   * Sets the surface U periodic. Modifies this surface to be periodic in the U parametric direction. To become periodic in a given parametric direction a surface must be closed in that parametric direction, and the knot sequence relative to that direction must be periodic. To generate this periodic sequence of knots, the functions FirstUKnotIndex and LastUKnotIndex are used to compute I1 and I2. These are the indexes, in the knot array associated with the given parametric direction, of the knots that correspond to the first and last parameters of this BSpline surface in the given parametric direction. Hence the period is: Knots(I1) - Knots(I2) As a result, the knots and poles tables are modified. Exceptions Standard_ConstructionError if the surface is not closed in the given parametric direction.
+   * Sets the surface U periodic. Modifies this surface to be periodic in the U parametric direction. To become periodic in a given parametric direction a surface must be closed in that parametric direction, and the knot sequence relative to that direction must be periodic. To generate this periodic sequence of knots, the functions FirstUKnotIndex and LastUKnotIndex are used to compute I1 and I2.
+   * These are the indexes, in the knot array associated with the given parametric direction, of the knots that correspond to the first and last parameters of this BSpline surface in the given parametric direction. Hence the period is: Knots(I1) - Knots(I2) As a result, the knots and poles tables are modified. Exceptions Standard_ConstructionError if the surface is not closed in the given parametric direction.
    */
   SetUPeriodic(): void;
   /**
-   * Sets the surface V periodic. Modifies this surface to be periodic in the V parametric direction. To become periodic in a given parametric direction a surface must be closed in that parametric direction, and the knot sequence relative to that direction must be periodic. To generate this periodic sequence of knots, the functions FirstVKnotIndex and LastVKnotIndex are used to compute I1 and I2. These are the indexes, in the knot array associated with the given parametric direction, of the knots that correspond to the first and last parameters of this BSpline surface in the given parametric direction. Hence the period is: Knots(I1) - Knots(I2) As a result, the knots and poles tables are modified. Exceptions Standard_ConstructionError if the surface is not closed in the given parametric direction.
+   * Sets the surface V periodic. Modifies this surface to be periodic in the V parametric direction. To become periodic in a given parametric direction a surface must be closed in that parametric direction, and the knot sequence relative to that direction must be periodic. To generate this periodic sequence of knots, the functions FirstVKnotIndex and LastVKnotIndex are used to compute I1 and I2.
+   * These are the indexes, in the knot array associated with the given parametric direction, of the knots that correspond to the first and last parameters of this BSpline surface in the given parametric direction. Hence the period is: Knots(I1) - Knots(I2) As a result, the knots and poles tables are modified. Exceptions Standard_ConstructionError if the surface is not closed in the given parametric direction.
    */
   SetVPeriodic(): void;
   /**
@@ -31868,94 +36551,172 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   VReverse(): void;
   /**
    * Computes the u parameter on the modified surface, produced by reversing its U parametric direction, for the point of u parameter U, on this BSpline surface. For a BSpline surface, these functions return respectively:
+   *
+   * - UFirst + ULast - U, where UFirst, ULast are the values of the first and last parameters of this BSpline surface, in the u parametric directions.
    */
   UReversedParameter(U: number): number;
   /**
    * Computes the v parameter on the modified surface, produced by reversing its V parametric direction, for the point of v parameter V on this BSpline surface. For a BSpline surface, these functions return respectively:
+   *
+   * - VFirst + VLast - V, VFirst and VLast are the values of the first and last parameters of this BSpline surface, in the v pametric directions.
    */
   VReversedParameter(V: number): number;
   /**
-   * Increases the degrees of this BSpline surface to UDegree and VDegree in the u and v parametric directions respectively. As a result, the tables of poles, weights and multiplicities are modified. The tables of knots is not changed. Note: Nothing is done if the given degree is less than or equal to the current degree in the corresponding parametric direction. Exceptions Standard_ConstructionError if UDegree or VDegree is greater than Geom_BSplineSurface::MaxDegree().
+   * Increases the degrees of this BSpline surface to UDegree and VDegree in the u and v parametric directions respectively. As a result, the tables of poles, weights and multiplicities are modified. The tables of knots is not changed. Note: Nothing is done if the given degree is less than or equal to the current degree in the corresponding parametric direction. Exceptions Standard_ConstructionError if UDegree or VDegree is greater than `Geom_BSplineSurface::MaxDegree()`.
    */
   IncreaseDegree(UDegree: number, VDegree: number): void;
   /**
    * Inserts into the knots table for the U parametric direction of this BSpline surface:
+   *
+   * - the values of the array Knots, with their respective multiplicities, Mults. If the knot value to insert already exists in the table, its multiplicity is:
+   * - increased by M, if Add is true (the default), or
+   * - increased to M, if Add is false. The tolerance criterion used to check the equality of the knots is the larger of the values ParametricTolerance and double::Epsilon(val), where val is the knot value to be inserted. Warning
+   * - If a given multiplicity coefficient is null, or negative, nothing is done.
+   * - The new multiplicity of a knot is limited to the degree of this BSpline surface in the corresponding parametric direction. Exceptions Standard_ConstructionError if a knot value to insert is outside the bounds of this BSpline surface in the specified parametric direction. The comparison uses the precision criterion ParametricTolerance.
    */
   InsertUKnots(Knots: NCollection_Array1_double, Mults: NCollection_Array1_int, ParametricTolerance: number, Add: boolean): void;
   /**
    * Inserts into the knots table for the V parametric direction of this BSpline surface:
+   *
+   * - the values of the array Knots, with their respective multiplicities, Mults. If the knot value to insert already exists in the table, its multiplicity is:
+   * - increased by M, if Add is true (the default), or
+   * - increased to M, if Add is false. The tolerance criterion used to check the equality of the knots is the larger of the values ParametricTolerance and double::Epsilon(val), where val is the knot value to be inserted. Warning
+   * - If a given multiplicity coefficient is null, or negative, nothing is done.
+   * - The new multiplicity of a knot is limited to the degree of this BSpline surface in the corresponding parametric direction. Exceptions Standard_ConstructionError if a knot value to insert is outside the bounds of this BSpline surface in the specified parametric direction. The comparison uses the precision criterion ParametricTolerance.
    */
   InsertVKnots(Knots: NCollection_Array1_double, Mults: NCollection_Array1_int, ParametricTolerance: number, Add: boolean): void;
   /**
-   * Reduces to M the multiplicity of the knot of index Index in the U parametric direction. If M is 0, the knot is removed. With a modification of this type, the table of poles is also modified. Two different algorithms are used systematically to compute the new poles of the surface. For each pole, the distance between the pole calculated using the first algorithm and the same pole calculated using the second algorithm, is checked. If this distance is less than Tolerance it ensures that the surface is not modified by more than Tolerance. Under these conditions, the function returns true; otherwise, it returns false. A low tolerance prevents modification of the surface. A high tolerance "smoothes" the surface. Exceptions Standard_OutOfRange if Index is outside the bounds of the knots table of this BSpline surface.
+   * Reduces to M the multiplicity of the knot of index Index in the U parametric direction. If M is 0, the knot is removed. With a modification of this type, the table of poles is also modified. Two different algorithms are used systematically to compute the new poles of the surface.
+   * For each pole, the distance between the pole calculated using the first algorithm and the same pole calculated using the second algorithm, is checked. If this distance is less than Tolerance it ensures that the surface is not modified by more than Tolerance. Under these conditions, the function returns true; otherwise, it returns false. A low tolerance prevents modification of the surface. A high tolerance "smoothes" the surface. Exceptions Standard_OutOfRange if Index is outside the bounds of the knots table of this BSpline surface.
    */
   RemoveUKnot(Index: number, M: number, Tolerance: number): boolean;
   /**
-   * Reduces to M the multiplicity of the knot of index Index in the V parametric direction. If M is 0, the knot is removed. With a modification of this type, the table of poles is also modified. Two different algorithms are used systematically to compute the new poles of the surface. For each pole, the distance between the pole calculated using the first algorithm and the same pole calculated using the second algorithm, is checked. If this distance is less than Tolerance it ensures that the surface is not modified by more than Tolerance. Under these conditions, the function returns true; otherwise, it returns false. A low tolerance prevents modification of the surface. A high tolerance "smoothes" the surface. Exceptions Standard_OutOfRange if Index is outside the bounds of the knots table of this BSpline surface.
+   * Reduces to M the multiplicity of the knot of index Index in the V parametric direction. If M is 0, the knot is removed. With a modification of this type, the table of poles is also modified. Two different algorithms are used systematically to compute the new poles of the surface.
+   * For each pole, the distance between the pole calculated using the first algorithm and the same pole calculated using the second algorithm, is checked. If this distance is less than Tolerance it ensures that the surface is not modified by more than Tolerance. Under these conditions, the function returns true; otherwise, it returns false. A low tolerance prevents modification of the surface. A high tolerance "smoothes" the surface. Exceptions Standard_OutOfRange if Index is outside the bounds of the knots table of this BSpline surface.
    */
   RemoveVKnot(Index: number, M: number, Tolerance: number): boolean;
   /**
    * Increases the multiplicity of the knot of range UIndex in the UKnots sequence. M is the new multiplicity. M must be greater than the previous multiplicity and lower or equal to the degree of the surface in the U parametric direction. Raised if M is not in the range [1, UDegree].
+   *
+   * Raised if UIndex is not in the range [FirstUKnotIndex, LastUKnotIndex] given by the methods with the same name.
    */
   IncreaseUMultiplicity(UIndex: number, M: number): void;
   /**
    * Increases until order M the multiplicity of the set of knots FromI1,...., ToI2 in the U direction. This method can be used to make a B_spline surface into a PiecewiseBezier B_spline surface. If <me> was uniform, it can become non uniform.
+   *
+   * Raised if FromI1 or ToI2 is out of the range [FirstUKnotIndex, LastUKnotIndex].
+   *
+   * M should be greater than the previous multiplicity of the all the knots FromI1,..., ToI2 and lower or equal to the Degree of the surface in the U parametric direction.
    */
   IncreaseUMultiplicity(FromI1: number, ToI2: number, M: number): void;
   /**
    * Increments the multiplicity of the consecutives uknots FromI1..ToI2 by step. The multiplicity of each knot FromI1,.....,ToI2 must be lower or equal to the UDegree of the B_spline.
+   *
+   * Raised if FromI1 or ToI2 is not in the range [FirstUKnotIndex, LastUKnotIndex]
+   *
+   * Raised if one knot has a multiplicity greater than UDegree.
    */
   IncrementUMultiplicity(FromI1: number, ToI2: number, Step: number): void;
   /**
    * Increases the multiplicity of a knot in the V direction. M is the new multiplicity.
+   *
+   * M should be greater than the previous multiplicity and lower than the degree of the surface in the V parametric direction.
+   *
+   * Raised if VIndex is not in the range [FirstVKnotIndex, LastVKnotIndex] given by the methods with the same name.
    */
   IncreaseVMultiplicity(VIndex: number, M: number): void;
   /**
    * Increases until order M the multiplicity of the set of knots FromI1,...., ToI2 in the V direction. This method can be used to make a BSplineSurface into a PiecewiseBezier B_spline surface. If <me> was uniform, it can become non-uniform.
+   *
+   * Raised if FromI1 or ToI2 is out of the range [FirstVKnotIndex, LastVKnotIndex] given by the methods with the same name.
+   *
+   * M should be greater than the previous multiplicity of the all the knots FromI1,..., ToI2 and lower or equal to the Degree of the surface in the V parametric direction.
    */
   IncreaseVMultiplicity(FromI1: number, ToI2: number, M: number): void;
   /**
    * Increments the multiplicity of the consecutives vknots FromI1..ToI2 by step. The multiplicity of each knot FromI1,.....,ToI2 must be lower or equal to the VDegree of the B_spline.
+   *
+   * Raised if FromI1 or ToI2 is not in the range [FirstVKnotIndex, LastVKnotIndex]
+   *
+   * Raised if one knot has a multiplicity greater than VDegree.
    */
   IncrementVMultiplicity(FromI1: number, ToI2: number, Step: number): void;
   /**
    * Inserts a knot value in the sequence of UKnots. If U is a knot value this method increases the multiplicity of the knot if the previous multiplicity was lower than M else it does nothing. The tolerance criterion is ParametricTolerance. ParametricTolerance should be greater or equal than Resolution from package gp.
+   *
+   * Raised if U is out of the bounds [U1, U2] given by the methods Bounds, the criterion ParametricTolerance is used. Raised if M is not in the range [1, UDegree].
    */
   InsertUKnot(U: number, M: number, ParametricTolerance: number, Add: boolean): void;
   /**
    * Inserts a knot value in the sequence of VKnots. If V is a knot value this method increases the multiplicity of the knot if the previous multiplicity was lower than M otherwise it does nothing. The tolerance criterion is ParametricTolerance. ParametricTolerance should be greater or equal than Resolution from package gp.
+   *
+   * raises if V is out of the Bounds [V1, V2] given by the methods Bounds, the criterion ParametricTolerance is used. raises if M is not in the range [1, VDegree].
    */
   InsertVKnot(V: number, M: number, ParametricTolerance: number, Add: boolean): void;
   /**
    * Segments the surface between U1 and U2 in the U-Direction. between V1 and V2 in the V-Direction. The control points are modified, the first and the last point are not the same.
+   *
+   * Parameters theUTolerance, theVTolerance define the possible proximity along the corresponding direction of the segment boundaries and B-spline knots to treat them as equal.
+   *
+   * Warnings : Even if <me> is not closed it can become closed after the segmentation for example if U1 or U2 are out of the bounds of the surface <me> or if the surface makes loop. raises if U2 < U1 or V2 < V1. Standard_DomainError if U2 - U1 exceeds the uperiod for uperiodic surfaces. i.e. ((U2 - U1) - UPeriod) > `Precision::PConfusion()`. Standard_DomainError if V2 - V1 exceeds the vperiod for vperiodic surfaces. i.e. ((V2 - V1) - VPeriod) > `Precision::PConfusion()`).
    */
   Segment(U1: number, U2: number, V1: number, V2: number, theUTolerance: number, theVTolerance: number): void;
   /**
    * Segments the surface between U1 and U2 in the U-Direction. between V1 and V2 in the V-Direction.
+   *
+   * same as Segment but do nothing if U1 and U2 (resp. V1 and V2) are equal to the bounds in U (resp. in V) of <me>. For example, if <me> is periodic in V, it will be always periodic in V after the segmentation if the bounds in V are unchanged
+   *
+   * Parameters theUTolerance, theVTolerance define the possible proximity along the corresponding direction of the segment boundaries and B-spline knots to treat them as equal.
+   *
+   * Warnings : Even if <me> is not closed it can become closed after the segmentation for example if U1 or U2 are out of the bounds of the surface <me> or if the surface makes loop. raises if U2 < U1 or V2 < V1. Standard_DomainError if U2 - U1 exceeds the uperiod for uperiodic surfaces. i.e. ((U2 - U1) - UPeriod) > `Precision::PConfusion()`. Standard_DomainError if V2 - V1 exceeds the vperiod for vperiodic surfaces. i.e. ((V2 - V1) - VPeriod) > `Precision::PConfusion()`).
    */
   CheckAndSegment(U1: number, U2: number, V1: number, V2: number, theUTolerance: number, theVTolerance: number): void;
   /**
    * Substitutes the UKnots of range UIndex with K.
+   *
+   * Raised if UIndex < 1 or UIndex > NbUKnots
+   *
+   * Raised if K >= UKnots(UIndex+1) or K <= UKnots(UIndex-1)
    */
   SetUKnot(UIndex: number, K: number): void;
   /**
    * Changes the value of the UKnots of range UIndex and increases its multiplicity.
+   *
+   * Raised if UIndex is not in the range [FirstUKnotIndex, LastUKnotIndex] given by the methods with the same name.
+   *
+   * Raised if K >= UKnots(UIndex+1) or K <= UKnots(UIndex-1) M must be lower than UDegree and greater than the previous multiplicity of the knot of range UIndex.
    */
   SetUKnot(UIndex: number, K: number, M: number): void;
   /**
    * Changes all the U-knots of the surface. The multiplicity of the knots are not modified.
+   *
+   * Raised if there is an index such that UK (Index+1) <= UK (Index).
+   *
+   * Raised if UK.Lower() < 1 or UK.Upper() > NbUKnots
    */
   SetUKnots(UK: NCollection_Array1_double): void;
   /**
    * Substitutes the VKnots of range VIndex with K.
+   *
+   * Raised if VIndex < 1 or VIndex > NbVKnots
+   *
+   * Raised if K >= VKnots(VIndex+1) or K <= VKnots(VIndex-1)
    */
   SetVKnot(VIndex: number, K: number): void;
   /**
    * Changes the value of the VKnots of range VIndex and increases its multiplicity.
+   *
+   * Raised if VIndex is not in the range [FirstVKnotIndex, LastVKnotIndex] given by the methods with the same name.
+   *
+   * Raised if K >= VKnots(VIndex+1) or K <= VKnots(VIndex-1) M must be lower than VDegree and greater than the previous multiplicity of the knot of range VIndex.
    */
   SetVKnot(VIndex: number, K: number, M: number): void;
   /**
    * Changes all the V-knots of the surface. The multiplicity of the knots are not modified.
+   *
+   * Raised if there is an index such that VK (Index+1) <= VK (Index).
+   *
+   * Raised if VK.Lower() < 1 or VK.Upper() > NbVKnots
    */
   SetVKnots(VK: NCollection_Array1_double): void;
   /**
@@ -31963,47 +36724,74 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
    */
   LocateU(U: number, ParametricTolerance: number, WithKnotRepetition: boolean): { I1: number; I2: number };
   /**
-   * Locates the parametric value V in the sequence of knots. If "WithKnotRepetition" is True we consider the knot's representation with repetition of multiple knot value, otherwise we consider the knot's representation with no repetition of multiple knot values. VKnots (I1) <= V <= VKnots (I2) . if I1 = I2 V is a knot value (the tolerance criterion ParametricTolerance is used). . if I1 < 1 => V < VKnots(1) - std::abs(ParametricTolerance) . if I2 > NbVKnots => V > VKnots(NbVKnots)+std::abs(ParametricTolerance) poles insertion and removing The following methods are available only if the surface is Uniform or QuasiUniform in the considered direction The knot repartition is modified.
+   * Locates the parametric value V in the sequence of knots. If "WithKnotRepetition" is True we consider the knot's representation with repetition of multiple knot value, otherwise we consider the knot's representation with no repetition of multiple knot values.
+   * VKnots (I1) <= V <= VKnots (I2) . if I1 = I2 V is a knot value (the tolerance criterion ParametricTolerance is used). . if I1 < 1 => V < VKnots(1) - std::abs(ParametricTolerance) . if I2 > NbVKnots => V > VKnots(NbVKnots)+std::abs(ParametricTolerance) poles insertion and removing The following methods are available only if the surface is Uniform or QuasiUniform in the considered direction The knot repartition is modified.
    */
   LocateV(V: number, ParametricTolerance: number, WithKnotRepetition: boolean): { I1: number; I2: number };
   /**
    * Substitutes the pole of range (UIndex, VIndex) with P. If the surface is rational the weight of range (UIndex, VIndex) is not modified.
+   *
+   * Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1 or VIndex > NbVPoles.
    */
   SetPole(UIndex: number, VIndex: number, P: gp_Pnt): void;
   /**
    * Substitutes the pole and the weight of range (UIndex, VIndex) with P and W.
+   *
+   * Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1 or VIndex > NbVPoles. Raised if Weight <= Resolution from package gp.
    */
   SetPole(UIndex: number, VIndex: number, P: gp_Pnt, Weight: number): void;
   /**
    * Changes a column of poles or a part of this column. Raised if Vindex < 1 or VIndex > NbVPoles.
+   *
+   * Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbUPoles.
    */
   SetPoleCol(VIndex: number, CPoles: NCollection_Array1_gp_Pnt): void;
   /**
    * Changes a column of poles or a part of this column with the corresponding weights. If the surface was rational it can become non rational. If the surface was non rational it can become rational. Raised if Vindex < 1 or VIndex > NbVPoles.
+   *
+   * Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbUPoles Raised if the bounds of CPoleWeights are not the same as the bounds of CPoles. Raised if one of the weight value of CPoleWeights is lower or equal to Resolution from package gp.
    */
   SetPoleCol(VIndex: number, CPoles: NCollection_Array1_gp_Pnt, CPoleWeights: NCollection_Array1_double): void;
   /**
    * Changes a row of poles or a part of this row with the corresponding weights. If the surface was rational it can become non rational. If the surface was non rational it can become rational. Raised if Uindex < 1 or UIndex > NbUPoles.
+   *
+   * Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbVPoles raises if the bounds of CPoleWeights are not the same as the bounds of CPoles. Raised if one of the weight value of CPoleWeights is lower or equal to Resolution from package gp.
    */
   SetPoleRow(UIndex: number, CPoles: NCollection_Array1_gp_Pnt, CPoleWeights: NCollection_Array1_double): void;
   /**
    * Changes a row of poles or a part of this row. Raised if Uindex < 1 or UIndex > NbUPoles.
+   *
+   * Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbVPoles.
    */
   SetPoleRow(UIndex: number, CPoles: NCollection_Array1_gp_Pnt): void;
   /**
    * Changes the weight of the pole of range UIndex, VIndex. If the surface was non rational it can become rational. If the surface was rational it can become non rational.
+   *
+   * Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1 or VIndex > NbVPoles
+   *
+   * Raised if weight is lower or equal to Resolution from package gp
    */
   SetWeight(UIndex: number, VIndex: number, Weight: number): void;
   /**
    * Changes a column of weights of a part of this column.
+   *
+   * Raised if VIndex < 1 or VIndex > NbVPoles
+   *
+   * Raised if CPoleWeights.Lower() < 1 or CPoleWeights.Upper() > NbUPoles. Raised if a weight value is lower or equal to Resolution from package gp.
    */
   SetWeightCol(VIndex: number, CPoleWeights: NCollection_Array1_double): void;
   /**
    * Changes a row of weights or a part of this row.
+   *
+   * Raised if UIndex < 1 or UIndex > NbUPoles
+   *
+   * Raised if CPoleWeights.Lower() < 1 or CPoleWeights.Upper() > NbVPoles. Raised if a weight value is lower or equal to Resolution from package gp.
    */
   SetWeightRow(UIndex: number, CPoleWeights: NCollection_Array1_double): void;
   /**
    * Move a point with parameter U and V to P. given u,v as parameters) to reach a new position UIndex1, UIndex2, VIndex1, VIndex2: indicates the poles which can be moved if Problem in BSplineBasis calculation, no change for the curve and UFirstIndex, VLastIndex = 0 VFirstIndex, VLastIndex = 0.
+   *
+   * Raised if UIndex1 < UIndex2 or VIndex1 < VIndex2 or UIndex1 < 1 || UIndex1 > NbUPoles or UIndex2 < 1 || UIndex2 > NbUPoles VIndex1 < 1 || VIndex1 > NbVPoles or VIndex2 < 1 || VIndex2 > NbVPoles characteristics of the surface
    */
   MovePoint(U: number, V: number, P: gp_Pnt, UIndex1: number, UIndex2: number, VIndex1: number, VIndex2: number): { UFirstIndex: number; ULastIndex: number; VFirstIndex: number; VLastIndex: number };
   /**
@@ -32043,7 +36831,8 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
    */
   Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
-   * Returns the continuity of the surface : C0 : only geometric continuity, C1 : continuity of the first derivative all along the Surface, C2 : continuity of the second derivative all along the Surface, C3 : continuity of the third derivative all along the Surface, CN : the order of continuity is infinite. A B-spline surface is infinitely continuously differentiable for the couple of parameters U, V such that U != UKnots(i) and V != VKnots(i). The continuity of the surface at a knot value depends on the multiplicity of this knot. Example : If the surface is C1 in the V direction and C2 in the U direction this function returns Shape = C1.
+   * Returns the continuity of the surface : C0 : only geometric continuity, C1 : continuity of the first derivative all along the Surface, C2 : continuity of the second derivative all along the Surface, C3 : continuity of the third derivative all along the Surface, CN : the order of continuity is infinite.
+   * A B-spline surface is infinitely continuously differentiable for the couple of parameters U, V such that U != UKnots(i) and V != VKnots(i). The continuity of the surface at a knot value depends on the multiplicity of this knot. Example : If the surface is C1 in the V direction and C2 in the U direction this function returns Shape = C1.
    */
   Continuity(): GeomAbs_Shape;
   /**
@@ -32080,10 +36869,14 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   NbVPoles(): number;
   /**
    * Returns the pole of range (UIndex, VIndex).
+   *
+   * Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1 or VIndex > NbVPoles.
    */
   Pole(UIndex: number, VIndex: number): gp_Pnt;
   /**
    * Returns the poles of the B-spline surface.
+   *
+   * Raised if the length of P in the U and V direction is not equal to NbUpoles and NbVPoles.
    * @deprecated
    */
   Poles(P: NCollection_Array2_gp_Pnt): void;
@@ -32101,10 +36894,16 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   UKnot(UIndex: number): number;
   /**
    * Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier. If all the knots differ by a positive constant from the preceding knot in the U direction the B-spline surface can be :
+   *
+   * - Uniform if all the knots are of multiplicity 1,
+   * - QuasiUniform if all the knots are of multiplicity 1 except for the first and last knot which are of multiplicity Degree + 1,
+   * - PiecewiseBezier if the first and last knots have multiplicity Degree + 1 and if interior knots have multiplicity Degree otherwise the surface is non uniform in the U direction The tolerance criterion is Resolution from package gp.
    */
   UKnotDistribution(): unknown;
   /**
    * Returns the knots in the U direction.
+   *
+   * Raised if the length of Ku is not equal to the number of knots in the U direction.
    * @deprecated
    */
   UKnots(Ku: NCollection_Array1_double): void;
@@ -32114,6 +36913,8 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   UKnots(): NCollection_Array1_double;
   /**
    * Returns the uknots sequence. In this sequence the knots with a multiplicity greater than 1 are repeated. Example : Ku = {k1, k1, k1, k2, k3, k3, k4, k4, k4}.
+   *
+   * Raised if the length of Ku is not equal to NbUPoles + UDegree + 1
    * @deprecated
    */
   UKnotSequence(Ku: NCollection_Array1_double): void;
@@ -32127,6 +36928,8 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   UMultiplicity(UIndex: number): number;
   /**
    * Returns the multiplicities of the knots in the U direction.
+   *
+   * Raised if the length of Mu is not equal to the number of knots in the U direction.
    * @deprecated
    */
   UMultiplicities(Mu: NCollection_Array1_int): void;
@@ -32144,10 +36947,16 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   VKnot(VIndex: number): number;
   /**
    * Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier. If all the knots differ by a positive constant from the preceding knot in the V direction the B-spline surface can be :
+   *
+   * - Uniform if all the knots are of multiplicity 1,
+   * - QuasiUniform if all the knots are of multiplicity 1 except for the first and last knot which are of multiplicity Degree + 1,
+   * - PiecewiseBezier if the first and last knots have multiplicity Degree + 1 and if interior knots have multiplicity Degree otherwise the surface is non uniform in the V direction. The tolerance criterion is Resolution from package gp.
    */
   VKnotDistribution(): unknown;
   /**
    * Returns the knots in the V direction.
+   *
+   * Raised if the length of Kv is not equal to the number of knots in the V direction.
    * @deprecated
    */
   VKnots(Kv: NCollection_Array1_double): void;
@@ -32157,6 +36966,8 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   VKnots(): NCollection_Array1_double;
   /**
    * Returns the vknots sequence. In this sequence the knots with a multiplicity greater than 1 are repeated. Example : Kv = {k1, k1, k1, k2, k3, k3, k4, k4, k4}.
+   *
+   * Raised if the length of Kv is not equal to NbVPoles + VDegree + 1
    * @deprecated
    */
   VKnotSequence(Kv: NCollection_Array1_double): void;
@@ -32170,6 +36981,8 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   VMultiplicity(VIndex: number): number;
   /**
    * Returns the multiplicities of the knots in the V direction.
+   *
+   * Raised if the length of Mv is not equal to the number of knots in the V direction.
    * @deprecated
    */
   VMultiplicities(Mv: NCollection_Array1_int): void;
@@ -32179,10 +36992,14 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   VMultiplicities(): NCollection_Array1_int;
   /**
    * Returns the weight value of range UIndex, VIndex.
+   *
+   * Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1 or VIndex > NbVPoles.
    */
   Weight(UIndex: number, VIndex: number): number;
   /**
    * Returns the weights of the B-spline surface.
+   *
+   * Raised if the length of W in the U and V direction is not equal to NbUPoles and NbVPoles.
    * @deprecated
    */
   Weights(W: NCollection_Array2_double): void;
@@ -32191,7 +37008,8 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
    */
   Weights(): NCollection_Array2_double;
   /**
-   * Returns a const reference to the weights array. For rational surfaces: the internal owning weights array. For non-rational surfaces: a non-owning view of unit weights from BSplSLib. The array is always sized to match NbUPoles() x NbVPoles().
+   * Returns a const reference to the weights array. For rational surfaces: the internal owning weights array. For non-rational surfaces: a non-owning view of unit weights from {@link BSplSLib | `BSplSLib`}. The array is always sized to match `NbUPoles()` x `NbVPoles()`.
+   * @remarks **Warning:** Do NOT modify elements through the returned reference.
    */
   WeightsArray(): NCollection_Array2_double;
   /**
@@ -32212,6 +37030,14 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   EvalD3(U: number, V: number): Geom_Surface_ResD3;
   /**
    * Computes the derivative of order Nu in U and Nv in V at (U, V). Raises an exception on failure.
+   *
+   * Raised if the continuity of the surface is not CNu in the U direction and CNv in the V direction.
+   *
+   * Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
+   *
+   * The following functions computes the point for the parametric values (U, V) and the derivatives at this point on the B-spline surface patch delimited with the knots FromUK1, FromVK1 and the knots ToUK2, ToVK2. (U, V) can be out of these parametric bounds but for the computation we only use the definition of the surface between these knots.
+   * This method is useful to compute local derivative, if the order of continuity of the whole surface is not greater enough.
+   * Inside the parametric knot's domain previously defined the evaluations are the same as if we consider the whole definition of the surface. Of course the evaluations are different outside this parametric domain.
    */
   EvalDN(U: number, V: number, Nu: number, Nv: number): gp_Vec;
   /**
@@ -32264,6 +37090,9 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   static MaxDegree(): number;
   /**
    * Computes two tolerance values for this BSpline surface, based on the given tolerance in 3D space Tolerance3D. The tolerances computed are:
+   *
+   * - UTolerance in the u parametric direction, and
+   * - VTolerance in the v parametric direction. If f(u,v) is the equation of this BSpline surface, UTolerance and VTolerance guarantee that : | u1 - u0 | < UTolerance and | v1 - v0 | < VTolerance ====> |f (u1,v1) - f (u0,v0)| < Tolerance3D
    */
   Resolution(Tolerance3D: number): { UTolerance: number; VTolerance: number };
   /**
@@ -32280,6 +37109,23 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
 
 /**
  * Definition of the B_spline curve. A B-spline curve can be Uniform or non-uniform Rational or non-rational Periodic or non-periodic.
+ *
+ * a b-spline curve is defined by : its degree; the degree for a {@link Geom_BSplineCurve | `Geom_BSplineCurve`} is limited to a value (25) which is defined and controlled by the system. This value is returned by the function MaxDegree;
+ *
+ * - its periodic or non-periodic nature;
+ * - a table of poles (also called control points), with their associated weights if the BSpline curve is rational. The poles of the curve are "control points" used to deform the curve. If the curve is non-periodic, the first pole is the start point of the curve, and the last pole is the end point of the curve.
+ * The segment which joins the first pole to the second pole is the tangent to the curve at its start point, and the segment which joins the last pole to the second-from-last pole is the tangent to the curve at its end point. If the curve is periodic, these geometric properties are not verified. It is more difficult to give a geometric signification to the weights but are useful for providing exact representations of the arcs of a circle or ellipse. Moreover, if the weights of all the poles are equal, the curve has a polynomial equation; it is therefore a non-rational curve.
+ * - a table of knots with their multiplicities. For a {@link Geom_BSplineCurve | `Geom_BSplineCurve`}, the table of knots is an increasing sequence of reals without repetition; the multiplicities define the repetition of the knots. A BSpline curve is a piecewise polynomial or rational curve. The knots are the parameters of junction points between two pieces.
+ * The multiplicity Mult(i) of the knot Knot(i) of the BSpline curve is related to the degree of continuity of the curve at the knot Knot(i), which is equal to Degree - Mult(i) where Degree is the degree of the BSpline curve. If the knots are regularly spaced (i.e. the difference between two consecutive knots is a constant), three specific and frequently used cases of knot distribution can be identified:
+ * - "uniform" if all multiplicities are equal to 1,
+ * - "quasi-uniform" if all multiplicities are equal to 1, except the first and the last knot which have a multiplicity of Degree + 1, where Degree is the degree of the BSpline curve,
+ * - "Piecewise Bezier" if all multiplicities are equal to Degree except the first and last knot which have a multiplicity of Degree + 1, where Degree is the degree of the BSpline curve. A curve of this type is a concatenation of arcs of Bezier curves. If the BSpline curve is not periodic:
+ * - the bounds of the Poles and Weights tables are 1 and NbPoles, where NbPoles is the number of poles of the BSpline curve,
+ * - the bounds of the Knots and Multiplicities tables are 1 and NbKnots, where NbKnots is the number of knots of the BSpline curve. If the BSpline curve is periodic, and if there are k periodic knots and p periodic poles, the period is: period = Knot(k + 1) - Knot(1) and the poles and knots tables can be considered as infinite tables, verifying:
+ * - Knot(i+k) = Knot(i) + period
+ * - Pole(i+p) = Pole(i) Note: data structures of a periodic BSpline curve are more complex than those of a non-periodic one. Warning In this class, weight value is considered to be zero if the weight is less than or equal to `gp::Resolution()`.
+ *
+ * References : . A survey of curve and surface methods in CADG Wolfgang BOHM CAGD 1 (1984) . On de Boor-like algorithms and blossoming Wolfgang BOEHM cagd 5 (1988) . Blossoming and knot insertion algorithms for B-spline curves Ronald N. GOLDMAN . Modelisation des surfaces en CAO, Henri GIAUME Peugeot SA . Curves and Surfaces for Computer Aided Geometric Design, a practical guide Gerald Farin
  */
 export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   /**
@@ -32305,6 +37151,26 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   constructor(Poles: NCollection_Array1_gp_Pnt, Weights: NCollection_Array1_double, Knots: NCollection_Array1_double, Multiplicities: NCollection_Array1_int, Degree: number, Periodic: boolean);
   /**
    * Creates a rational B_spline curve on the basis <Knots, Multiplicities> of degree <Degree>. Raises ConstructionError subject to the following conditions 0 < Degree <= MaxDegree.
+   *
+   * Weights.Length() == Poles.Length()
+   *
+   * Knots.Length() == Mults.Length() >= 2
+   *
+   * Knots(i) < Knots(i+1) (Knots are increasing)
+   *
+   * 1 <= Mults(i) <= Degree
+   *
+   * On a non periodic curve the first and last multiplicities may be Degree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   *
+   * On a periodic curve the first and the last multicities must be the same.
+   *
+   * on non-periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) - Degree - 1 >= 2
+   *
+   * on periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) except the first or last
    */
   constructor(Poles: NCollection_Array1_gp_Pnt, Weights: NCollection_Array1_double, Knots: NCollection_Array1_double, Multiplicities: NCollection_Array1_int, Degree: number, Periodic?: boolean, CheckRational?: boolean);
   /**
@@ -32324,31 +37190,57 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
    */
   ClearEvalRepresentation(): void;
   /**
-   * Increases the degree of this BSpline curve to Degree. As a result, the poles, weights and multiplicities tables are modified; the knots table is not changed. Nothing is done if Degree is less than or equal to the current degree. Exceptions Standard_ConstructionError if Degree is greater than Geom_BSplineCurve::MaxDegree().
+   * Increases the degree of this BSpline curve to Degree. As a result, the poles, weights and multiplicities tables are modified; the knots table is not changed. Nothing is done if Degree is less than or equal to the current degree. Exceptions Standard_ConstructionError if Degree is greater than `Geom_BSplineCurve::MaxDegree()`.
    */
   IncreaseDegree(Degree: number): void;
   /**
    * Increases the multiplicity of the knot <Index> to <M>.
+   *
+   * If <M> is lower or equal to the current multiplicity nothing is done. If <M> is higher than the degree, the degree is used. If <Index> is not in [FirstUKnotIndex, LastUKnotIndex]
    */
   IncreaseMultiplicity(Index: number, M: number): void;
   /**
    * Increases the multiplicities of the knots in [I1,I2] to <M>.
+   *
+   * For each knot if <M> is lower or equal to the current multiplicity nothing is done. If <M> is higher than the degree the degree is used. If <I1,I2> are not in [FirstUKnotIndex, LastUKnotIndex]
    */
   IncreaseMultiplicity(I1: number, I2: number, M: number): void;
   /**
    * Increment the multiplicities of the knots in [I1,I2] by <M>.
+   *
+   * If <M> is not positive nothing is done.
+   *
+   * For each knot the resulting multiplicity is limited to the Degree. If <I1,I2> are not in [FirstUKnotIndex, LastUKnotIndex]
    */
   IncrementMultiplicity(I1: number, I2: number, M: number): void;
   /**
-   * Inserts a knot value in the sequence of knots. If  is an existing knot the multiplicity is increased by <M>.
+   * Inserts a knot value in the sequence of knots. If is an existing knot the multiplicity is increased by <M>.
+   *
+   * If U is not on the parameter range nothing is done.
+   *
+   * If the multiplicity is negative or null nothing is done. The new multiplicity is limited to the degree.
+   *
+   * The tolerance criterion for knots equality is the max of Epsilon(U) and ParametricTolerance.
    */
   InsertKnot(U: number, M: number, ParametricTolerance: number, Add: boolean): void;
   /**
    * Inserts a set of knots values in the sequence of knots.
+   *
+   * For each U = Knots(i), M = Mults(i)
+   *
+   * If is an existing knot the multiplicity is increased by <M> if <Add> is True, increased to <M> if <Add> is False.
+   *
+   * If U is not on the parameter range nothing is done.
+   *
+   * If the multiplicity is negative or null nothing is done. The new multiplicity is limited to the degree.
+   *
+   * The tolerance criterion for knots equality is the max of Epsilon(U) and ParametricTolerance.
    */
   InsertKnots(Knots: NCollection_Array1_double, Mults: NCollection_Array1_int, ParametricTolerance: number, Add: boolean): void;
   /**
-   * Reduces the multiplicity of the knot of index Index to M. If M is equal to 0, the knot is removed. With a modification of this type, the array of poles is also modified. Two different algorithms are systematically used to compute the new poles of the curve. If, for each pole, the distance between the pole calculated using the first algorithm and the same pole calculated using the second algorithm, is less than Tolerance, this ensures that the curve is not modified by more than Tolerance. Under these conditions, true is returned; otherwise, false is returned. A low tolerance is used to prevent modification of the curve. A high tolerance is used to "smooth" the curve. Exceptions Standard_OutOfRange if Index is outside the bounds of the knots table. pole insertion and pole removing this operation is limited to the Uniform or QuasiUniform BSplineCurve. The knot values are modified. If the BSpline is NonUniform or Piecewise Bezier an exception Construction error is raised.
+   * Reduces the multiplicity of the knot of index Index to M. If M is equal to 0, the knot is removed. With a modification of this type, the array of poles is also modified. Two different algorithms are systematically used to compute the new poles of the curve.
+   * If, for each pole, the distance between the pole calculated using the first algorithm and the same pole calculated using the second algorithm, is less than Tolerance, this ensures that the curve is not modified by more than Tolerance. Under these conditions, true is returned; otherwise, false is returned. A low tolerance is used to prevent modification of the curve. A high tolerance is used to "smooth" the curve.
+   * Exceptions Standard_OutOfRange if Index is outside the bounds of the knots table. pole insertion and pole removing this operation is limited to the Uniform or QuasiUniform BSplineCurve. The knot values are modified. If the BSpline is NonUniform or Piecewise Bezier an exception Construction error is raised.
    */
   RemoveKnot(Index: number, M: number, Tolerance: number): boolean;
   /**
@@ -32357,18 +37249,29 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   Reverse(): void;
   /**
    * Returns the parameter on the reversed curve for the point of parameter U on <me>.
+   *
+   * returns UFirst + ULast - U
    */
   ReversedParameter(U: number): number;
   /**
    * Modifies this BSpline curve by segmenting it between U1 and U2. Either of these values can be outside the bounds of the curve, but U2 must be greater than U1. All data structure tables of this BSpline curve are modified, but the knots located between U1 and U2 are retained. The degree of the curve is not modified.
+   *
+   * Parameter theTolerance defines the possible proximity of the segment boundaries and B-spline knots to treat them as equal.
+   *
+   * Warnings : Even if <me> is not closed it can become closed after the segmentation for example if U1 or U2 are out of the bounds of the curve <me> or if the curve makes loop. After the segmentation the length of a curve can be null. raises if U2 < U1. Standard_DomainError if U2 - U1 exceeds the period for periodic curves. i.e. ((U2 - U1) - Period) > `Precision::PConfusion()`.
    */
   Segment(U1: number, U2: number, theTolerance: number): void;
   /**
    * Modifies this BSpline curve by assigning the value K to the knot of index Index in the knots table. This is a relatively local modification because K must be such that: Knots(Index - 1) < K < Knots(Index + 1) The second syntax allows you also to increase the multiplicity of the knot to M (but it is not possible to decrease the multiplicity of the knot with this function). Standard_ConstructionError if:
+   *
+   * - K is not such that: Knots(Index - 1) < K < Knots(Index + 1)
+   * - M is greater than the degree of this BSpline curve or lower than the previous multiplicity of knot of index Index in the knots table. Standard_OutOfRange if Index is outside the bounds of the knots table.
    */
   SetKnot(Index: number, K: number): void;
   /**
    * Changes the knot of range Index with its multiplicity. You can increase the multiplicity of a knot but it is not allowed to decrease the multiplicity of an existing knot.
+   *
+   * Raised if K >= Knots(Index+1) or K <= Knots(Index-1). Raised if M is greater than Degree or lower than the previous multiplicity of knot of range Index. Raised if Index < 1 || Index > NbKnots
    */
   SetKnot(Index: number, K: number, M: number): void;
   /**
@@ -32405,10 +37308,17 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   SetPole(Index: number, P: gp_Pnt, Weight: number): void;
   /**
    * Changes the weight for the pole of range Index. If the curve was non rational it can become rational. If the curve was rational it can become non rational.
+   *
+   * Raised if Index < 1 || Index > NbPoles Raised if Weight <= 0.0
    */
   SetWeight(Index: number, Weight: number): void;
   /**
    * Moves the point of parameter U of this BSpline curve to P. Index1 and Index2 are the indexes in the table of poles of this BSpline curve of the first and last poles designated to be moved. FirstModifiedPole and LastModifiedPole are the indexes of the first and last poles which are effectively modified. In the event of incompatibility between Index1, Index2 and the value U:
+   *
+   * - no change is made to this BSpline curve, and
+   * - the FirstModifiedPole and LastModifiedPole are returned null. Exceptions Standard_OutOfRange if:
+   * - Index1 is greater than or equal to Index2, or
+   * - Index1 or Index2 is less than 1 or greater than the number of poles of this BSpline curve.
    */
   MovePoint(U: number, P: gp_Pnt, Index1: number, Index2: number): { FirstModifiedPole: number; LastModifiedPole: number };
   /**
@@ -32436,11 +37346,12 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
    */
   IsRational(): boolean;
   /**
-   * Returns the global continuity of the curve : C0 : only geometric continuity, C1 : continuity of the first derivative all along the Curve, C2 : continuity of the second derivative all along the Curve, C3 : continuity of the third derivative all along the Curve, CN : the order of continuity is infinite. For a B-spline curve of degree d if a knot Ui has a multiplicity p the B-spline curve is only Cd-p continuous at Ui. So the global continuity of the curve can't be greater than Cd-p where p is the maximum multiplicity of the interior Knots. In the interior of a knot span the curve is infinitely continuously differentiable.
+   * Returns the global continuity of the curve : C0 : only geometric continuity, C1 : continuity of the first derivative all along the Curve, C2 : continuity of the second derivative all along the Curve, C3 : continuity of the third derivative all along the Curve, CN : the order of continuity is infinite. For a B-spline curve of degree d if a knot Ui has a multiplicity p the B-spline curve is only Cd-p continuous at Ui.
+   * So the global continuity of the curve can't be greater than Cd-p where p is the maximum multiplicity of the interior Knots. In the interior of a knot span the curve is infinitely continuously differentiable.
    */
   Continuity(): GeomAbs_Shape;
   /**
-   * Returns the degree of this BSpline curve. The degree of a Geom_BSplineCurve curve cannot be greater than Geom_BSplineCurve::MaxDegree(). Computation of value and derivatives.
+   * Returns the degree of this BSpline curve. The degree of a {@link Geom_BSplineCurve | `Geom_BSplineCurve`} curve cannot be greater than `Geom_BSplineCurve::MaxDegree()`. Computation of value and derivatives.
    */
   Degree(): number;
   /**
@@ -32461,6 +37372,10 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   EvalD3(U: number): Geom_Curve_ResD3;
   /**
    * For the point of parameter U of this BSpline curve, computes the vector corresponding to the Nth derivative. Warning On a point where the continuity of the curve is not the one requested, this function impacts the part defined by the parameter with a value greater than U, i.e. the part of the curve to the "right" of the singularity. Exceptions Standard_RangeError if N is less than 1.
+   *
+   * The following functions compute the point of parameter U and the derivatives at this point on the B-spline curve arc defined between the knot FromK1 and the knot ToK2.
+   * U can be out of bounds [Knot (FromK1), Knot (ToK2)] but for the computation we only use the definition of the curve between these two knots. This method is useful to compute local derivative, if the order of continuity of the whole curve is not greater enough.
+   * Inside the parametric domain Knot (FromK1), Knot (ToK2) the evaluations are the same as if we consider the whole definition of the curve. Of course the evaluations are different outside this parametric domain.
    */
   EvalDN(U: number, N: number): gp_Vec;
   /**
@@ -32505,6 +37420,8 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   Knot(Index: number): number;
   /**
    * returns the knot values of the B-spline curve; Warning A knot with a multiplicity greater than 1 is not repeated in the knot table. The Multiplicity function can be used to obtain the multiplicity of each knot.
+   *
+   * Raised K.Lower() is less than number of first knot or K.Upper() is more than number of last knot.
    * @deprecated
    */
   Knots(K: NCollection_Array1_double): void;
@@ -32513,7 +37430,20 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
    */
   Knots(): NCollection_Array1_double;
   /**
-   * Returns K, the knots sequence of this BSpline curve. In this sequence, knots with a multiplicity greater than 1 are repeated. In the case of a non-periodic curve the length of the sequence must be equal to the sum of the NbKnots multiplicities of the knots of the curve (where NbKnots is the number of knots of this BSpline curve). This sum is also equal to : NbPoles + Degree + 1 where NbPoles is the number of poles and Degree the degree of this BSpline curve. In the case of a periodic curve, if there are k periodic knots, the period is Knot(k+1) - Knot(1). The initial sequence is built by writing knots 1 to k+1, which are repeated according to their corresponding multiplicities. If Degree is the degree of the curve, the degree of continuity of the curve at the knot of index 1 (or k+1) is equal to c = Degree + 1 - Mult(1). c knots are then inserted at the beginning and end of the initial sequence:
+   * Returns K, the knots sequence of this BSpline curve. In this sequence, knots with a multiplicity greater than 1 are repeated.
+   * In the case of a non-periodic curve the length of the sequence must be equal to the sum of the NbKnots multiplicities of the knots of the curve (where NbKnots is the number of knots of this BSpline curve).
+   * This sum is also equal to : NbPoles + Degree + 1 where NbPoles is the number of poles and Degree the degree of this BSpline curve. In the case of a periodic curve, if there are k periodic knots, the period is Knot(k+1) - Knot(1).
+   * The initial sequence is built by writing knots 1 to k+1, which are repeated according to their corresponding multiplicities.
+   * If Degree is the degree of the curve, the degree of continuity of the curve at the knot of index 1 (or k+1) is equal to c = Degree + 1 - Mult(1). c knots are then inserted at the beginning and end of the initial sequence:
+   *
+   * - the c values of knots preceding the first item Knot(k+1) in the initial sequence are inserted at the beginning; the period is subtracted from these c values;
+   * - the c values of knots following the last item Knot(1) in the initial sequence are inserted at the end; the period is added to these c values. The length of the sequence must therefore be equal to: NbPoles + 2*Degree - Mult(1) + 2. Example For a non-periodic BSpline curve of degree 2 where:
+   * - the array of knots is: { k1 k2 k3 k4 },
+   * - with associated multiplicities: { 3 1 2 3 }, the knot sequence is: K = { k1 k1 k1 k2 k3 k3 k4 k4 k4 } For a periodic BSpline curve of degree 4 , which is "C1" continuous at the first knot, and where :
+   * - the periodic knots are: { k1 k2 k3 (k4) } (3 periodic knots: the points of parameter k1 and k4 are identical, the period is p = k4 - k1),
+   * - with associated multiplicities: { 3 1 2 (3) }, the degree of continuity at knots k1 and k4 is: Degree + 1 - Mult(i) = 2. 2 supplementary knots are added at the beginning and end of the sequence:
+   * - at the beginning: the 2 knots preceding k4 minus the period; in this example, this is k3 - p both times;
+   * - at the end: the 2 knots following k1 plus the period; in this example, this is k2 + p and k3 + p. The knot sequence is therefore: K = { k3-p k3-p k1 k1 k1 k2 k3 k3 k4 k4 k4 k2+p k3+p } Exceptions Raised if K.Lower() is less than number of first knot in knot sequence with repetitions or K.Upper() is more than number of last knot in knot sequence with repetitions.
    * @deprecated
    */
   KnotSequence(K: NCollection_Array1_double): void;
@@ -32523,6 +37453,10 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   KnotSequence(): NCollection_Array1_double;
   /**
    * Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier. If all the knots differ by a positive constant from the preceding knot the BSpline Curve can be :
+   *
+   * - Uniform if all the knots are of multiplicity 1,
+   * - QuasiUniform if all the knots are of multiplicity 1 except for the first and last knot which are of multiplicity Degree + 1,
+   * - PiecewiseBezier if the first and last knots have multiplicity Degree + 1 and if interior knots have multiplicity Degree A piecewise Bezier with only two knots is a BezierCurve. else the curve is non uniform. The tolerance criterion is Epsilon from class Real.
    */
   KnotDistribution(): unknown;
   /**
@@ -32543,6 +37477,8 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   Multiplicity(Index: number): number;
   /**
    * Returns the multiplicity of the knots of the curve.
+   *
+   * Raised if the length of M is not equal to NbKnots.
    * @deprecated
    */
   Multiplicities(M: NCollection_Array1_int): void;
@@ -32564,6 +37500,8 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   Pole(Index: number): gp_Pnt;
   /**
    * Returns the poles of the B-spline curve;.
+   *
+   * Raised if the length of P is not equal to the number of poles.
    * @deprecated
    */
   Poles(P: NCollection_Array1_gp_Pnt): void;
@@ -32581,6 +37519,8 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   Weight(Index: number): number;
   /**
    * Returns the weights of the B-spline curve;.
+   *
+   * Raised if the length of W is not equal to NbPoles.
    * @deprecated
    */
   Weights(W: NCollection_Array1_double): void;
@@ -32589,7 +37529,8 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
    */
   Weights(): NCollection_Array1_double;
   /**
-   * Returns a const reference to the weights array. For rational curves: the internal owning weights array. For non-rational curves: a non-owning view of unit weights from BSplCLib. The array is always sized to match NbPoles().
+   * Returns a const reference to the weights array. For rational curves: the internal owning weights array. For non-rational curves: a non-owning view of unit weights from `BSplCLib`. The array is always sized to match `NbPoles()`.
+   * @remarks **Warning:** Do NOT modify elements through the returned reference.
    */
   WeightsArray(): NCollection_Array1_double;
   /**
@@ -32621,7 +37562,19 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
 }
 
 /**
- * Describes a sphere. A sphere is defined by its radius, and is positioned in space by a coordinate system (a gp_Ax3 object), the origin of which is the center of the sphere. This coordinate system is the "local coordinate system" of the sphere. The following apply:
+ * Describes a sphere. A sphere is defined by its radius, and is positioned in space by a coordinate system (a {@link gp_Ax3 | `gp_Ax3`} object), the origin of which is the center of the sphere. This coordinate system is the "local coordinate system" of the sphere. The following apply:
+ *
+ * - Rotation around its "main Axis", in the trigonometric sense given by the "X Direction" and the "Y Direction", defines the u parametric direction.
+ * - Its "X Axis" gives the origin for the u parameter.
+ * - The "reference meridian" of the sphere is a half-circle, of radius equal to the radius of the sphere. It is located in the plane defined by the origin, "X Direction" and "main Direction", centered on the origin, and positioned on the positive side of the "X Axis".
+ * - Rotation around the "Y Axis" gives the v parameter on the reference meridian.
+ * - The "X Axis" gives the origin of the v parameter on the reference meridian.
+ * - The v parametric direction is oriented by the "main Direction", i.e. when v increases, the Z coordinate increases. (This implies that the "Y Direction" orients the reference meridian only when the local coordinate system is indirect.)
+ * - The u isoparametric curve is a half-circle obtained by rotating the reference meridian of the sphere through an angle u around the "main Axis", in the trigonometric sense defined by the "X Direction" and the "Y Direction". The parametric equation of the sphere is: P(u,v) = O + R*cos(v)*(cos(u)*XDir + sin(u)*YDir)+R*sin(v)*ZDir where:
+ * - O, XDir, YDir and ZDir are respectively the origin, the "X Direction", the "Y Direction" and the "Z Direction" of its local coordinate system, and
+ * - R is the radius of the sphere. The parametric range of the two parameters is:
+ * - [ 0, 2.*Pi ] for u, and
+ * - [ - Pi/2., + Pi/2. ] for v.
  */
 export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
   /**
@@ -32637,7 +37590,7 @@ export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
    */
   SetRadius(R: number): void;
   /**
-   * Converts the gp_Sphere S into this sphere.
+   * Converts the {@link gp_Sphere | `gp_Sphere`} S into this sphere.
    */
   SetSphere(S: gp_Sphere): void;
   /**
@@ -32734,6 +37687,20 @@ export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
 
 /**
  * Describes a rational or non-rational Bezier curve.
+ *
+ * - a non-rational Bezier curve is defined by a table of poles (also called control points),
+ * - a rational Bezier curve is defined by a table of poles with varying weights. These data are manipulated by two parallel arrays:
+ * - the poles table, which is an array of {@link gp_Pnt | `gp_Pnt`} points, and
+ * - the weights table, which is an array of reals. The bounds of these arrays are 1 and "the number of "poles" of the curve. The poles of the curve are "control points" used to deform the curve. The first pole is the start point of the curve, and the last pole is the end point of the curve.
+ * The segment that joins the first pole to the second pole is the tangent to the curve at its start point, and the segment that joins the last pole to the second-from-last pole is the tangent to the curve at its end point.
+ * It is more difficult to give a geometric signification to the weights but they are useful for providing the exact representations of arcs of a circle or ellipse. Moreover, if the weights of all poles are equal, the curve is polynomial; it is therefore a non-rational curve. The non-rational curve is a special and frequently used case. The weights are defined and used only in the case of a rational curve. The degree of a Bezier curve is equal to the number of poles, minus 1. It must be greater than or equal to
+ *
+ * 1.
+ * However, the degree of a {@link Geom_BezierCurve | `Geom_BezierCurve`} curve is limited to a value (25) which is defined and controlled by the system. This value is returned by the function MaxDegree. The parameter range for a Bezier curve is [ 0, 1 ]. If the first and last control points of the Bezier curve are the same point then the curve is closed.
+ * For example, to create a closed Bezier curve with four control points, you have to give the set of control points P1, P2, P3 and P1. The continuity of a Bezier curve is infinite. It is not possible to build a Bezier curve with negative weights. We consider that a weight value is zero if it is less than or equal to `gp::Resolution()`. We also consider that two weight values W1 and W2 are equal if: |W2 - W1| <= `gp::Resolution()`. Warning
+ *
+ * - When considering the continuity of a closed Bezier curve at the junction point, remember that a curve of this type is never periodic. This means that the derivatives for the parameter u = 0 have no reason to be the same as the derivatives for the parameter u = 1 even if the curve is closed.
+ * - The length of a Bezier curve can be null.
  */
 export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   /**
@@ -32771,18 +37738,26 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   Increase(Degree: number): void;
   /**
    * Inserts a pole P after the pole of range Index. If the curve <me> is rational the weight value for the new pole of range Index is 1.0. raised if Index is not in the range [1, NbPoles].
+   *
+   * raised if the resulting number of poles is greater than MaxDegree + 1.
    */
   InsertPoleAfter(Index: number, P: gp_Pnt): void;
   /**
    * Inserts a pole with its weight in the set of poles after the pole of range Index. If the curve was non rational it can become rational if all the weights are not identical. Raised if Index is not in the range [1, NbPoles].
+   *
+   * Raised if the resulting number of poles is greater than MaxDegree + 1. Raised if Weight is lower or equal to Resolution from package gp.
    */
   InsertPoleAfter(Index: number, P: gp_Pnt, Weight: number): void;
   /**
    * Inserts a pole P before the pole of range Index. If the curve <me> is rational the weight value for the new pole of range Index is 1.0. Raised if Index is not in the range [1, NbPoles].
+   *
+   * Raised if the resulting number of poles is greater than MaxDegree + 1.
    */
   InsertPoleBefore(Index: number, P: gp_Pnt): void;
   /**
    * Inserts a pole with its weight in the set of poles after the pole of range Index. If the curve was non rational it can become rational if all the weights are not identical. Raised if Index is not in the range [1, NbPoles].
+   *
+   * Raised if the resulting number of poles is greater than MaxDegree + 1. Raised if Weight is lower or equal to Resolution from package gp.
    */
   InsertPoleBefore(Index: number, P: gp_Pnt, Weight: number): void;
   /**
@@ -32795,6 +37770,8 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   Reverse(): void;
   /**
    * Returns the parameter on the reversed curve for the point of parameter U on <me>.
+   *
+   * returns 1-U
    */
   ReversedParameter(U: number): number;
   /**
@@ -32851,6 +37828,12 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   EvalD2(U: number): Geom_Curve_ResD2;
   /**
    * For this Bezier curve, computes.
+   *
+   * - the point P of parameter U, or
+   * - the point P and one or more of the following values:
+   * - V1, the first derivative vector,
+   * - V2, the second derivative vector,
+   * - V3, the third derivative vector. Note: the parameter U can be outside the bounds of the curve.
    */
   EvalD3(U: number): Geom_Curve_ResD3;
   /**
@@ -32883,6 +37866,8 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   Pole(Index: number): gp_Pnt;
   /**
    * Returns all the poles of the curve.
+   *
+   * Raised if the length of P is not equal to the number of poles.
    * @deprecated
    */
   Poles(P: NCollection_Array1_gp_Pnt): void;
@@ -32896,6 +37881,8 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
   Weight(Index: number): number;
   /**
    * Returns all the weights of the curve.
+   *
+   * Raised if the length of W is not equal to the number of poles.
    * @deprecated
    */
   Weights(W: NCollection_Array1_double): void;
@@ -32904,7 +37891,8 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
    */
   Weights(): NCollection_Array1_double;
   /**
-   * Returns a const reference to the weights array. For rational curves: the internal owning weights array. For non-rational curves: a non-owning view of unit weights from BSplCLib. The array is always sized to match NbPoles().
+   * Returns a const reference to the weights array. For rational curves: the internal owning weights array. For non-rational curves: a non-owning view of unit weights from `BSplCLib`. The array is always sized to match `NbPoles()`.
+   * @remarks **Warning:** Do NOT modify elements through the returned reference.
    */
   WeightsArray(): NCollection_Array1_double;
   /**
@@ -32912,7 +37900,7 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
    */
   Transform(T: gp_Trsf): void;
   /**
-   * Returns the value of the maximum polynomial degree of any Geom_BezierCurve curve. This value is 25.
+   * Returns the value of the maximum polynomial degree of any {@link Geom_BezierCurve | `Geom_BezierCurve`} curve. This value is 25.
    */
   static MaxDegree(): number;
   /**
@@ -32945,6 +37933,11 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
 
 /**
  * The abstract class Geometry for 3D space is the root class of all geometric objects from the Geom package. It describes the common behavior of these objects when:
+ *
+ * - applying geometric transformations to objects, and
+ * - constructing objects by geometric transformation (including copying).
+ * Warning Only transformations which do not modify the nature of the geometry can be applied to Geom objects: this is the case with translations, rotations, symmetries and scales; this is also the case with {@link gp_Trsf | `gp_Trsf`} composite transformations which are used to define the geometric transformations applied using the Transform or Transformed functions.
+ * Note: Geometry defines the "prototype" of the abstract method Transform which is defined for each concrete type of derived object. All other transformations are implemented using the Transform method.
  */
 export declare class Geom_Geometry extends Standard_Transient {
   /**
@@ -33001,10 +37994,34 @@ export declare class Geom_Geometry extends Standard_Transient {
 
 /**
  * This class defines the infinite cylindrical surface.
+ *
+ * Every cylindrical surface is set by the following equation:
+ *
+ * ```
+ * S(U,V)=Location+R*cos(U)*XAxis+R*sin(U)*YAxis+V*ZAxis,
+ * ```
+ *
+ * where R is cylinder radius.
+ *
+ * The local coordinate system of the CylindricalSurface is defined with an axis placement (see class ElementarySurface).
+ *
+ * The "ZAxis" is the symmetry axis of the CylindricalSurface, it gives the direction of increasing parametric value V.
+ *
+ * The parametrization range is :
+ *
+ * ```
+ * U[0,2*PI],V]-infinite,+infinite[
+ * ```
+ *
+ * The "XAxis" and the "YAxis" define the placement plane of the surface (Z = 0, and parametric value V = 0) perpendicular to the symmetry axis. The "XAxis" defines the origin of the parameter U = 0. The trigonometric sense gives the positive orientation for the parameter U.
+ *
+ * When you create a CylindricalSurface the U and V directions of parametrization are such that at each point of the surface the normal is oriented towards the "outside region".
+ *
+ * The methods UReverse VReverse change the orientation of the surface.
  */
 export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
   /**
-   * Creates a CylindricalSurface from a non transient gp_Cylinder.
+   * Creates a CylindricalSurface from a non transient {@link gp_Cylinder | `gp_Cylinder`}.
    */
   constructor(C: gp_Cylinder);
   /**
@@ -33033,18 +38050,58 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
   VReversedParameter(V: number): number;
   /**
    * Computes the parameters on the transformed surface for the transform of the point of parameters U,V on <me>.
+   *
+   * ```
+   * me->Transformed(T)->Value(U',V')
+   * ```
+   *
+   * is the same point as
+   *
+   * ```
+   * me->Value(U,V).Transformed(T)
+   * ```
+   *
+   * Where U',V' are the new values of U,V after calling
+   *
+   * ```
+   * me->TransformParameters(U,V,T)
+   * ```
+   *
+   * This method multiplies V by T.ScaleFactor()
    */
   TransformParameters(T: gp_Trsf): { U: number; V: number };
   /**
    * Returns a 2d transformation used to find the new parameters of a point on the transformed surface.
+   *
+   * ```
+   * me->Transformed(T)->Value(U',V')
+   * ```
+   *
+   * is the same point as
+   *
+   * ```
+   * me->Value(U,V).Transformed(T)
+   * ```
+   *
+   * Where U',V' are obtained by transforming U,V with the 2d transformation returned by
+   *
+   * ```
+   * me->ParametricTransformation(T)
+   * ```
+   *
+   * This method returns a scale centered on the U axis with T.ScaleFactor
    */
   ParametricTransformation(T: gp_Trsf): gp_GTrsf2d;
   /**
-   * The CylindricalSurface is infinite in the V direction so V1 = Realfirst, V2 = RealLast from package Standard. U1 = 0 and U2 = 2*PI.
+   * The CylindricalSurface is infinite in the V direction so V1 = Realfirst, V2 = RealLast from package {@link Standard | `Standard`}. U1 = 0 and U2 = 2*PI.
    */
   Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
    * Returns the coefficients of the implicit equation of the quadric in the absolute cartesian coordinate system : These coefficients are normalized.
+   *
+   * ```
+   * A1.X**2+A2.Y**2+A3.Z**2+2.(B1.X.Y+B2.X.Z+B3.Y.Z)+2.(C1.X+C2.Y+C3.Z)+D=0.0
+   * ```
    */
   Coefficients(): { A1: number; A2: number; A3: number; B1: number; B2: number; B3: number; C1: number; C2: number; C3: number; D: number };
   /**
@@ -33112,7 +38169,15 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
 }
 
 /**
- * Describes the common behavior of surfaces in 3D space. The Geom package provides many implementations of concrete derived surfaces, such as planes, cylinders, cones, spheres and tori, surfaces of linear extrusion, surfaces of revolution, Bezier and BSpline surfaces, and so on. The key characteristic of these surfaces is that they are parameterized. Geom_Surface demonstrates:
+ * Describes the common behavior of surfaces in 3D space. The Geom package provides many implementations of concrete derived surfaces, such as planes, cylinders, cones, spheres and tori, surfaces of linear extrusion, surfaces of revolution, Bezier and BSpline surfaces, and so on. The key characteristic of these surfaces is that they are parameterized. {@link Geom_Surface | `Geom_Surface`} demonstrates:
+ *
+ * - how to work with the parametric equation of a surface to compute the point of parameters (u, v), and, at this point, the 1st, 2nd ... Nth derivative;
+ * - how to find global information about a surface in each parametric direction (for example, level of continuity, whether the surface is closed, its periodicity, the bounds of the parameters and so on);
+ * - how the parameters change when geometric transformations are applied to the surface, or the orientation is modified.
+ *
+ * Note that all surfaces must have a geometric continuity, and any surface is at least "C0". Generally, continuity is checked at construction time or when the curve is edited. Where this is not the case, the documentation makes this explicit.
+ *
+ * Warning The Geom package does not prevent the construction of surfaces with null areas, or surfaces which self-intersect.
  */
 export declare class Geom_Surface extends Geom_Geometry {
   /**
@@ -33125,6 +38190,16 @@ export declare class Geom_Surface extends Geom_Geometry {
   UReversed(): Geom_Surface;
   /**
    * Returns the parameter on the Ureversed surface for the point of parameter U on <me>.
+   *
+   * ```
+   * me->UReversed()->Value(me->UReversedParameter(U),V)
+   * ```
+   *
+   * is the same point as
+   *
+   * ```
+   * me->Value(U,V)
+   * ```
    */
   UReversedParameter(U: number): number;
   /**
@@ -33137,30 +38212,85 @@ export declare class Geom_Surface extends Geom_Geometry {
   VReversed(): Geom_Surface;
   /**
    * Returns the parameter on the Vreversed surface for the point of parameter V on <me>.
+   *
+   * ```
+   * me->VReversed()->Value(U,me->VReversedParameter(V))
+   * ```
+   *
+   * is the same point as
+   *
+   * ```
+   * me->Value(U,V)
+   * ```
    */
   VReversedParameter(V: number): number;
   /**
    * Computes the parameters on the transformed surface for the transform of the point of parameters U,V on <me>.
+   *
+   * ```
+   * me->Transformed(T)->Value(U',V')
+   * ```
+   *
+   * is the same point as
+   *
+   * ```
+   * me->Value(U,V).Transformed(T)
+   * ```
+   *
+   * Where U',V' are the new values of U,V after calling
+   *
+   * ```
+   * me->TransformParameters(U,V,T)
+   * ```
+   *
+   * This method does not change and <V>
+   *
+   * It can be redefined. For example on the Plane, Cylinder, Cone, Revolved and Extruded surfaces.
    */
   TransformParameters(T: gp_Trsf): { U: number; V: number };
   /**
    * Returns a 2d transformation used to find the new parameters of a point on the transformed surface.
+   *
+   * ```
+   * me->Transformed(T)->Value(U',V')
+   * ```
+   *
+   * is the same point as
+   *
+   * ```
+   * me->Value(U,V).Transformed(T)
+   * ```
+   *
+   * Where U',V' are obtained by transforming U,V with the 2d transformation returned by
+   *
+   * ```
+   * me->ParametricTransformation(T)
+   * ```
+   *
+   * This method returns an identity transformation
+   *
+   * It can be redefined. For example on the Plane, Cylinder, Cone, Revolved and Extruded surfaces.
    */
   ParametricTransformation(T: gp_Trsf): gp_GTrsf2d;
   /**
-   * Returns the parametric bounds U1, U2, V1 and V2 of this surface. If the surface is infinite, this function can return a value equal to Precision::Infinite: instead of double::LastReal.
+   * Returns the parametric bounds U1, U2, V1 and V2 of this surface. If the surface is infinite, this function can return a value equal to `Precision::Infinite`: instead of double::LastReal.
    */
   Bounds(): { U1: number; U2: number; V1: number; V2: number };
   /**
-   * Checks whether this surface is closed in the u parametric direction. Returns true if, in the u parametric direction: taking uFirst and uLast as the parametric bounds in the u parametric direction, for each parameter v, the distance between the points P(uFirst, v) and P(uLast, v) is less than or equal to gp::Resolution().
+   * Checks whether this surface is closed in the u parametric direction. Returns true if, in the u parametric direction: taking uFirst and uLast as the parametric bounds in the u parametric direction, for each parameter v, the distance between the points P(uFirst, v) and P(uLast, v) is less than or equal to `gp::Resolution()`.
    */
   IsUClosed(): boolean;
   /**
-   * Checks whether this surface is closed in the u parametric direction. Returns true if, in the v parametric direction: taking vFirst and vLast as the parametric bounds in the v parametric direction, for each parameter u, the distance between the points P(u, vFirst) and P(u, vLast) is less than or equal to gp::Resolution().
+   * Checks whether this surface is closed in the u parametric direction. Returns true if, in the v parametric direction: taking vFirst and vLast as the parametric bounds in the v parametric direction, for each parameter u, the distance between the points P(u, vFirst) and P(u, vLast) is less than or equal to `gp::Resolution()`.
    */
   IsVClosed(): boolean;
   /**
    * Checks if this surface is periodic in the u parametric direction. Returns true if:
+   *
+   * - this surface is closed in the u parametric direction, and
+   * - there is a constant T such that the distance between the points P (u, v) and P (u + T, v) (or the points P (u, v) and P (u, v + T)) is less than or equal to `gp::Resolution()`.
+   *
+   * Note: T is the parametric period in the u parametric direction.
    */
   IsUPeriodic(): boolean;
   /**
@@ -33169,6 +38299,11 @@ export declare class Geom_Surface extends Geom_Geometry {
   UPeriod(): number;
   /**
    * Checks if this surface is periodic in the v parametric direction. Returns true if:
+   *
+   * - this surface is closed in the v parametric direction, and
+   * - there is a constant T such that the distance between the points P (u, v) and P (u + T, v) (or the points P (u, v) and P (u, v + T)) is less than or equal to `gp::Resolution()`.
+   *
+   * Note: T is the parametric period in the v parametric direction.
    */
   IsVPeriodic(): boolean;
   /**
@@ -33185,6 +38320,16 @@ export declare class Geom_Surface extends Geom_Geometry {
   VIso(V: number): Geom_Curve;
   /**
    * Returns the Global Continuity of the surface in direction U and V :
+   *
+   * - C0: only geometric continuity,
+   * - C1: continuity of the first derivative all along the surface,
+   * - C2: continuity of the second derivative all along the surface,
+   * - C3: continuity of the third derivative all along the surface,
+   * - G1: tangency continuity all along the surface,
+   * - G2: curvature continuity all along the surface,
+   * - CN: the order of continuity is infinite.
+   *
+   * Example: If the surface is C1 in the V parametric direction and C2 in the U parametric direction Shape = C1.
    */
   Continuity(): GeomAbs_Shape;
   /**
@@ -33277,10 +38422,21 @@ export interface Geom_Surface_ResD3 {
 
 /**
  * Describes the common behavior of surfaces which have a simple parametric equation in a local coordinate system. The Geom package provides several implementations of concrete elementary surfaces:
+ *
+ * - the plane, and
+ * - four simple surfaces of revolution: the cylinder, the cone, the sphere and the torus. An elementary surface inherits the common behavior of {@link Geom_Surface | `Geom_Surface`} surfaces.
+ * Furthermore, it is located in 3D space by a coordinate system (a {@link gp_Ax3 | `gp_Ax3`} object) which is also its local coordinate system.
+ * Any elementary surface is oriented, i.e. the normal vector is always defined, and gives the same orientation to the surface, at any point on the surface. In topology this property is referred to as the "outside region of the surface". This orientation is related to the two parametric directions of the surface.
+ * Rotation of a surface around the "main Axis" of its coordinate system, in the trigonometric sense given by the "X Direction" and the "Y Direction" of the coordinate system, defines the u parametric direction of that elementary surface of revolution. This is the default construction mode.
+ * It is also possible, however, to change the orientation of a surface by reversing one of the two parametric directions: use the UReverse or VReverse functions to change the orientation of the normal at any point on the surface. Warning The local coordinate system of an elementary surface is not necessarily direct:
+ * - if it is direct, the trigonometric sense defined by its "main Direction" is the same as the trigonometric sense defined by its two vectors "X Direction" and "Y Direction": "main Direction" = "X Direction" ^ "Y Direction"
+ * - if it is indirect, the two definitions of trigonometric sense are opposite: "main Direction" = - "X Direction" ^ "Y Direction"
  */
 export declare class Geom_ElementarySurface extends Geom_Surface {
   /**
    * Changes the main axis (ZAxis) of the elementary surface.
+   *
+   * Raised if the direction of A1 is parallel to the XAxis of the coordinate system of the surface.
    */
   SetAxis(theA1: gp_Ax1): void;
   /**
@@ -33309,6 +38465,8 @@ export declare class Geom_ElementarySurface extends Geom_Surface {
   UReverse(): void;
   /**
    * Return the parameter on the Ureversed surface for the point of parameter U on <me>.
+   *
+   * me->`UReversed()`->Value(me->UReversedParameter(U),V) is the same point as me->Value(U,V)
    */
   UReversedParameter(U: number): number;
   /**
@@ -33317,6 +38475,8 @@ export declare class Geom_ElementarySurface extends Geom_Surface {
   VReverse(): void;
   /**
    * Return the parameter on the Vreversed surface for the point of parameter V on <me>.
+   *
+   * me->`VReversed()`->Value(U,me->VReversedParameter(V)) is the same point as me->Value(U,V)
    */
   VReversedParameter(V: number): number;
   /**
@@ -33340,7 +38500,11 @@ export declare class Geom_ElementarySurface extends Geom_Surface {
 }
 
 /**
- * The abstract class Curve describes the common behavior of curves in 3D space. The Geom package provides numerous concrete classes of derived curves, including lines, circles, conics, Bezier or BSpline curves, etc. The main characteristic of these curves is that they are parameterized. The Geom_Curve class shows:
+ * The abstract class Curve describes the common behavior of curves in 3D space. The Geom package provides numerous concrete classes of derived curves, including lines, circles, conics, Bezier or BSpline curves, etc. The main characteristic of these curves is that they are parameterized. The {@link Geom_Curve | `Geom_Curve`} class shows:
+ *
+ * - how to work with the parametric equation of a curve in order to calculate the point of parameter u, together with the vector tangent and the derivative vectors of order 2, 3,..., N at this point;
+ * - how to obtain general information about the curve (for example, level of continuity, closed characteristics, periodicity, bounds of the parameter field);
+ * - how the parameter changes when a geometric transformation is applied to the curve or when the orientation of the curve is inverted. All curves must have a geometric continuity: a curve is at least "C0". Generally, this property is checked at the time of construction or when the curve is edited. Where this is not the case, the documentation states so explicitly. Warning The Geom package does not prevent the construction of curves with null length or curves which self-intersect.
  */
 export declare class Geom_Curve extends Geom_Geometry {
   /**
@@ -33349,14 +38513,40 @@ export declare class Geom_Curve extends Geom_Geometry {
   Reverse(): void;
   /**
    * Returns the parameter on the reversed curve for the point of parameter U on <me>.
+   *
+   * me->`Reversed()`->Value(me->ReversedParameter(U))
+   *
+   * is the same point as
+   *
+   * me->Value(U)
    */
   ReversedParameter(U: number): number;
   /**
    * Returns the parameter on the transformed curve for the transform of the point of parameter U on <me>.
+   *
+   * me->Transformed(T)->Value(me->TransformedParameter(U,T))
+   *
+   * is the same point as
+   *
+   * me->Value(U).Transformed(T)
+   *
+   * This methods returns
+   *
+   * It can be redefined. For example on the Line.
    */
   TransformedParameter(U: number, T: gp_Trsf): number;
   /**
    * Returns a coefficient to compute the parameter on the transformed curve for the transform of the point on <me>.
+   *
+   * Transformed(T)->Value(U * ParametricTransformation(T))
+   *
+   * is the same point as
+   *
+   * Value(U).Transformed(T)
+   *
+   * This methods returns 1.
+   *
+   * It can be redefined. For example on the Line.
    */
   ParametricTransformation(T: gp_Trsf): number;
   /**
@@ -33364,11 +38554,11 @@ export declare class Geom_Curve extends Geom_Geometry {
    */
   Reversed(): Geom_Curve;
   /**
-   * Returns the value of the first parameter. Warnings : It can be RealFirst from package Standard if the curve is infinite.
+   * Returns the value of the first parameter. Warnings : It can be RealFirst from package {@link Standard | `Standard`} if the curve is infinite.
    */
   FirstParameter(): number;
   /**
-   * Returns the value of the last parameter. Warnings : It can be RealLast from package Standard if the curve is infinite.
+   * Returns the value of the last parameter. Warnings : It can be RealLast from package {@link Standard | `Standard`} if the curve is infinite.
    */
   LastParameter(): number;
   /**
@@ -33376,7 +38566,8 @@ export declare class Geom_Curve extends Geom_Geometry {
    */
   IsClosed(): boolean;
   /**
-   * Is the parametrization of the curve periodic ? It is possible only if the curve is closed and if the following relation is satisfied : for each parametric value U the distance between the point P(u) and the point P (u + T) is lower or equal to Resolution from package gp, T is the period and must be a constant. There are three possibilities : . the curve is never periodic by definition (SegmentLine) . the curve is always periodic by definition (Circle) . the curve can be defined as periodic (BSpline). In this case a function SetPeriodic allows you to give the shape of the curve. The general rule for this case is : if a curve can be periodic or not the default periodicity set is non periodic and you have to turn (explicitly) the curve into a periodic curve if you want the curve to be periodic.
+   * Is the parametrization of the curve periodic ? It is possible only if the curve is closed and if the following relation is satisfied : for each parametric value U the distance between the point P(u) and the point P (u + T) is lower or equal to Resolution from package gp, T is the period and must be a constant. There are three possibilities : . the curve is never periodic by definition (SegmentLine) . the curve is always periodic by definition (Circle) . the curve can be defined as periodic (BSpline). In this case a function SetPeriodic allows you to give the shape of the curve.
+   * The general rule for this case is : if a curve can be periodic or not the default periodicity set is non periodic and you have to turn (explicitly) the curve into a periodic curve if you want the curve to be periodic.
    */
   IsPeriodic(): boolean;
   /**
@@ -33463,6 +38654,14 @@ export interface Geom_Curve_ResD3 {
 
 /**
  * The root class for bounded surfaces in 3D space. A bounded surface is defined by a rectangle in its 2D parametric space, i.e.
+ *
+ * - its u parameter, which ranges between two finite values u0 and u1, referred to as "First u parameter" and "Last u parameter" respectively, and
+ * - its v parameter, which ranges between two finite values v0 and v1, referred to as "First v parameter" and the "Last v parameter" respectively. The surface is limited by four curves which are the boundaries of the surface:
+ * - its u0 and u1 isoparametric curves in the u parametric direction, and
+ * - its v0 and v1 isoparametric curves in the v parametric direction. A bounded surface is finite. The common behavior of all bounded surfaces is described by the {@link Geom_Surface | `Geom_Surface`} class. The Geom package provides three concrete implementations of bounded surfaces:
+ * - {@link Geom_BezierSurface | `Geom_BezierSurface`},
+ * - {@link Geom_BSplineSurface | `Geom_BSplineSurface`}, and
+ * - {@link Geom_RectangularTrimmedSurface | `Geom_RectangularTrimmedSurface`}. The first two of these implement well known mathematical definitions of complex surfaces, the third trims a surface using four isoparametric curves, i.e. it limits the variation of its parameters to a rectangle in 2D parametric space.
  */
 export declare class Geom_BoundedSurface extends Geom_Surface {
   static get_type_name(): string;
@@ -33475,6 +38674,25 @@ export declare class Geom_BoundedSurface extends Geom_Surface {
 
 /**
  * Describes a BSpline curve. A BSpline curve can be:
+ *
+ * - uniform or non-uniform,
+ * - rational or non-rational,
+ * - periodic or non-periodic. A BSpline curve is defined by:
+ * - its degree; the degree for a {@link Geom2d_BSplineCurve | `Geom2d_BSplineCurve`} is limited to a value (25) which is defined and controlled by the system. This value is returned by the function MaxDegree;
+ * - its periodic or non-periodic nature;
+ * - a table of poles (also called control points), with their associated weights if the BSpline curve is rational. The poles of the curve are "control points" used to deform the curve. If the curve is non-periodic, the first pole is the start point of the curve, and the last pole is the end point of the curve.
+ * The segment, which joins the first pole to the second pole, is the tangent to the curve at its start point, and the segment, which joins the last pole to the second-from-last pole, is the tangent to the curve at its end point. If the curve is periodic, these geometric properties are not verified. It is more difficult to give a geometric signification to the weights but they are useful for providing exact representations of the arcs of a circle or ellipse. Moreover, if the weights of all the poles are equal, the curve has a polynomial equation; it is therefore a non-rational curve.
+ * - a table of knots with their multiplicities. For a {@link Geom2d_BSplineCurve | `Geom2d_BSplineCurve`}, the table of knots is an increasing sequence of reals without repetition; the multiplicities define the repetition of the knots. A BSpline curve is a piecewise polynomial or rational curve. The knots are the parameters of junction points between two pieces.
+ * The multiplicity Mult(i) of the knot Knot(i) of the BSpline curve is related to the degree of continuity of the curve at the knot Knot(i), which is equal to Degree - Mult(i) where Degree is the degree of the BSpline curve. If the knots are regularly spaced (i.e. the difference between two consecutive knots is a constant), three specific and frequently used cases of knot distribution can be identified:
+ * - "uniform" if all multiplicities are equal to 1,
+ * - "quasi-uniform" if all multiplicities are equal to 1, except the first and the last knot which have a multiplicity of Degree + 1, where Degree is the degree of the BSpline curve,
+ * - "Piecewise Bezier" if all multiplicities are equal to Degree except the first and last knot which have a multiplicity of Degree + 1, where Degree is the degree of the BSpline curve. A curve of this type is a concatenation of arcs of Bezier curves. If the BSpline curve is not periodic:
+ * - the bounds of the Poles and Weights tables are 1 and NbPoles, where NbPoles is the number of poles of the BSpline curve,
+ * - the bounds of the Knots and Multiplicities tables are 1 and NbKnots, where NbKnots is the number of knots of the BSpline curve. If the BSpline curve is periodic, and if there are k periodic knots and p periodic poles, the period is: period = Knot(k + 1) - Knot(1) and the poles and knots tables can be considered as infinite tables, such that:
+ * - Knot(i+k) = Knot(i) + period
+ * - Pole(i+p) = Pole(i) Note: data structures of a periodic BSpline curve are more complex than those of a non-periodic one. Warnings: In this class we consider that a weight value is zero if Weight <= Resolution from package gp. For two parametric values (or two knot values) U1, U2 we consider that U1 = U2 if Abs (U2 - U1) <= Epsilon (U1). For two weights values W1, W2 we consider that W1 = W2 if Abs (W2 - W1) <= Epsilon (W1). The method Epsilon is defined in the class Real from package {@link Standard | `Standard`}.
+ *
+ * References : . A survey of curve and surface methods in CADG Wolfgang BOHM CAGD 1 (1984) . On de Boor-like algorithms and blossoming Wolfgang BOEHM cagd 5 (1988) . Blossoming and knot insertion algorithms for B-spline curves Ronald N. GOLDMAN . Modelisation des surfaces en CAO, Henri GIAUME Peugeot SA . Curves and Surfaces for Computer Aided Geometric Design, a practical guide Gerald Farin
  */
 export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   /**
@@ -33483,18 +38701,90 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   constructor(theOther: Geom2d_BSplineCurve);
   /**
    * Creates a non-rational B_spline curve on the basis <Knots, Multiplicities> of degree <Degree>. The following conditions must be verified. 0 < Degree <= MaxDegree.
+   *
+   * Knots.Length() == Mults.Length() >= 2
+   *
+   * Knots(i) < Knots(i+1) (Knots are increasing)
+   *
+   * 1 <= Mults(i) <= Degree
+   *
+   * On a non periodic curve the first and last multiplicities may be Degree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   *
+   * On a periodic curve the first and the last multicities must be the same.
+   *
+   * on non-periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) - Degree - 1 >= 2
+   *
+   * on periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) except the first or last
    */
   constructor(Poles: NCollection_Array1_gp_Pnt2d, Knots: NCollection_Array1_double, Multiplicities: NCollection_Array1_int, Degree: number);
   /**
    * Creates a non-rational B_spline curve on the basis <Knots, Multiplicities> of degree <Degree>. The following conditions must be verified. 0 < Degree <= MaxDegree.
+   *
+   * Knots.Length() == Mults.Length() >= 2
+   *
+   * Knots(i) < Knots(i+1) (Knots are increasing)
+   *
+   * 1 <= Mults(i) <= Degree
+   *
+   * On a non periodic curve the first and last multiplicities may be Degree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   *
+   * On a periodic curve the first and the last multicities must be the same.
+   *
+   * on non-periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) - Degree - 1 >= 2
+   *
+   * on periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) except the first or last
    */
   constructor(Poles: NCollection_Array1_gp_Pnt2d, Knots: NCollection_Array1_double, Multiplicities: NCollection_Array1_int, Degree: number, Periodic: boolean);
   /**
    * Creates a non-rational B_spline curve on the basis <Knots, Multiplicities> of degree <Degree>. The following conditions must be verified. 0 < Degree <= MaxDegree.
+   *
+   * Knots.Length() == Mults.Length() >= 2
+   *
+   * Knots(i) < Knots(i+1) (Knots are increasing)
+   *
+   * 1 <= Mults(i) <= Degree
+   *
+   * On a non periodic curve the first and last multiplicities may be Degree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   *
+   * On a periodic curve the first and the last multicities must be the same.
+   *
+   * on non-periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) - Degree - 1 >= 2
+   *
+   * on periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) except the first or last
    */
   constructor(Poles: NCollection_Array1_gp_Pnt2d, Weights: NCollection_Array1_double, Knots: NCollection_Array1_double, Multiplicities: NCollection_Array1_int, Degree: number);
   /**
    * Creates a rational B_spline curve on the basis <Knots, Multiplicities> of degree <Degree>. The following conditions must be verified. 0 < Degree <= MaxDegree.
+   *
+   * Knots.Length() == Mults.Length() >= 2
+   *
+   * Knots(i) < Knots(i+1) (Knots are increasing)
+   *
+   * 1 <= Mults(i) <= Degree
+   *
+   * On a non periodic curve the first and last multiplicities may be Degree+1 (this is even recommended if you want the curve to start and finish on the first and last pole).
+   *
+   * On a periodic curve the first and the last multicities must be the same.
+   *
+   * on non-periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) - Degree - 1 >= 2
+   *
+   * on periodic curves
+   *
+   * Poles.Length() == Sum(Mults(i)) except the first or last
    */
   constructor(Poles: NCollection_Array1_gp_Pnt2d, Weights: NCollection_Array1_double, Knots: NCollection_Array1_double, Multiplicities: NCollection_Array1_int, Degree: number, Periodic?: boolean);
   /**
@@ -33514,15 +38804,19 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
    */
   ClearEvalRepresentation(): void;
   /**
-   * Increases the degree of this BSpline curve to Degree. As a result, the poles, weights and multiplicities tables are modified; the knots table is not changed. Nothing is done if Degree is less than or equal to the current degree. Exceptions Standard_ConstructionError if Degree is greater than Geom2d_BSplineCurve::MaxDegree().
+   * Increases the degree of this BSpline curve to Degree. As a result, the poles, weights and multiplicities tables are modified; the knots table is not changed. Nothing is done if Degree is less than or equal to the current degree. Exceptions Standard_ConstructionError if Degree is greater than `Geom2d_BSplineCurve::MaxDegree()`.
    */
   IncreaseDegree(Degree: number): void;
   /**
    * Increases the multiplicity of the knot <Index> to <M>.
+   *
+   * If <M> is lower or equal to the current multiplicity nothing is done. If <M> is higher than the degree, the degree is used. If <Index> is not in [FirstUKnotIndex, LastUKnotIndex]
    */
   IncreaseMultiplicity(Index: number, M: number): void;
   /**
    * Increases the multiplicities of the knots in [I1,I2] to <M>.
+   *
+   * For each knot if <M> is lower or equal to the current multiplicity nothing is done. If <M> is higher than the degree the degree is used. As a result, the poles and weights tables of this curve are modified. Warning It is forbidden to modify the multiplicity of the first or last knot of a non-periodic curve. Be careful as Geom2d does not protect against this. Exceptions Standard_OutOfRange if either Index, I1 or I2 is outside the bounds of the knots table.
    */
   IncreaseMultiplicity(I1: number, I2: number, M: number): void;
   /**
@@ -33530,31 +38824,58 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
    */
   IncrementMultiplicity(I1: number, I2: number, M: number): void;
   /**
-   * Inserts a knot value in the sequence of knots. If  is an existing knot the multiplicity is increased by <M>.
+   * Inserts a knot value in the sequence of knots. If is an existing knot the multiplicity is increased by <M>.
+   *
+   * If U is not on the parameter range nothing is done.
+   *
+   * If the multiplicity is negative or null nothing is done. The new multiplicity is limited to the degree.
+   *
+   * The tolerance criterion for knots equality is the max of Epsilon(U) and ParametricTolerance. Warning
+   *
+   * - If U is less than the first parameter or greater than the last parameter of this BSpline curve, nothing is done.
+   * - If M is negative or null, nothing is done.
+   * - The multiplicity of a knot is limited to the degree of this BSpline curve.
    */
   InsertKnot(U: number, M: number, ParametricTolerance: number): void;
   /**
    * Inserts the values of the array Knots, with the respective multiplicities given by the array Mults, into the knots table of this BSpline curve. If a value of the array Knots is an existing knot, its multiplicity is:
+   *
+   * - increased by M, if Add is true, or
+   * - increased to M, if Add is false (default value). The tolerance criterion used for knot equality is the larger of the values ParametricTolerance (defaulted to 0.) and double::Epsilon(U), where U is the current knot value. Warning
+   * - For a value of the array Knots which is less than the first parameter or greater than the last parameter of this BSpline curve, nothing is done.
+   * - For a value of the array Mults which is negative or null, nothing is done.
+   * - The multiplicity of a knot is limited to the degree of this BSpline curve.
    */
   InsertKnots(Knots: NCollection_Array1_double, Mults: NCollection_Array1_int, ParametricTolerance: number, Add: boolean): void;
   /**
-   * Reduces the multiplicity of the knot of index Index to M. If M is equal to 0, the knot is removed. With a modification of this type, the array of poles is also modified. Two different algorithms are systematically used to compute the new poles of the curve. If, for each pole, the distance between the pole calculated using the first algorithm and the same pole calculated using the second algorithm, is less than Tolerance, this ensures that the curve is not modified by more than Tolerance. Under these conditions, true is returned; otherwise, false is returned. A low tolerance is used to prevent modification of the curve. A high tolerance is used to "smooth" the curve. Exceptions Standard_OutOfRange if Index is outside the bounds of the knots table.
+   * Reduces the multiplicity of the knot of index Index to M. If M is equal to 0, the knot is removed. With a modification of this type, the array of poles is also modified. Two different algorithms are systematically used to compute the new poles of the curve.
+   * If, for each pole, the distance between the pole calculated using the first algorithm and the same pole calculated using the second algorithm, is less than Tolerance, this ensures that the curve is not modified by more than Tolerance. Under these conditions, true is returned; otherwise, false is returned. A low tolerance is used to prevent modification of the curve. A high tolerance is used to "smooth" the curve. Exceptions Standard_OutOfRange if Index is outside the bounds of the knots table.
    */
   RemoveKnot(Index: number, M: number, Tolerance: number): boolean;
   /**
    * The new pole is inserted after the pole of range Index. If the curve was non rational it can become rational.
+   *
+   * Raised if the B-spline is NonUniform or PiecewiseBezier or if Weight <= 0.0 Raised if Index is not in the range [1, Number of Poles]
    */
   InsertPoleAfter(Index: number, P: gp_Pnt2d, Weight: number): void;
   /**
    * The new pole is inserted before the pole of range Index. If the curve was non rational it can become rational.
+   *
+   * Raised if the B-spline is NonUniform or PiecewiseBezier or if Weight <= 0.0 Raised if Index is not in the range [1, Number of Poles]
    */
   InsertPoleBefore(Index: number, P: gp_Pnt2d, Weight: number): void;
   /**
    * Removes the pole of range Index If the curve was rational it can become non rational.
+   *
+   * Raised if the B-spline is NonUniform or PiecewiseBezier. Raised if the number of poles of the B-spline curve is lower or equal to 2 before removing. Raised if Index is not in the range [1, Number of Poles]
    */
   RemovePole(Index: number): void;
   /**
    * Reverses the orientation of this BSpline curve. As a result.
+   *
+   * - the knots and poles tables are modified;
+   * - the start point of the initial curve becomes the end point of the reversed curve;
+   * - the end point of the initial curve becomes the start point of the reversed curve.
    */
   Reverse(): void;
   /**
@@ -33563,14 +38884,26 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   ReversedParameter(U: number): number;
   /**
    * Modifies this BSpline curve by segmenting it between U1 and U2. Either of these values can be outside the bounds of the curve, but U2 must be greater than U1. All data structure tables of this BSpline curve are modified, but the knots located between U1 and U2 are retained. The degree of the curve is not modified.
+   *
+   * Parameter theTolerance defines the possible proximity of the segment boundaries and B-spline knots to treat them as equal.
+   *
+   * Warnings: Even if <me> is not closed it can become closed after the segmentation for example if U1 or U2 are out of the bounds of the curve <me> or if the curve makes loop. After the segmentation the length of a curve can be null.
+   *
+   * - The segmentation of a periodic curve over an interval corresponding to its period generates a non-periodic curve with equivalent geometry. Exceptions Standard_DomainError if U2 is less than U1. raises if U2 < U1. Standard_DomainError if U2 - U1 exceeds the period for periodic curves. i.e. ((U2 - U1) - Period) > `Precision::PConfusion()`.
    */
   Segment(U1: number, U2: number, theTolerance: number): void;
   /**
    * Modifies this BSpline curve by assigning the value K to the knot of index Index in the knots table. This is a relatively local modification because K must be such that: Knots(Index - 1) < K < Knots(Index + 1) Exceptions Standard_ConstructionError if:
+   *
+   * - K is not such that: Knots(Index - 1) < K < Knots(Index + 1)
+   * - M is greater than the degree of this BSpline curve or lower than the previous multiplicity of knot of index Index in the knots table. Standard_OutOfRange if Index is outside the bounds of the knots table.
    */
   SetKnot(Index: number, K: number): void;
   /**
    * Modifies this BSpline curve by assigning the value K to the knot of index Index in the knots table. This is a relatively local modification because K must be such that: Knots(Index - 1) < K < Knots(Index + 1) The second syntax allows you also to increase the multiplicity of the knot to M (but it is not possible to decrease the multiplicity of the knot with this function). Exceptions Standard_ConstructionError if:
+   *
+   * - K is not such that: Knots(Index - 1) < K < Knots(Index + 1)
+   * - M is greater than the degree of this BSpline curve or lower than the previous multiplicity of knot of index Index in the knots table. Standard_OutOfRange if Index is outside the bounds of the knots table.
    */
   SetKnot(Index: number, K: number, M: number): void;
   /**
@@ -33579,6 +38912,9 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   SetKnots(K: NCollection_Array1_double): void;
   /**
    * Computes the parameter normalized within the "first" period of this BSpline curve, if it is periodic: the returned value is in the range Param1 and Param1 + Period, where:
+   *
+   * - Param1 is the "first parameter", and
+   * - Period the period of this BSpline curve. Note: If this curve is not periodic, U is not modified.
    */
   PeriodicNormalization(): { U: number };
   /**
@@ -33607,6 +38943,11 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   SetWeight(Index: number, Weight: number): void;
   /**
    * Moves the point of parameter U of this BSpline curve to P. Index1 and Index2 are the indexes in the table of poles of this BSpline curve of the first and last poles designated to be moved. FirstModifiedPole and LastModifiedPole are the indexes of the first and last poles, which are effectively modified. In the event of incompatibility between Index1, Index2 and the value U:
+   *
+   * - no change is made to this BSpline curve, and
+   * - the FirstModifiedPole and LastModifiedPole are returned null. Exceptions Standard_OutOfRange if:
+   * - Index1 is greater than or equal to Index2, or
+   * - Index1 or Index2 is less than 1 or greater than the number of poles of this BSpline curve.
    */
   MovePoint(U: number, P: gp_Pnt2d, Index1: number, Index2: number): { FirstModifiedPole: number; LastModifiedPole: number };
   /**
@@ -33634,7 +38975,8 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
    */
   IsRational(): boolean;
   /**
-   * Returns the global continuity of the curve : C0 : only geometric continuity, C1 : continuity of the first derivative all along the Curve, C2 : continuity of the second derivative all along the Curve, C3 : continuity of the third derivative all along the Curve, CN : the order of continuity is infinite. For a B-spline curve of degree d if a knot Ui has a multiplicity p the B-spline curve is only Cd-p continuous at Ui. So the global continuity of the curve can't be greater than Cd-p where p is the maximum multiplicity of the interior Knots. In the interior of a knot span the curve is infinitely continuously differentiable.
+   * Returns the global continuity of the curve : C0 : only geometric continuity, C1 : continuity of the first derivative all along the Curve, C2 : continuity of the second derivative all along the Curve, C3 : continuity of the third derivative all along the Curve, CN : the order of continuity is infinite. For a B-spline curve of degree d if a knot Ui has a multiplicity p the B-spline curve is only Cd-p continuous at Ui.
+   * So the global continuity of the curve can't be greater than Cd-p where p is the maximum multiplicity of the interior Knots. In the interior of a knot span the curve is infinitely continuously differentiable.
    */
   Continuity(): GeomAbs_Shape;
   /**
@@ -33655,10 +38997,20 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   EvalD2(U: number): Geom2d_Curve_ResD2;
   /**
    * For this BSpline curve, computes.
+   *
+   * - the point P of parameter U, or
+   * - the point P and one or more of the following values:
+   * - V1, the first derivative vector,
+   * - V2, the second derivative vector,
+   * - V3, the third derivative vector. Warning On a point where the continuity of the curve is not the one requested, these functions impact the part defined by the parameter with a value greater than U, i.e. the part of the curve to the "right" of the singularity. Raises UndefinedDerivative if the continuity of the curve is not C3.
    */
   EvalD3(U: number): Geom2d_Curve_ResD3;
   /**
-   * For the point of parameter U of this BSpline curve, computes the vector corresponding to the Nth derivative. Warning On a point where the continuity of the curve is not the one requested, this function impacts the part defined by the parameter with a value greater than U, i.e. the part of the curve to the "right" of the singularity. Raises UndefinedDerivative if the continuity of the curve is not CN. RangeError if N < 1. The following functions computes the point of parameter U and the derivatives at this point on the B-spline curve arc defined between the knot FromK1 and the knot ToK2. U can be out of bounds [Knot (FromK1), Knot (ToK2)] but for the computation we only use the definition of the curve between these two knots. This method is useful to compute local derivative, if the order of continuity of the whole curve is not greater enough. Inside the parametric domain Knot (FromK1), Knot (ToK2) the evaluations are the same as if we consider the whole definition of the curve. Of course the evaluations are different outside this parametric domain.
+   * For the point of parameter U of this BSpline curve, computes the vector corresponding to the Nth derivative.
+   * Warning On a point where the continuity of the curve is not the one requested, this function impacts the part defined by the parameter with a value greater than U, i.e. the part of the curve to the "right" of the singularity. Raises UndefinedDerivative if the continuity of the curve is not CN. RangeError if N < 1.
+   * The following functions computes the point of parameter U and the derivatives at this point on the B-spline curve arc defined between the knot FromK1 and the knot ToK2.
+   * U can be out of bounds [Knot (FromK1), Knot (ToK2)] but for the computation we only use the definition of the curve between these two knots. This method is useful to compute local derivative, if the order of continuity of the whole curve is not greater enough.
+   * Inside the parametric domain Knot (FromK1), Knot (ToK2) the evaluations are the same as if we consider the whole definition of the curve. Of course the evaluations are different outside this parametric domain.
    */
   EvalDN(U: number, N: number): gp_Vec2d;
   /**
@@ -33703,6 +39055,8 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   Knot(Index: number): number;
   /**
    * returns the knot values of the B-spline curve;
+   *
+   * Raised K.Lower() is less than number of first knot or K.Upper() is more than number of last knot.
    * @deprecated
    */
   Knots(K: NCollection_Array1_double): void;
@@ -33712,6 +39066,8 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   Knots(): NCollection_Array1_double;
   /**
    * Returns the knots sequence. In this sequence the knots with a multiplicity greater than 1 are repeated. Example : K = {k1, k1, k1, k2, k3, k3, k4, k4, k4}.
+   *
+   * Raised if K.Lower() is less than number of first knot in knot sequence with repetitions or K.Upper() is more than number of last knot in knot sequence with repetitions.
    * @deprecated
    */
   KnotSequence(K: NCollection_Array1_double): void;
@@ -33721,6 +39077,10 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   KnotSequence(): NCollection_Array1_double;
   /**
    * Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier. If all the knots differ by a positive constant from the preceding knot the BSpline Curve can be :
+   *
+   * - Uniform if all the knots are of multiplicity 1,
+   * - QuasiUniform if all the knots are of multiplicity 1 except for the first and last knot which are of multiplicity Degree + 1,
+   * - PiecewiseBezier if the first and last knots have multiplicity Degree + 1 and if interior knots have multiplicity Degree A piecewise Bezier with only two knots is a BezierCurve. else the curve is non uniform. The tolerance criterion is Epsilon from class Real.
    */
   KnotDistribution(): unknown;
   /**
@@ -33741,6 +39101,8 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   Multiplicity(Index: number): number;
   /**
    * Returns the multiplicity of the knots of the curve.
+   *
+   * Raised if the length of M is not equal to NbKnots.
    * @deprecated
    */
   Multiplicities(M: NCollection_Array1_int): void;
@@ -33762,6 +39124,8 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   Pole(Index: number): gp_Pnt2d;
   /**
    * Returns the poles of the B-spline curve;.
+   *
+   * Raised if the length of P is not equal to the number of poles.
    * @deprecated
    */
   Poles(P: NCollection_Array1_gp_Pnt2d): void;
@@ -33779,6 +39143,8 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   Weight(Index: number): number;
   /**
    * Returns the weights of the B-spline curve;.
+   *
+   * Raised if the length of W is not equal to NbPoles.
    * @deprecated
    */
   Weights(W: NCollection_Array1_double): void;
@@ -33787,7 +39153,8 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
    */
   Weights(): NCollection_Array1_double;
   /**
-   * Returns a const reference to the weights array. For rational curves: the internal owning weights array. For non-rational curves: a non-owning view of unit weights from BSplCLib. The array is always sized to match NbPoles().
+   * Returns a const reference to the weights array. For rational curves: the internal owning weights array. For non-rational curves: a non-owning view of unit weights from `BSplCLib`. The array is always sized to match `NbPoles()`.
+   * @remarks **Warning:** Do NOT modify elements through the returned reference.
    */
   WeightsArray(): NCollection_Array1_double;
   /**
@@ -33816,6 +39183,11 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
 
 /**
  * The abstract class BoundedCurve describes the common behavior of bounded curves in 2D space. A bounded curve is limited by two finite values of the parameter, termed respectively "first parameter" and "last parameter". The "first parameter" gives the "start point" of the bounded curve, and the "last parameter" gives the "end point" of the bounded curve. The length of a bounded curve is finite. The Geom2d package provides three concrete classes of bounded curves:
+ *
+ * - two frequently used mathematical formulations of complex curves:
+ * - {@link Geom2d_BezierCurve | `Geom2d_BezierCurve`},
+ * - {@link Geom2d_BSplineCurve | `Geom2d_BSplineCurve`}, and
+ * - {@link Geom2d_TrimmedCurve | `Geom2d_TrimmedCurve`} to trim a curve, i.e. to only take part of the curve limited by two values of the parameter of the basis curve.
  */
 export declare class Geom2d_BoundedCurve extends Geom2d_Curve {
   /**
@@ -33836,22 +39208,40 @@ export declare class Geom2d_BoundedCurve extends Geom2d_Curve {
 
 /**
  * Defines a portion of a curve limited by two values of parameters inside the parametric domain of the curve. The trimmed curve is defined by:
+ *
+ * - the basis curve, and
+ * - the two parameter values which limit it. The trimmed curve can either have the same orientation as the basis curve or the opposite orientation.
  */
 export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
   /**
    * Creates a trimmed curve from the basis curve C limited between U1 and U2.
+   *
+   * . U1 can be greater or lower than U2. . The returned curve is oriented from U1 to U2. . If the basis curve C is periodic there is an ambiguity because two parts are available. In this case by default the trimmed curve has the same orientation as the basis curve (Sense = True). If Sense = False then the orientation of the trimmed curve is opposite to the orientation of the basis curve C.
+   * If the curve is closed but not periodic it is not possible to keep the part of the curve including the junction point (except if the junction point is at the beginning or at the end of the trimmed curve) because you could lose the fundamental characteristics of the basis curve which are used for example to compute the derivatives of the trimmed curve. So for a closed curve the rules are the same as for a open curve. Warnings : In this package the entities are not shared. The TrimmedCurve is built with a copy of the curve C.
+   * So when C is modified the TrimmedCurve is not modified Warnings : If `is periodic and <theAdjustPeriodic> is True, parametrics bounds of the TrimmedCurve, can be different to [<U1>;<U2>}, if <U1> or <U2> are not in the principal period. Include : For more explanation see the scheme given with this class. Raises ConstructionError the C is not periodic and U1 or U2 are out of the bounds of C. Raised if U1 = U2.`
    */
   constructor(C: Geom2d_Curve, U1: number, U2: number, Sense?: boolean, theAdjustPeriodic?: boolean);
   /**
    * Changes the direction of parametrization of <me>. The first and the last parametric values are modified. The "StartPoint" of the initial curve becomes the "EndPoint" of the reversed curve and the "EndPoint" of the initial curve becomes the "StartPoint" of the reversed curve. Example - If the trimmed curve is defined by:
+   *
+   * - a basis curve whose parameter range is [ 0.,1. ], and
+   * - the two trim values U1 (first parameter) and U2 (last parameter), the reversed trimmed curve is defined by:
+   * - the reversed basis curve, whose parameter range is still [ 0.,1. ], and
+   * - the two trim values 1. - U2 (first parameter) and 1. - U1 (last parameter).
    */
   Reverse(): void;
   /**
    * Returns the parameter on the reversed curve for the point of parameter U on <me>.
+   *
+   * returns UFirst + ULast - U
    */
   ReversedParameter(U: number): number;
   /**
-   * Changes this trimmed curve, by redefining the parameter values U1 and U2, which limit its basis curve. Note: If the basis curve is periodic, the trimmed curve has the same orientation as the basis curve if Sense is true (default value) or the opposite orientation if Sense is false. Warning If the basis curve is periodic and theAdjustPeriodic is True, the bounds of the trimmed curve may be different from U1 and U2 if the parametric origin of the basis curve is within the arc of the trimmed curve. In this case, the modified parameter will be equal to U1 or U2 plus or minus the period. If theAdjustPeriodic is False, parameters U1 and U2 will stay unchanged. Exceptions Standard_ConstructionError if:
+   * Changes this trimmed curve, by redefining the parameter values U1 and U2, which limit its basis curve. Note: If the basis curve is periodic, the trimmed curve has the same orientation as the basis curve if Sense is true (default value) or the opposite orientation if Sense is false.
+   * Warning If the basis curve is periodic and theAdjustPeriodic is True, the bounds of the trimmed curve may be different from U1 and U2 if the parametric origin of the basis curve is within the arc of the trimmed curve. In this case, the modified parameter will be equal to U1 or U2 plus or minus the period. If theAdjustPeriodic is False, parameters U1 and U2 will stay unchanged. Exceptions Standard_ConstructionError if:
+   *
+   * - the basis curve is not periodic, and either U1 or U2 are outside the bounds of the basis curve, or
+   * - U1 is equal to U2.
    */
   SetTrim(U1: number, U2: number, Sense: boolean, theAdjustPeriodic: boolean): void;
   /**
@@ -33863,7 +39253,7 @@ export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
    */
   Continuity(): GeomAbs_Shape;
   /**
-   * Purpose Returns True if the order of continuity of the trimmed curve is N. A trimmed curve is at least "C0" continuous. Warnings : The continuity of the trimmed curve can be greater than the continuity of the basis curve because you consider only a part of the basis curve. Raised if N < 0.
+   * -- Purpose Returns True if the order of continuity of the trimmed curve is N. A trimmed curve is at least "C0" continuous. Warnings : The continuity of the trimmed curve can be greater than the continuity of the basis curve because you consider only a part of the basis curve. Raised if N < 0.
    */
   IsCN(N: number): boolean;
   /**
@@ -33920,10 +39310,26 @@ export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
   Transform(T: gp_Trsf2d): void;
   /**
    * Returns the parameter on the transformed curve for the transform of the point of parameter U on <me>.
+   *
+   * me->Transformed(T)->Value(me->TransformedParameter(U,T))
+   *
+   * is the same point as
+   *
+   * me->Value(U).Transformed(T)
+   *
+   * This methods calls the basis curve method.
    */
   TransformedParameter(U: number, T: gp_Trsf2d): number;
   /**
    * Returns a coefficient to compute the parameter on the transformed curve for the transform of the point on <me>.
+   *
+   * Transformed(T)->Value(U * ParametricTransformation(T))
+   *
+   * is the same point as
+   *
+   * Value(U).Transformed(T)
+   *
+   * This methods calls the basis curve method.
    */
   ParametricTransformation(T: gp_Trsf2d): number;
   /**
@@ -33939,19 +39345,32 @@ export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
 }
 
 /**
- * Describes a circle in the plane (2D space). A circle is defined by its radius and, as with any conic curve, is positioned in the plane with a coordinate system (gp_Ax22d object) where the origin is the center of the circle. The coordinate system is the local coordinate system of the circle. The orientation (direct or indirect) of the local coordinate system gives an explicit orientation to the circle, determining the direction in which the parameter increases along the circle. The Geom2d_Circle circle is parameterized by an angle: P(U) = O + R*std::cos(U)*XDir + R*Sin(U)*YDir where:
+ * Describes a circle in the plane (2D space).
+ * A circle is defined by its radius and, as with any conic curve, is positioned in the plane with a coordinate system ({@link gp_Ax22d | `gp_Ax22d`} object) where the origin is the center of the circle. The coordinate system is the local coordinate system of the circle.
+ * The orientation (direct or indirect) of the local coordinate system gives an explicit orientation to the circle, determining the direction in which the parameter increases along the circle.
+ * The {@link Geom2d_Circle | `Geom2d_Circle`} circle is parameterized by an angle: P(U) = O + R*std::cos(U)*XDir + R*Sin(U)*YDir where:
+ *
+ * - P is the point of parameter U,
+ * - O, XDir and YDir are respectively the origin, "X Direction" and "Y Direction" of its local coordinate system,
+ * - R is the radius of the circle. The "X Axis" of the local coordinate system therefore defines the origin of the parameter of the circle. The parameter is the angle with this "X Direction". A circle is a closed and periodic curve. The period is 2.*Pi and the parameter range is [ 0,2.*Pi [. See Also GCE2d_MakeCircle which provides functions for more complex circle constructions {@link gp_Ax22d | `gp_Ax22d`} and {@link gp_Circ2d | `gp_Circ2d`} for an equivalent, non-parameterized data structure.
  */
 export declare class Geom2d_Circle extends Geom2d_Conic {
   /**
-   * Constructs a circle by conversion of the gp_Circ2d circle C.
+   * Constructs a circle by conversion of the {@link gp_Circ2d | `gp_Circ2d`} circle C.
    */
   constructor(C: gp_Circ2d);
   /**
    * Constructs a circle of radius Radius, where the coordinate system A locates the circle and defines its orientation in the plane such that:
+   *
+   * - the center of the circle is the origin of A,
+   * - the orientation (direct or indirect) of A gives the orientation of the circle.
    */
   constructor(A: gp_Ax22d, Radius: number);
   /**
    * Constructs a circle of radius Radius, where the coordinate system A locates the circle and defines its orientation in the plane such that:
+   *
+   * - the center of the circle is the origin of A,
+   * - the orientation (direct or indirect) of A gives the orientation of the circle.
    */
   constructor(A: gp_Ax2d, Radius: number);
   /**
@@ -33959,7 +39378,7 @@ export declare class Geom2d_Circle extends Geom2d_Conic {
    */
   constructor(A: gp_Ax2d, Radius: number, Sense?: boolean);
   /**
-   * Converts the gp_Circ2d circle C into this circle.
+   * Converts the {@link gp_Circ2d | `gp_Circ2d`} circle C into this circle.
    */
   SetCirc2d(C: gp_Circ2d): void;
   SetRadius(R: number): void;
@@ -34032,7 +39451,10 @@ export declare class Geom2d_Circle extends Geom2d_Conic {
 }
 
 /**
- * Describes an infinite line in the plane (2D space). A line is defined and positioned in the plane with an axis (gp_Ax2d object) which gives it an origin and a unit vector. The Geom2d_Line line is parameterized as follows: P (U) = O + U*Dir where:
+ * Describes an infinite line in the plane (2D space). A line is defined and positioned in the plane with an axis ({@link gp_Ax2d | `gp_Ax2d`} object) which gives it an origin and a unit vector. The {@link Geom2d_Line | `Geom2d_Line`} line is parameterized as follows: P (U) = O + U*Dir where:
+ *
+ * - P is the point of parameter U,
+ * - O is the origin and Dir the unit vector of its positioning axis. The parameter range is ] -infinite, +infinite [. The orientation of the line is given by the unit vector of its positioning axis. See Also GCE2d_MakeLine which provides functions for more complex line constructions {@link gp_Ax2d | `gp_Ax2d`} {@link gp_Lin2d | `gp_Lin2d`} for an equivalent, non-parameterized data structure.
  */
 export declare class Geom2d_Line extends Geom2d_Curve {
   /**
@@ -34040,7 +39462,7 @@ export declare class Geom2d_Line extends Geom2d_Curve {
    */
   constructor(A: gp_Ax2d);
   /**
-   * Creates a line by conversion of the gp_Lin2d line L.
+   * Creates a line by conversion of the {@link gp_Lin2d | `gp_Lin2d`} line L.
    */
   constructor(L: unknown);
   /**
@@ -34085,11 +39507,11 @@ export declare class Geom2d_Line extends Geom2d_Curve {
    */
   ReversedParameter(U: number): number;
   /**
-   * Returns RealFirst from Standard.
+   * Returns RealFirst from {@link Standard | `Standard`}.
    */
   FirstParameter(): number;
   /**
-   * Returns RealLast from Standard.
+   * Returns RealLast from {@link Standard | `Standard`}.
    */
   LastParameter(): number;
   /**
@@ -34157,7 +39579,11 @@ export declare class Geom2d_Line extends Geom2d_Curve {
 }
 
 /**
- * The abstract class Curve describes the common behavior of curves in 2D space. The Geom2d package provides numerous concrete classes of derived curves, including lines, circles, conics, Bezier or BSpline curves, etc. The main characteristic of these curves is that they are parameterized. The Geom2d_Curve class shows:
+ * The abstract class Curve describes the common behavior of curves in 2D space. The Geom2d package provides numerous concrete classes of derived curves, including lines, circles, conics, Bezier or BSpline curves, etc. The main characteristic of these curves is that they are parameterized. The {@link Geom2d_Curve | `Geom2d_Curve`} class shows:
+ *
+ * - how to work with the parametric equation of a curve in order to calculate the point of parameter u, together with the vector tangent and the derivative vectors of order 2, 3,..., N at this point;
+ * - how to obtain general information about the curve (for example, level of continuity, closed characteristics, periodicity, bounds of the parameter field);
+ * - how the parameter changes when a geometric transformation is applied to the curve or when the orientation of the curve is inverted. All curves must have a geometric continuity: a curve is at least "C0". Generally, this property is checked at the time of construction or when the curve is edited. Where this is not the case, the documentation explicitly states so. Warning The Geom2d package does not prevent the construction of curves with null length or curves which self-intersect.
  */
 export declare class Geom2d_Curve extends Geom2d_Geometry {
   /**
@@ -34178,14 +39604,18 @@ export declare class Geom2d_Curve extends Geom2d_Geometry {
   ParametricTransformation(T: gp_Trsf2d): number;
   /**
    * Creates a reversed duplicate Changes the orientation of this curve. The first and last parameters are not changed, but the parametric direction of the curve is reversed. If the curve is bounded:
+   *
+   * - the start point of the initial curve becomes the end point of the reversed curve, and
+   * - the end point of the initial curve becomes the start point of the reversed curve.
+   * - Reversed creates a new curve.
    */
   Reversed(): Geom2d_Curve;
   /**
-   * Returns the value of the first parameter. Warnings : It can be RealFirst or RealLast from package Standard if the curve is infinite.
+   * Returns the value of the first parameter. Warnings : It can be RealFirst or RealLast from package {@link Standard | `Standard`} if the curve is infinite.
    */
   FirstParameter(): number;
   /**
-   * Value of the last parameter. Warnings : It can be RealFirst or RealLast from package Standard if the curve is infinite.
+   * Value of the last parameter. Warnings : It can be RealFirst or RealLast from package {@link Standard | `Standard`} if the curve is infinite.
    */
   LastParameter(): number;
   /**
@@ -34193,7 +39623,8 @@ export declare class Geom2d_Curve extends Geom2d_Geometry {
    */
   IsClosed(): boolean;
   /**
-   * Returns true if the parameter of the curve is periodic. It is possible only if the curve is closed and if the following relation is satisfied : for each parametric value U the distance between the point P(u) and the point P (u + T) is lower or equal to Resolution from package gp, T is the period and must be a constant. There are three possibilities : . the curve is never periodic by definition (SegmentLine) . the curve is always periodic by definition (Circle) . the curve can be defined as periodic (BSpline). In this case a function SetPeriodic allows you to give the shape of the curve. The general rule for this case is : if a curve can be periodic or not the default periodicity set is non periodic and you have to turn (explicitly) the curve into a periodic curve if you want the curve to be periodic.
+   * Returns true if the parameter of the curve is periodic. It is possible only if the curve is closed and if the following relation is satisfied : for each parametric value U the distance between the point P(u) and the point P (u + T) is lower or equal to Resolution from package gp, T is the period and must be a constant. There are three possibilities : . the curve is never periodic by definition (SegmentLine) . the curve is always periodic by definition (Circle) . the curve can be defined as periodic (BSpline). In this case a function SetPeriodic allows you to give the shape of the curve.
+   * The general rule for this case is : if a curve can be periodic or not the default periodicity set is non periodic and you have to turn (explicitly) the curve into a periodic curve if you want the curve to be periodic.
    */
   IsPeriodic(): boolean;
   /**
@@ -34279,7 +39710,13 @@ export interface Geom2d_Curve_ResD3 {
 }
 
 /**
- * This class implements the basis services for the creation, edition, modification and evaluation of planar offset curve. The offset curve is obtained by offsetting by distance along the normal to a basis curve defined in 2D space. The offset curve in this package can be a self intersecting curve even if the basis curve does not self-intersect. The self intersecting portions are not deleted at the construction time. An offset curve is a curve at constant distance (Offset) from a basis curve and the offset curve takes its parametrization from the basis curve. The Offset curve is in the direction of the normal to the basis curve N. The distance offset may be positive or negative to indicate the preferred side of the curve : . distance offset >0 => the curve is in the direction of N . distance offset >0 => the curve is in the direction of - N On the Offset curve : Value(u) = BasisCurve.Value(U) + (Offset * (T ^ Z)) / ||T ^ Z|| where T is the tangent vector to the basis curve and Z the direction of the normal vector to the plane of the curve, N = T ^ Z defines the offset direction and should not have null length.
+ * This class implements the basis services for the creation, edition, modification and evaluation of planar offset curve. The offset curve is obtained by offsetting by distance along the normal to a basis curve defined in 2D space. The offset curve in this package can be a self intersecting curve even if the basis curve does not self-intersect. The self intersecting portions are not deleted at the construction time.
+ * An offset curve is a curve at constant distance (Offset) from a basis curve and the offset curve takes its parametrization from the basis curve. The Offset curve is in the direction of the normal to the basis curve N.
+ * The distance offset may be positive or negative to indicate the preferred side of the curve : . distance offset >0 => the curve is in the direction of N . distance offset >0 => the curve is in the direction of - N On the Offset curve : Value(u) = BasisCurve.Value(U) + (Offset * (T ^ Z)) / ||T ^ Z|| where T is the tangent vector to the basis curve and Z the direction of the normal vector to the plane of the curve, N = T ^ Z defines the offset direction and should not have null length.
+ *
+ * Warnings : In this package we suppose that the continuity of the offset curve is one degree less than the continuity of the basis curve and we don't check that at any point ||T^Z|| != 0.0
+ *
+ * So to evaluate the curve it is better to check that the offset curve is well defined at any point because an exception could be raised. The check is not done in this package at the creation of the offset curve because the control needs the use of an algorithm which cannot be implemented in this package. The OffsetCurve is closed if the first point and the last point are the same (The distance between these two points is lower or equal to the Resolution sea package gp) . The OffsetCurve can be closed even if the basis curve is not closed.
  */
 export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
   /**
@@ -34287,11 +39724,15 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
    */
   constructor(theOther: Geom2d_OffsetCurve);
   /**
-   * Constructs a curve offset from the basis curve C, where Offset is the distance between the offset curve and the basis curve at any point. A point on the offset curve is built by measuring the offset value along a normal vector at a point on C. This normal vector is obtained by rotating the vector tangential to C at 90 degrees in the anti-trigonometric sense. The side of C on which the offset value is measured is indicated by this normal vector if Offset is positive, or in the inverse sense if Offset is negative. If isNotCheckC0 = TRUE checking if basis curve has C0-continuity is not made. Warnings : In this package the entities are not shared. The OffsetCurve is built with a copy of the curve C. So when C is modified the OffsetCurve is not modified Warning! if isNotCheckC0 = false, ConstructionError raised if the basis curve C is not at least C1. No check is done to know if ||V^Z|| != 0.0 at any point.
+   * Constructs a curve offset from the basis curve C, where Offset is the distance between the offset curve and the basis curve at any point. A point on the offset curve is built by measuring the offset value along a normal vector at a point on C. This normal vector is obtained by rotating the vector tangential to C at 90 degrees in the anti-trigonometric sense.
+   * The side of C on which the offset value is measured is indicated by this normal vector if Offset is positive, or in the inverse sense if Offset is negative. If isNotCheckC0 = TRUE checking if basis curve has C0-continuity is not made. Warnings : In this package the entities are not shared. The OffsetCurve is built with a copy of the curve C.
+   * So when C is modified the OffsetCurve is not modified Warning! if isNotCheckC0 = false, ConstructionError raised if the basis curve C is not at least C1. No check is done to know if ||V^Z|| != 0.0 at any point.
    */
   constructor(C: Geom2d_Curve, Offset: number);
   /**
-   * Constructs a curve offset from the basis curve C, where Offset is the distance between the offset curve and the basis curve at any point. A point on the offset curve is built by measuring the offset value along a normal vector at a point on C. This normal vector is obtained by rotating the vector tangential to C at 90 degrees in the anti-trigonometric sense. The side of C on which the offset value is measured is indicated by this normal vector if Offset is positive, or in the inverse sense if Offset is negative. If isNotCheckC0 = TRUE checking if basis curve has C0-continuity is not made. Warnings : In this package the entities are not shared. The OffsetCurve is built with a copy of the curve C. So when C is modified the OffsetCurve is not modified Warning! if isNotCheckC0 = false, ConstructionError raised if the basis curve C is not at least C1. No check is done to know if ||V^Z|| != 0.0 at any point.
+   * Constructs a curve offset from the basis curve C, where Offset is the distance between the offset curve and the basis curve at any point. A point on the offset curve is built by measuring the offset value along a normal vector at a point on C. This normal vector is obtained by rotating the vector tangential to C at 90 degrees in the anti-trigonometric sense.
+   * The side of C on which the offset value is measured is indicated by this normal vector if Offset is positive, or in the inverse sense if Offset is negative. If isNotCheckC0 = TRUE checking if basis curve has C0-continuity is not made. Warnings : In this package the entities are not shared. The OffsetCurve is built with a copy of the curve C.
+   * So when C is modified the OffsetCurve is not modified Warning! if isNotCheckC0 = false, ConstructionError raised if the basis curve C is not at least C1. No check is done to know if ||V^Z|| != 0.0 at any point.
    */
   constructor(C: Geom2d_Curve, Offset: number, isNotCheckC0?: boolean);
   /**
@@ -34312,6 +39753,11 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
   ClearEvalRepresentation(): void;
   /**
    * Changes the direction of parametrization of <me>. As a result:
+   *
+   * - the basis curve is reversed,
+   * - the start point of the initial curve becomes the end point of the reversed curve,
+   * - the end point of the initial curve becomes the start point of the reversed curve, and
+   * - the first and last parameters are recomputed.
    */
   Reverse(): void;
   /**
@@ -34332,6 +39778,8 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
   BasisCurve(): Geom2d_Curve;
   /**
    * Continuity of the Offset curve : C0 : only geometric continuity, C1 : continuity of the first derivative all along the Curve, C2 : continuity of the second derivative all along the Curve, C3 : continuity of the third derivative all along the Curve, G1 : tangency continuity all along the Curve, G2 : curvature continuity all along the Curve, CN : the order of continuity is infinite. Warnings : Returns the continuity of the basis curve - 1. The offset curve must have a unique normal direction defined at any point. Value and derivatives.
+   *
+   * Warnings : The exception UndefinedValue or UndefinedDerivative is raised if it is not possible to compute a unique offset direction. If T is the first derivative with not null length and Z the direction normal to the plane of the curve, the relation ||T(U) ^ Z|| != 0 must be satisfied to evaluate the offset curve. No check is done at the creation time and we suppose in this package that the offset curve is well defined.
    */
   Continuity(): GeomAbs_Shape;
   /**
@@ -34351,7 +39799,8 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
    */
   EvalD3(U: number): Geom2d_Curve_ResD3;
   /**
-   * The returned vector gives the value of the derivative for the order of derivation N. Warning! this should not be called raises UndefunedDerivative if the continuity of the basis curve is not CN+1. Nevertheless, it's OK to use it on portion where the curve is CN+1 raises RangeError if N < 1. raises NotImplemented if N > 3. The following functions compute the value and derivatives on the offset curve and returns the derivatives on the basis curve too. The computation of the value and derivatives on the basis curve are used to evaluate the offset curve Warnings : The exception UndefinedValue or UndefinedDerivative is raised if it is not possible to compute a unique offset direction.
+   * The returned vector gives the value of the derivative for the order of derivation N. Warning! this should not be called raises UndefunedDerivative if the continuity of the basis curve is not CN+1. Nevertheless, it's OK to use it on portion where the curve is CN+1 raises RangeError if N < 1. raises NotImplemented if N > 3. The following functions compute the value and derivatives on the offset curve and returns the derivatives on the basis curve too.
+   * The computation of the value and derivatives on the basis curve are used to evaluate the offset curve Warnings : The exception UndefinedValue or UndefinedDerivative is raised if it is not possible to compute a unique offset direction.
    */
   EvalDN(U: number, N: number): gp_Vec2d;
   /**
@@ -34388,10 +39837,26 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
   Transform(T: gp_Trsf2d): void;
   /**
    * Returns the parameter on the transformed curve for the transform of the point of parameter U on <me>.
+   *
+   * me->Transformed(T)->Value(me->TransformedParameter(U,T))
+   *
+   * is the same point as
+   *
+   * me->Value(U).Transformed(T)
+   *
+   * This methods calls the basis curve method.
    */
   TransformedParameter(U: number, T: gp_Trsf2d): number;
   /**
    * Returns a coefficient to compute the parameter on the transformed curve for the transform of the point on <me>.
+   *
+   * Transformed(T)->Value(U * ParametricTransformation(T))
+   *
+   * is the same point as
+   *
+   * Value(U).Transformed(T)
+   *
+   * This methods calls the basis curve method.
    */
   ParametricTransformation(T: gp_Trsf2d): number;
   /**
@@ -34412,6 +39877,17 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
 
 /**
  * Describes a rational or non-rational Bezier curve.
+ *
+ * - a non-rational Bezier curve is defined by a table of poles (also called control points),
+ * - a rational Bezier curve is defined by a table of poles with varying weights. These data are manipulated by two parallel arrays:
+ * - the poles table, which is an array of {@link gp_Pnt2d | `gp_Pnt2d`} points, and
+ * - the weights table, which is an array of reals. The bounds of these arrays are 1 and "the number of poles" of the curve. The poles of the curve are "control points" used to deform the curve. The first pole is the start point of the curve, and the last pole is the end point of the curve.
+ * The segment which joins the first pole to the second pole is the tangent to the curve at its start point, and the segment which joins the last pole to the second-from-last pole is the tangent to the curve at its end point.
+ * It is more difficult to give a geometric signification to the weights but they are useful for providing exact representations of the arcs of a circle or ellipse. Moreover, if the weights of all the poles are equal, the curve is polynomial; it is therefore a non-rational curve. The non-rational curve is a special and frequently used case. The weights are defined and used only in case of a rational curve. The degree of a Bezier curve is equal to the number of poles, minus 1. It must be greater than or equal to 1.
+ * However, the degree of a {@link Geom2d_BezierCurve | `Geom2d_BezierCurve`} curve is limited to a value (25) which is defined and controlled by the system. This value is returned by the function MaxDegree. The parameter range for a Bezier curve is [ 0, 1 ]. If the first and last control points of the Bezier curve are the same point then the curve is closed.
+ * For example, to create a closed Bezier curve with four control points, you have to give a set of control points P1, P2, P3 and P1. The continuity of a Bezier curve is infinite. It is not possible to build a Bezier curve with negative weights. We consider that a weight value is zero if it is less than or equal to `gp::Resolution()`. We also consider that two weight values W1 and W2 are equal if: |W2 - W1| <= `gp::Resolution()`. Warning
+ * - When considering the continuity of a closed Bezier curve at the junction point, remember that a curve of this type is never periodic. This means that the derivatives for the parameter u = 0 have no reason to be the same as the derivatives for the parameter u = 1 even if the curve is closed.
+ * - The length of a Bezier curve can be null.
  */
 export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   /**
@@ -34448,10 +39924,14 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   Increase(Degree: number): void;
   /**
    * Inserts a pole with its weight in the set of poles after the pole of range Index. If the curve was non rational it can become rational if all the weights are not identical. Raised if Index is not in the range [0, NbPoles].
+   *
+   * Raised if the resulting number of poles is greater than MaxDegree + 1.
    */
   InsertPoleAfter(Index: number, P: gp_Pnt2d, Weight: number): void;
   /**
    * Inserts a pole with its weight in the set of poles after the pole of range Index. If the curve was non rational it can become rational if all the weights are not identical. Raised if Index is not in the range [1, NbPoles+1].
+   *
+   * Raised if the resulting number of poles is greater than MaxDegree + 1.
    */
   InsertPoleBefore(Index: number, P: gp_Pnt2d, Weight: number): void;
   /**
@@ -34464,6 +39944,8 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   Reverse(): void;
   /**
    * Returns the parameter on the reversed curve for the point of parameter U on <me>.
+   *
+   * returns 1-U
    */
   ReversedParameter(U: number): number;
   /**
@@ -34524,6 +40006,12 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   EvalD3(U: number): Geom2d_Curve_ResD3;
   /**
    * For this Bezier curve, computes.
+   *
+   * - the point P of parameter U, or
+   * - the point P and one or more of the following values:
+   * - V1, the first derivative vector,
+   * - V2, the second derivative vector,
+   * - V3, the third derivative vector. Note: the parameter U can be outside the bounds of the curve. Raises RangeError if N < 1.
    */
   EvalDN(U: number, N: number): gp_Vec2d;
   /**
@@ -34548,6 +40036,8 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   Pole(Index: number): gp_Pnt2d;
   /**
    * Returns all the poles of the curve.
+   *
+   * Raised if the length of P is not equal to the number of poles.
    * @deprecated
    */
   Poles(P: NCollection_Array1_gp_Pnt2d): void;
@@ -34565,6 +40055,8 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   Weight(Index: number): number;
   /**
    * Returns all the weights of the curve.
+   *
+   * Raised if the length of W is not equal to the number of poles.
    * @deprecated
    */
   Weights(W: NCollection_Array1_double): void;
@@ -34573,7 +40065,8 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
    */
   Weights(): NCollection_Array1_double;
   /**
-   * Returns a const reference to the weights array. For rational curves: the internal owning weights array. For non-rational curves: a non-owning view of unit weights from BSplCLib. The array is always sized to match NbPoles().
+   * Returns a const reference to the weights array. For rational curves: the internal owning weights array. For non-rational curves: a non-owning view of unit weights from `BSplCLib`. The array is always sized to match `NbPoles()`.
+   * @remarks **Warning:** Do NOT modify elements through the returned reference.
    */
   WeightsArray(): NCollection_Array1_double;
   /**
@@ -34613,7 +40106,9 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
 }
 
 /**
- * The abstract class Conic describes the common behavior of conic curves in 2D space and, in particular, their general characteristics. The Geom2d package provides four specific classes of conics: Geom2d_Circle, Geom2d_Ellipse, Geom2d_Hyperbola and Geom2d_Parabola. A conic is positioned in the plane with a coordinate system (gp_Ax22d object), where the origin is the center of the conic (or the apex in case of a parabola). This coordinate system is the local coordinate system of the conic. It gives the conic an explicit orientation, determining the direction in which the parameter increases along the conic. The "X Axis" of the local coordinate system also defines the origin of the parameter of the conic.
+ * The abstract class Conic describes the common behavior of conic curves in 2D space and, in particular, their general characteristics.
+ * The Geom2d package provides four specific classes of conics: {@link Geom2d_Circle | `Geom2d_Circle`}, {@link Geom2d_Ellipse | `Geom2d_Ellipse`}, {@link Geom2d_Hyperbola | `Geom2d_Hyperbola`} and {@link Geom2d_Parabola | `Geom2d_Parabola`}.
+ * A conic is positioned in the plane with a coordinate system ({@link gp_Ax22d | `gp_Ax22d`} object), where the origin is the center of the conic (or the apex in case of a parabola). This coordinate system is the local coordinate system of the conic. It gives the conic an explicit orientation, determining the direction in which the parameter increases along the conic. The "X Axis" of the local coordinate system also defines the origin of the parameter of the conic.
  */
 export declare class Geom2d_Conic extends Geom2d_Curve {
   /**
@@ -34678,6 +40173,9 @@ export declare class Geom2d_Conic extends Geom2d_Curve {
 
 /**
  * The general abstract class Geometry in 2D space describes the common behaviour of all the geometric entities.
+ *
+ * All the objects derived from this class can be move with a geometric transformation. Only the transformations which doesn't modify the nature of the geometry are available in this package. The method Transform which defines a general transformation is deferred. The other specifics transformations used the method Transform. All the following transformations modify the object itself.
+ * Warning Only transformations which do not modify the nature of the geometry can be applied to Geom2d objects: this is the case with translations, rotations, symmetries and scales; this is also the case with {@link gp_Trsf2d | `gp_Trsf2d`} composite transformations which are used to define the geometric transformations applied using the Transform or Transformed functions. Note: Geometry defines the "prototype" of the abstract method Transform which is defined for each concrete type of derived object. All other transformations are implemented using the Transform method.
  */
 export declare class Geom2d_Geometry extends Standard_Transient {
   /**
@@ -34725,39 +40223,69 @@ export declare class Geom2d_Geometry extends Standard_Transient {
 }
 
 /**
- * Describes an ellipse in the plane (2D space). An ellipse is defined by its major and minor radii and, as with any conic curve, is positioned in the plane with a coordinate system (gp_Ax22d object) where:
+ * Describes an ellipse in the plane (2D space). An ellipse is defined by its major and minor radii and, as with any conic curve, is positioned in the plane with a coordinate system ({@link gp_Ax22d | `gp_Ax22d`} object) where:
+ *
+ * - the origin is the center of the ellipse,
+ * - the "X Direction" defines the major axis, and
+ * - the "Y Direction" defines the minor axis. This coordinate system is the local coordinate system of the ellipse. The orientation (direct or indirect) of the local coordinate system gives an explicit orientation to the ellipse, determining the direction in which the parameter increases along the ellipse. The {@link Geom2d_Ellipse | `Geom2d_Ellipse`} ellipse is parameterized by an angle: P(U) = O + MajorRad*std::cos(U)*XDir + MinorRad*Sin(U)*YDir where:
+ * - P is the point of parameter U,
+ * - O, XDir and YDir are respectively the origin, "X Direction" and "Y Direction" of its local coordinate system,
+ * - MajorRad and MinorRad are the major and minor radii of the ellipse. The "X Axis" of the local coordinate system therefore defines the origin of the parameter of the ellipse. An ellipse is a closed and periodic curve. The period is 2.*Pi and the parameter range is [ 0,2.*Pi [. See Also GCE2d_MakeEllipse which provides functions for more complex ellipse constructions {@link gp_Ax22d | `gp_Ax22d`} {@link gp_Elips2d | `gp_Elips2d`} for an equivalent, non-parameterized data structure
  */
 export declare class Geom2d_Ellipse extends Geom2d_Conic {
   /**
-   * Creates an ellipse by conversion of the gp_Elips2d ellipse E.
+   * Creates an ellipse by conversion of the {@link gp_Elips2d | `gp_Elips2d`} ellipse E.
    */
   constructor(E: gp_Elips2d);
   /**
    * Creates an ellipse defined by its major and minor radii, MajorRadius and MinorRadius, where the coordinate system Axis locates the ellipse and defines its orientation in the plane such that:
+   *
+   * - the center of the ellipse is the origin of Axis,
+   * - the "X Direction" of Axis defines the major axis of the ellipse,
+   * - the "Y Direction" of Axis defines the minor axis of the ellipse,
+   * - the orientation of Axis (direct or indirect) gives the orientation of the ellipse. Warnings : It is not forbidden to create an ellipse with MajorRadius = MinorRadius. Exceptions Standard_ConstructionError if:
+   * - MajorRadius is less than MinorRadius, or
+   * - MinorRadius is less than 0.
    */
   constructor(Axis: gp_Ax22d, MajorRadius: number, MinorRadius: number);
   /**
    * Creates an ellipse defined by its major and minor radii, MajorRadius and MinorRadius, where the coordinate system Axis locates the ellipse and defines its orientation in the plane such that:
+   *
+   * - the center of the ellipse is the origin of Axis,
+   * - the "X Direction" of Axis defines the major axis of the ellipse,
+   * - the "Y Direction" of Axis defines the minor axis of the ellipse,
+   * - the orientation of Axis (direct or indirect) gives the orientation of the ellipse. Warnings : It is not forbidden to create an ellipse with MajorRadius = MinorRadius. Exceptions Standard_ConstructionError if:
+   * - MajorRadius is less than MinorRadius, or
+   * - MinorRadius is less than 0.
    */
   constructor(MajorAxis: gp_Ax2d, MajorRadius: number, MinorRadius: number);
   /**
    * Creates an ellipse defined by its major and minor radii, MajorRadius and MinorRadius, and positioned in the plane by its major axis MajorAxis; the center of the ellipse is the origin of MajorAxis and the unit vector of MajorAxis is the "X Direction" of the local coordinate system of the ellipse; this coordinate system is direct if Sense is true (default value) or indirect if Sense is false. Warnings : It is not forbidden to create an ellipse with MajorRadius = MinorRadius. Exceptions Standard_ConstructionError if:
+   *
+   * - MajorRadius is less than MinorRadius, or
+   * - MinorRadius is less than 0.
    */
   constructor(MajorAxis: gp_Ax2d, MajorRadius: number, MinorRadius: number, Sense?: boolean);
   /**
-   * Converts the gp_Elips2d ellipse E into this ellipse.
+   * Converts the {@link gp_Elips2d | `gp_Elips2d`} ellipse E into this ellipse.
    */
   SetElips2d(E: gp_Elips2d): void;
   /**
    * Assigns a value to the major radius of this ellipse. Exceptions Standard_ConstructionError if:
+   *
+   * - the major radius of this ellipse becomes less than the minor radius, or
+   * - MinorRadius is less than 0.
    */
   SetMajorRadius(MajorRadius: number): void;
   /**
    * Assigns a value to the minor radius of this ellipse. Exceptions Standard_ConstructionError if:
+   *
+   * - the major radius of this ellipse becomes less than the minor radius, or
+   * - MinorRadius is less than 0.
    */
   SetMinorRadius(MinorRadius: number): void;
   /**
-   * Converts this ellipse into a gp_Elips2d ellipse.
+   * Converts this ellipse into a {@link gp_Elips2d | `gp_Elips2d`} ellipse.
    */
   Elips2d(): gp_Elips2d;
   /**
@@ -34854,6 +40382,8 @@ export declare class Geom2d_Ellipse extends Geom2d_Conic {
 
 /**
  * An interface between the services provided by any curve from the package Geom2d and those required of the curve by algorithms which use it.
+ *
+ * Polynomial coefficients of BSpline curves used for their evaluation are cached for better performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
  */
 export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
   constructor();
@@ -34870,12 +40400,12 @@ export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
    */
   ShallowCopy(): Adaptor2d_Curve2d;
   /**
-   * Reset currently loaded curve (undone Load()).
+   * Reset currently loaded curve (undone `Load()`).
    */
   Reset(): void;
   Load(theCurve: Geom2d_Curve): void;
   /**
-   * Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion().
+   * Standard_ConstructionError is raised if theUFirst > theULast + `Precision::PConfusion()`.
    */
   Load(theCurve: Geom2d_Curve, theUFirst: number, theULast: number): void;
   Curve(): Geom2d_Curve;
@@ -34888,6 +40418,8 @@ export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
   NbIntervals(S: GeomAbs_Shape): number;
   /**
    * Stores in <T> the parameters bounding the intervals of continuity .
+   *
+   * The array must provide enough room to accommodate for the parameters. i.e. T.Length() > `NbIntervals()`
    */
   Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
   /**
@@ -34985,7 +40517,9 @@ export interface Geom2dAdaptor_Curve_BSplineData {
 }
 
 /**
- * Root class for 2D curves on which geometric algorithms work. An adapted curve is an interface between the services provided by a curve, and those required of the curve by algorithms, which use it. A derived concrete class is provided: Geom2dAdaptor_Curve for a curve from the Geom2d package.
+ * Root class for 2D curves on which geometric algorithms work. An adapted curve is an interface between the services provided by a curve, and those required of the curve by algorithms, which use it. A derived concrete class is provided: {@link Geom2dAdaptor_Curve | `Geom2dAdaptor_Curve`} for a curve from the Geom2d package.
+ *
+ * Polynomial coefficients of BSpline curves used for their evaluation are cached for better performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
  */
 export declare class Adaptor2d_Curve2d extends Standard_Transient {
   constructor();
@@ -35005,6 +40539,8 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
   NbIntervals(S: GeomAbs_Shape): number;
   /**
    * Stores in <T> the parameters bounding the intervals of continuity .
+   *
+   * The array must provide enough room to accommodate for the parameters. i.e. T.Length() > `NbIntervals()`
    */
   Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
   /**
@@ -35084,7 +40620,10 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
 }
 
 /**
- * The GeomTools package provides utilities for Geometry.
+ * The {@link GeomTools | `GeomTools`} package provides utilities for Geometry.
+ *
+ * - SurfaceSet, CurveSet, Curve2dSet : Tools used for dumping, writing and reading.
+ * - Methods to dump, write, read curves and surfaces.
  */
 export declare class GeomTools {
   constructor();
@@ -35096,20 +40635,43 @@ export declare class GeomTools {
 }
 
 /**
- * This package provides an implementation of algorithms to do the conversion between equivalent geometric entities from package Geom2d. It gives the possibility : . to obtain the B-spline representation of bounded curves. . to split a B-spline curve into several B-spline curves with some constraints of continuity, . to convert a B-spline curve into several Bezier curves or surfaces. All the geometric entities used in this package are bounded. References : . Generating the Bezier Points of B-spline curves and surfaces (Wolfgang Bohm) CAGD volume 13 number 6 november 1981 . On NURBS: A Survey (Leslie Piegl) IEEE Computer Graphics and Application January 1991 . Curve and surface construction using rational B-splines (Leslie Piegl and Wayne Tiller) CAD Volume 19 number 9 november 1987 . A survey of curve and surface methods in CAGD (Wolfgang BOHM) CAGD 1 1984.
+ * This package provides an implementation of algorithms to do the conversion between equivalent geometric entities from package Geom2d.
+ * It gives the possibility : . to obtain the B-spline representation of bounded curves. . to split a B-spline curve into several B-spline curves with some constraints of continuity, . to convert a B-spline curve into several Bezier curves or surfaces. All the geometric entities used in this package are bounded. References : . Generating the Bezier Points of B-spline curves and surfaces (Wolfgang Bohm) CAGD volume 13 number 6 november 1981 . On NURBS: A Survey (Leslie Piegl) IEEE Computer Graphics and Application January 1991 .
+ * Curve and surface construction using rational B-splines (Leslie Piegl and Wayne Tiller) CAD Volume 19 number 9 november 1987 . A survey of curve and surface methods in CAGD (Wolfgang BOHM) CAGD 1 1984.
  */
 export declare class Geom2dConvert {
   constructor();
   /**
    * Convert a curve to BSpline by Approximation.
+   *
+   * This method computes the arc of B-spline curve between the two knots FromK1 and ToK2. If C is periodic the arc has the same orientation as C if SameOrientation = true.
+   * If C is not periodic SameOrientation is not used for the computation and C is oriented from the knot fromK1 to the knot toK2. We just keep the local definition of C between the knots FromK1 and ToK2.
+   * The returned B-spline curve has its first and last knots with a multiplicity equal to degree + 1, where degree is the polynomial degree of C. The indexes of the knots FromK1 and ToK2 doesn't include the repetition of multiple knots in their definition.
+   *
+   * Raised if FromK1 or ToK2 are out of the bounds [FirstUKnotIndex, LastUKnotIndex] Raised if FromK1 = ToK2
    */
   static SplitBSplineCurve(C: Geom2d_BSplineCurve, FromK1: number, ToK2: number, SameOrientation: boolean): Geom2d_BSplineCurve;
   /**
    * This function computes the segment of B-spline curve between the parametric values FromU1, ToU2. If C is periodic the arc has the same orientation as C if SameOrientation = True. If C is not periodic SameOrientation is not used for the computation and C is oriented fromU1 toU2. If U1 and U2 and two parametric values we consider that U1 = U2 if Abs (U1 - U2) <= ParametricTolerance and ParametricTolerance must be greater or equal to Resolution from package gp.
+   *
+   * Raised if FromU1 or ToU2 are out of the parametric bounds of the curve (The tolerance criterion is ParametricTolerance). Raised if Abs (FromU1 - ToU2) <= ParametricTolerance Raised if ParametricTolerance < Resolution from gp.
    */
   static SplitBSplineCurve(C: Geom2d_BSplineCurve, FromU1: number, ToU2: number, ParametricTolerance: number, SameOrientation: boolean): Geom2d_BSplineCurve;
   /**
-   * This function converts a non infinite curve from Geom into a B-spline curve. C must be an ellipse or a circle or a trimmed conic or a trimmed line or a Bezier curve or a trimmed Bezier curve or a BSpline curve or a trimmed BSpline curve or an Offset curve or a trimmed Offset curve. The returned B-spline is not periodic except if C is a Circle or an Ellipse. ParameterisationType applies only if the curve is a Circle or an ellipse : TgtThetaOver2, TgtThetaOver2_1, TgtThetaOver2_2, TgtThetaOver2_3, TgtThetaOver2_4, Purpose: this is the classical rational parameterisation 2 1 - t cos(theta) = --- 2 1 + t.
+   * This function converts a non infinite curve from Geom into a B-spline curve. C must be an ellipse or a circle or a trimmed conic or a trimmed line or a Bezier curve or a trimmed Bezier curve or a BSpline curve or a trimmed BSpline curve or an Offset curve or a trimmed Offset curve. The returned B-spline is not periodic except if C is a Circle or an Ellipse.
+   * ParameterisationType applies only if the curve is a Circle or an ellipse : TgtThetaOver2, TgtThetaOver2_1, TgtThetaOver2_2, TgtThetaOver2_3, TgtThetaOver2_4, Purpose: this is the classical rational parameterisation 2 1 - t cos(theta) = ----- 2 1 + t.
+   *
+   * 2t sin(theta) = ----- 2 1 + t
+   *
+   * t = tan (theta/2)
+   *
+   * with TgtThetaOver2 the routine will compute the number of spans using the rule num_spans = [ (ULast - UFirst) / 1.2 ] + 1 with TgtThetaOver2_N, N spans will be forced: an error will be raized if (ULast - UFirst) >= PI and N = 1, ULast - UFirst >= 2 PI and N = 2
+   *
+   * QuasiAngular, here t is a rational function that approximates theta ----> tan(theta/2). Nevetheless the composing with above function yields exact functions whose square sum up to 1 RationalC1 ; t is replaced by a polynomial function of u so as to grant C1 contiuity across knots. Exceptions Standard_DomainError if the curve C is infinite. Standard_ConstructionError:
+   *
+   * - if C is a complete circle or ellipse, and if Parameterisation is not equal to Convert_TgtThetaOver2 or to Convert_RationalC1, or
+   * - if C is a trimmed circle or ellipse and if Parameterisation is equal to Convert_TgtThetaOver2_1 and if U2 - U1 > 0.9999 * Pi where U1 and U2 are respectively the first and the last parameters of the trimmed curve (this method of parameterization cannot be used to convert a half-circle or a half-ellipse, for example), or
+   * - if C is a trimmed circle or ellipse and Parameterisation is equal to Convert_TgtThetaOver2_2 and U2 - U1 > 1.9999 * Pi where U1 and U2 are respectively the first and the last parameters of the trimmed curve (this method of parameterization cannot be used to convert a quasi-complete circle or ellipse).
    */
   static CurveToBSplineCurve(C: Geom2d_Curve, Parameterisation: Convert_ParameterisationType): Geom2d_BSplineCurve;
   /**
@@ -35143,14 +40705,21 @@ export declare class Geom2dConvert {
 
 /**
  * An algorithm to convert a BSpline curve into a series of adjacent Bezier curves. A BSplineCurveToBezierCurve object provides a framework for:
+ *
+ * - defining the BSpline curve to be converted
+ * - implementing the construction algorithm, and
+ * - consulting the results. References : Generating the Bezier points of B-spline curves and surfaces (Wolfgang Bohm) CAD volume 13 number 6 november 1981
  */
 export declare class Geom2dConvert_BSplineCurveToBezierCurve {
   /**
    * Computes all the data needed to convert.
+   *
+   * - the BSpline curve BasisCurve, into a series of adjacent Bezier arcs. The result consists of a series of BasisCurve arcs limited by points corresponding to knot values of the curve. Use the available interrogation functions to ascertain the number of computed Bezier arcs, and then to construct each individual Bezier curve (or all Bezier curves). Note: ParametricTolerance is not used.
    */
   constructor(BasisCurve: Geom2d_BSplineCurve);
   /**
-   * Computes all the data needed to convert the portion of the BSpline curve BasisCurve limited by the two parameter values U1 and U2 for Example if there is a Knot Uk and Uk < U < Uk + ParametricTolerance/2 the last curve corresponds to the span [Uk-1, Uk] and not to [Uk, Uk+1] The result consists of a series of BasisCurve arcs limited by points corresponding to knot values of the curve. Use the available interrogation functions to ascertain the number of computed Bezier arcs, and then to construct each individual Bezier curve (or all Bezier curves). Note: ParametricTolerance is not used. Raises DomainError if U1 or U2 are out of the parametric bounds of the basis curve [FirstParameter, LastParameter]. The Tolerance criterion is ParametricTolerance. Raised if Abs (U2 - U1) <= ParametricTolerance.
+   * Computes all the data needed to convert the portion of the BSpline curve BasisCurve limited by the two parameter values U1 and U2 for Example if there is a Knot Uk and Uk < U < Uk + ParametricTolerance/2 the last curve corresponds to the span [Uk-1, Uk] and not to [Uk, Uk+1] The result consists of a series of BasisCurve arcs limited by points corresponding to knot values of the curve.
+   * Use the available interrogation functions to ascertain the number of computed Bezier arcs, and then to construct each individual Bezier curve (or all Bezier curves). Note: ParametricTolerance is not used. Raises DomainError if U1 or U2 are out of the parametric bounds of the basis curve [FirstParameter, LastParameter]. The Tolerance criterion is ParametricTolerance. Raised if Abs (U2 - U1) <= ParametricTolerance.
    */
   constructor(BasisCurve: Geom2d_BSplineCurve, U1: number, U2: number, ParametricTolerance: number);
   /**
@@ -35159,6 +40728,9 @@ export declare class Geom2dConvert_BSplineCurveToBezierCurve {
   Arc(Index: number): Geom2d_BezierCurve;
   /**
    * Constructs all the Bezier curves whose data is computed by this algorithm and loads these curves into the Curves table. The Bezier curves have the same orientation as the BSpline curve analyzed in this framework. Exceptions Standard_DimensionError if the Curves array was not created with the following bounds:
+   *
+   * - 1 , and
+   * - the number of adjacent Bezier arcs computed by this algorithm (as given by the function NbArcs).
    */
   Arcs(Curves: unknown): void;
   /**
@@ -35180,10 +40752,22 @@ export declare class Geom2dConvert_BSplineCurveToBezierCurve {
 export declare class Geom2dConvert_ApproxCurve {
   /**
    * Constructs an approximation framework defined by.
+   *
+   * - the 2D conic Curve
+   * - the tolerance value Tol2d
+   * - the degree of continuity Order
+   * - the maximum number of segments allowed MaxSegments
+   * - the highest degree MaxDegree which the polynomial defining the BSpline is allowed to have.
    */
   constructor(Curve: Geom2d_Curve, Tol2d: number, Order: GeomAbs_Shape, MaxSegments: number, MaxDegree: number);
   /**
    * Constructs an approximation framework defined by.
+   *
+   * - the 2D conic Curve
+   * - the tolerance value Tol2d
+   * - the degree of continuity Order
+   * - the maximum number of segments allowed MaxSegments
+   * - the highest degree MaxDegree which the polynomial defining the BSpline is allowed to have.
    */
   constructor(Curve: Adaptor2d_Curve2d, Tol2d: number, Order: GeomAbs_Shape, MaxSegments: number, MaxDegree: number);
   /**
@@ -35228,10 +40812,23 @@ export declare class GeomLib {
   static AdjustExtremity(P1: gp_Pnt, P2: gp_Pnt, T1: gp_Vec, T2: gp_Vec): { Curve: Geom_BoundedCurve };
   /**
    * Extends the bounded curve Curve to the point Point. The extension is built:
+   *
+   * - at the end of the curve if After equals true, or
+   * - at the beginning of the curve if After equals false. The extension is performed according to a degree of continuity equal to Cont, which in its turn must be equal to 1, 2 or 3. This function converts the bounded curve Curve into a BSpline curve. Warning
+   * - Nothing is done, and Curve is not modified if Cont is not equal to 1, 2 or 3.
+   * - It is recommended that the extension should not be too large with respect to the size of the bounded curve Curve: Point must not be located too far from one of the extremities of Curve.
    */
   static ExtendCurveToPoint(Point: gp_Pnt, Cont: number, After: boolean): { Curve: Geom_BoundedCurve };
   /**
    * Extends the bounded surface Surf along one of its boundaries. The chord length of the extension is equal to Length. The direction of the extension is given as:
+   *
+   * - the u parametric direction of Surf, if InU equals true, or
+   * - the v parametric direction of Surf, if InU equals false. In this parametric direction, the extension is built on the side of:
+   * - the last parameter of Surf, if After equals true, or
+   * - the first parameter of Surf, if After equals false. The extension is performed according to a degree of continuity equal to Cont, which in its turn must be equal to 1, 2 or 3. This function converts the bounded surface Surf into a BSpline surface. Warning
+   * - Nothing is done, and Surf is not modified if Cont is not equal to 1, 2 or 3.
+   * - It is recommended that Length, the size of the extension should not be too large with respect to the size of the bounded surface Surf.
+   * - Surf must not be a periodic BSpline surface in the parametric direction corresponding to the direction of extension.
    */
   static ExtendSurfByLength(Length: number, Cont: number, InU: boolean, After: boolean): { Surf: Geom_BoundedSurface };
   /**
@@ -35244,6 +40841,8 @@ export declare class GeomLib {
   static Inertia(Points: NCollection_Array1_gp_Pnt, Bary: gp_Pnt, XDir: gp_Dir, YDir: gp_Dir): { Xgap: number; YGap: number; ZGap: number };
   /**
    * Warning! This assume that the InParameter is an increasing sequence of real number and it will not check for that : Unpredictable result can happen if this is not satisfied. It is the caller responsibility to check for that property.
+   *
+   * This method makes uniform NumPoints segments S1,...SNumPoints out of the segment defined by the first parameter and the last parameter of the InParameter ; keeps only one point of the InParameters set of parameter in each of the uniform segments taking care of the first and the last parameters. For the ith segment the element of the InParameter is the one that is the first to exceed the midpoint of the segment and to fall before the midpoint of the next segment There will be at the end at most NumPoints + 1 if NumPoints > 2 in the OutParameters Array
    */
   static RemovePointsFromArray(NumPoints: number, InParameters: NCollection_Array1_double): { OutParameters: NCollection_HArray1_double };
   /**
@@ -35327,6 +40926,41 @@ export declare const Extrema_ExtAlgo: {
 
 /**
  * Implements a general mechanism to compute the global properties of a "compound geometric system" in 3d space by composition of the global properties of "elementary geometric entities" such as (curve, surface, solid, set of points). It is possible to compose the properties of several "compound geometric systems" too.
+ *
+ * To computes the global properties of a compound geometric system you should : . declare the GProps using a constructor which initializes the GProps and defines the location point used to compute the inertia . compose the global properties of your geometric components with the properties of your system using the method Add.
+ *
+ * To compute the global properties of the geometric components of the system you should use the services of the following classes :
+ *
+ * - class PGProps for a set of points,
+ * - class CGProps for a curve,
+ * - class SGProps for a surface,
+ * - class VGProps for a "solid". The classes CGProps, SGProps, VGProps are generic classes and must be instantiated for your application.
+ *
+ * The global properties computed are :
+ *
+ * - the dimension (length, area or volume)
+ * - the mass,
+ * - the centre of mass,
+ * - the moments of inertia (static moments and quadratic moments),
+ * - the moment about an axis,
+ * - the radius of gyration about an axis,
+ * - the principal properties of inertia : (sea also class PrincipalProps) . the principal moments, . the principal axis of inertia, . the principal radius of gyration,
+ *
+ * Example of utilisation in a simplified C++ implementation :
+ *
+ * //declares the GProps, the point (0.0, 0.0, 0.0) of the //absolute cartesian coordinate system is used as //default reference point to compute the centre of mass {@link GProp_GProps | `GProp_GProps`} System ();
+ *
+ * //computes the inertia of a 3d curve Your_CGProps Component1 (curve, ....);
+ *
+ * //computes the inertia of surfaces Your_SGprops Component2 (surface1, ....); Your_SGprops Component3 (surface2,....);
+ *
+ * //composes the global properties of components 1, 2, 3 //a density can be associated with the components, the //density can be defaulted to 1. Real Density1 = 2.0; Real Density2 = 3.0; System.Add (Component1, Density1); System.Add (Component2, Density2); System.Add (Component3);
+ *
+ * //returns the centre of mass of the system in the //absolute cartesian coordinate system {@link gp_Pnt | `gp_Pnt`} G = System.CentreOfMass ();
+ *
+ * //computes the principales inertia of the system {@link GProp_PrincipalProps | `GProp_PrincipalProps`} Pp = System.PrincipalProperties();
+ *
+ * //returns the principal moments and radius of gyration Real Ixx, Iyy, Izz, Rxx, Ryy, Rzz; Pp.Moments (Ixx, Iyy, Izz); Pp.RadiusOfGyration (Ixx, Iyy, Izz);
  */
 export declare class GProp_GProps {
   /**
@@ -35334,15 +40968,28 @@ export declare class GProp_GProps {
    */
   constructor();
   /**
-   * The point SystemLocation is used to compute the global properties of the system. For more accuracy it is better to define this point closed to the location of the system. For example it could be a point around the centre of mass of the system. This point is referred to as the reference point for this framework. For greater accuracy it is better for the reference point to be close to the location of the system. It can, for example, be a point near the center of mass of the system. At initialization, the framework is empty; i.e. it retains no dimensional information such as mass, or inertia. However, it is now able to bring together global properties of various other systems, whose global properties have already been computed using another framework. To do this, use the function Add to define the components of the system. Use it once per component of the system, and then use the interrogation functions available to access the computed values.
+   * The point SystemLocation is used to compute the global properties of the system. For more accuracy it is better to define this point closed to the location of the system. For example it could be a point around the centre of mass of the system. This point is referred to as the reference point for this framework. For greater accuracy it is better for the reference point to be close to the location of the system. It can, for example, be a point near the center of mass of the system. At initialization, the framework is empty; i.e. it retains no dimensional information such as mass, or inertia.
+   * However, it is now able to bring together global properties of various other systems, whose global properties have already been computed using another framework. To do this, use the function Add to define the components of the system.
+   * Use it once per component of the system, and then use the interrogation functions available to access the computed values.
    */
   constructor(SystemLocation: gp_Pnt);
   /**
    * Either.
+   *
+   * - initializes the global properties retained by this framework from those retained by the framework Item, or
+   * - brings together the global properties still retained by this framework with those retained by the framework Item. The value Density, which is 1.0 by default, is used as the density of the system analysed by Item. Sometimes the density will have already been given at the time of construction of the framework Item.
+   * This may be the case for example, if Item is a GProp_PGProps framework built to compute the global properties of a set of points ; or another {@link GProp_GProps | `GProp_GProps`} object which already retains composite global properties. In these cases the real density was perhaps already taken into account at the time of construction of Item. Note that this is not checked: if the density of parts of the system is taken into account two or more times, results of the computation will be false. Notes :
+   * - The point relative to which the inertia of Item is computed (i.e. the reference point of Item) may be different from the reference point in this framework. Huygens' theorem is applied automatically to transfer inertia values to the reference point in this framework.
+   * - The function Add is used once per component of the system. After that, you use the interrogation functions available to access values computed for the system.
+   * - The system whose global properties are already brought together by this framework is referred to as the current system. However, the current system is not retained by this framework, which maintains only its global properties. Exceptions Standard_DomainError if Density is less than or equal to `gp::Resolution()`.
    */
   Add(Item: GProp_GProps, Density: number): void;
   /**
    * Returns the mass of the current system. If no density is attached to the components of the current system the returned value corresponds to :
+   *
+   * - the total length of the edges of the current system if this framework retains only linear properties, as is the case for example, when using only the LinearProperties function to combine properties of lines from shapes, or
+   * - the total area of the faces of the current system if this framework retains only surface properties, as is the case for example, when using only the SurfaceProperties function to combine properties of surfaces from shapes, or
+   * - the total volume of the solids of the current system if this framework retains only volume properties, as is the case for example, when using only the VolumeProperties function to combine properties of volumes from solids. Warning A length, an area, or a volume is computed in the current data unit system. The mass of a single object is obtained by multiplying its length, its area or its volume by the given density. You must be consistent with respect to the units used.
    */
   Mass(): number;
   /**
@@ -35351,6 +40998,10 @@ export declare class GProp_GProps {
   CentreOfMass(): gp_Pnt;
   /**
    * returns the matrix of inertia. It is a symmetrical matrix. The coefficients of the matrix are the quadratic moments of inertia.
+   *
+   * | Ixx Ixy Ixz | matrix = | Ixy Iyy Iyz | | Ixz Iyz Izz |
+   *
+   * The moments of inertia are denoted by Ixx, Iyy, Izz. The products of inertia are denoted by Ixy, Ixz, Iyz. The matrix of inertia is returned in the central coordinate system (G, Gx, Gy, Gz) where G is the centre of mass of the system and Gx, Gy, Gz the directions parallel to the X(1,0,0) Y(0,1,0) Z(0,0,1) directions of the absolute cartesian coordinate system. It is possible to compute the matrix of inertia at another location point using the Huyghens theorem (you can use the method of package {@link GProp | `GProp`} : HOperator).
    */
   MatrixOfInertia(): unknown;
   /**
@@ -35362,7 +41013,9 @@ export declare class GProp_GProps {
    */
   MomentOfInertia(A: gp_Ax1): number;
   /**
-   * Computes the principal properties of inertia of the current system. There is always a set of axes for which the products of inertia of a geometric system are equal to 0; i.e. the matrix of inertia of the system is diagonal. These axes are the principal axes of inertia. Their origin is coincident with the center of mass of the system. The associated moments are called the principal moments of inertia. This function computes the eigen values and the eigen vectors of the matrix of inertia of the system. Results are stored by using a presentation framework of principal properties of inertia (GProp_PrincipalProps object) which may be queried to access the value sought.
+   * Computes the principal properties of inertia of the current system.
+   * There is always a set of axes for which the products of inertia of a geometric system are equal to 0; i.e. the matrix of inertia of the system is diagonal. These axes are the principal axes of inertia. Their origin is coincident with the center of mass of the system. The associated moments are called the principal moments of inertia. This function computes the eigen values and the eigen vectors of the matrix of inertia of the system.
+   * Results are stored by using a presentation framework of principal properties of inertia ({@link GProp_PrincipalProps | `GProp_PrincipalProps`} object) which may be queried to access the value sought.
    */
   PrincipalProperties(): unknown;
   /**
@@ -35376,10 +41029,27 @@ export declare class GProp_GProps {
 
 /**
  * Computes a set of points on a curve from package Adaptor3d such as between two successive points P1(u1)and P2(u2) :
+ *
+ * ```
+ * .||P1P3^P3P2||/||P1P3||*||P3P2||<AngularDeflection .||P1P2^P1P3||/||P1P2||<CurvatureDeflection
+ * ```
+ *
+ * where P3 is the point of abscissa ((u1+u2)/2), with u1 the abscissa of the point P1 and u2 the abscissa of the point P2.
+ *
+ * ^ is the cross product of two vectors, and ||P1P2|| the magnitude of the vector P1P2.
+ *
+ * The conditions AngularDeflection > `gp::Resolution()` and CurvatureDeflection > `gp::Resolution()` must be satisfied at the construction time.
+ *
+ * A minimum number of points can be fixed for a linear or circular element. Example:
+ *
+ * ```
+ * occ::handle<Geom_BezierCurve>aCurve=newGeom_BezierCurve(thePoles); GeomAdaptor_CurveaCurveAdaptor(aCurve); doubleaCDeflect=0.01;//Curvaturedeflection doubleanADeflect=0.09;//Angulardeflection GCPnts_TangentialDeflectionaPointsOnCurve; aPointsOnCurve.Initialize(aCurveAdaptor,anADeflect,aCDeflect); for(inti=1;i<=aPointsOnCurve.NbPoints();++i) { doubleaU=aPointsOnCurve.Parameter(i); gp_PntaPnt=aPointsOnCurve.Value(i); }
+ * ```
  */
 export declare class GCPnts_TangentialDeflection {
   /**
    * Empty constructor.
+   * @see `Initialize()`
    */
   constructor();
   /**
@@ -35591,7 +41261,12 @@ export declare class GCPnts_TangentialDeflection {
 }
 
 /**
- * This class implements construction algorithms for arcs of ellipses in the plane. The result is a Geom2d_TrimmedCurve. A GC_MakeArcOfEllipse2d object provides a framework for:
+ * This class implements construction algorithms for arcs of ellipses in the plane. The result is a `Geom2d_TrimmedCurve`. A `GC_MakeArcOfEllipse2d` object provides a framework for:
+ *
+ * - defining the construction parameters;
+ * - running the construction algorithm;
+ * - querying the construction status and the resulting arc via `Value()`.
+ * @remarks **Note:** Angular parameters are expressed in radians.
  */
 export declare class GC_MakeArcOfEllipse2d extends GC_Root {
   /**
@@ -35613,6 +41288,8 @@ export declare class GC_MakeArcOfEllipse2d extends GC_Root {
    * @param theEllipse source ellipse
    * @param theP1 first point on source ellipse
    * @param theP2 second point on source ellipse
+   * @remarks **Note:** Orientation is trigonometric when `theSense` is true, otherwise opposite.
+   * @remarks **Note:** IsDone always returns true.
    */
   constructor(theEllipse: gp_Elips2d, theP1: gp_Pnt2d, theP2: gp_Pnt2d);
   /**
@@ -35637,6 +41314,8 @@ export declare class GC_MakeArcOfEllipse2d extends GC_Root {
    * @param theP1 first point on source ellipse
    * @param theP2 second point on source ellipse
    * @param theSense orientation of resulting arc
+   * @remarks **Note:** Orientation is trigonometric when `theSense` is true, otherwise opposite.
+   * @remarks **Note:** IsDone always returns true.
    */
   constructor(theEllipse: gp_Elips2d, theP1: gp_Pnt2d, theP2: gp_Pnt2d, theSense: boolean);
   /**
@@ -35650,20 +41329,26 @@ export declare class GC_MakeArcOfEllipse2d extends GC_Root {
 }
 
 /**
- * This class implements construction algorithms for line segments in the plane. The result is a Geom2d_TrimmedCurve. A GC_MakeSegment2d object provides a framework for:
+ * This class implements construction algorithms for line segments in the plane. The result is a `Geom2d_TrimmedCurve`. A `GC_MakeSegment2d` object provides a framework for:
+ *
+ * - defining the construction parameters;
+ * - running the construction algorithm;
+ * - querying the construction status and the resulting segment via `Value()`.
  */
 export declare class GC_MakeSegment2d extends GC_Root {
   /**
    * Creates a segment between two points.
    * @param theP1 first point
    * @param theP2 second point
+   * @remarks **Note:** Construction fails with `gce_ConfusedPoints` if points are coincident.
    */
   constructor(theP1: gp_Pnt2d, theP2: gp_Pnt2d);
   /**
-   * Creates a segment on a line defined by point and direction. The segment starts at theP1 and ends at the orthogonal projection of theP2 onto that line.
+   * Creates a segment on a line defined by point and direction. The segment starts at `theP1` and ends at the orthogonal projection of `theP2` onto that line.
    * @param theP1 first point
    * @param theV direction vector
    * @param theP2 second point
+   * @remarks **Note:** Construction fails with `gce_ConfusedPoints` if the projected endpoint is coincident with `theP1` within resolution.
    */
   constructor(theP1: gp_Pnt2d, theV: gp_Dir2d, theP2: gp_Pnt2d);
   /**
@@ -35698,7 +41383,13 @@ export declare class GC_MakeSegment2d extends GC_Root {
 }
 
 /**
- * This class implements construction algorithms for ellipses in the plane. The result is a Geom2d_Ellipse. A GC_MakeEllipse2d object provides a framework for:
+ * This class implements construction algorithms for ellipses in the plane. The result is a `Geom2d_Ellipse`. A `GC_MakeEllipse2d` object provides a framework for:
+ *
+ * - defining the construction parameters;
+ * - running the construction algorithm;
+ * - querying the construction status and the resulting ellipse via `Value()`.
+ * @remarks **Note:** Ellipse parameterization range is [0, 2*PI].
+ * @remarks **Note:** The X axis of the local coordinate system is the major axis, and the Y axis is the minor axis.
  */
 export declare class GC_MakeEllipse2d extends GC_Root {
   /**
@@ -35711,6 +41402,7 @@ export declare class GC_MakeEllipse2d extends GC_Root {
    * @param theAxis local coordinate system
    * @param theMajorRadius major radius value
    * @param theMinorRadius minor radius value
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeElips2d` (for example `gce_InvertRadius` or `gce_NegativeRadius`).
    */
   constructor(theAxis: gp_Ax22d, theMajorRadius: number, theMinorRadius: number);
   /**
@@ -35718,12 +41410,14 @@ export declare class GC_MakeEllipse2d extends GC_Root {
    * @param theS1 first apex point
    * @param theS2 second point defining minor radius
    * @param theCenter center point
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeElips2d`.
    */
   constructor(theS1: gp_Pnt2d, theS2: gp_Pnt2d, theCenter: gp_Pnt2d);
   /**
    * Creates an ellipse from a local coordinate system and radii.
    * @param theMajorRadius major radius value
    * @param theMinorRadius minor radius value
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeElips2d` (for example `gce_InvertRadius` or `gce_NegativeRadius`).
    */
   constructor(theMajorAxis: gp_Ax2d, theMajorRadius: number, theMinorRadius: number);
   /**
@@ -35732,6 +41426,7 @@ export declare class GC_MakeEllipse2d extends GC_Root {
    * @param theMajorRadius major radius value
    * @param theMinorRadius minor radius value
    * @param theSense orientation flag
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeElips2d` (for example `gce_InvertRadius` or `gce_NegativeRadius`).
    */
   constructor(theMajorAxis: gp_Ax2d, theMajorRadius: number, theMinorRadius: number, theSense?: boolean);
   /**
@@ -35745,7 +41440,12 @@ export declare class GC_MakeEllipse2d extends GC_Root {
 }
 
 /**
- * This class implements construction algorithms for arcs of circles in the plane. The result is a Geom2d_TrimmedCurve. A GC_MakeArcOfCircle2d object provides a framework for:
+ * This class implements construction algorithms for arcs of circles in the plane. The result is a `Geom2d_TrimmedCurve`. A `GC_MakeArcOfCircle2d` object provides a framework for:
+ *
+ * - defining the construction parameters;
+ * - running the construction algorithm;
+ * - querying the construction status and the resulting arc via `Value()`.
+ * @remarks **Note:** Angular parameters are expressed in radians.
  */
 export declare class GC_MakeArcOfCircle2d extends GC_Root {
   /**
@@ -35811,7 +41511,12 @@ export declare class GC_MakeArcOfCircle2d extends GC_Root {
 }
 
 /**
- * This class implements construction algorithms for circles in the plane. The result is a Geom2d_Circle. A GC_MakeCircle2d object provides a framework for:
+ * This class implements construction algorithms for circles in the plane. The result is a `Geom2d_Circle`. A `GC_MakeCircle2d` object provides a framework for:
+ *
+ * - defining the construction parameters;
+ * - running the construction algorithm;
+ * - querying the construction status and the resulting circle via `Value()`.
+ * @remarks **Note:** A circle is parameterized in the range [0, 2*PI], and the X axis of its local coordinate system defines the parameter origin.
  */
 export declare class GC_MakeCircle2d extends GC_Root {
   /**
@@ -35823,34 +41528,42 @@ export declare class GC_MakeCircle2d extends GC_Root {
    * Creates a circle from a local coordinate system and radius.
    * @param theAxis local coordinate system
    * @param theRadius radius value
+   * @remarks **Note:** Construction fails with `gce_NegativeRadius` if `theRadius` is negative.
    */
   constructor(theAxis: gp_Ax22d, theRadius: number);
   /**
    * Creates a circle parallel to another one at signed distance.
    * @param theCircle source circle
    * @param theDist signed distance
+   * @remarks **Note:** If `theDist` is positive, the resulting circle encloses `theCircle`.
+   * @remarks **Note:** If `theDist` is negative, the resulting circle is enclosed by `theCircle`.
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeCirc2d`.
    */
   constructor(theCircle: gp_Circ2d, theDist: number);
   /**
    * Creates a circle parallel to another one and passing through a point.
    * @param theCircle source circle
    * @param thePoint point on resulting circle
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeCirc2d`.
    */
   constructor(theCircle: gp_Circ2d, thePoint: gp_Pnt2d);
   /**
    * Creates a circle from a local coordinate system and radius.
    * @param theAxis local coordinate system
    * @param theRadius radius value
+   * @remarks **Note:** Construction fails with `gce_NegativeRadius` if `theRadius` is negative.
    */
   constructor(theAxis: gp_Ax2d, theRadius: number);
   /**
    * Creates a circle from a local coordinate system and radius.
    * @param theRadius radius value
+   * @remarks **Note:** Construction fails with `gce_NegativeRadius` if `theRadius` is negative.
    */
   constructor(theCenter: gp_Pnt2d, theRadius: number);
   /**
    * Creates a circle parallel to another one and passing through a point.
    * @param thePoint point on resulting circle
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeCirc2d`.
    */
   constructor(theCenter: gp_Pnt2d, thePoint: gp_Pnt2d);
   /**
@@ -35858,6 +41571,7 @@ export declare class GC_MakeCircle2d extends GC_Root {
    * @param theAxis axis placement
    * @param theRadius radius value
    * @param theSense orientation flag
+   * @remarks **Note:** Construction fails with `gce_NegativeRadius` if `theRadius` is negative.
    */
   constructor(theAxis: gp_Ax2d, theRadius: number, theSense: boolean);
   /**
@@ -35865,6 +41579,7 @@ export declare class GC_MakeCircle2d extends GC_Root {
    * @param theP1 first point
    * @param theP2 second point
    * @param theP3 third point
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeCirc2d`.
    */
   constructor(theP1: gp_Pnt2d, theP2: gp_Pnt2d, theP3: gp_Pnt2d);
   /**
@@ -35872,6 +41587,7 @@ export declare class GC_MakeCircle2d extends GC_Root {
    * @param theCenter center point
    * @param theRadius radius value
    * @param theSense orientation flag
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeCirc2d`.
    */
   constructor(theCenter: gp_Pnt2d, theRadius: number, theSense: boolean);
   /**
@@ -35879,6 +41595,7 @@ export declare class GC_MakeCircle2d extends GC_Root {
    * @param theCenter center point
    * @param thePoint point on resulting circle
    * @param theSense orientation flag
+   * @remarks **Note:** Error status is provided by the underlying `gce_MakeCirc2d`.
    */
   constructor(theCenter: gp_Pnt2d, thePoint: gp_Pnt2d, theSense: boolean);
   /**
@@ -35892,7 +41609,11 @@ export declare class GC_MakeCircle2d extends GC_Root {
 }
 
 /**
- * Implements construction algorithms for an arc of circle in 3D space. The result is a Geom_TrimmedCurve curve. A MakeArcOfCircle object provides a framework for:
+ * Implements construction algorithms for an arc of circle in 3D space. The result is a {@link Geom_TrimmedCurve | `Geom_TrimmedCurve`} curve. A MakeArcOfCircle object provides a framework for:
+ *
+ * - defining the construction of the arc of circle,
+ * - implementing the construction algorithm, and
+ * - consulting the results. In particular, the Value function returns the constructed arc of circle.
  */
 export declare class GC_MakeArcOfCircle extends GC_Root {
   /**
@@ -35907,6 +41628,10 @@ export declare class GC_MakeArcOfCircle extends GC_Root {
    * @param theP1 start point
    * @param theV tangent vector at start point
    * @param theP2 end point
+   * @remarks **Note:** The tangent direction is given by the input vector. The orientation of the arc is:the sense determined by the order of the three input points;the sense defined by the input vector; orfor the other constructors:the sense of the source circle if the orientation flag is true, orthe opposite sense if `theSense` is false.
+   * @remarks **Note:** Angles are expressed in radians.
+   * @remarks **Note:** Construction fails with `gce_ConfusedPoints` if `theP1` and `theP2` are coincident.
+   * @remarks **Note:** Construction fails with `gce_IntersectionError` if the supporting lines used to define circle center do not intersect.
    */
   constructor(theP1: gp_Pnt, theV: gp_Vec, theP2: gp_Pnt);
   /**
@@ -35958,6 +41683,9 @@ export declare class GC_Root {
   IsError(): boolean;
   /**
    * Returns the status of the construction:
+   *
+   * - gce_Done, if the construction is successful, or
+   * - another value of the `gce_ErrorType` enumeration indicating why the construction failed.
    */
   Status(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -35972,22 +41700,51 @@ export declare class BndLib_Add2dCurve {
   constructor();
   /**
    * Adds to the bounding box B the curve C B is then enlarged by the tolerance value Tol. Note: depending on the type of curve, one of the following representations of the curve C is used to include it in the bounding box B:
+   *
+   * - an exact representation if C is built from a line, a circle or a conic curve,
+   * - the poles of the curve if C is built from a Bezier curve or a BSpline curve,
+   * - if not, the points of an approximation of the curve C. Warning C is an adapted curve, that is, an object which is an interface between:
+   * - the services provided by a 2D curve from the package Geom2d
+   * - and those required of the curve by the computation algorithm. The adapted curve is created in the following way: `occ::handle<Geom2d_Curve>` mycurve = ... ; {@link Geom2dAdaptor_Curve | `Geom2dAdaptor_Curve`} C(mycurve); The bounding box B is then enlarged by adding it: {@link Bnd_Box2d | `Bnd_Box2d`} B; // ... double Tol = ... ; Add2dCurve::Add ( C, Tol, B ); Exceptions {@link Standard_Failure | `Standard_Failure`} if the curve is built from:
+   * - a {@link Geom_Line | `Geom_Line`}, or
+   * - a {@link Geom_Parabola | `Geom_Parabola`}, or
+   * - a {@link Geom_Hyperbola | `Geom_Hyperbola`}, and P1 and P2 are either two negative infinite real numbers, or two positive infinite real numbers.
    */
   static Add(C: Adaptor2d_Curve2d, Tol: number, B: Bnd_Box2d): void;
   /**
    * Adds to the bounding box B the curve C B is then enlarged by the tolerance value Tol. Note: depending on the type of curve, one of the following representations of the curve C is used to include it in the bounding box B:
+   *
+   * - an exact representation if C is built from a line, a circle or a conic curve,
+   * - the poles of the curve if C is built from a Bezier curve or a BSpline curve,
+   * - if not, the points of an approximation of the curve C.
    */
   static Add(C: Geom2d_Curve, Tol: number, Box: Bnd_Box2d): void;
   /**
    * Adds to the bounding box Bthe arc of the curve C limited by the two parameter values P1 and P2. B is then enlarged by the tolerance value Tol. Note: depending on the type of curve, one of the following representations of the curve C is used to include it in the bounding box B:
+   *
+   * - an exact representation if C is built from a line, a circle or a conic curve,
+   * - the poles of the curve if C is built from a Bezier curve or a BSpline curve,
+   * - if not, the points of an approximation of the curve C. Warning C is an adapted curve, that is, an object which is an interface between:
+   * - the services provided by a 2D curve from the package Geom2d
+   * - and those required of the curve by the computation algorithm. The adapted curve is created in the following way: `occ::handle<Geom2d_Curve>` mycurve = ... ; {@link Geom2dAdaptor_Curve | `Geom2dAdaptor_Curve`} C(mycurve); The bounding box B is then enlarged by adding it: {@link Bnd_Box2d | `Bnd_Box2d`} B; // ... double Tol = ... ; Add2dCurve::Add ( C, Tol, B ); Exceptions {@link Standard_Failure | `Standard_Failure`} if the curve is built from:
+   * - a {@link Geom_Line | `Geom_Line`}, or
+   * - a {@link Geom_Parabola | `Geom_Parabola`}, or
+   * - a {@link Geom_Hyperbola | `Geom_Hyperbola`}, and P1 and P2 are either two negative infinite real numbers, or two positive infinite real numbers.
    */
   static Add(C: Adaptor2d_Curve2d, U1: number, U2: number, Tol: number, B: Bnd_Box2d): void;
   /**
    * Adds to the bounding box B the part of curve C B is then enlarged by the tolerance value Tol. U1, U2 - the parametric range to compute the bounding box; Note: depending on the type of curve, one of the following representations of the curve C is used to include it in the bounding box B:
+   *
+   * - an exact representation if C is built from a line, a circle or a conic curve,
+   * - the poles of the curve if C is built from a Bezier curve or a BSpline curve,
+   * - if not, the points of an approximation of the curve C.
    */
   static Add(C: Geom2d_Curve, U1: number, U2: number, Tol: number, B: Bnd_Box2d): void;
   /**
    * Adds to the bounding box B the part of curve C B is then enlarged by the tolerance value Tol. U1, U2 - the parametric range to compute the bounding box; Note: depending on the type of curve, one of the following algorithms is used to include it in the bounding box B:
+   *
+   * - an exact analytical if C is built from a line, a circle or a conic curve,
+   * - numerical calculation of bounding box sizes, based on minimization algorithm, for other types of curve If Tol = < `Precision::PConfusion()`, `Precision::PConfusion` is used as tolerance for calculation
    */
   static AddOptimal(C: Geom2d_Curve, U1: number, U2: number, Tol: number, B: Bnd_Box2d): void;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -35996,16 +41753,29 @@ export declare class BndLib_Add2dCurve {
 }
 
 /**
- * The GeomConvert package provides some global functions as follows.
+ * The {@link GeomConvert | `GeomConvert`} package provides some global functions as follows.
+ *
+ * - converting classical Geom curves into BSpline curves,
+ * - segmenting BSpline curves, particularly at knots values: this function may be used in conjunction with the {@link GeomConvert_BSplineCurveKnotSplitting | `GeomConvert_BSplineCurveKnotSplitting`} class to segment a BSpline curve into arcs which comply with required continuity levels,
+ * - converting classical Geom surfaces into BSpline surfaces, and
+ * - segmenting BSpline surfaces, particularly at knots values: this function may be used in conjunction with the {@link GeomConvert_BSplineSurfaceKnotSplitting | `GeomConvert_BSplineSurfaceKnotSplitting`} class to segment a BSpline surface into patches which comply with required continuity levels. All geometric entities used in this package are bounded.
+ *
+ * References : . Generating the Bezier Points of B-spline curves and surfaces (Wolfgang Bohm) CAGD volume 13 number 6 november 1981 . On NURBS: A Survey (Leslie Piegl) IEEE Computer Graphics and Application January 1991 . Curve and surface construction using rational B-splines (Leslie Piegl and Wayne Tiller) CAD Volume 19 number 9 november 1987 . A survey of curve and surface methods in CAGD (Wolfgang BOHM) CAGD 1 1984
  */
 export declare class GeomConvert {
   constructor();
   /**
    * Convert a curve from Geom by an approximation method.
+   *
+   * This method computes the arc of B-spline curve between the two knots FromK1 and ToK2. If C is periodic the arc has the same orientation as C if SameOrientation = true.
+   * If C is not periodic SameOrientation is not used for the computation and C is oriented from the knot fromK1 to the knot toK2. We just keep the local definition of C between the knots FromK1 and ToK2.
+   * The returned B-spline curve has its first and last knots with a multiplicity equal to degree + 1, where degree is the polynomial degree of C. The indexes of the knots FromK1 and ToK2 doesn't include the repetition of multiple knots in their definition. Raised if FromK1 = ToK2 Raised if FromK1 or ToK2 are out of the bounds [FirstUKnotIndex, LastUKnotIndex]
    */
   static SplitBSplineCurve(C: Geom_BSplineCurve, FromK1: number, ToK2: number, SameOrientation: boolean): Geom_BSplineCurve;
   /**
    * This function computes the segment of B-spline curve between the parametric values FromU1, ToU2. If C is periodic the arc has the same orientation as C if SameOrientation = True. If C is not periodic SameOrientation is not used for the computation and C is oriented fromU1 toU2. If U1 and U2 and two parametric values we consider that U1 = U2 if Abs (U1 - U2) <= ParametricTolerance and ParametricTolerance must be greater or equal to Resolution from package gp.
+   *
+   * Raised if FromU1 or ToU2 are out of the parametric bounds of the curve (The tolerance criterion is ParametricTolerance). Raised if Abs (FromU1 - ToU2) <= ParametricTolerance Raised if ParametricTolerance < Resolution from gp.
    */
   static SplitBSplineCurve(C: Geom_BSplineCurve, FromU1: number, ToU2: number, ParametricTolerance: number, SameOrientation: boolean): Geom_BSplineCurve;
   /**
@@ -36013,19 +41783,44 @@ export declare class GeomConvert {
    */
   static SplitBSplineSurface(S: Geom_BSplineSurface, FromUK1: number, ToUK2: number, FromVK1: number, ToVK2: number, SameUOrientation: boolean, SameVOrientation: boolean): Geom_BSplineSurface;
   /**
-   * This method splits a B-spline surface patche between the knots values FromK1, ToK2 in one direction. If USplit = True then the splitting direction is the U parametric direction else it is the V parametric direction. If S is periodic in the considered direction the patche has the same orientation as S in this direction if SameOrientation is True If S is not periodic in this direction SameOrientation is not used for the computation and S is oriented FromK1 ToK2. Raised if FromK1 = ToK2 or if FromK1 or ToK2 are out of the bounds [FirstUKnotIndex, LastUKnotIndex] in the considered parametric direction.
+   * This method splits a B-spline surface patche between the knots values FromK1, ToK2 in one direction. If USplit = True then the splitting direction is the U parametric direction else it is the V parametric direction.
+   * If S is periodic in the considered direction the patche has the same orientation as S in this direction if SameOrientation is True If S is not periodic in this direction SameOrientation is not used for the computation and S is oriented FromK1 ToK2. Raised if FromK1 = ToK2 or if FromK1 or ToK2 are out of the bounds [FirstUKnotIndex, LastUKnotIndex] in the considered parametric direction.
    */
   static SplitBSplineSurface(S: Geom_BSplineSurface, FromK1: number, ToK2: number, USplit: boolean, SameOrientation: boolean): Geom_BSplineSurface;
   /**
    * This method computes the B-spline surface patche between the parametric values FromU1, ToU2, FromV1, ToV2. If S is periodic in one direction the patche has the same orientation as S in this direction if the flag is True in this direction (SameUOrientation, SameVOrientation). If S is not periodic SameUOrientation and SameVOrientation are not used for the computation and S is oriented FromU1 ToU2 and FromV1 ToV2. If U1 and U2 and two parametric values we consider that U1 = U2 if Abs (U1 - U2) <= ParametricTolerance and ParametricTolerance must be greater or equal to Resolution from package gp.
+   *
+   * Raised if FromU1 or ToU2 or FromV1 or ToU2 are out of the parametric bounds of the surface (the tolerance criterion is ParametricTolerance). Raised if Abs (FromU1 - ToU2) <= ParametricTolerance or Abs (FromV1 - ToV2) <= ParametricTolerance. Raised if ParametricTolerance < Resolution.
    */
   static SplitBSplineSurface(S: Geom_BSplineSurface, FromU1: number, ToU2: number, FromV1: number, ToV2: number, ParametricTolerance: number, SameUOrientation: boolean, SameVOrientation: boolean): Geom_BSplineSurface;
   /**
-   * This method splits the B-spline surface S in one direction between the parametric values FromParam1, ToParam2. If USplit = True then the Splitting direction is the U parametric direction else it is the V parametric direction. If S is periodic in the considered direction the patche has the same orientation as S in this direction if SameOrientation is true. If S is not periodic in the considered direction SameOrientation is not used for the computation and S is oriented FromParam1 ToParam2. If U1 and U2 and two parametric values we consider that U1 = U2 if Abs (U1 - U2) <= ParametricTolerance and ParametricTolerance must be greater or equal to Resolution from package gp.
+   * This method splits the B-spline surface S in one direction between the parametric values FromParam1, ToParam2. If USplit = True then the Splitting direction is the U parametric direction else it is the V parametric direction.
+   * If S is periodic in the considered direction the patche has the same orientation as S in this direction if SameOrientation is true.
+   * If S is not periodic in the considered direction SameOrientation is not used for the computation and S is oriented FromParam1 ToParam2.
+   * If U1 and U2 and two parametric values we consider that U1 = U2 if Abs (U1 - U2) <= ParametricTolerance and ParametricTolerance must be greater or equal to Resolution from package gp.
+   *
+   * Raises if FromParam1 or ToParam2 are out of the parametric bounds of the surface in the considered direction. Raises if Abs (FromParam1 - ToParam2) <= ParametricTolerance.
    */
   static SplitBSplineSurface(S: Geom_BSplineSurface, FromParam1: number, ToParam2: number, USplit: boolean, ParametricTolerance: number, SameOrientation: boolean): Geom_BSplineSurface;
   /**
-   * This function converts a non infinite curve from Geom into a B-spline curve. C must be an ellipse or a circle or a trimmed conic or a trimmed line or a Bezier curve or a trimmed Bezier curve or a BSpline curve or a trimmed BSpline curve or an OffsetCurve. The returned B-spline is not periodic except if C is a Circle or an Ellipse. If the Parameterisation is QuasiAngular than the returned curve is NOT periodic in case a periodic Geom_Circle or Geom_Ellipse. For TgtThetaOver2_1 and TgtThetaOver2_2 the method raises an exception in case of a periodic Geom_Circle or a Geom_Ellipse ParameterisationType applies only if the curve is a Circle or an ellipse: TgtThetaOver2, TgtThetaOver2_1, TgtThetaOver2_2, TgtThetaOver2_3, TgtThetaOver2_4,.
+   * This function converts a non infinite curve from Geom into a B-spline curve. C must be an ellipse or a circle or a trimmed conic or a trimmed line or a Bezier curve or a trimmed Bezier curve or a BSpline curve or a trimmed BSpline curve or an OffsetCurve. The returned B-spline is not periodic except if C is a Circle or an Ellipse. If the Parameterisation is QuasiAngular than the returned curve is NOT periodic in case a periodic {@link Geom_Circle | `Geom_Circle`} or {@link Geom_Ellipse | `Geom_Ellipse`}.
+   * For TgtThetaOver2_1 and TgtThetaOver2_2 the method raises an exception in case of a periodic {@link Geom_Circle | `Geom_Circle`} or a {@link Geom_Ellipse | `Geom_Ellipse`} ParameterisationType applies only if the curve is a Circle or an ellipse: TgtThetaOver2, TgtThetaOver2_1, TgtThetaOver2_2, TgtThetaOver2_3, TgtThetaOver2_4,.
+   *
+   * Purpose: this is the classical rational parameterisation 2 1 - t cos(theta) = ----- 2 1 + t
+   *
+   * 2t sin(theta) = ----- 2 1 + t
+   *
+   * t = tan (theta/2)
+   *
+   * with TgtThetaOver2 the routine will compute the number of spans using the rule num_spans = [ (ULast - UFirst) / 1.2 ] + 1 with TgtThetaOver2_N, N spans will be forced: an error will be raized if (ULast - UFirst) >= PI and N = 1, ULast - UFirst >= 2 PI and N = 2
+   *
+   * QuasiAngular, here t is a rational function that approximates theta ----> tan(theta/2). Nevetheless the composing with above function yields exact functions whose square sum up to 1 RationalC1 ; t is replaced by a polynomial function of u so as to grant C1 contiuity across knots. Exceptions Standard_DomainError:
+   *
+   * - if the curve C is infinite, or
+   * - if C is a (complete) circle or ellipse, and Parameterisation is equal to Convert_TgtThetaOver2_1 or Convert_TgtThetaOver2_2. Standard_ConstructionError:
+   * - if C is a (complete) circle or ellipse, and if Parameterisation is not equal to Convert_TgtThetaOver2, Convert_RationalC1, Convert_QuasiAngular (the curve is converted in these three cases) or to Convert_TgtThetaOver2_1 or Convert_TgtThetaOver2_2 (another exception is raised in these two cases).
+   * - if C is a trimmed circle or ellipse, if Parameterisation is equal to Convert_TgtThetaOver2_1 and if U2 - U1 > 0.9999 * Pi, where U1 and U2 are respectively the first and the last parameters of the trimmed curve (this method of parameterization cannot be used to convert a half-circle or a half-ellipse, for example), or
+   * - if C is a trimmed circle or ellipse, if Parameterisation is equal to Convert_TgtThetaOver2_2 and U2 - U1 > 1.9999 * Pi where U1 and U2 are respectively the first and the last parameters of the trimmed curve (this method of parameterization cannot be used to convert a quasi-complete circle or ellipse).
    */
   static CurveToBSplineCurve(C: Geom_Curve, Parameterisation: Convert_ParameterisationType): Geom_BSplineCurve;
   /**
@@ -36063,6 +41858,10 @@ export declare class GeomConvert {
 
 /**
  * Describes a vertex which.
+ *
+ * - references an underlying vertex with the potential to be given a location and an orientation
+ * - has a location for the underlying vertex, giving its placement in the local coordinate system
+ * - has an orientation for the underlying vertex, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
 export declare class TopoDS_Vertex extends TopoDS_Shape {
   /**
@@ -36076,6 +41875,10 @@ export declare class TopoDS_Vertex extends TopoDS_Shape {
 
 /**
  * Describes a compound which.
+ *
+ * - references an underlying compound with the potential to be given a location and an orientation
+ * - has a location for the underlying compound, giving its placement in the local coordinate system
+ * - has an orientation for the underlying compound, in terms of its geometry (as opposed to orientation in relation to other shapes). Casts shape S to the more specialized return type, Compound.
  */
 export declare class TopoDS_Compound extends TopoDS_Shape {
   /**
@@ -36089,6 +41892,10 @@ export declare class TopoDS_Compound extends TopoDS_Shape {
 
 /**
  * Describes a face which.
+ *
+ * - references an underlying face with the potential to be given a location and an orientation
+ * - has a location for the underlying face, giving its placement in the local coordinate system
+ * - has an orientation for the underlying face, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
 export declare class TopoDS_Face extends TopoDS_Shape {
   /**
@@ -36102,6 +41909,29 @@ export declare class TopoDS_Face extends TopoDS_Shape {
 
 /**
  * A Builder is used to create Topological Data Structures. It is the root of the Builder class hierarchy.
+ *
+ * There are three groups of methods in the Builder:
+ *
+ * The Make methods create Shapes.
+ *
+ * The Add method includes a Shape in another Shape.
+ *
+ * The Remove method removes a Shape from an other Shape.
+ *
+ * The methods in Builder are not static. They can be redefined in inherited builders.
+ *
+ * This Builder does not provide methods to Make Vertices, Edges, Faces, Shells or Solids. These methods are provided in the inherited Builders as they must provide the geometry.
+ *
+ * The Add method check for the following rules:
+ *
+ * - Any SHAPE can be added in a COMPOUND.
+ * - Only SOLID can be added in a COMPSOLID.
+ * - Only SHELL, EDGE and VERTEX can be added in a SOLID. EDGE and VERTEX as to be INTERNAL or EXTERNAL.
+ * - Only FACE can be added in a SHELL.
+ * - Only WIRE and VERTEX can be added in a FACE. VERTEX as to be INTERNAL or EXTERNAL.
+ * - Only EDGE can be added in a WIRE.
+ * - Only VERTEX can be added in an EDGE.
+ * - Nothing can be added in a VERTEX.
  */
 export declare class TopoDS_Builder {
   constructor();
@@ -36127,6 +41957,9 @@ export declare class TopoDS_Builder {
   MakeCompound(C: TopoDS_Compound): void;
   /**
    * Add the Shape C in the Shape S. Exceptions.
+   *
+   * - TopoDS_FrozenShape if S is not free and cannot be modified.
+   * - TopoDS__UnCompatibleShapes if S and C are not compatible.
    */
   Add(S: TopoDS_Shape, C: TopoDS_Shape): void;
   /**
@@ -36140,6 +41973,10 @@ export declare class TopoDS_Builder {
 
 /**
  * Describes a composite solid which.
+ *
+ * - references an underlying composite solid with the potential to be given a location and an orientation
+ * - has a location for the underlying composite solid, giving its placement in the local coordinate system
+ * - has an orientation for the underlying composite solid, in terms of its geometry (as opposed to orientation in relation to other shapes). Casts shape S to the more specialized return type, CompSolid.
  */
 export declare class TopoDS_CompSolid extends TopoDS_Shape {
   /**
@@ -36153,6 +41990,10 @@ export declare class TopoDS_CompSolid extends TopoDS_Shape {
 
 /**
  * Describes an edge which.
+ *
+ * - references an underlying edge with the potential to be given a location and an orientation
+ * - has a location for the underlying edge, giving its placement in the local coordinate system
+ * - has an orientation for the underlying edge, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
 export declare class TopoDS_Edge extends TopoDS_Shape {
   /**
@@ -36166,6 +42007,10 @@ export declare class TopoDS_Edge extends TopoDS_Shape {
 
 /**
  * Describes a solid shape which.
+ *
+ * - references an underlying solid shape with the potential to be given a location and an orientation
+ * - has a location for the underlying shape, giving its placement in the local coordinate system
+ * - has an orientation for the underlying shape, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
 export declare class TopoDS_Solid extends TopoDS_Shape {
   /**
@@ -36179,6 +42024,10 @@ export declare class TopoDS_Solid extends TopoDS_Shape {
 
 /**
  * Describes a wire which.
+ *
+ * - references an underlying wire with the potential to be given a location and an orientation
+ * - has a location for the underlying wire, giving its placement in the local coordinate system
+ * - has an orientation for the underlying wire, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
 export declare class TopoDS_Wire extends TopoDS_Shape {
   /**
@@ -36192,6 +42041,10 @@ export declare class TopoDS_Wire extends TopoDS_Shape {
 
 /**
  * Describes a shell which.
+ *
+ * - references an underlying shell with the potential to be given a location and an orientation
+ * - has a location for the underlying shell, giving its placement in the local coordinate system
+ * - has an orientation for the underlying shell, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
 export declare class TopoDS_Shell extends TopoDS_Shape {
   /**
@@ -36205,6 +42058,10 @@ export declare class TopoDS_Shell extends TopoDS_Shape {
 
 /**
  * Describes a shape which.
+ *
+ * - references an underlying shape with the potential to be given a location and an orientation
+ * - has a location for the underlying shape, giving its placement in the local coordinate system
+ * - has an orientation for the underlying shape, in terms of its geometry (as opposed to orientation in relation to other shapes). Note: A Shape is empty if it references an underlying shape which has an empty list of shapes.
  */
 export declare class TopoDS_Shape {
   /**
@@ -36254,7 +42111,7 @@ export declare class TopoDS_Shape {
   TShape(): unknown;
   TShape(theTShape: unknown): void;
   /**
-   * Returns the value of the TopAbs_ShapeEnum enumeration that corresponds to this shape, for example VERTEX, EDGE, and so on. Exceptions Standard_NullObject if this shape is null.
+   * Returns the value of the `TopAbs_ShapeEnum` enumeration that corresponds to this shape, for example VERTEX, EDGE, and so on. Exceptions Standard_NullObject if this shape is null.
    */
   ShapeType(): TopAbs_ShapeEnum;
   /**
@@ -36335,31 +42192,32 @@ export declare class TopoDS_Shape {
    */
   Moved(thePosition: TopLoc_Location, theRaiseExc: boolean): TopoDS_Shape;
   /**
-   * Reverses the orientation, using the Reverse method from the TopAbs package.
+   * Reverses the orientation, using the Reverse method from the {@link TopAbs | `TopAbs`} package.
    */
   Reverse(): void;
   /**
-   * Returns a shape similar to <me> with the orientation reversed, using the Reverse method from the TopAbs package.
+   * Returns a shape similar to <me> with the orientation reversed, using the Reverse method from the {@link TopAbs | `TopAbs`} package.
    */
   Reversed(): TopoDS_Shape;
   /**
-   * Complements the orientation, using the Complement method from the TopAbs package.
+   * Complements the orientation, using the Complement method from the {@link TopAbs | `TopAbs`} package.
    */
   Complement(): void;
   /**
-   * Returns a shape similar to <me> with the orientation complemented, using the Complement method from the TopAbs package.
+   * Returns a shape similar to <me> with the orientation complemented, using the Complement method from the {@link TopAbs | `TopAbs`} package.
    */
   Complemented(): TopoDS_Shape;
   /**
-   * Updates the Shape Orientation by composition with theOrient, using the Compose method from the TopAbs package.
+   * Updates the Shape Orientation by composition with theOrient, using the Compose method from the {@link TopAbs | `TopAbs`} package.
    */
   Compose(theOrient: TopAbs_Orientation): void;
   /**
-   * Returns a shape similar to <me> with the orientation composed with theOrient, using the Compose method from the TopAbs package.
+   * Returns a shape similar to <me> with the orientation composed with theOrient, using the Compose method from the {@link TopAbs | `TopAbs`} package.
    */
   Composed(theOrient: TopAbs_Orientation): TopoDS_Shape;
   /**
    * Returns the number of direct sub-shapes (children).
+   * @see {@link TopoDS_Iterator | `TopoDS_Iterator`}
    */
   NbChildren(): number;
   /**
@@ -36392,7 +42250,18 @@ export declare class TopoDS_Shape {
 }
 
 /**
- * The BRepTools package provides utilities for BRep data structures.
+ * The {@link BRepTools | `BRepTools`} package provides utilities for BRep data structures.
+ *
+ * - WireExplorer: Tool to explore the topology of a wire in the order of the edges.
+ * - ShapeSet: Tools used for dumping, writing and reading.
+ * - UVBounds: Methods to compute the limits of the boundary of a face, a wire or an edge in the parametric space of a face.
+ * - Update: Methods to call when a topology has been created to compute all missing data.
+ * - UpdateFaceUVPoints: Method to update the UV points stored with the edges on a face.
+ * - Compare: Method to compare two vertices.
+ * - Compare: Method to compare two edges.
+ * - OuterWire: Method to find the outer wire of a face.
+ * - Map3DEdges: Method to map all the 3D Edges of a Shape.
+ * - Dump: Method to dump a BRep object.
  */
 export declare class BRepTools {
   constructor();
@@ -36409,15 +42278,15 @@ export declare class BRepTools {
    */
   static UVBounds(F: TopoDS_Face, E: TopoDS_Edge): { UMin: number; UMax: number; VMin: number; VMax: number };
   /**
-   * Adds to the box  the bounding values in the parametric space of F.
+   * Adds to the box **the bounding values in the parametric space of F.**
    */
   static AddUVBounds(F: TopoDS_Face, B: Bnd_Box2d): void;
   /**
-   * Adds to the box  the bounding values of the wire in the parametric space of F.
+   * Adds to the box **the bounding values of the wire in the parametric space of F.**
    */
   static AddUVBounds(F: TopoDS_Face, W: TopoDS_Wire, B: Bnd_Box2d): void;
   /**
-   * Adds to the box  the bounding values of the edge in the parametric space of F.
+   * Adds to the box **the bounding values of the edge in the parametric space of F.**
    */
   static AddUVBounds(F: TopoDS_Face, E: TopoDS_Edge, B: Bnd_Box2d): void;
   /**
@@ -36461,7 +42330,7 @@ export declare class BRepTools {
    */
   static UpdateFaceUVPoints(theF: TopoDS_Face): void;
   /**
-   * Removes all cached polygonal representation of the shape, i.e. the triangulations of the faces of  and polygons on triangulations and polygons 3d of the edges. In case polygonal representation is the only available representation for the shape (shape does not have geometry) it is not removed.
+   * Removes all cached polygonal representation of the shape, i.e. the triangulations of the faces of and polygons on triangulations and polygons 3d of the edges. In case polygonal representation is the only available representation for the shape (shape does not have geometry) it is not removed.
    * @param theShape the shape to clean
    * @param theForce allows removing all polygonal representations from the shape, including polygons on triangulations irrelevant for the faces of the given shape.
    */
@@ -36471,7 +42340,7 @@ export declare class BRepTools {
    */
   static CleanGeometry(theShape: TopoDS_Shape): void;
   /**
-   * Removes all the pcurves of the edges of  that refer to surfaces not belonging to any face of .
+   * Removes all the pcurves of the edges of that refer to surfaces not belonging to any face of .
    */
   static RemoveUnusedPCurves(S: TopoDS_Shape): void;
   /**
@@ -36536,7 +42405,7 @@ export declare class BRepTools {
    */
   static Map3DEdges(S: TopoDS_Shape, M: NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher): void;
   /**
-   * Verifies that the edge <E> is found two times on the face <F> before calling BRep_Tool::IsClosed.
+   * Verifies that the edge <E> is found two times on the face <F> before calling `BRep_Tool::IsClosed`.
    */
   static IsReallyClosed(E: TopoDS_Edge, F: TopoDS_Face): boolean;
   /**
@@ -36556,12 +42425,12 @@ export declare class BRepTools {
    * @param theFile the path to file to output shape into
    * @param theWithTriangles flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles; has no effect on triangulation-only geometry
    * @param theWithNormals flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals; has no effect on triangulation-only geometry
-   * @param theVersion the TopTools format version
+   * @param theVersion the {@link TopTools | `TopTools`} format version
    * @param theProgress the range of progress indicator to fill in
    */
   static Write(theShape: TopoDS_Shape, theFile: string, theWithTriangles: boolean, theWithNormals: boolean, theVersion: unknown, theProgress: Message_ProgressRange): boolean;
   /**
-   * Reads a Shape from  in returns it in <Sh>.  is used to build the shape.
+   * Reads a Shape from in returns it in <Sh>. **is used to build the shape.**
    */
   static Read(Sh: TopoDS_Shape, File: string, B: unknown, theProgress: Message_ProgressRange): boolean;
   /**
@@ -36577,7 +42446,7 @@ export declare class BRepTools {
    */
   static RemoveInternals(theS: TopoDS_Shape, theForce: boolean): void;
   /**
-   * Check all locations of shape according criterium: aTrsf.IsNegative() || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec()) All sub-shapes having such locations are put in list theProblemShapes.
+   * Check all locations of shape according criterium: aTrsf.IsNegative() || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) > `TopLoc_Location::ScalePrec()`) All sub-shapes having such locations are put in list theProblemShapes.
    */
   static CheckLocations(theS: TopoDS_Shape, theProblemShapes: NCollection_List_TopoDS_Shape): void;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -36599,7 +42468,7 @@ export declare class BRep_Tool {
    */
   static IsClosed(E: TopoDS_Edge, F: TopoDS_Face): boolean;
   /**
-   * Returns True if <E> has two PCurves in the parametric space of . i.e.  is a closed surface and <E> is on the closing curve.
+   * Returns True if <E> has two PCurves in the parametric space of . i.e. is a closed surface and <E> is on the closing curve.
    */
   static IsClosed(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location): boolean;
   /**
@@ -36674,7 +42543,7 @@ export declare class BRep_Tool {
    */
   static CurveOnSurface(E: TopoDS_Edge, F: TopoDS_Face, theIsStored: boolean): { result: Geom2d_Curve; First: number; Last: number };
   /**
-   * Returns in , , <L> the 2d curve, the surface and the location for the edge <E> of rank <Index>.  and  are null if the index is out of range. Returns in <First> and <Last> the parameter range.
+   * Returns in `, , <L> the 2d curve, the surface and the location for the edge <E> of rank <Index>. and are null if the index is out of range. Returns in <First> and <Last> the parameter range.`
    */
   static CurveOnSurface(E: TopoDS_Edge, L: TopLoc_Location, Index: number): { C: Geom2d_Curve; S: Geom_Surface; First: number; Last: number };
   /**
@@ -36690,7 +42559,7 @@ export declare class BRep_Tool {
    */
   static PolygonOnSurface(E: TopoDS_Edge, F: TopoDS_Face): unknown;
   /**
-   * Returns in , , <L> a 2d curve, a surface and a location for the edge <E>.  and  are null if the edge has no polygon on surface.
+   * Returns in `, , <L> a 2d curve, a surface and a location for the edge <E>. and are null if the edge has no polygon on surface.`
    */
   static PolygonOnSurface(E: TopoDS_Edge, L: TopLoc_Location): { C: unknown; S: Geom_Surface };
   /**
@@ -36698,11 +42567,15 @@ export declare class BRep_Tool {
    */
   static PolygonOnSurface(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location): unknown;
   /**
-   * Returns in , , <L> the 2d curve, the surface and the location for the edge <E> of rank <Index>.  and  are null if the index is out of range.
+   * Returns in `, , <L> the 2d curve, the surface and the location for the edge <E> of rank <Index>. and are null if the index is out of range.`
    */
   static PolygonOnSurface(E: TopoDS_Edge, L: TopLoc_Location, Index: number): { C: unknown; S: Geom_Surface };
   /**
    * Returns in.
+   *
+   * , <T>, <L> a polygon on triangulation, a triangulation and a location for the edge <E>.
+   *
+   * and <T> are null if the edge has no polygon on triangulation.
    */
   static PolygonOnTriangulation(E: TopoDS_Edge, L: TopLoc_Location): { P: Poly_PolygonOnTriangulation; T: Poly_Triangulation };
   /**
@@ -36711,6 +42584,8 @@ export declare class BRep_Tool {
   static PolygonOnTriangulation(E: TopoDS_Edge, T: Poly_Triangulation, L: TopLoc_Location): Poly_PolygonOnTriangulation;
   /**
    * Returns in.
+   *
+   * , <T>, <L> a polygon on triangulation, a triangulation and a location for the edge <E> for the range index. `and are null if the edge has no polygon on triangulation.`
    */
   static PolygonOnTriangulation(E: TopoDS_Edge, L: TopLoc_Location, Index: number): { P: Poly_PolygonOnTriangulation; T: Poly_Triangulation };
   /**
@@ -36823,6 +42698,12 @@ export declare class BRep_Tool {
 
 /**
  * The Surface from BRepAdaptor allows to use a Face of the BRep topology look like a 3D surface.
+ *
+ * It has the methods of the class Surface from Adaptor3d.
+ *
+ * It is created or initialized with a Face. It takes into account the local coordinates system.
+ *
+ * The u,v parameter range is the minmax value for the restriction, unless the flag restriction is set to false.
  */
 export declare class BRepAdaptor_Surface extends GeomAdaptor_TransformedSurface {
   /**
@@ -36862,7 +42743,9 @@ export declare class BRepAdaptor_Surface extends GeomAdaptor_TransformedSurface 
 }
 
 /**
- * The Curve from BRepAdaptor allows to use a Wire of the BRep topology like a 3D curve. Warning: With this class of curve, C0 and C1 continuities are not assumed. So be careful with some algorithm! Please note that BRepAdaptor_CompCurve cannot be periodic curve at all (even if it contains single periodic edge).
+ * The Curve from BRepAdaptor allows to use a Wire of the BRep topology like a 3D curve. Warning: With this class of curve, C0 and C1 continuities are not assumed. So be careful with some algorithm! Please note that {@link BRepAdaptor_CompCurve | `BRepAdaptor_CompCurve`} cannot be periodic curve at all (even if it contains single periodic edge).
+ *
+ * {@link BRepAdaptor_CompCurve | `BRepAdaptor_CompCurve`} can only work on valid wires where all edges are connected to each other to make a chain.
  */
 export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
   /**
@@ -36910,6 +42793,8 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
   NbIntervals(S: GeomAbs_Shape): number;
   /**
    * Stores in <T> the parameters bounding the intervals of continuity .
+   *
+   * The array must provide enough room to accommodate for the parameters. i.e. T.Length() > `NbIntervals()`
    */
   Intervals(T: NCollection_Array1_double, S: GeomAbs_Shape): void;
   /**
@@ -36965,6 +42850,10 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
 
 /**
  * The Curve from BRepAdaptor allows to use an Edge of the BRep topology like a 3D curve.
+ *
+ * It has the methods the class Curve from Adaptor3d.
+ *
+ * It is created or Initialized with an Edge. It takes into account local coordinate systems. If the Edge has a 3D curve it is use with priority. If the edge has no 3D curve one of the curves on surface is used. It is possible to enforce using a curve on surface by creating or initialising with an Edge and a Face.
  */
 export declare class BRepAdaptor_Curve extends GeomAdaptor_TransformedCurve {
   /**
@@ -36987,7 +42876,7 @@ export declare class BRepAdaptor_Curve extends GeomAdaptor_TransformedCurve {
    */
   ShallowCopy(): Adaptor3d_Curve;
   /**
-   * Reset currently loaded curve (undone Load()).
+   * Reset currently loaded curve (undone `Load()`).
    */
   Reset(): void;
   /**
@@ -37017,6 +42906,10 @@ export declare class BRepAdaptor_Curve extends GeomAdaptor_TransformedCurve {
 
 /**
  * The Curve2d from BRepAdaptor allows to use an Edge on a Face like a 2d curve (curve in the parametric space).
+ *
+ * It has the methods of the class Curve2d from Adpator.
+ *
+ * It is created or initialized with a Face and an Edge. The methods are inherited from Curve from {@link Geom2dAdaptor | `Geom2dAdaptor`}.
  */
 export declare class BRepAdaptor_Curve2d extends Geom2dAdaptor_Curve {
   /**
@@ -37052,7 +42945,37 @@ export declare class BRepAdaptor_Curve2d extends Geom2dAdaptor_Curve {
 }
 
 /**
- * An Explorer is a Tool to visit a Topological Data Structure from the TopoDS package.
+ * An Explorer is a Tool to visit a Topological Data Structure from the `TopoDS` package.
+ *
+ * An Explorer is built with:
+ *
+ * - The Shape to explore.
+ * - The type of Shapes to find: e.g VERTEX, EDGE. This type cannot be SHAPE.
+ * - The type of Shapes to avoid. e.g SHELL, EDGE. By default this type is SHAPE which means no restriction on the exploration.
+ *
+ * The Explorer visits all the structure to find shapes of the requested type which are not contained in the type to avoid.
+ *
+ * Example to find all the Faces in the Shape S :
+ *
+ * {@link TopExp_Explorer | `TopExp_Explorer`} Ex; for (Ex.Init(S,TopAbs_FACE); Ex.More(); Ex.Next()) { ProcessFace(Ex.Current()); }
+ *
+ * // an other way {@link TopExp_Explorer | `TopExp_Explorer`} Ex(S,TopAbs_FACE); while (Ex.More()) { ProcessFace(Ex.Current()); Ex.Next(); }
+ *
+ * To find all the vertices which are not in an edge :
+ *
+ * for (Ex.Init(S,TopAbs_VERTEX,TopAbs_EDGE); ...)
+ *
+ * To find all the faces in a SHELL, then all the faces not in a SHELL :
+ *
+ * {@link TopExp_Explorer | `TopExp_Explorer`} Ex1, Ex2;
+ *
+ * for (Ex1.Init(S,TopAbs_SHELL),...) { // visit all shells for (Ex2.Init(Ex1.Current(),TopAbs_FACE),...) { // visit all the faces of the current shell } }
+ *
+ * for (Ex1.Init(S,TopAbs_FACE,TopAbs_SHELL),...) { // visit all faces not in a shell }
+ *
+ * If the type to avoid is the same or is less complex than the type to find it has no effect.
+ *
+ * For example searching edges not in a vertex does not make a difference.
  */
 export declare class TopExp_Explorer {
   /**
@@ -37065,6 +42988,10 @@ export declare class TopExp_Explorer {
   constructor(S: TopoDS_Shape, ToFind: TopAbs_ShapeEnum);
   /**
    * Creates an Explorer on the Shape .
+   *
+   * <ToFind> is the type of shapes to search. TopAbs_VERTEX, TopAbs_EDGE, ...
+   *
+   * <ToAvoid> is the type of shape to skip in the exploration. If <ToAvoid> is equal or less complex than <ToFind> or if <ToAVoid> is SHAPE it has no effect on the exploration.
    */
   constructor(S: TopoDS_Shape, ToFind: TopAbs_ShapeEnum, ToAvoid?: TopAbs_ShapeEnum);
   /**
@@ -37113,12 +43040,12 @@ export declare class TopExp_Explorer {
 }
 
 /**
- * Reading from stereolithography format. Reads STL file and creates a shape composed of triangular faces, one per facet. IMPORTANT: This approach is very inefficient, especially for large files. IMPORTANT: Consider reading STL file to Poly_Triangulation object instead (see class RWStl).
+ * Reading from stereolithography format. Reads STL file and creates a shape composed of triangular faces, one per facet. IMPORTANT: This approach is very inefficient, especially for large files. IMPORTANT: Consider reading STL file to {@link Poly_Triangulation | `Poly_Triangulation`} object instead (see class {@link RWStl | `RWStl`}).
  */
 export declare class StlAPI_Reader {
   constructor();
   /**
-   * Reads STL data from stream to the TopoDS_Shape (each triangle is converted to the face).
+   * Reads STL data from stream to the {@link TopoDS_Shape | `TopoDS_Shape`} (each triangle is converted to the face).
    * @param theShape result shape
    * @returns True if reading is successful
    */
@@ -37138,7 +43065,7 @@ export declare class StlAPI {
    */
   static Write(theShape: TopoDS_Shape, theFile: string, theAsciiMode: boolean): boolean;
   /**
-   * Legacy interface. Read STL file and create a shape composed of triangular faces, one per facet. This approach is very inefficient, especially for large files. Consider reading STL file to Poly_Triangulation object instead (see class RWStl).
+   * Legacy interface. Read STL file and create a shape composed of triangular faces, one per facet. This approach is very inefficient, especially for large files. Consider reading STL file to {@link Poly_Triangulation | `Poly_Triangulation`} object instead (see class {@link RWStl | `RWStl`}).
    * @deprecated
    */
   static Read(theShape: TopoDS_Shape, aFile: string): boolean;
@@ -37149,10 +43076,22 @@ export declare class StlAPI {
 
 /**
  * This class gives a way to manage meaningful static variables, used as "global" parameters in various procedures.
+ *
+ * A Static brings a specification (its type, constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, and queried as such. Its string content, which is a `occ::handle<HAsciiString>` can be shared by other data structures, hence gives a direct on line access to its value.
+ *
+ * All this description is inherited from TypedValue
+ *
+ * A Static can be given an initial value, it can be filled from, either a set of Resources (an applicative feature which accesses and manages parameter files), or environment or internal definition : these define families of Static. In addition, it supports a status for reinitialisation : an initialisation procedure can ask if the value of the Static has changed from its last call, in this case does something then marks the Status "uptodate", else it does nothing.
+ *
+ * Statics are named and recorded then accessed in an alphabetic dictionary
  */
 export declare class Interface_Static extends Interface_TypedValue {
   /**
    * Creates and records a Static, with a family and a name family can report to a name of resource or to a system or internal definition. The name must be unique.
+   *
+   * type gives the type of the parameter, default is free text Also available : Integer, Real, Enum, Entity (i.e. Object) More precise specifications, titles, can be given to the Static once created
+   *
+   * init gives an initial value. If it is not given, the Static begin as "not set", its value is empty
    */
   constructor(family: string, name: string);
   /**
@@ -37165,6 +43104,10 @@ export declare class Interface_Static extends Interface_TypedValue {
   constructor(family: string, name: string, type_: unknown);
   /**
    * Creates and records a Static, with a family and a name family can report to a name of resource or to a system or internal definition. The name must be unique.
+   *
+   * type gives the type of the parameter, default is free text Also available : Integer, Real, Enum, Entity (i.e. Object) More precise specifications, titles, can be given to the Static once created
+   *
+   * init gives an initial value. If it is not given, the Static begin as "not set", its value is empty
    */
   constructor(family: string, name: string, type_?: unknown, init?: string);
   /**
@@ -37205,10 +43148,14 @@ export declare class Interface_Static extends Interface_TypedValue {
   static IsPresent(name: string): boolean;
   /**
    * Returns a part of the definition of a Static, as a CString The part is designated by its name, as a CString If the required value is not a string, it is converted to a CString then returned If <name> is not present, or <part> not defined for <name>, this function returns an empty string.
+   *
+   * Allowed parts for CDef : family : the family type : the type ("integer","real","text","enum") label : the label satis : satisfy function name if any rmin : minimum real value rmax : maximum real value imin : minimum integer value imax : maximum integer value enum nn (nn : value of an integer) : enum value for nn unit : unit definition for a real
    */
   static CDef(name: string, part: string): string;
   /**
    * Returns a part of the definition of a Static, as an Integer The part is designated by its name, as a CString If the required value is not a string, returns zero For a Boolean, 0 for false, 1 for true If <name> is not present, or <part> not defined for <name>, this function returns zero.
+   *
+   * Allowed parts for IDef : imin, imax : minimum or maximum integer value estart : starting number for enum ecount : count of enum values (starting from estart) ematch : exact match status eval val : case determined from a string
    */
   static IDef(name: string, part: string): number;
   /**
@@ -37216,11 +43163,11 @@ export declare class Interface_Static extends Interface_TypedValue {
    */
   static IsSet(name: string, proper: boolean): boolean;
   /**
-   * Returns the value of the parameter identified by the string name. If the specified parameter does not exist, an empty string is returned. Example Interface_Static::CVal("write.step.schema"); which could return: "AP214".
+   * Returns the value of the parameter identified by the string name. If the specified parameter does not exist, an empty string is returned. Example `Interface_Static::CVal`("write.step.schema"); which could return: "AP214".
    */
   static CVal(name: string): string;
   /**
-   * Returns the integer value of the translation parameter identified by the string name. Returns the value 0 if the parameter does not exist. Example Interface_Static::IVal("write.step.schema"); which could return: 3.
+   * Returns the integer value of the translation parameter identified by the string name. Returns the value 0 if the parameter does not exist. Example `Interface_Static::IVal`("write.step.schema"); which could return: 3.
    */
   static IVal(name: string): number;
   /**
@@ -37228,11 +43175,11 @@ export declare class Interface_Static extends Interface_TypedValue {
    */
   static RVal(name: string): number;
   /**
-   * Modifies the value of the parameter identified by name. The modification is specified by the string val. false is returned if the parameter does not exist. Example Interface_Static::SetCVal ("write.step.schema","AP203") This syntax specifies a switch from the default STEP 214 mode to STEP 203 mode.
+   * Modifies the value of the parameter identified by name. The modification is specified by the string val. false is returned if the parameter does not exist. Example `Interface_Static::SetCVal` ("write.step.schema","AP203") This syntax specifies a switch from the default STEP 214 mode to STEP 203 mode.
    */
   static SetCVal(name: string, val: string): boolean;
   /**
-   * Modifies the value of the parameter identified by name. The modification is specified by the integer value val. false is returned if the parameter does not exist. Example Interface_Static::SetIVal ("write.step.schema", 3) This syntax specifies a switch from the default STEP 214 mode to STEP 203 mode.S.
+   * Modifies the value of the parameter identified by name. The modification is specified by the integer value val. false is returned if the parameter does not exist. Example `Interface_Static::SetIVal` ("write.step.schema", 3) This syntax specifies a switch from the default STEP 214 mode to STEP 203 mode.S.
    */
   static SetIVal(name: string, val: number): boolean;
   /**
@@ -37249,6 +43196,8 @@ export declare class Interface_Static extends Interface_TypedValue {
   static IsUpdated(name: string): boolean;
   /**
    * Returns a list of names of statics : <mode> = 0 (D) : criter is for family <mode> = 1 : criter is regexp on names, takes final items (ignore wild cards) <mode> = 2 : idem but take only wilded, not final items <mode> = 3 : idem, take all items matching criter idem + 100 : takes only non-updated items idem + 200 : takes only updated items criter empty (D) : returns all names else returns names which match the given criter Remark : families beginning by '$' are not listed by criter "" they are listed only by criter "$".
+   *
+   * This allows for instance to set new values after having loaded or reloaded a resource, then to update them as required
    */
   static Items(mode: number, criter: string): unknown;
   /**
@@ -37269,10 +43218,18 @@ export declare class Interface_Static extends Interface_TypedValue {
 
 /**
  * Now strictly equivalent to TypedValue from MoniTool, except for ParamType which remains for compatibility reasons.
+ *
+ * This class allows to dynamically manage .. typed values, i.e. values which have an alphanumeric expression, but with controls. Such as "must be an Integer" or "Enumerative Text" etc
+ *
+ * Hence, a TypedValue brings a specification (type + constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, then queried as such. Its string content, which is a `occ::handle<HAsciiString>` can be shared by other data structures, hence gives a direct on line access to its value.
  */
 export declare class Interface_TypedValue extends MoniTool_TypedValue {
   /**
    * Creates a TypedValue, with a name.
+   *
+   * type gives the type of the parameter, default is free text Also available : Integer, Real, Enum, Entity (i.e. Object) More precise specifications, titles, can be given to the TypedValue once created
+   *
+   * init gives an initial value. If it is not given, the TypedValue begins as "not set", its value is empty
    */
   constructor(name: string, type_?: unknown, init?: string);
   /**
@@ -37297,6 +43254,8 @@ export declare class Interface_TypedValue extends MoniTool_TypedValue {
 
 /**
  * This class allows to dynamically manage .. typed values, i.e. values which have an alphanumeric expression, but with controls. Such as "must be an Integer" or "Enumerative Text" etc.
+ *
+ * Hence, a TypedValue brings a specification (type + constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, then queried as such. Its string content, which is a `occ::handle<HAsciiString>` can be shared by other data structures, hence gives a direct on line access to its value.
  */
 export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
@@ -37309,10 +43268,18 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   constructor(name: string);
   /**
    * Creates a TypedValue, with a name.
+   *
+   * type gives the type of the parameter, default is free text Also available : Integer, Real, Enum, Entity (i.e. Object) More precise specifications, titles, can be given to the TypedValue once created
+   *
+   * init gives an initial value. If it is not given, the TypedValue begins as "not set", its value is empty
    */
   constructor(name: string, type_: unknown);
   /**
    * Creates a TypedValue, with a name.
+   *
+   * type gives the type of the parameter, default is free text Also available : Integer, Real, Enum, Entity (i.e. Object) More precise specifications, titles, can be given to the TypedValue once created
+   *
+   * init gives an initial value. If it is not given, the TypedValue begins as "not set", its value is empty
    */
   constructor(name: string, type_?: unknown, init?: string);
   /**
@@ -37404,7 +43371,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
    */
   SetObjectType(typ: unknown): void;
   /**
-   * Returns the type of which an Object TypedValue must be kind of Default is Standard_Transient Null for a TypedValue not an Object.
+   * Returns the type of which an Object TypedValue must be kind of Default is {@link Standard_Transient | `Standard_Transient`} Null for a TypedValue not an Object.
    */
   ObjectType(): unknown;
   /**
@@ -37489,6 +43456,8 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   ObjectTypeName(): string;
   /**
    * Adds a TypedValue in the library. It is recorded then will be accessed by its Name Its Definition may be imposed, else it is computed as usual By default it will be accessed by its Definition (string) Returns True if done, False if tv is Null or brings no Definition or <def> not defined.
+   *
+   * If a TypedValue was already recorded under this name, it is replaced
    */
   static AddLib(tv: MoniTool_TypedValue, def: string): boolean;
   /**
@@ -37517,6 +43486,9 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
 
 /**
  * This WorkSession completes the basic one, by adding :
+ *
+ * - use of Controller, with norm selection...
+ * - management of transfers (both ways) with auxiliary classes TransferReader and TransferWriter -> these transfers may work with a Context List : its items are given by the user, according to the transfer to be i.e. it is interpreted by the Actors Each item is accessed by a Name
  */
 export declare class XSControl_WorkSession extends IFSelect_WorkSession {
   constructor();
@@ -37526,6 +43498,8 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
   ClearData(theMode: number): void;
   /**
    * Selects a Norm defined by its name. A Norm is described and handled by a Controller Returns True if done, False if <normname> is unknown.
+   *
+   * The current Profile for this Norm is taken.
    */
   SelectNorm(theNormName: string): boolean;
   /**
@@ -37578,6 +43552,10 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
   Result(theEnt: Standard_Transient, theMode: number): Standard_Transient;
   /**
    * Commands the transfer of, either one entity, or a list I.E. calls the TransferReader after having analysed <ents> It is cumulated from the last BeginTransfer <ents> is processed by GiveList, hence :
+   *
+   * - <ents> a Selection : its SelectionResult
+   * - <ents> a HSequenceOfTransient : this list
+   * - <ents> the Model : in this specific case, all the roots, with no cumulation of former transfers (TransferReadRoots)
    */
   TransferReadOne(theEnts: Standard_Transient, theProgress: Message_ProgressRange): number;
   /**
@@ -37612,6 +43590,15 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
 
 /**
  * A groundwork to convert a shape to data which complies with a particular norm. This data can be that of a whole model or that of a specific list of entities in the model. You specify the list using a single selection or a combination of selections. A selection is an operator which computes a list of entities from a list given in input. To specify the input, you can use:
+ *
+ * - A predefined selection such as "xst-transferrable-roots"
+ * - A filter based on a signature. A signature is an operator which returns a string from an entity according to its type. For example:
+ * - "xst-type" (CDL)
+ * - "iges-level"
+ * - "step-type". A filter can be based on a signature by giving a value to be matched by the string returned. For example, "xst-type(Curve)". If no list is specified, the selection computes its list of entities from the whole model. To use this class, you have to initialize the transfer norm first, as shown in the example below.
+ * Example: Control_Reader reader; `IFSelect_ReturnStatus` status = reader.ReadFile (filename.); When using {@link IGESControl_Reader | `IGESControl_Reader`} or {@link STEPControl_Reader | `STEPControl_Reader`} - as the above example shows - the reader initializes the norm directly. Note that loading the file only stores the data. It does not translate this data. Shapes are accumulated by successive transfers. The last shape is cleared by:
+ * - ClearShapes which allows you to handle a new batch
+ * - TransferRoots which restarts the list of shapes from scratch.
  */
 export declare class XSControl_Reader {
   /**
@@ -37652,6 +43639,17 @@ export declare class XSControl_Reader {
   Model(): unknown;
   /**
    * Returns a list of entities from the IGES or STEP file according to the following rules:
+   *
+   * - if first and second are empty strings, the whole file is selected.
+   * - if first is an entity number or label, the entity referred to is selected.
+   * - if first is a list of entity numbers/labels separated by commas, the entities referred to are selected,
+   * - if first is the name of a selection in the worksession and second is not defined, the list contains the standard output for that selection.
+   * - if first is the name of a selection and second is defined, the criterion defined by second is applied to the result of the first selection. A selection is an operator which computes a list of entities from a list given in input according to its type. If no list is specified, the selection computes its list of entities from the whole model. A selection can be:
+   * - A predefined selection (xst-transferrable-mode)
+   * - A filter based on a signature A Signature is an operator which returns a string from an entity according to its type. For example:
+   * - "xst-type" (CDL)
+   * - "iges-level"
+   * - "step-type". For example, if you wanted to select only the advanced_faces in a STEP file you would use the following code: Example Reader.GiveList("xst-transferrable-roots","step-type(ADVANCED_FACE)"); Warning If the value given to second is incorrect, it will simply be ignored.
    */
   GiveList(first: string, second: string): unknown;
   /**
@@ -37700,18 +43698,38 @@ export declare class XSControl_Reader {
   Shape(num: number): TopoDS_Shape;
   /**
    * Returns all of the results in a single shape which is:
+   *
+   * - a null shape if there are no results,
+   * - a shape if there is one result,
+   * - a compound containing the resulting shapes if there are more than one.
    */
   OneShape(): TopoDS_Shape;
   /**
-   * Prints the check list attached to loaded data, on the Standard Trace File (starts at std::cout) All messages or fails only, according to <failsonly> mode = 0 : per entity, prints messages mode = 1 : per message, just gives count of entities per check mode = 2 : also gives entity numbers.
+   * Prints the check list attached to loaded data, on the {@link Standard | `Standard`} Trace File (starts at std::cout) All messages or fails only, according to <failsonly> mode = 0 : per entity, prints messages mode = 1 : per message, just gives count of entities per check mode = 2 : also gives entity numbers.
    */
   PrintCheckLoad(failsonly: boolean, mode: unknown): void;
   /**
-   * Displays check results for the last translation of IGES or STEP entities to Open CASCADE entities. Only fail messages are displayed if failsonly is true. All messages are displayed if failsonly is false. mode determines the contents and the order of the messages according to the terms of the IFSelect_PrintCount enumeration.
+   * Displays check results for the last translation of IGES or STEP entities to Open CASCADE entities. Only fail messages are displayed if failsonly is true. All messages are displayed if failsonly is false. mode determines the contents and the order of the messages according to the terms of the `IFSelect_PrintCount` enumeration.
    */
   PrintCheckTransfer(failsonly: boolean, mode: unknown): void;
   /**
    * Displays the statistics for the last translation. what defines the kind of statistics that are displayed as follows:
+   *
+   * - 0 gives general statistics (number of translated roots, number of warnings, number of fail messages),
+   * - 1 gives root results,
+   * - 2 gives statistics for all checked entities,
+   * - 3 gives the list of translated entities,
+   * - 4 gives warning and fail messages,
+   * - 5 gives fail messages only. The use of mode depends on the value of what. If what is 0, mode is ignored. If what is 1, 2 or 3, mode defines the following:
+   * - 0 lists the numbers of IGES or STEP entities in the respective model
+   * - 1 gives the number, identifier, type and result type for each IGES or STEP entity and/or its status (fail, warning, etc.)
+   * - 2 gives maximum information for each IGES or STEP entity (i.e. checks)
+   * - 3 gives the number of entities per type of IGES or STEP entity
+   * - 4 gives the number of IGES or STEP entities per result type and/or status
+   * - 5 gives the number of pairs (IGES or STEP or result type and status)
+   * - 6 gives the number of pairs (IGES or STEP or result type and status) AND the list of entity numbers in the IGES or STEP model. If what is 4 or 5, mode defines the warning and fail messages as follows:
+   * - if mode is 0 all warnings and checks per entity are returned
+   * - if mode is 2 the list of entities per warning is returned. If mode is not set, only the list of all entities per warning is given.
    */
   PrintStatsTransfer(what: number, mode: number): void;
   /**
@@ -37724,7 +43742,7 @@ export declare class XSControl_Reader {
    */
   SetShapeFixParameters(theParameters: unknown): void;
   /**
-   * Sets parameters for shape processing. Parameters from theParameters are copied to the internal map. Parameters from theAdditionalParameters are copied to the internal map if they are not present in theParameters.
+   * Sets parameters for shape processing. Parameters from `theParameters` are copied to the internal map. Parameters from `theAdditionalParameters` are copied to the internal map if they are not present in `theParameters`.
    * @param theParameters the parameters for shape processing.
    * @param theAdditionalParameters the additional parameters for shape processing.
    */
@@ -37843,6 +43861,8 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   StartingNumber(ent: Standard_Transient): number;
   /**
    * From a given label in Model, returns the corresponding number Starts from first entity by Default, may start after a given number : this number may be given negative, its absolute value is then considered. Hence a loop on NumberFromLabel may be programmed (stop test is : returned value positive or null).
+   *
+   * Returns 0 if not found, < 0 if more than one found (first found in negative). If <val> just gives an integer value, returns it
    */
   NumberFromLabel(val: string, afternum: number): number;
   /**
@@ -37926,19 +43946,22 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
    */
   HasName(item: Standard_Transient): boolean;
   /**
-   * Returns the Name attached to an Item as a Variable of this WorkSession. If  is Null or not recorded, returns an empty string.
+   * Returns the Name attached to an Item as a Variable of this WorkSession. If is Null or not recorded, returns an empty string.
    */
   Name(item: Standard_Transient): TCollection_HAsciiString;
   /**
-   * Adds an Item and returns its attached Ident. Does nothing if  is already recorded (and returns its attached Ident) <active> if True commands call to SetActive (see below) Remark : the determined Ident is used if  is a Dispatch, to fill the ShareOut.
+   * Adds an Item and returns its attached Ident. Does nothing if is already recorded (and returns its attached Ident) <active> if True commands call to SetActive (see below) Remark : the determined Ident is used if is a Dispatch, to fill the ShareOut.
    */
   AddItem(item: Standard_Transient, active: boolean): number;
   /**
-   * Adds an Item with an attached Name. If the Name is already known in the WorkSession, the older item losts it Returns Ident if Done, 0 else, i.e. if  is null If <name> is empty, works as AddItem (i.e. with no name) If  is already known but with no attached Name, this method tries to attached a Name to it <active> if True commands call to SetActive (see below).
+   * Adds an Item with an attached Name. If the Name is already known in the WorkSession, the older item losts it Returns Ident if Done, 0 else, i.e. if is null If <name> is empty, works as AddItem (i.e. with no name) If is already known but with no attached Name, this method tries to attached a Name to it <active> if True commands call to SetActive (see below).
    */
   AddNamedItem(name: string, item: Standard_Transient, active: boolean): number;
   /**
-   * Following the type of  :
+   * Following the type of :
+   *
+   * - Dispatch : Adds or Removes it in the ShareOut & FileNaming
+   * - GeneralModifier : Adds or Removes it for final sending (i.e. in the ModelCopier) Returns True if it did something, False else (state unchanged)
    */
   SetActive(item: Standard_Transient, mode: boolean): boolean;
   /**
@@ -37959,6 +43982,11 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   ClearItems(): void;
   /**
    * Returns a Label which illustrates the content of an Item, given its Ident. This Label is :
+   *
+   * - for a Text Parameter, "Text:<text value>"
+   * - for an Integer Parameter, "Integer:<integer value>"
+   * - for a Selection, a Dispatch or a Modifier, its Label (see these classes)
+   * - for any other kind of Variable, its cdl type
    */
   ItemLabel(id: number): TCollection_HAsciiString;
   /**
@@ -37975,6 +44003,15 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   ItemNamesForLabel(label: string): unknown;
   /**
    * For query by Label with possible iterations Searches the Ident of which Item has a Label which matches a given one, the search starts from an initial Ident. Returns the first found Ident which follows <id>, or ZERO.
+   *
+   * The search must start with <id> = 0, it returns the next Ident which matches. To iterate, call again this method which this returned value as <id>. Once an Ident has been returned, the Item can be obtained by the method Item
+   *
+   * <mode> precises the required matching mode :
+   *
+   * - 0 (Default) : <label> must match exactly with the Item Label
+   * - 1 : <label> must match the exact beginning (the end is free)
+   * - 2 : <label> must be at least once wherever in the Item Label
+   * - other values are ignored
    */
   NextIdentForLabel(label: string, id: number, mode: number): number;
   /**
@@ -38034,15 +44071,15 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
    */
   SelectionResultFromList(sel: unknown, list: unknown): unknown;
   /**
-   * Sets a Selection as input for an item, according its type : if  is a Dispatch : as Final Selection if  is a GeneralModifier (i.e. any kind of Modifier) : as Selection used to filter entities to modify <sel> Null causes this Selection to be nullified Returns False if  is not of a suitable type, or  or <sel> is not in the WorkSession.
+   * Sets a Selection as input for an item, according its type : if is a Dispatch : as Final Selection if is a GeneralModifier (i.e. any kind of Modifier) : as Selection used to filter entities to modify <sel> Null causes this Selection to be nullified Returns False if is not of a suitable type, or or <sel> is not in the WorkSession.
    */
   SetItemSelection(item: Standard_Transient, sel: unknown): boolean;
   /**
-   * Resets input Selection which was set by SetItemSelection Same conditions as for SetItemSelection Returns True if done, False if  is not in the WorkSession.
+   * Resets input Selection which was set by SetItemSelection Same conditions as for SetItemSelection Returns True if done, False if is not in the WorkSession.
    */
   ResetItemSelection(item: Standard_Transient): boolean;
   /**
-   * Returns the Selection of a Dispatch or a GeneralModifier. Returns a Null Handle if none is defined or  not good type.
+   * Returns the Selection of a Dispatch or a GeneralModifier. Returns a Null Handle if none is defined or not good type.
    */
   ItemSelection(item: Standard_Transient): unknown;
   /**
@@ -38111,6 +44148,9 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   ClearFinalModifiers(): void;
   /**
    * Sets a GeneralModifier to be applied to an item :
+   *
+   * - item = ShareOut : applies for final sending (all dispatches)
+   * - item is a Dispatch : applies for this dispatch only Returns True if done, False if <modif> or not in <me>
    */
   SetAppliedModifier(modif: unknown, item: Standard_Transient): boolean;
   /**
@@ -38127,10 +44167,16 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   Transformer(id: number): unknown;
   /**
    * Runs a Transformer on starting Model, which can then be edited or replaced by a new one. The Protocol can also be changed. Fills LastRunCheckList.
+   *
+   * Returned status is 0 if nothing done (<transf> or model undefined), positive if OK, negative else : 0 : Nothing done 1 : OK, edition on the spot with no change to the graph of dependencies (purely local) 2 : OK, model edited on the spot (graph recomputed, may have changed), protocol unchanged 3 : OK, new model produced, same protocol 4 : OK, model edited on the spot (graph recomputed), but protocol has changed 5 : OK, new model produced, protocol has changed -1 : Error on the spot (slight changes), data may be corrupted (remark : corruption should not be profound) -2 : Error on edition the spot, data may be corrupted (checking them is recommended) -3 : Error with a new data set, transformation ignored -4 : OK as 4, but graph of dependences count not be recomputed (the former one is kept) : check the protocol
    */
   RunTransformer(transf: unknown): number;
   /**
    * Runs a Modifier on Starting Model. It can modify entities, or add new ones. But the Model or the Protocol is unchanged. The Modifier is applied on each entity of the Model. See also RunModifierSelected Fills LastRunCheckList.
+   *
+   * <copy> : if True, a new data set is produced which brings the modifications (Model + its Entities) if False, data are modified on the spot
+   *
+   * It works through a TransformStandard defined with <modif> Returned status as RunTransformer : 0 nothing done, >0 OK, <0 problem, but only between -3 and 3 (protocol unchanged) Remark : <copy> True will give <effect> = 3 or -3
    */
   RunModifier(modif: unknown, copy: boolean): number;
   /**
@@ -38178,7 +44224,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
    */
   SetFileRoot(disp: unknown, name: string): boolean;
   /**
-   * Extracts File Root Name from a given complete file name (uses OSD_Path).
+   * Extracts File Root Name from a given complete file name (uses `OSD_Path`).
    */
   GiveFileRoot(file: string): string;
   /**
@@ -38215,6 +44261,8 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   SentFiles(): unknown;
   /**
    * Performs creation of derived files from the input Model Takes its data (sub-models and names), from result EvaluateFile if active, else by dynamic Evaluation (not stored) After SendSplit, result of EvaluateFile is Cleared Fills LastRunCheckList.
+   *
+   * Works with the WorkLibrary which acts on specific type of Model and can work with File Modifiers (managed by the Model Copier) and a ModelCopier, which can work with Model Modifiers Returns False if, either WorkLibrary has failed on at least one sub-file, or the Work Session is badly conditioned (no Model defined, or FileNaming not in phase with ShareOut)
    */
   SendSplit(): boolean;
   /**
@@ -38231,10 +44279,14 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   SetRemaining(mode: unknown): boolean;
   /**
    * Sends the starting Model into one file, without splitting, managing remaining data or anything else. <computegraph> true commands the Graph to be recomputed before sending : required when a Model is filled in several steps.
+   *
+   * The Model and File Modifiers recorded to be applied on sending files are. Returns a status of execution : Done if OK, Void if no data available, Error if errors occurred (work library is not defined), errors during translation Fail if exception during translation is raised Stop if no disk space or disk, file is write protected Fills LastRunCheckList
    */
   SendAll(filename: string, computegraph: boolean): IFSelect_ReturnStatus;
   /**
    * Sends a part of the starting Model into one file, without splitting. But remaining data are managed. <computegraph> true commands the Graph to be recomputed before sending : required when a Model is filled in several steps.
+   *
+   * The Model and File Modifiers recorded to be applied on sending files are. Returns a status : Done if OK, Fail if error during send, Error : WorkLibrary not defined, Void : selection list empty Fills LastRunCheckList
    */
   SendSelected(filename: string, sel: unknown, computegraph: boolean): IFSelect_ReturnStatus;
   /**
@@ -38287,6 +44339,10 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   SetSelectPointed(sel: unknown, list: unknown, mode: number): boolean;
   /**
    * Returns a Selection from a Name :
+   *
+   * - the name of a Selection : this Selection
+   * - the name of a Signature + criteria between (..) : a new Selection from this Signature
+   * - an entity or a list of entities : a new SelectPointed Else, returns a Null Handle
    */
   GiveSelection(selname: string): unknown;
   /**
@@ -38295,10 +44351,16 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   GiveList(obj: Standard_Transient): unknown;
   /**
    * Computes a List of entities from two alphanums, first and second, as follows : if <first> is a Number or Label of an entity : this entity if <first> is a list of Numbers/Labels : the list of entities if <first> is the name of a Selection in <WS>, and <second> not defined, the standard result of this Selection else, let's consider "first second" : this whole phrase is split by blanks, as follows (RECURSIVE CALL) :
+   *
+   * - the leftest term is the final selection
+   * - the other terms define the result of the selection
+   * - and so on (the "leftest minus one" is a selection, of which the input is given by the remaining ...)
    */
   GiveList(first: string, second: string): unknown;
   /**
    * Computes a List of entities from the model as follows <first> being a Selection or a combination of Selections, <ent> being an entity or a list of entities (as a HSequenceOfTransient) : the standard result of this selection applied to this list if <ent> is Null, the standard definition of the selection is used (which contains a default input selection) if <selname> is erroneous, a null handle is returned.
+   *
+   * REMARK : selname is processed as <first second> of preceding GiveList
    */
   GiveListFromList(selname: string, ent: Standard_Transient): unknown;
   /**
@@ -38315,6 +44377,10 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   QueryParent(entdad: Standard_Transient, entson: Standard_Transient): number;
   /**
    * Sets a list of Parameters, i.e. TypedValue, to be handled through an Editor The two lists are parallel, if <params> is longer than <uses>, surnumeral parameters are for general use.
+   *
+   * EditForms are created to handle these parameters (list, edit) on the basis of a ParamEditor xst-params-edit
+   *
+   * A use number dispatches the parameter to a given EditForm EditForms are defined as follows Name Use Means xst-params all All Parameters (complete list) xst-params-general 1 Generals xst-params-load 2 LoadFile (no Transfer) xst-params-send 3 SendFile (Write, no Transfer) xst-params-split 4 Split xst-param-read 5 Transfer on Reading xst-param-write 6 Transfer on Writing
    */
   SetParams(params: unknown, uselist: NCollection_Vector_int): void;
   /**
@@ -38379,6 +44445,8 @@ export declare const IFSelect_ReturnStatus: {
 
 /**
  * Provides a tool to write DECAF document to the STEP file. Besides transfer of shapes (including assemblies) provided by STEPControl, supports also colors and part names.
+ *
+ * Also supports multifile writing
  */
 export declare class STEPCAFControl_Writer {
   /**
@@ -38414,7 +44482,7 @@ export declare class STEPCAFControl_Writer {
    */
   Transfer(theLabelSeq: NCollection_Sequence_TDF_Label, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
   /**
-   * Transfers a document (or single label) to a STEP model This method uses if need to set parameters avoiding initialization from Interface_Static.
+   * Transfers a document (or single label) to a STEP model This method uses if need to set parameters avoiding initialization from {@link Interface_Static | `Interface_Static`}.
    * @param theParams configuration parameters
    * @param theMode mode of translation of shape is AsIs
    * @param theIsMulti if multi is not null pointer, it switches to multifile mode (with external refs), and string pointed by <multi> gives prefix for names of extern files (can be empty string)
@@ -38422,7 +44490,7 @@ export declare class STEPCAFControl_Writer {
    */
   Transfer(theDoc: TDocStd_Document, theParams: unknown, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
   /**
-   * Transfers a document (or single label) to a STEP model This method uses if need to set parameters avoiding initialization from Interface_Static.
+   * Transfers a document (or single label) to a STEP model This method uses if need to set parameters avoiding initialization from {@link Interface_Static | `Interface_Static`}.
    * @param theParams configuration parameters
    * @param theMode mode of translation of shape is AsIs
    * @param theIsMulti if multi is not null pointer, it switches to multifile mode (with external refs), and string pointed by <multi> gives prefix for names of extern files (can be empty string)
@@ -38430,7 +44498,7 @@ export declare class STEPCAFControl_Writer {
    */
   Transfer(theLabel: TDF_Label, theParams: unknown, theMode: STEPControl_StepModelType, theIsMulti: string, theProgress: Message_ProgressRange): boolean;
   /**
-   * Transfers a document (or single label) to a STEP model This method uses if need to set parameters avoiding initialization from Interface_Static.
+   * Transfers a document (or single label) to a STEP model This method uses if need to set parameters avoiding initialization from {@link Interface_Static | `Interface_Static`}.
    * @param theParams configuration parameters
    * @param theMode mode of translation of shape is AsIs
    * @param theIsMulti if multi is not null pointer, it switches to multifile mode (with external refs), and string pointed by <multi> gives prefix for names of extern files (can be empty string)
@@ -38443,7 +44511,7 @@ export declare class STEPCAFControl_Writer {
    */
   Perform(theDoc: TDocStd_Document, theFileName: string, theProgress: Message_ProgressRange): boolean;
   /**
-   * Transfers a document and writes it to a STEP file This method is utilized if there's a need to set parameters avoiding initialization from Interface_Static Returns True if translation is OK.
+   * Transfers a document and writes it to a STEP file This method is utilized if there's a need to set parameters avoiding initialization from {@link Interface_Static | `Interface_Static`} Returns True if translation is OK.
    */
   Perform(theDoc: TDocStd_Document, theFileName: string, theParams: unknown, theProgress: Message_ProgressRange): boolean;
   /**
@@ -38527,7 +44595,7 @@ export declare class STEPCAFControl_Writer {
    */
   SetShapeFixParameters(theParameters: unknown): void;
   /**
-   * Sets parameters for shape processing. Parameters from theParameters are copied to the internal map. Parameters from theAdditionalParameters are copied to the internal map if they are not present in theParameters.
+   * Sets parameters for shape processing. Parameters from `theParameters` are copied to the internal map. Parameters from `theAdditionalParameters` are copied to the internal map if they are not present in `theParameters`.
    * @param theParameters the parameters for shape processing.
    * @param theAdditionalParameters the additional parameters for shape processing.
    */
@@ -38553,7 +44621,9 @@ export declare class STEPCAFControl_Writer {
 }
 
 /**
- * Reads STEP files, checks them and translates their contents into Open CASCADE models. The STEP data can be that of a whole model or that of a specific list of entities in the model. As in XSControl_Reader, you specify the list using a selection. For the translation of iges files it is possible to use next sequence: To change translation parameters class Interface_Static should be used before beginning of translation (see STEP Parameters and General Parameters) Creation of reader - STEPControl_Reader reader; To load s file in a model use method reader.ReadFile("filename.stp") To print load results reader.PrintCheckLoad(failsonly,mode) where mode is equal to the value of enumeration IFSelect_PrintCount For definition number of candidates : int nbroots = reader. NbRootsForTransfer(); To transfer entities from a model the following methods can be used: for the whole model - reader.TransferRoots(); to transfer a list of entities: reader.TransferList(list); to transfer one entity occ::handle<Standard_Transient> ent = reader.RootForTransfer(num); reader.TransferEntity(ent), or reader.TransferOneRoot(num), or reader.TransferOne(num), or reader.TransferRoot(num) To obtain the result the following method can be used: reader.NbShapes() and reader.Shape(num); or reader.OneShape(); To print the results of transfer use method: reader.PrintCheckTransfer(failwarn,mode); where printfail is equal to the value of enumeration IFSelect_PrintFail, mode see above; or reader.PrintStatsTransfer(); Gets correspondence between a STEP entity and a result shape obtained from it. occ::handle<XSControl_WorkSession> WS = reader.WS(); if ( WS->TransferReader()->HasResult(ent) ) TopoDS_Shape shape = WS->TransferReader()->ShapeResult(ent);.
+ * Reads STEP files, checks them and translates their contents into Open CASCADE models. The STEP data can be that of a whole model or that of a specific list of entities in the model. As in {@link XSControl_Reader | `XSControl_Reader`}, you specify the list using a selection.
+ * For the translation of iges files it is possible to use next sequence: To change translation parameters class {@link Interface_Static | `Interface_Static`} should be used before beginning of translation (see STEP Parameters and General Parameters) Creation of reader - {@link STEPControl_Reader | `STEPControl_Reader`} reader; To load s file in a model use method reader.ReadFile("filename.stp") To print load results reader.PrintCheckLoad(failsonly,mode) where mode is equal to the value of enumeration `IFSelect_PrintCount` For definition number of candidates : int nbroots = reader. `NbRootsForTransfer()`; To transfer entities from a model the following methods can be used: for the whole model - reader.TransferRoots(); to transfer a list of entities: reader.TransferList(list); to transfer one entity `occ::handle<Standard_Transient>` ent = reader.RootForTransfer(num); reader.TransferEntity(ent), or reader.TransferOneRoot(num), or reader.TransferOne(num), or reader.TransferRoot(num) To
+ * obtain the result the following method can be used: reader.NbShapes() and reader.Shape(num); or reader.OneShape(); To print the results of transfer use method: reader.PrintCheckTransfer(failwarn,mode); where printfail is equal to the value of enumeration `IFSelect_PrintFail`, mode see above; or reader.PrintStatsTransfer(); Gets correspondence between a STEP entity and a result shape obtained from it. `occ::handle<XSControl_WorkSession>` WS = reader.WS(); if ( WS->TransferReader()->HasResult(ent) ) {@link TopoDS_Shape | `TopoDS_Shape`} shape = WS->TransferReader()->ShapeResult(ent);.
  */
 export declare class STEPControl_Reader extends XSControl_Reader {
   /**
@@ -38643,6 +44713,12 @@ export declare class STEPControl_Writer {
   Model(newone: boolean): unknown;
   /**
    * Translates shape sh to a STEP entity. mode defines the STEP entity type to be output:
+   *
+   * - STEPControlStd_AsIs translates a shape to its highest possible STEP representation.
+   * - STEPControlStd_ManifoldSolidBrep translates a shape to a STEP manifold_solid_brep or brep_with_voids entity.
+   * - STEPControlStd_FacetedBrep translates a shape into a STEP faceted_brep entity.
+   * - STEPControlStd_ShellBasedSurfaceModel translates a shape into a STEP shell_based_surface_model entity.
+   * - STEPControlStd_GeometricCurveSet translates a shape into a STEP geometric_curve_set entity.
    */
   Transfer(sh: TopoDS_Shape, mode: STEPControl_StepModelType, compgraph: boolean, theProgress: Message_ProgressRange): IFSelect_ReturnStatus;
   /**
@@ -38655,6 +44731,20 @@ export declare class STEPControl_Writer {
   Write(theFileName: string): IFSelect_ReturnStatus;
   /**
    * Displays the statistics for the last translation. what defines the kind of statistics that are displayed:
+   *
+   * - 0 gives general statistics (number of translated roots, number of warnings, number of fail messages),
+   * - 1 gives root results,
+   * - 2 gives statistics for all checked entities,
+   * - 3 gives the list of translated entities,
+   * - 4 gives warning and fail messages,
+   * - 5 gives fail messages only. mode is used according to the use of what. If what is 0, mode is ignored. If what is 1, 2 or 3, mode defines the following:
+   * - 0 lists the numbers of STEP entities in a STEP model,
+   * - 1 gives the number, identifier, type and result type for each STEP entity and/or its status (fail, warning, etc.),
+   * - 2 gives maximum information for each STEP entity (i.e. checks),
+   * - 3 gives the number of entities by the type of a STEP entity,
+   * - 4 gives the number of of STEP entities per result type and/or status,
+   * - 5 gives the number of pairs (STEP or result type and status),
+   * - 6 gives the number of pairs (STEP or result type and status) AND the list of entity numbers in the STEP model.
    */
   PrintStatsTransfer(what: number, mode: number): void;
   CleanDuplicateEntities(): void;
@@ -38664,7 +44754,7 @@ export declare class STEPControl_Writer {
    */
   SetShapeFixParameters(theParameters: unknown): void;
   /**
-   * Sets parameters for shape processing. Parameters from theParameters are copied to the internal map. Parameters from theAdditionalParameters are copied to the internal map if they are not present in theParameters.
+   * Sets parameters for shape processing. Parameters from `theParameters` are copied to the internal map. Parameters from `theAdditionalParameters` are copied to the internal map if they are not present in `theParameters`.
    * @param theParameters the parameters for shape processing.
    * @param theAdditionalParameters the additional parameters for shape processing.
    */
@@ -38692,6 +44782,12 @@ export declare class STEPControl_Writer {
 export type STEPControl_StepModelType = typeof STEPControl_StepModelType[keyof typeof STEPControl_StepModelType];
 /**
  * Gives you the choice of translation mode for an Open CASCADE shape that is being translated to STEP.
+ *
+ * - STEPControl_AsIs translates an Open CASCADE shape to its highest possible STEP representation.
+ * - STEPControl_ManifoldSolidBrep translates an Open CASCADE shape to a STEP manifold_solid_brep or brep_with_voids entity.
+ * - STEPControl_FacetedBrep translates an Open CASCADE shape into a STEP faceted_brep entity.
+ * - STEPControl_ShellBasedSurfaceModel translates an Open CASCADE shape into a STEP shell_based_surface_model entity.
+ * - STEPControl_GeometricCurveSet translates an Open CASCADE shape into a STEP geometric_curve_set entity.
  */
 export declare const STEPControl_StepModelType: {
   readonly STEPControl_AsIs: 'STEPControl_AsIs';
@@ -38755,6 +44851,10 @@ export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
   Restore(theWith: TDF_Attribute): void;
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
+   *
+   * The given pasted attribute can be full or empty of its contents. But don't make a NEW! Just set the contents!
+   *
+   * It is possible to use <aRelocationTable> to get/set the relocation value of a source attribute.
    */
   Paste(theInto: TDF_Attribute, theRT: unknown): void;
   static get_type_name(): string;
@@ -38773,7 +44873,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   constructor();
   static GetID(): unknown;
   /**
-   * Create (if not exist) DocumentTool attribute on 0.1 label if <IsAcces> is true, else on <L> label. This label will be returned by DocLabel(); If the attribute is already set it won't be reset on <L> even if <IsAcces> is false. ColorTool and ShapeTool attributes are also set by this method.
+   * Create (if not exist) DocumentTool attribute on 0.1 label if <IsAcces> is true, else on <L> label. This label will be returned by `DocLabel()`; If the attribute is already set it won't be reset on <L> even if <IsAcces> is false. ColorTool and ShapeTool attributes are also set by this method.
    */
   static Set(L: TDF_Label, IsAcces: boolean): XCAFDoc_DocumentTool;
   static IsXCAFDocument(Doc: TDocStd_Document): boolean;
@@ -38782,43 +44882,43 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static DocLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 1.
+   * Returns sub-label of `DocLabel()` with tag 1.
    */
   static ShapesLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 2.
+   * Returns sub-label of `DocLabel()` with tag 2.
    */
   static ColorsLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 3.
+   * Returns sub-label of `DocLabel()` with tag 3.
    */
   static LayersLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 4.
+   * Returns sub-label of `DocLabel()` with tag 4.
    */
   static DGTsLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 5.
+   * Returns sub-label of `DocLabel()` with tag 5.
    */
   static MaterialsLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 7.
+   * Returns sub-label of `DocLabel()` with tag 7.
    */
   static ViewsLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 8.
+   * Returns sub-label of `DocLabel()` with tag 8.
    */
   static ClippingPlanesLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 9.
+   * Returns sub-label of `DocLabel()` with tag 9.
    */
   static NotesLabel(acces: TDF_Label): TDF_Label;
   /**
-   * Returns sub-label of DocLabel() with tag 10.
+   * Returns sub-label of `DocLabel()` with tag 10.
    */
   static VisMaterialLabel(theLabel: TDF_Label): TDF_Label;
   /**
-   * Creates (if it does not exist) ShapeTool attribute on ShapesLabel().
+   * Creates (if it does not exist) ShapeTool attribute on `ShapesLabel()`.
    */
   static ShapeTool(acces: TDF_Label): XCAFDoc_ShapeTool;
   /**
@@ -38826,7 +44926,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static CheckShapeTool(theAcces: TDF_Label): boolean;
   /**
-   * Creates (if it does not exist) ColorTool attribute on ColorsLabel().
+   * Creates (if it does not exist) ColorTool attribute on `ColorsLabel()`.
    */
   static ColorTool(acces: TDF_Label): XCAFDoc_ColorTool;
   /**
@@ -38834,7 +44934,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static CheckColorTool(theAcces: TDF_Label): boolean;
   /**
-   * Creates (if it does not exist) XCAFDoc_VisMaterialTool attribute on VisMaterialLabel(). Should not be confused with MaterialTool() defining physical/manufacturing materials.
+   * Creates (if it does not exist) {@link XCAFDoc_VisMaterialTool | `XCAFDoc_VisMaterialTool`} attribute on `VisMaterialLabel()`. Should not be confused with `MaterialTool()` defining physical/manufacturing materials.
    */
   static VisMaterialTool(theLabel: TDF_Label): unknown;
   /**
@@ -38842,7 +44942,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static CheckVisMaterialTool(theAcces: TDF_Label): boolean;
   /**
-   * Creates (if it does not exist) LayerTool attribute on LayersLabel().
+   * Creates (if it does not exist) LayerTool attribute on `LayersLabel()`.
    */
   static LayerTool(acces: TDF_Label): unknown;
   /**
@@ -38850,7 +44950,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static CheckLayerTool(theAcces: TDF_Label): boolean;
   /**
-   * Creates (if it does not exist) DimTolTool attribute on DGTsLabel().
+   * Creates (if it does not exist) DimTolTool attribute on `DGTsLabel()`.
    */
   static DimTolTool(acces: TDF_Label): unknown;
   /**
@@ -38858,7 +44958,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static CheckDimTolTool(theAcces: TDF_Label): boolean;
   /**
-   * Creates (if it does not exist) DimTolTool attribute on DGTsLabel().
+   * Creates (if it does not exist) DimTolTool attribute on `DGTsLabel()`.
    */
   static MaterialTool(acces: TDF_Label): XCAFDoc_MaterialTool;
   /**
@@ -38866,7 +44966,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static CheckMaterialTool(theAcces: TDF_Label): boolean;
   /**
-   * Creates (if it does not exist) ViewTool attribute on ViewsLabel().
+   * Creates (if it does not exist) ViewTool attribute on `ViewsLabel()`.
    */
   static ViewTool(acces: TDF_Label): unknown;
   /**
@@ -38874,7 +44974,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static CheckViewTool(theAcces: TDF_Label): boolean;
   /**
-   * Creates (if it does not exist) ClippingPlaneTool attribute on ClippingPlanesLabel().
+   * Creates (if it does not exist) ClippingPlaneTool attribute on `ClippingPlanesLabel()`.
    */
   static ClippingPlaneTool(acces: TDF_Label): unknown;
   /**
@@ -38882,7 +44982,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    */
   static CheckClippingPlaneTool(theAcces: TDF_Label): boolean;
   /**
-   * Creates (if it does not exist) NotesTool attribute on NotesLabel().
+   * Creates (if it does not exist) NotesTool attribute on `NotesLabel()`.
    */
   static NotesTool(acces: TDF_Label): unknown;
   /**
@@ -38928,7 +45028,13 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
 }
 
 /**
- * A tool to store shapes in an XDE document in the form of assembly structure, and to maintain this structure. Attribute containing Shapes section of DECAF document. Provide tools for management of Shapes section. The API provided by this class allows to work with this structure regardless of its low-level implementation. All the shapes are stored on child labels of a main label which is XCAFDoc_DocumentTool::LabelShapes(). The label for assembly also has sub-labels, each of which represents the instance of another shape in that assembly (component). Such sub-label stores reference to the label of the original shape in the form of TDataStd_TreeNode with GUID XCAFDoc::ShapeRefGUID(), and its location encapsulated into the NamedShape. For correct work with an XDE document, it is necessary to use methods for analysis and methods for working with shapes. For example: if ( STool->IsAssembly(aLabel) ) { bool subchilds = false; (default) int nbc = STool->NbComponents (aLabel[,subchilds]); } If subchilds is True, commands also consider sub-levels. By default, only level one is checked. In this example, number of children from the first level of assembly will be returned. Methods for creation and initialization: Constructor: XCAFDoc_ShapeTool::XCAFDoc_ShapeTool() Getting a guid: Standard_GUID GetID (); Creation (if does not exist) of ShapeTool on label L: occ::handle<XCAFDoc_ShapeTool> XCAFDoc_ShapeTool::Set(const TDF_Label& L) Analyze whether shape is a simple shape or an instance or a component of an assembly or it is an assembly ( methods of analysis). For example: STool->IsShape(aLabel) ; Analyze that the label represents a shape (simple shape, assembly or reference) or STool->IsTopLevel(aLabel); Analyze that the label is a label of a top-level shape. Work with simple shapes, assemblies and instances ( methods for work with shapes). For example: Add shape: bool makeAssembly; // True to interpret a Compound as an Assembly, False to take it as a whole aLabel = STool->AddShape(aShape, makeAssembly); Get shape: TDF_Label aLabel... // A label must be present if (aLabel.IsNull()) { ... no such label : abandon .. } TopoDS_Shape aShape; aShape = STool->GetShape(aLabel); if (aShape.IsNull()) { ... this label is not for a Shape ... } To get a label from shape. bool findInstance = false; (this is default value) aLabel = STool->FindShape(aShape [,findInstance]); if (aLabel.IsNull()) { ... no label found for this shape ... }.
+ * A tool to store shapes in an XDE document in the form of assembly structure, and to maintain this structure. Attribute containing Shapes section of DECAF document. Provide tools for management of Shapes section. The API provided by this class allows to work with this structure regardless of its low-level implementation. All the shapes are stored on child labels of a main label which is XCAFDoc_DocumentTool::LabelShapes().
+ * The label for assembly also has sub-labels, each of which represents the instance of another shape in that assembly (component).
+ * Such sub-label stores reference to the label of the original shape in the form of {@link TDataStd_TreeNode | `TDataStd_TreeNode`} with GUID `XCAFDoc::ShapeRefGUID()`, and its location encapsulated into the NamedShape. For correct work with an XDE document, it is necessary to use methods for analysis and methods for working with shapes.
+ * For example: if ( STool->IsAssembly(aLabel) ) { bool subchilds = false; (default) int nbc = STool->NbComponents (aLabel[,subchilds]); } If subchilds is True, commands also consider sub-levels. By default, only level one is checked. In this example, number of children from the first level of assembly will be returned.
+ * Methods for creation and initialization: Constructor: `XCAFDoc_ShapeTool::XCAFDoc_ShapeTool()` Getting a guid: {@link Standard_GUID | `Standard_GUID`} GetID (); Creation (if does not exist) of ShapeTool on label L: `occ::handle<XCAFDoc_ShapeTool>` `XCAFDoc_ShapeTool::Set(const TDF_Label& L)` Analyze whether shape is a simple shape or an instance or a component of an assembly or it is an assembly ( methods of analysis).
+ * For example: STool->IsShape(aLabel) ; Analyze that the label represents a shape (simple shape, assembly or reference) or STool->IsTopLevel(aLabel); Analyze that the label is a label of a top-level shape. Work with simple shapes, assemblies and instances ( methods for work with shapes).
+ * For example: Add shape: bool makeAssembly; // True to interpret a Compound as an Assembly, False to take it as a whole aLabel = STool->AddShape(aShape, makeAssembly); Get shape: {@link TDF_Label | `TDF_Label`} aLabel... // A label must be present if (aLabel.IsNull()) { ... no such label : abandon .. } {@link TopoDS_Shape | `TopoDS_Shape`} aShape; aShape = STool->GetShape(aLabel); if (aShape.IsNull()) { ... this label is not for a Shape ... } To get a label from shape. bool findInstance = false; (this is default value) aLabel = STool->FindShape(aShape [,findInstance]); if (aLabel.IsNull()) { ... no label found for this shape ... }.
  */
 export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   /**
@@ -38937,7 +45043,7 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   constructor();
   static GetID(): unknown;
   /**
-   * Create (if not exist) ShapeTool from XCAFDoc on <L>.
+   * Create (if not exist) ShapeTool from {@link XCAFDoc | `XCAFDoc`} on <L>.
    */
   static Set(L: TDF_Label): XCAFDoc_ShapeTool;
   /**
@@ -38945,7 +45051,7 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   IsTopLevel(L: TDF_Label): boolean;
   /**
-   * Returns True if the label is not used by any assembly, i.e. contains sublabels which are assembly components This is relevant only if IsShape() is True (There is no Father TreeNode on this <L>).
+   * Returns True if the label is not used by any assembly, i.e. contains sublabels which are assembly components This is relevant only if `IsShape()` is True (There is no Father TreeNode on this <L>).
    */
   static IsFree(L: TDF_Label): boolean;
   /**
@@ -38961,7 +45067,7 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   static IsReference(L: TDF_Label): boolean;
   /**
-   * Returns True if the label is a label of assembly, i.e. contains sublabels which are assembly components This is relevant only if IsShape() is True.
+   * Returns True if the label is a label of assembly, i.e. contains sublabels which are assembly components This is relevant only if `IsShape()` is True.
    */
   static IsAssembly(L: TDF_Label): boolean;
   /**
@@ -38969,7 +45075,7 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   static IsComponent(L: TDF_Label): boolean;
   /**
-   * Returns True if the label is a label of compound, i.e. contains some sublabels This is relevant only if IsShape() is True.
+   * Returns True if the label is a label of compound, i.e. contains some sublabels This is relevant only if `IsShape()` is True.
    */
   static IsCompound(L: TDF_Label): boolean;
   /**
@@ -38977,16 +45083,21 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   static IsSubShape(L: TDF_Label): boolean;
   /**
-   * Checks whether shape  is subshape of shape stored on label shapeL.
+   * Checks whether shape is subshape of shape stored on label shapeL.
    */
   IsSubShape(shapeL: TDF_Label, sub: TopoDS_Shape): boolean;
   SearchUsingMap(S: TopoDS_Shape, L: TDF_Label, findWithoutLoc: boolean, findSubshape: boolean): boolean;
   /**
    * General tool to find a (sub) shape in the document.
+   *
+   * - If findInstance is True, and S has a non-null location, first tries to find the shape among the top-level shapes with this location
+   * - If not found, and findComponent is True, tries to find the shape among the components of assemblies
+   * - If not found, tries to find the shape without location among top-level shapes
+   * - If not found and findSubshape is True, tries to find a shape as a subshape of top-level simple shapes Returns False if nothing is found
    */
   Search(S: TopoDS_Shape, L: TDF_Label, findInstance: boolean, findComponent: boolean, findSubshape: boolean): boolean;
   /**
-   * Returns the label corresponding to shape S (searches among top-level shapes, not including subcomponents of assemblies and subshapes) If findInstance is False (default), search for the input shape without location If findInstance is True, searches for the input shape as is. Return True if  is found.
+   * Returns the label corresponding to shape S (searches among top-level shapes, not including subcomponents of assemblies and subshapes) If findInstance is False (default), search for the input shape without location If findInstance is True, searches for the input shape as is. Return True if is found.
    */
   FindShape(S: TopoDS_Shape, L: TDF_Label, findInstance: boolean): boolean;
   /**
@@ -38994,11 +45105,11 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   FindShape(S: TopoDS_Shape, findInstance: boolean): TDF_Label;
   /**
-   * To get TopoDS_Shape from shape's label For component, returns new shape with correct location Returns False if label does not contain shape.
+   * To get {@link TopoDS_Shape | `TopoDS_Shape`} from shape's label For component, returns new shape with correct location Returns False if label does not contain shape.
    */
   static GetShape(L: TDF_Label, S: TopoDS_Shape): boolean;
   /**
-   * To get TopoDS_Shape from shape's label For component, returns new shape with correct location Returns Null shape if label does not contain shape.
+   * To get {@link TopoDS_Shape | `TopoDS_Shape`} from shape's label For component, returns new shape with correct location Returns Null shape if label does not contain shape.
    */
   static GetShape(L: TDF_Label): TopoDS_Shape;
   /**
@@ -39013,15 +45124,15 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   GetOneShape(): TopoDS_Shape;
   /**
-   * Creates new (empty) top-level shape. Initially it holds empty TopoDS_Compound.
+   * Creates new (empty) top-level shape. Initially it holds empty {@link TopoDS_Compound | `TopoDS_Compound`}.
    */
   NewShape(): TDF_Label;
   /**
-   * Sets representation (TopoDS_Shape) for top-level shape.
+   * Sets representation ({@link TopoDS_Shape | `TopoDS_Shape`}) for top-level shape.
    */
   SetShape(L: TDF_Label, S: TopoDS_Shape): void;
   /**
-   * Adds a new top-level (creates and returns a new label) If makeAssembly is True, treats TopAbs_COMPOUND shapes as assemblies (creates assembly structure). NOTE: <makePrepare> replace components without location in assembly by located components to avoid some problems. If AutoNaming() is True then automatically attaches names.
+   * Adds a new top-level (creates and returns a new label) If makeAssembly is True, treats TopAbs_COMPOUND shapes as assemblies (creates assembly structure). NOTE: <makePrepare> replace components without location in assembly by located components to avoid some problems. If `AutoNaming()` is True then automatically attaches names.
    */
   AddShape(S: TopoDS_Shape, makeAssembly: boolean, makePrepare: boolean): TDF_Label;
   /**
@@ -39033,11 +45144,11 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   Init(): void;
   /**
-   * Sets auto-naming mode to <V>. If True then for added shapes, links, assemblies and SHUO's, the TDataStd_Name attribute is automatically added. For shapes it contains a shape type (e.g. "SOLID", "SHELL", etc); for links it has a form "=>[0:1:1:2]" (where a tag is a label containing a shape without a location); for assemblies it is "ASSEMBLY", and "SHUO" for SHUO's. This setting is global; it cannot be made a member function as it is used by static methods as well. By default, auto-naming is enabled. See also AutoNaming().
+   * Sets auto-naming mode to <V>. If True then for added shapes, links, assemblies and SHUO's, the {@link TDataStd_Name | `TDataStd_Name`} attribute is automatically added. For shapes it contains a shape type (e.g. "SOLID", "SHELL", etc); for links it has a form "=>[0:1:1:2]" (where a tag is a label containing a shape without a location); for assemblies it is "ASSEMBLY", and "SHUO" for SHUO's. This setting is global; it cannot be made a member function as it is used by static methods as well. By default, auto-naming is enabled. See also `AutoNaming()`.
    */
   static SetAutoNaming(V: boolean): void;
   /**
-   * Returns current auto-naming mode. See SetAutoNaming() for description.
+   * Returns current auto-naming mode. See `SetAutoNaming()` for description.
    */
   static AutoNaming(): boolean;
   /**
@@ -39077,11 +45188,11 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   static GetComponents(L: TDF_Label, Labels: NCollection_Sequence_TDF_Label, getsubchilds: boolean): boolean;
   /**
-   * Adds a component given by its label and location to the assembly Note: assembly must be IsAssembly() or IsSimpleShape().
+   * Adds a component given by its label and location to the assembly Note: assembly must be `IsAssembly()` or `IsSimpleShape()`.
    */
   AddComponent(assembly: TDF_Label, comp: TDF_Label, Loc: TopLoc_Location): TDF_Label;
   /**
-   * Adds a shape (located) as a component to the assembly If necessary, creates an additional top-level shape for component and return the Label of component. If expand is True and component is Compound, it will be created as assembly also Note: assembly must be IsAssembly() or IsSimpleShape().
+   * Adds a shape (located) as a component to the assembly If necessary, creates an additional top-level shape for component and return the Label of component. If expand is True and component is Compound, it will be created as assembly also Note: assembly must be `IsAssembly()` or `IsSimpleShape()`.
    */
   AddComponent(assembly: TDF_Label, comp: TopoDS_Shape, expand: boolean): TDF_Label;
   /**
@@ -39093,20 +45204,20 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
    */
   UpdateAssemblies(): void;
   /**
-   * Finds a label for subshape  of shape stored on label shapeL Returns Null label if it is not found.
+   * Finds a label for subshape of shape stored on label shapeL Returns Null label if it is not found.
    */
   FindSubShape(shapeL: TDF_Label, sub: TopoDS_Shape, L: TDF_Label): boolean;
   /**
-   * Adds a label for subshape  of shape stored on label shapeL Returns Null label if it is not subshape.
+   * Adds a label for subshape of shape stored on label shapeL Returns Null label if it is not subshape.
    */
   AddSubShape(shapeL: TDF_Label, sub: TopoDS_Shape): TDF_Label;
   /**
-   * Adds (of finds already existed) a label for subshape  of shape stored on label shapeL. Label addedSubShapeL returns added (found) label or empty in case of wrong subshape. Returns True, if new shape was added, False in case of already existed subshape/wrong subshape.
+   * Adds (of finds already existed) a label for subshape of shape stored on label shapeL. Label addedSubShapeL returns added (found) label or empty in case of wrong subshape. Returns True, if new shape was added, False in case of already existed subshape/wrong subshape.
    */
   AddSubShape(shapeL: TDF_Label, sub: TopoDS_Shape, addedSubShapeL: TDF_Label): boolean;
   FindMainShapeUsingMap(sub: TopoDS_Shape): TDF_Label;
   /**
-   * Performs a search among top-level shapes to find the shape containing  as subshape Checks only simple shapes, and returns the first found label (which should be the only one for valid model).
+   * Performs a search among top-level shapes to find the shape containing as subshape Checks only simple shapes, and returns the first found label (which should be the only one for valid model).
    */
   FindMainShape(sub: TopoDS_Shape): TDF_Label;
   /**
@@ -39217,16 +45328,16 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
 }
 
 /**
- * Provides tools to store and retrieve attributes (colors) of TopoDS_Shape in and from TDocStd_Document A Document is intended to hold different attributes of ONE shape and it's sub-shapes Provide tools for management of Colors section of document.
+ * Provides tools to store and retrieve attributes (colors) of {@link TopoDS_Shape | `TopoDS_Shape`} in and from {@link TDocStd_Document | `TDocStd_Document`} A Document is intended to hold different attributes of ONE shape and it's sub-shapes Provide tools for management of Colors section of document.
  */
 export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   constructor();
   /**
-   * Returns current auto-naming mode; TRUE by default. If TRUE then for added colors the TDataStd_Name attribute will be automatically added. This setting is global.
+   * Returns current auto-naming mode; TRUE by default. If TRUE then for added colors the {@link TDataStd_Name | `TDataStd_Name`} attribute will be automatically added. This setting is global.
    */
   static AutoNaming(): boolean;
   /**
-   * See also AutoNaming().
+   * See also `AutoNaming()`.
    */
   static SetAutoNaming(theIsAutoNaming: boolean): void;
   /**
@@ -39239,7 +45350,7 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
    */
   BaseLabel(): TDF_Label;
   /**
-   * Returns internal XCAFDoc_ShapeTool tool.
+   * Returns internal {@link XCAFDoc_ShapeTool | `XCAFDoc_ShapeTool`} tool.
    */
   ShapeTool(): XCAFDoc_ShapeTool;
   /**
@@ -39311,35 +45422,35 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
    */
   GetColors(Labels: NCollection_Sequence_TDF_Label): void;
   /**
-   * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color defined by <colorL>. Color of shape is defined following way in dependance with type of color. If type of color is XCAFDoc_ColorGen - then this color defines default color for surfaces and curves. If for shape color with types XCAFDoc_ColorSurf or XCAFDoc_ColorCurv is specified then such color overrides generic color.
+   * Sets a link with GUID defined by <type> (see `XCAFDoc::ColorRefGUID()`) from label <L> to color defined by <colorL>. Color of shape is defined following way in dependance with type of color. If type of color is XCAFDoc_ColorGen - then this color defines default color for surfaces and curves. If for shape color with types XCAFDoc_ColorSurf or XCAFDoc_ColorCurv is specified then such color overrides generic color.
    */
   SetColor(L: TDF_Label, colorL: TDF_Label, type_: XCAFDoc_ColorType): void;
   /**
-   * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color <Color> in the colortable Adds a color as necessary.
+   * Sets a link with GUID defined by <type> (see `XCAFDoc::ColorRefGUID()`) from label <L> to color <Color> in the colortable Adds a color as necessary.
    */
   SetColor(L: TDF_Label, Color: Quantity_Color, type_: XCAFDoc_ColorType): void;
   /**
-   * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color <Color> in the colortable Adds a color as necessary.
+   * Sets a link with GUID defined by <type> (see `XCAFDoc::ColorRefGUID()`) from label <L> to color <Color> in the colortable Adds a color as necessary.
    */
   SetColor(L: TDF_Label, Color: Quantity_ColorRGBA, type_: XCAFDoc_ColorType): void;
   /**
-   * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color defined by <colorL> Returns False if cannot find a label for shape S.
+   * Sets a link with GUID defined by <type> (see `XCAFDoc::ColorRefGUID()`) from label <L> to color defined by <colorL> Returns False if cannot find a label for shape S.
    */
   SetColor(S: TopoDS_Shape, colorL: TDF_Label, type_: XCAFDoc_ColorType): boolean;
   /**
-   * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color <Color> in the colortable Adds a color as necessary Returns False if cannot find a label for shape S.
+   * Sets a link with GUID defined by <type> (see `XCAFDoc::ColorRefGUID()`) from label <L> to color <Color> in the colortable Adds a color as necessary Returns False if cannot find a label for shape S.
    */
   SetColor(S: TopoDS_Shape, Color: Quantity_Color, type_: XCAFDoc_ColorType): boolean;
   /**
-   * Sets a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color <Color> in the colortable Adds a color as necessary Returns False if cannot find a label for shape S.
+   * Sets a link with GUID defined by <type> (see `XCAFDoc::ColorRefGUID()`) from label <L> to color <Color> in the colortable Adds a color as necessary Returns False if cannot find a label for shape S.
    */
   SetColor(S: TopoDS_Shape, Color: Quantity_ColorRGBA, type_: XCAFDoc_ColorType): boolean;
   /**
-   * Removes a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color.
+   * Removes a link with GUID defined by <type> (see `XCAFDoc::ColorRefGUID()`) from label <L> to color.
    */
   UnSetColor(L: TDF_Label, type_: XCAFDoc_ColorType): void;
   /**
-   * Removes a link with GUID defined by <type> (see XCAFDoc::ColorRefGUID()) from label <L> to color Returns True if such link existed.
+   * Removes a link with GUID defined by <type> (see `XCAFDoc::ColorRefGUID()`) from label <L> to color Returns True if such link existed.
    */
   UnSetColor(S: TopoDS_Shape, type_: XCAFDoc_ColorType): boolean;
   /**
@@ -39387,7 +45498,7 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
    */
   IsInstanceVisible(theShape: TopoDS_Shape): boolean;
   /**
-   * Reverses order in chains of TreeNodes (from Last to First) under each Color Label since we became to use function ::Prepend() instead of ::Append() in method SetColor() for acceleration.
+   * Reverses order in chains of TreeNodes (from Last to First) under each Color Label since we became to use function ::Prepend() instead of ::Append() in method `SetColor()` for acceleration.
    */
   ReverseChainsOfTreeNodes(): boolean;
   /**
@@ -39430,6 +45541,10 @@ export declare class XCAFDoc_Material extends TDF_Attribute {
   NewEmpty(): TDF_Attribute;
   /**
    * This method is different from the "Copy" one, because it is used when copying an attribute from a source structure into a target structure. This method may paste the contents of <me> into <intoAttribute>.
+   *
+   * The given pasted attribute can be full or empty of its contents. But don't make a NEW! Just set the contents!
+   *
+   * It is possible to use <aRelocationTable> to get/set the relocation value of a source attribute.
    */
   Paste(Into: TDF_Attribute, RT: unknown): void;
   static get_type_name(): string;
@@ -39441,7 +45556,7 @@ export declare class XCAFDoc_Material extends TDF_Attribute {
 }
 
 /**
- * Provides tools to store and retrieve attributes (materials) of TopoDS_Shape in and from TDocStd_Document A Document is intended to hold different attributes of ONE shape and it's sub-shapes Provide tools for management of Materialss section of document.
+ * Provides tools to store and retrieve attributes (materials) of {@link TopoDS_Shape | `TopoDS_Shape`} in and from {@link TDocStd_Document | `TDocStd_Document`} A Document is intended to hold different attributes of ONE shape and it's sub-shapes Provide tools for management of Materialss section of document.
  */
 export declare class XCAFDoc_MaterialTool extends TDataStd_GenericEmpty {
   constructor();
@@ -39455,7 +45570,7 @@ export declare class XCAFDoc_MaterialTool extends TDataStd_GenericEmpty {
    */
   BaseLabel(): TDF_Label;
   /**
-   * Returns internal XCAFDoc_ShapeTool tool.
+   * Returns internal {@link XCAFDoc_ShapeTool | `XCAFDoc_ShapeTool`} tool.
    */
   ShapeTool(): XCAFDoc_ShapeTool;
   /**
@@ -40230,7 +46345,7 @@ export declare function decrementExceptionRefcount(ex: WebAssembly.Exception): v
 /**
  * Union of the Emscripten runtime exports and all bound OCCT classes, enums, and functions.
  *
- * Returned by {@link init} after the WASM module is fully loaded. Access any
+ * Returned by {@link init | `init`} after the WASM module is fully loaded. Access any
  * OCCT binding as a property (e.g. `oc.BRepPrimAPI_MakeBox`) and use
  * the Emscripten virtual filesystem (`oc.FS`) and WASM heap views (`oc.HEAP32`, `oc.HEAPU32`, `oc.HEAPF32`) and the live `WebAssembly.Memory` (`oc.wasmMemory`).
  */

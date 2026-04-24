@@ -511,7 +511,6 @@ mainBuild:
     - -sWASM_BIGINT
     - -sEVAL_CTORS=2
     - -msimd128
-    - -mrelaxed-simd
     - -O3
 additionalCppCode: |
   #include <BRepLProp_SLProps.hxx>

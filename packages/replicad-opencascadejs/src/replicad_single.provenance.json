@@ -1,7 +1,7 @@
 {
   "schema": "wasm-build-provenance-v1",
-  "buildId": "20260418T022956-O3-noLTO-single",
-  "timestamp": "2026-04-18T02:29:56.967234+00:00",
+  "buildId": "20260423T095524-O3-noLTO-single",
+  "timestamp": "2026-04-23T09:55:24.480152+00:00",
   "toolchain": {
     "emscripten": "5.0.1",
     "llvm": "17",
@@ -10,7 +10,7 @@
   },
   "source": {
     "occtCommit": "0ebbbedb239d6fffb7e1c8c2d36970a3ab1d9300",
-    "opencascadejsCommit": "b3b3330a9e154b1f52ccbec900dec2cf0e80553d",
+    "opencascadejsCommit": "36c69b66bffb192aa1abf99f314d8622b0c49a89",
     "filterPackagesHash": "8b12ca608181",
     "pinnedDeps": {
       "occt": {
@@ -56,7 +56,7 @@
   },
   "linking": {
     "yamlConfig": "replicad_single.js",
-    "yamlConfigHash": "a2a39c6565a8",
+    "yamlConfigHash": "46ad53b380e1",
     "boundSymbols": 226,
     "symbolList": [
       "Message_ProgressRange",
@@ -303,10 +303,9 @@
       "-sWASM_BIGINT",
       "-sEVAL_CTORS=2",
       "-msimd128",
-      "-mrelaxed-simd",
       "-O3"
     ],
-    "linkDuration_s": 48.0
+    "linkDuration_s": 53.5
   },
   "postProcessing": {
     "wasmOptFlags": [
@@ -320,30 +319,29 @@
       "--traps-never-happen",
       "--converge",
       "--enable-exception-handling",
-      "--enable-simd",
-      "--enable-relaxed-simd"
+      "--enable-simd"
     ],
-    "preOptSize": 22738445,
-    "postOptSize": 22716604,
+    "preOptSize": 22743372,
+    "postOptSize": 22721704,
     "optReduction": "0.1%",
-    "wasmOptDuration_s": 81.6
+    "wasmOptDuration_s": 103.7
   },
   "output": {
     "replicad_single.wasm": {
-      "size": 22716604,
-      "sha256": "b7d956f1ba2c15d3"
+      "size": 22721704,
+      "sha256": "5aee934fafab7df5"
     },
     "replicad_single.js": {
       "size": 56399
     },
     "replicad_single.d.ts": {
-      "size": 1618307,
-      "lines": 40811
+      "size": 1959371,
+      "lines": 46926
     }
   },
   "sections": {},
   "filtering": {
     "excludedPackages": []
   },
-  "totalDuration_s": 1042
+  "totalDuration_s": 179
 }
