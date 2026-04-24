@@ -1,7 +1,7 @@
 {
-  "name": "replicad",
-  "version": "0.21.0-v8.57",
-  "description": "The library to build browser based 3D models with code",
+  "name": "@taucad/replicad",
+  "version": "0.21.0-v8.57.1",
+  "description": "The library to build browser based 3D models with code (Tau fork)",
   "keywords": [
     "cad",
     "opencascadejs",
@@ -10,7 +10,18 @@
     "STL"
   ],
   "author": "Steve Genoud <steve@sgenoud.com>",
-  "homepage": "https://replicad.xyz",
+  "contributors": [
+    "Tau Contributors"
+  ],
+  "homepage": "https://github.com/taucad/replicad/tree/main/packages/replicad",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taucad/replicad.git",
+    "directory": "packages/replicad"
+  },
+  "bugs": {
+    "url": "https://github.com/taucad/replicad/issues"
+  },
   "license": "MIT",
   "type": "module",
   "main": "./dist/replicad.cjs",
@@ -29,6 +40,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build",
     "start": "NO_TYPES=true vite build --watch",
@@ -54,7 +68,6 @@
     "jest-svg-snapshot": "^0.1.0",
     "manifold-3d": "^3.0.1",
     "prettier": "^2.4.1",
-    "replicad-opencascadejs": "file:../replicad-opencascadejs",
     "rollup": "3.28.0",
     "rollup-plugin-ts": "3.4.4",
     "typedoc": "^0.28.2",
@@ -66,7 +79,8 @@
   "dependencies": {
     "@types/opentype.js": "1.3.4",
     "flatbush": "^4.0.0",
-    "opentype.js": "1.3.4"
+    "opentype.js": "1.3.4",
+    "replicad-opencascadejs": "npm:@taucad/replicad-opencascadejs@0.21.0-v8.57"
   },
   "gitHead": "0551a12628a69cb228fe67cb0b5e82ccbd27c0d2"
 }

@@ -29,6 +29,9 @@ importers:
       opentype.js:
         specifier: 1.3.4
         version: 1.3.4
+      replicad-opencascadejs:
+        specifier: npm:@taucad/replicad-opencascadejs@0.21.0-v8.57
+        version: '@taucad/replicad-opencascadejs@0.21.0-v8.57'
     devDependencies:
       '@rollup/plugin-commonjs':
         specifier: 24.0.1
@@ -78,9 +81,6 @@ importers:
       prettier:
         specifier: ^2.4.1
         version: 2.4.1
-      replicad-opencascadejs:
-        specifier: file:../replicad-opencascadejs
-        version: link:../replicad-opencascadejs
       rollup:
         specifier: 3.28.0
         version: 3.28.0
@@ -324,10 +324,10 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6(react@18.3.1)
       replicad:
-        specifier: workspace:^
+        specifier: workspace:@taucad/replicad@^
         version: link:../replicad
       replicad-opencascadejs:
-        specifier: workspace:^
+        specifier: workspace:@taucad/replicad-opencascadejs@^
         version: link:../replicad-opencascadejs
       replicad-threejs-helper:
         specifier: workspace:^
@@ -3653,6 +3653,9 @@ packages:
   '@szmarczak/http-timer@5.0.1':
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
+
+  '@taucad/replicad-opencascadejs@0.21.0-v8.57':
+    resolution: {integrity: sha512-49ow6WR1ulz5ooc+KfJoYS+rJHAl5MDY1HWDIqsf/KyYEN5K4BQVfIDHvkRY9xYuvzwpoRACsBNH7zu0XYKeeQ==}
 
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -16231,6 +16234,8 @@ snapshots:
   '@szmarczak/http-timer@5.0.1':
     dependencies:
       defer-to-connect: 2.0.1
+
+  '@taucad/replicad-opencascadejs@0.21.0-v8.57': {}
 
   '@tootallnate/once@2.0.0': {}
 
