@@ -45,8 +45,8 @@ export type ShapeConfig = {
   color?: string;
   alpha?: number;
   name?: string;
-  /** PBR metallic factor — threaded to GLTF only (not STEP; see note above). */
-  metallic?: number;
+  /** PBR metalness factor (0 = dielectric, 1 = metal). Threaded to GLTF only (not STEP; see note above). */
+  metalness?: number;
   /** PBR roughness factor — threaded to GLTF only (not STEP; see note above). */
   roughness?: number;
   density?: number;
