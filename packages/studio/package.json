@@ -66,14 +66,14 @@
     "@types/three": "^0.155.1",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "@vitejs/plugin-react": "^5.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-styled-components": "1.13.3",
     "binaryen": "^101.0.0",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "prettier": "^2.8.8",
-    "vite": "^7.3.3",
+    "vite": "^8.0.12",
     "workbox-build": "^7.4.1",
     "workbox-window": "^7.4.1"
   }
