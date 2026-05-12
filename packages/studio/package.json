@@ -73,7 +73,7 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "prettier": "^2.8.8",
-    "vite": "^5.4.10",
+    "vite": "^6.3.5",
     "workbox-window": "^7.3.0"
   }
 }
