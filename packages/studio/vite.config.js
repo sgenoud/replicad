@@ -64,6 +64,9 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: { exclude: ["replicad", "replicad-evaluator", "manifold-3d"] },
+  resolve: {
+    dedupe: ["react", "react-dom"],
+  },
   build: {
     outDir: "dist",
     manifest: true,
