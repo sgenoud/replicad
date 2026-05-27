@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+
+#@ data.values.buildFlags.extend(["-pthread"])
+#@ data.values.buildFlags.extend(["-sUSE_PTHREADS=1"])
+#@ data.values.buildFlags.extend(["-sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency"])
+#@ data.values.buildFlags.extend(["-sSHARED_MEMORY=1"])
+#@ data.values.buildFlags.extend(["-sENVIRONMENT=web,worker,node"])
+
+mainBuild:
+  name: replicad_multi.js
+  bindings: #@ data.values.bindings
+  emccFlags: #@ data.values.buildFlags
+
+additionalCppFiles:
+  - wrappers/brep-io.cpp
+  - wrappers/edge-mesh-extractor.cpp
+  - wrappers/geom2d-io.cpp
+  - wrappers/mesh-extractor.cpp
+  - wrappers/shape-hasher.cpp

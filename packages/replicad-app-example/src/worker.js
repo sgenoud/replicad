@@ -1,10 +1,10 @@
-import opencascade from "replicad-opencascadejs/src/replicad_single.js";
-import opencascadeWasm from "replicad-opencascadejs/src/replicad_single.wasm?url";
-import { setOC } from "replicad";
-import { expose } from "comlink";
+import opencascade from 'replicad-opencascadejs';
+import opencascadeWasm from 'replicad-opencascadejs/wasm?url';
+import { setOC } from 'replicad';
+import { expose } from 'comlink';
 
 // We import our model as a simple function
-import { drawBox } from "./cad";
+import { drawBox } from './cad';
 
 // This is the logic to load the web assembly code into replicad
 let loaded = false;

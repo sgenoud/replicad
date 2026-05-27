@@ -156,6 +156,11 @@
     - symbol: GCPnts_TangentialDeflection
     - symbol: BRepMesh_IncrementalMesh
     - symbol: BRepMesh_DiscretRoot
+    # OSD_ThreadPool is needed alongside BOPAlgo_Options + BRepMesh_IncrementalMesh
+    # to right-size OCCT's default thread pool. Without it the lazy default pool
+    # is smaller than the pre-spawned worker count and caps speedup. See:
+    # https://github.com/taucad/opencascade.js/blob/main/docs-site/content/docs/package/guides/multi-threading.mdx
+    - symbol: OSD_ThreadPool
 
     - symbol: BRepAdaptor_Surface
     - symbol: BRepAdaptor_Curve
@@ -293,14 +298,24 @@
     - symbol: GeomToolsWrapper
 
   buildFlags:
-    - -flto
-    - -fexceptions
+    - -fwasm-exceptions
+    - -sEXPORT_EXCEPTION_HANDLING_HELPERS
     - -sEXPORT_ES6=1
-    - -sUSE_ES6_IMPORT_META=0
+    - -sMODULARIZE
     - -sALLOW_MEMORY_GROWTH=1
-    - -sEXPORTED_RUNTIME_METHODS=["FS"]
+    - -sINITIAL_MEMORY=100MB
+    - -sMAXIMUM_MEMORY=4GB
+    - -sEXPORTED_RUNTIME_METHODS=["FS","HEAP32","HEAPU32","HEAPF32","wasmMemory"]
+    - --no-entry
+    - --emit-symbol-map
+    - -sERROR_ON_UNDEFINED_SYMBOLS=0
+    - -Wl,--allow-undefined
+    - -sSTACK_SIZE=8388608
+    - -sWASM_BIGINT
+    - -msimd128
     - -O3
 
+  # Legacy inline C++ kept for reference; wrapper .cpp files in build-config/wrappers/ are used instead.
   additionalCppCode: |2
     class BRepToolsWrapper {
     public:

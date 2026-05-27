@@ -30,8 +30,8 @@ importers:
         specifier: 1.3.4
         version: 1.3.4
       replicad-opencascadejs:
-        specifier: npm:@taucad/replicad-opencascadejs@0.21.0-v8.57
-        version: '@taucad/replicad-opencascadejs@0.21.0-v8.57'
+        specifier: workspace:@taucad/replicad-opencascadejs@^
+        version: link:../replicad-opencascadejs
     devDependencies:
       '@rollup/plugin-commonjs':
         specifier: 24.0.1
@@ -127,8 +127,8 @@ importers:
         specifier: ^0.21.0
         version: 0.21.1
       replicad-opencascadejs:
-        specifier: ^0.21.0
-        version: 0.21.0
+        specifier: workspace:@taucad/replicad-opencascadejs@^
+        version: link:../replicad-opencascadejs
       replicad-threejs-helper:
         specifier: ^0.21.0
         version: 0.21.0(three@0.155.0)
@@ -3653,9 +3653,6 @@ packages:
   '@szmarczak/http-timer@5.0.1':
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
-
-  '@taucad/replicad-opencascadejs@0.21.0-v8.57':
-    resolution: {integrity: sha512-49ow6WR1ulz5ooc+KfJoYS+rJHAl5MDY1HWDIqsf/KyYEN5K4BQVfIDHvkRY9xYuvzwpoRACsBNH7zu0XYKeeQ==}
 
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -9680,9 +9677,6 @@ packages:
   repeat-string@1.6.1:
     resolution: {integrity: sha512-PV0dzCYDNfRi1jCDbJzpW7jNNDRuCOG/jI5ctQcGKt/clZD+YcPS3yIlWuTJMmESC8aevCFmWJy5wjAFgNqN6w==}
     engines: {node: '>=0.10'}
-
-  replicad-opencascadejs@0.21.0:
-    resolution: {integrity: sha512-TFmUHNc8FhV/ATh4NCRrQK4ydtDrNsaf/4PxxaOeJFQvh60EJRJKeWoo3taLlNhDJ9n7siu6xtpXfg0agOYHiw==}
 
   replicad-threejs-helper@0.21.0:
     resolution: {integrity: sha512-iwqVe7StHi3T3sY8jY5SbjaLsOPWhgQUsB1RtnKSVYCksq368HTcb+BM4UYc7NXOgTZVls+RK9m1NAMzetVIsw==}
@@ -16234,8 +16228,6 @@ snapshots:
   '@szmarczak/http-timer@5.0.1':
     dependencies:
       defer-to-connect: 2.0.1
-
-  '@taucad/replicad-opencascadejs@0.21.0-v8.57': {}
 
   '@tootallnate/once@2.0.0': {}
 
@@ -24103,8 +24095,6 @@ snapshots:
       strip-ansi: 6.0.1
 
   repeat-string@1.6.1: {}
-
-  replicad-opencascadejs@0.21.0: {}
 
   replicad-threejs-helper@0.21.0(three@0.155.0):
     dependencies:

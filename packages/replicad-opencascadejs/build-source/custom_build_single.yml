@@ -1,10 +1,15 @@
 #@ load("@ytt:data", "data")
 
-#@ data.values.buildFlags.extend(["-sDISABLE_EXCEPTION_CATCHING=1"])
+#@ data.values.buildFlags.extend(["-sEVAL_CTORS=2"])
 
 mainBuild:
   name: replicad_single.js
   bindings: #@ data.values.bindings
   emccFlags: #@ data.values.buildFlags
 
-additionalCppCode: #@ data.values.additionalCppCode
+additionalCppFiles:
+  - wrappers/brep-io.cpp
+  - wrappers/edge-mesh-extractor.cpp
+  - wrappers/geom2d-io.cpp
+  - wrappers/mesh-extractor.cpp
+  - wrappers/shape-hasher.cpp

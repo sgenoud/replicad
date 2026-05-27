@@ -1,6 +1,6 @@
 {
   "name": "@taucad/replicad-opencascadejs",
-  "version": "0.21.0-v8.57",
+  "version": "0.21.0-v8.58",
   "description": "OpencascadeJS custom build for replicad (Tau fork: SIMD without relaxed-simd, native WebAssembly exceptions)",
   "author": "Steve Genoud <steve@sgenoud.com>",
   "contributors": [
@@ -17,22 +17,38 @@
   },
   "license": "MIT",
   "type": "module",
-  "main": "src/replicad_single.js",
-  "directories": {
-    "lib": "src",
-    "test": "__tests__"
+  "exports": {
+    ".": {
+      "types": "./dist/replicad_single.d.ts",
+      "default": "./dist/replicad_single.js"
+    },
+    "./wasm": "./dist/replicad_single.wasm",
+    "./multi": {
+      "types": "./dist/replicad_multi.d.ts",
+      "default": "./dist/replicad_multi.js"
+    },
+    "./multi/wasm": "./dist/replicad_multi.wasm",
+    "./package.json": "./package.json"
   },
   "files": [
-    "src"
+    "dist/replicad_single.js",
+    "dist/replicad_single.wasm",
+    "dist/replicad_single.d.ts",
+    "dist/replicad_single.js.symbols",
+    "dist/replicad_multi.js",
+    "dist/replicad_multi.wasm",
+    "dist/replicad_multi.d.ts",
+    "dist/replicad_multi.js.symbols",
+    "README.md",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "echo 'Please build manually'",
-    "buildWasm": "pnpm run generateConfig && pnpm run buildSingle",
-    "updateDocker": "docker pull donalffons/opencascade.js",
+    "build": "pnpm run generateConfig && pnpm run buildSingle && pnpm run buildMulti",
     "generateConfig": "ytt -f build-source/ --output-files build-config",
-    "buildSingle": "cd build-config; docker run -it --rm -v $(pwd):/src -u $(id -u):$(id -g) donalffons/opencascade.js custom_build_single.yml && mv replicad_single* ../src; cd -"
+    "buildSingle": "cd build-config && docker run --rm -v \"$(pwd):/src\" -u \"$(id -u):$(id -g)\" ghcr.io/taucad/opencascade.js:alpha-single-threaded-arm64 link custom_build_single.yml && mkdir -p ../dist && mv replicad_single.js replicad_single.wasm replicad_single.d.ts replicad_single.js.symbols ../dist/ && cd -",
+    "buildMulti": "cd build-config && docker run --rm -v \"$(pwd):/src\" -u \"$(id -u):$(id -g)\" ghcr.io/taucad/opencascade.js:alpha-multi-threaded-arm64 link custom_build_multi.yml && mkdir -p ../dist && mv replicad_multi.js replicad_multi.wasm replicad_multi.d.ts replicad_multi.js.symbols ../dist/ && cd -"
   }
 }

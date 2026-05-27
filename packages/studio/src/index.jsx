@@ -5,8 +5,7 @@ import * as THREE from "three";
 import App from "./App.jsx";
 import GlobalStyle from "./GlobalStyles.jsx";
 
-import "replicad-opencascadejs/src/replicad_single.wasm?url";
-import "replicad-opencascadejs/src/replicad_with_exceptions.wasm?url";
+import "replicad-opencascadejs/wasm?url";
 
 import { BrowserRouter } from "react-router-dom";
 

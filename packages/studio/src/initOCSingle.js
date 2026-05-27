@@ -1,5 +1,5 @@
-import opencascade from "replicad-opencascadejs/src/replicad_single.js";
-import opencascadeWasm from "replicad-opencascadejs/src/replicad_single.wasm?url";
+import opencascade from "replicad-opencascadejs";
+import opencascadeWasm from "replicad-opencascadejs/wasm?url";
 
 export default async () => {
   const OC = await opencascade({

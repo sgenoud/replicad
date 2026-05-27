@@ -1,8 +1,8 @@
-import { join } from "path";
-import { expect, beforeAll } from "vitest";
-import opencascade from "replicad-opencascadejs/src/replicad_single.js";
-import { setOC } from "../src/index";
-import toMatchSVGSnapshot from "./toMatchSVGSnapshot";
+import { createRequire } from 'node:module';
+import { expect, beforeAll } from 'vitest';
+import opencascade from 'replicad-opencascadejs';
+import { setOC } from '../src/index';
+import toMatchSVGSnapshot from './toMatchSVGSnapshot';
 
 declare global {
   namespace jest {
@@ -12,15 +12,13 @@ declare global {
   }
 }
 
+const require = createRequire(import.meta.url);
+const opencascadeWasm = require.resolve('replicad-opencascadejs/wasm');
+
 beforeAll(async function () {
   if (globalThis.replicadInit) return;
   expect.extend({ toMatchSVGSnapshot });
 
-  const opencascadeWasm = join(
-    __dirname,
-    "../../replicad-opencascadejs/src/replicad_single.wasm"
-  );
-  // @ts-expect-error bad ocjs typings
   const OC = await opencascade({
     locateFile: () => opencascadeWasm,
   });
