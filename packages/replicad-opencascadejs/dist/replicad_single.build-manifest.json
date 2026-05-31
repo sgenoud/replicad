@@ -1,8 +1,9 @@
 {
-  "timestamp": "2026-05-27T03:25:40Z",
+  "schema": "build-manifest-v2",
+  "timestamp": "2026-05-30T10:45:35Z",
   "yaml_config": "custom_build_single.yml",
   "yaml_hash": "4a9e300646d8",
-  "validation_passed": false,
+  "validation_passed": true,
   "symbols": {
     "requested": [
       "Adaptor2d_Curve2d",
@@ -232,30 +233,62 @@
       "gp_XY",
       "gp_XYZ"
     ],
-    "compiled": 5047,
-    "missing": [
-      "Poly_Array1OfTriangle",
-      "TColStd_Array1OfBoolean",
-      "TColStd_Array1OfInteger",
-      "TColStd_Array1OfReal",
-      "TColgp_Array1OfDir",
-      "TColgp_Array1OfPnt",
-      "TColgp_Array1OfPnt2d",
-      "TColgp_Array1OfVec",
-      "TColgp_Array2OfPnt",
-      "TopTools_ListOfShape"
+    "compiled": 5325,
+    "missing": [],
+    "alias_resolved": [
+      {
+        "alias": "Poly_Array1OfTriangle",
+        "canonical": "NCollection_Array1_Poly_Triangle"
+      },
+      {
+        "alias": "TColStd_Array1OfBoolean",
+        "canonical": "NCollection_Array1_bool"
+      },
+      {
+        "alias": "TColStd_Array1OfInteger",
+        "canonical": "NCollection_Array1_int"
+      },
+      {
+        "alias": "TColStd_Array1OfReal",
+        "canonical": "NCollection_Array1_double"
+      },
+      {
+        "alias": "TColgp_Array1OfDir",
+        "canonical": "NCollection_Array1_gp_Dir"
+      },
+      {
+        "alias": "TColgp_Array1OfPnt",
+        "canonical": "NCollection_Array1_gp_Pnt"
+      },
+      {
+        "alias": "TColgp_Array1OfPnt2d",
+        "canonical": "NCollection_Array1_gp_Pnt2d"
+      },
+      {
+        "alias": "TColgp_Array1OfVec",
+        "canonical": "NCollection_Array1_gp_Vec"
+      },
+      {
+        "alias": "TColgp_Array2OfPnt",
+        "canonical": "NCollection_Array2_gp_Pnt"
+      },
+      {
+        "alias": "TopTools_ListOfShape",
+        "canonical": "NCollection_List_TopoDS_Shape"
+      }
     ],
-    "extra_compiled": 4831,
-    "pass": false
+    "builtin": [],
+    "extra_compiled": 5099,
+    "pass": true
   },
   "outputs": [
     {
       "name": "replicad_single.js",
       "wasm_file": "replicad_single.wasm",
       "wasm_exists": true,
-      "wasm_size": 22398970,
+      "wasm_size": 22550046,
       "js_exists": true,
-      "js_size": 58888,
+      "js_size": 59120,
       "pass": true
     }
   ],
@@ -269,5 +302,25 @@
     ],
     "missing": []
   },
-  "binding_report": null
+  "binding_report": {
+    "total": 5320,
+    "succeeded": 5318,
+    "cached": 0,
+    "failed": 2,
+    "error_categories": {
+      "compile_error": 2
+    },
+    "failures": [
+      {
+        "file": "Handle_math_NotSquare.cpp",
+        "error_type": "compile_error",
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/deps/OCCT/src/FoundationClasses/TKernel/Standard/Standard_Handle.hxx:68:9: error: cannot initialize a member subobject of type 'Standard_Transient *' with an rvalue of type 'math_NotSquare *'"
+      },
+      {
+        "file": "Handle_math_SingularMatrix.cpp",
+        "error_type": "compile_error",
+        "message": "/Users/rifont/git/tau/repos/opencascade.js/deps/OCCT/src/FoundationClasses/TKernel/Standard/Standard_Handle.hxx:68:9: error: cannot initialize a member subobject of type 'Standard_Transient *' with an rvalue of type 'math_SingularMatrix *'"
+      }
+    ]
+  }
 }

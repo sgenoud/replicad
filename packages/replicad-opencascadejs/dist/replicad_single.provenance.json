@@ -1,16 +1,16 @@
 {
-  "schema": "wasm-build-provenance-v1",
-  "buildId": "20260527T032234-O3-noLTO-single",
-  "timestamp": "2026-05-27T03:22:34.394153+00:00",
+  "schema": "wasm-build-provenance-v1.1",
+  "buildId": "20260530T104324-O3-noLTO-single",
+  "timestamp": "2026-05-30T10:43:24.922213+00:00",
   "toolchain": {
     "emscripten": "5.0.1",
-    "llvm": "unknown",
-    "wasmOpt": "(version_125-181-g18ba06162)",
+    "llvm": "17",
+    "wasmOpt": "(version_123-685-g18ba06162)",
     "python": "3.14.4"
   },
   "source": {
     "occtCommit": "d3056ef80c9668f395da40f5fd7be186cae4501f",
-    "opencascadejsCommit": "unknown",
+    "opencascadejsCommit": "1576ec864cd8443686b50992e633c7875294079e",
     "filterPackagesHash": "8b3ad5b343d6",
     "pinnedDeps": {
       "occt": {
@@ -306,7 +306,7 @@
       "-msimd128",
       "-O3"
     ],
-    "linkDuration_s": 49.3
+    "linkDuration_s": 38.3
   },
   "postProcessing": {
     "wasmOptFlags": [
@@ -322,27 +322,65 @@
       "--enable-exception-handling",
       "--enable-simd"
     ],
-    "preOptSize": 22418011,
-    "postOptSize": 22398970,
+    "preOptSize": 22568877,
+    "postOptSize": 22550046,
     "optReduction": "0.1%",
-    "wasmOptDuration_s": 102.0
+    "wasmOptDuration_s": 75.0
   },
   "output": {
     "replicad_single.wasm": {
-      "size": 22398970,
-      "sha256": "6679286e7fd59577"
+      "size": 22550046,
+      "sha256": "0f33ae57edd0263c"
+    },
+    "opencascade_full_multi.wasm": {
+      "size": 40852397,
+      "sha256": "0349856343e67ed4"
+    },
+    "replicad_multi.wasm": {
+      "size": 22059655,
+      "sha256": "496fa2540e466681"
+    },
+    "opencascade_full.wasm": {
+      "size": 41036092,
+      "sha256": "b533498aacef1924"
+    },
+    "opencascade_full_multi.js": {
+      "size": 80468
     },
     "replicad_single.js": {
-      "size": 58888
+      "size": 59120
+    },
+    "opencascade_full.js": {
+      "size": 72290
+    },
+    "replicad_multi.js": {
+      "size": 66727
+    },
+    "opencascade_full.d.ts": {
+      "size": 11130682,
+      "lines": 258069
+    },
+    "replicad_multi.d.ts": {
+      "size": 1624332,
+      "lines": 34363
     },
     "replicad_single.d.ts": {
-      "size": 1662960,
-      "lines": 34708
+      "size": 1624332,
+      "lines": 34363
+    },
+    "opencascade_full_multi.d.ts": {
+      "size": 11130682,
+      "lines": 258069
     }
   },
   "sections": {},
   "filtering": {
     "excludedPackages": []
   },
-  "totalDuration_s": 186
+  "nCollectionManifest": {
+    "linked": 81,
+    "total": 878,
+    "dropped": 797
+  },
+  "totalDuration_s": 1
 }
