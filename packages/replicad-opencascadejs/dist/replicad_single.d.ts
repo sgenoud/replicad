@@ -192,7 +192,7 @@ export declare class Quantity_Color {
    * - `DC`: updated value from the call.
    * - `DI`: updated value from the call.
    */
-  Delta(theColor: Quantity_Color, DC: number, DI: number): { DC: number; DI: number };
+  Delta(theColor: Quantity_Color, DC?: number, DI?: number): { DC: number; DI: number };
   /**
    * Returns the value of the perceptual difference between this color and `theOther`, computed using the CIEDE2000 formula. The difference is in range [0, 100.], with 1 approximately corresponding to the minimal perceivable difference (usually difference 5 or greater is needed for the difference to be recognizable in practice).
    */
@@ -203,14 +203,14 @@ export declare class Quantity_Color {
   static StringName(theColor: unknown): string;
   static ColorFromHex(theHexColorString: string, theColor: Quantity_Color): boolean;
   static ColorToHex(theColor: Quantity_Color, theToPrefixHash?: boolean): unknown;
-  static Color2argb(theColor: Quantity_Color, theARGB: number): { theARGB: number };
+  static Color2argb(theColor: Quantity_Color, theARGB?: number): { theARGB: number };
   static Argb2color(theARGB: number, theColor: Quantity_Color): void;
   static Convert_LinearRGB_To_sRGB(theLinearValue: number): number;
   static Convert_sRGB_To_LinearRGB(thesRGBValue: number): number;
   static Convert_LinearRGB_To_sRGB_approx22(theLinearValue: number): number;
   static Convert_sRGB_To_LinearRGB_approx22(thesRGBValue: number): number;
-  static HlsRgb(theH: number, theL: number, theS: number, theR: number, theG: number, theB: number): { theR: number; theG: number; theB: number };
-  static RgbHls(theR: number, theG: number, theB: number, theH: number, theL: number, theS: number): { theH: number; theL: number; theS: number };
+  static HlsRgb(theH: number, theL: number, theS: number, theR?: number, theG?: number, theB?: number): { theR: number; theG: number; theB: number };
+  static RgbHls(theR: number, theG: number, theB: number, theH?: number, theL?: number, theS?: number): { theH: number; theL: number; theS: number };
   static Epsilon(): number;
   static SetEpsilon(theEpsilon: number): void;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -1590,7 +1590,7 @@ export declare class gp_Circ2d {
    * - `theE`: updated value from the call.
    * - `theF`: updated value from the call.
    */
-  Coefficients(theA: number, theB: number, theC: number, theD: number, theE: number, theF: number): { theA: number; theB: number; theC: number; theD: number; theE: number; theF: number };
+  Coefficients(theA?: number, theB?: number, theC?: number, theD?: number, theE?: number, theF?: number): { theA: number; theB: number; theC: number; theD: number; theE: number; theF: number };
   /**
    * Does <me> contain theP ? Returns True if the distance between theP and any point on the circumference of the circle is lower of equal to <theLinearTolerance>.
    */
@@ -1744,7 +1744,7 @@ export declare class gp_Vec {
    * - `theYv`: updated value from the call.
    * - `theZv`: updated value from the call.
    */
-  Coord(theXv: number, theYv: number, theZv: number): { theXv: number; theYv: number; theZv: number };
+  Coord(theXv?: number, theYv?: number, theZv?: number): { theXv: number; theYv: number; theZv: number };
   /**
    * For this vector, returns its X coordinate.
    */
@@ -1941,6 +1941,204 @@ export declare class gp_Vec {
 }
 
 /**
+ * Describes a plane.
+ * A plane is positioned in space with a coordinate system (a {@link gp_Ax3 | `gp_Ax3`} object), such that the plane is defined by the origin, "X Direction" and "Y Direction" of this coordinate system, which is the "local coordinate system" of the plane. The "main Direction" of the coordinate system is a vector normal to the plane.
+ * It gives the plane an implicit orientation such that the plane is said to be "direct", if the coordinate system is right-handed, or "indirect" in the other case.
+ * Note: when a {@link gp_Pln | `gp_Pln`} plane is converted into a {@link Geom_Plane | `Geom_Plane`} plane, some implicit properties of its local coordinate system are used explicitly:
+ *
+ * - its origin defines the origin of the two parameters of the planar surface,
+ * - its implicit orientation is also that of the {@link Geom_Plane | `Geom_Plane`}. See Also {@link gce_MakePln | `gce_MakePln`} which provides functions for more complex plane constructions {@link Geom_Plane | `Geom_Plane`} which provides additional functions for constructing planes and works, in particular, with the parametric equations of planes
+ */
+export declare class gp_Pln {
+  /**
+   * Creates a plane coincident with OXY plane of the reference coordinate system.
+   */
+  constructor();
+  /**
+   * The coordinate system of the plane is defined with the axis placement theA3. The "Direction" of theA3 defines the normal to the plane. The "Location" of theA3 defines the location (origin) of the plane. The "XDirection" and "YDirection" of theA3 define the "XAxis" and the "YAxis" of the plane used to parametrize the plane.
+   */
+  constructor(theA3: gp_Ax3);
+  /**
+   * Creates a plane with the "Location" point <theP> and the normal direction <theV>.
+   */
+  constructor(theP: gp_Pnt, theV: gp_Dir);
+  /**
+   * Creates a plane from its cartesian equation :
+   *
+   * ```
+   * theA*X+theB*Y+theC*Z+theD=0.0
+   * ```
+   *
+   * Raises ConstructionError if std::sqrt (theA*theA + theB*theB + theC*theC) <= Resolution from gp.
+   */
+  constructor(theA: number, theB: number, theC: number, theD: number);
+  /**
+   * Returns the coefficients of the plane's cartesian equation:
+   *
+   * ```
+   * theA*X+theB*Y+theC*Z+theD=0.
+   * ```
+   * @returns A result object with fields:
+   * - `theA`: updated value from the call.
+   * - `theB`: updated value from the call.
+   * - `theC`: updated value from the call.
+   * - `theD`: updated value from the call.
+   */
+  Coefficients(theA?: number, theB?: number, theC?: number, theD?: number): { theA: number; theB: number; theC: number; theD: number };
+  /**
+   * Modifies this plane, by redefining its local coordinate system so that.
+   *
+   * - its origin and "main Direction" become those of the axis theA1 (the "X Direction" and "Y Direction" are then recomputed). Raises ConstructionError if the theA1 is parallel to the "XAxis" of the plane.
+   */
+  SetAxis(theA1: gp_Ax1): void;
+  /**
+   * Changes the origin of the plane.
+   */
+  SetLocation(theLoc: gp_Pnt): void;
+  /**
+   * Changes the local coordinate system of the plane.
+   */
+  SetPosition(theA3: gp_Ax3): void;
+  /**
+   * Reverses the U parametrization of the plane reversing the XAxis.
+   */
+  UReverse(): void;
+  /**
+   * Reverses the V parametrization of the plane reversing the YAxis.
+   */
+  VReverse(): void;
+  /**
+   * Returns true if the Ax3 is right handed.
+   */
+  Direct(): boolean;
+  /**
+   * Returns the plane's normal Axis.
+   */
+  Axis(): gp_Ax1;
+  /**
+   * Returns the plane's location (origin).
+   */
+  Location(): gp_Pnt;
+  /**
+   * Returns the local coordinate system of the plane.
+   */
+  Position(): gp_Ax3;
+  /**
+   * Computes the distance between <me> and the point <theP>.
+   */
+  Distance(theP: gp_Pnt): number;
+  /**
+   * Computes the distance between <me> and the line <theL>.
+   */
+  Distance(theL: unknown): number;
+  /**
+   * Computes the distance between two planes.
+   */
+  Distance(theOther: gp_Pln): number;
+  /**
+   * Computes the signed distance between <me> and the point <theP>. The sign of the distance indicates on which side of the plane the point is located:
+   *
+   * - positive sign: the point is located in the direction of the plane normal,
+   * - negative sign: the point is located in the opposite direction to the plane normal,
+   * - zero: the point is located on the plane.
+   */
+  SignedDistance(theP: gp_Pnt): number;
+  /**
+   * Computes the signed distance between <me> and the line <theL>. The sign of the distance indicates on which side of the plane the line is located:
+   *
+   * - positive sign: the line is located in the direction of the plane normal,
+   * - negative sign: the line is located in the opposite direction to the plane normal,
+   * - zero: the line intersects the plane.
+   */
+  SignedDistance(theL: unknown): number;
+  /**
+   * Computes the signed distance between two planes. The sign of the distance indicates on which side of <me> the other plane is located:
+   *
+   * - positive sign: the other plane is located in the direction of the plane normal,
+   * - negative sign: the other plane is located in the opposite direction to the plane normal,
+   * - zero: the planes intersect.
+   */
+  SignedDistance(theOther: gp_Pln): number;
+  /**
+   * Computes the square distance between <me> and the point <theP>.
+   */
+  SquareDistance(theP: gp_Pnt): number;
+  /**
+   * Computes the square distance between <me> and the line <theL>.
+   */
+  SquareDistance(theL: unknown): number;
+  /**
+   * Computes the square distance between two planes.
+   */
+  SquareDistance(theOther: gp_Pln): number;
+  /**
+   * Returns the X axis of the plane.
+   */
+  XAxis(): gp_Ax1;
+  /**
+   * Returns the Y axis of the plane.
+   */
+  YAxis(): gp_Ax1;
+  /**
+   * Returns true if this plane contains the point theP. This means that.
+   *
+   * - the distance between point theP and this plane is less than or equal to theLinearTolerance, or
+   * - line L is normal to the "main Axis" of the local coordinate system of this plane, within the tolerance AngularTolerance, and the distance between the origin of line L and this plane is less than or equal to theLinearTolerance.
+   */
+  Contains(theP: gp_Pnt, theLinearTolerance: number): boolean;
+  /**
+   * Returns true if this plane contains the line theL. This means that.
+   *
+   * - the distance between point P and this plane is less than or equal to LinearTolerance, or
+   * - line theL is normal to the "main Axis" of the local coordinate system of this plane, within the tolerance theAngularTolerance, and the distance between the origin of line theL and this plane is less than or equal to theLinearTolerance.
+   */
+  Contains(theL: unknown, theLinearTolerance: number, theAngularTolerance: number): boolean;
+  Mirror(theP: gp_Pnt): void;
+  Mirror(theA1: gp_Ax1): void;
+  Mirror(theA2: gp_Ax2): void;
+  /**
+   * Performs the symmetrical transformation of a plane with respect to the point <theP> which is the center of the symmetry Warnings : The normal direction to the plane is not changed. The "XAxis" and the "YAxis" are reversed.
+   */
+  Mirrored(theP: gp_Pnt): gp_Pln;
+  /**
+   * Performs the symmetrical transformation of a plane with respect to an axis placement which is the axis of the symmetry. The transformation is performed on the "Location" point, on the "XAxis" and the "YAxis". The resulting normal direction is the cross product between the "XDirection" and the "YDirection" after transformation if the initial plane was right handed, else it is the opposite.
+   */
+  Mirrored(theA1: gp_Ax1): gp_Pln;
+  /**
+   * Performs the symmetrical transformation of a plane with respect to an axis placement. The axis placement <A2> locates the plane of the symmetry. The transformation is performed on the "Location" point, on the "XAxis" and the "YAxis". The resulting normal direction is the cross product between the "XDirection" and the "YDirection" after transformation if the initial plane was right handed, else it is the opposite.
+   */
+  Mirrored(theA2: gp_Ax2): gp_Pln;
+  Rotate(theA1: gp_Ax1, theAng: number): void;
+  /**
+   * Rotates a plane. theA1 is the axis of the rotation. theAng is the angular value of the rotation in radians.
+   */
+  Rotated(theA1: gp_Ax1, theAng: number): gp_Pln;
+  Scale(theP: gp_Pnt, theS: number): void;
+  /**
+   * Scales a plane. theS is the scaling value.
+   */
+  Scaled(theP: gp_Pnt, theS: number): gp_Pln;
+  Transform(theT: gp_Trsf): void;
+  /**
+   * Transforms a plane with the transformation theT from class Trsf. The transformation is performed on the "Location" point, on the "XAxis" and the "YAxis". The resulting normal direction is the cross product between the "XDirection" and the "YDirection" after transformation.
+   */
+  Transformed(theT: gp_Trsf): gp_Pln;
+  Translate(theV: gp_Vec): void;
+  Translate(theP1: gp_Pnt, theP2: gp_Pnt): void;
+  /**
+   * Translates a plane in the direction of the vector theV. The magnitude of the translation is the vector's magnitude.
+   */
+  Translated(theV: gp_Vec): gp_Pln;
+  /**
+   * Translates a plane from the point theP1 to the point theP2.
+   */
+  Translated(theP1: gp_Pnt, theP2: gp_Pnt): gp_Pln;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
  * Describes an ellipse in the plane (2D space). An ellipse is defined by its major and minor radii and positioned in the plane with a coordinate system (a {@link gp_Ax22d | `gp_Ax22d`} object) as follows:
  *
  * - the origin of the coordinate system is the center of the ellipse,
@@ -2006,7 +2204,7 @@ export declare class gp_Elips2d {
    * - `theE`: updated value from the call.
    * - `theF`: updated value from the call.
    */
-  Coefficients(theA: number, theB: number, theC: number, theD: number, theE: number, theF: number): { theA: number; theB: number; theC: number; theD: number; theE: number; theF: number };
+  Coefficients(theA?: number, theB?: number, theC?: number, theD?: number, theE?: number, theF?: number): { theA: number; theB: number; theC: number; theD: number; theE: number; theF: number };
   /**
    * This directrix is the line normal to the XAxis of the ellipse in the local plane (Z = 0) at a distance d = MajorRadius / e from the center of the ellipse, where e is the eccentricity of the ellipse. This line is parallel to the "YAxis". The intersection point between directrix1 and the "XAxis" is the location point of the directrix1. This point is on the positive side of the "XAxis".
    *
@@ -2215,7 +2413,7 @@ export declare class gp_GTrsf2d {
    * - `theX`: updated value from the call.
    * - `theY`: updated value from the call.
    */
-  Transforms(theX: number, theY: number): { theX: number; theY: number };
+  Transforms(theX?: number, theY?: number): { theX: number; theY: number };
   Transformed(theCoord: gp_XY): gp_XY;
   /**
    * Converts this transformation into a {@link gp_Trsf2d | `gp_Trsf2d`} transformation. Exceptions Standard_ConstructionError if this transformation cannot be converted, i.e. if its form is gp_Other.
@@ -2500,7 +2698,7 @@ export declare class gp_Trsf {
    * - `returnValue`: the C++ return value
    * - `theAngle`: updated value from the call.
    */
-  GetRotation(theAxis: gp_XYZ, theAngle: number): { returnValue: boolean; theAngle: number };
+  GetRotation(theAxis: gp_XYZ, theAngle?: number): { returnValue: boolean; theAngle: number };
   /**
    * Returns quaternion representing rotational part of the transformation.
    */
@@ -2542,7 +2740,7 @@ export declare class gp_Trsf {
    * Raises if theN < 0 and if the matrix of the transformation not inversible.
    */
   Powered(theN: number): gp_Trsf;
-  Transforms(theX: number, theY: number, theZ: number): { theX: number; theY: number; theZ: number };
+  Transforms(theX?: number, theY?: number, theZ?: number): { theX: number; theY: number; theZ: number };
   /**
    * Transformation of a triplet XYZ with a Trsf.
    * @param theCoord Mutated in place; read the updated value from this argument after the call.
@@ -2604,7 +2802,7 @@ export declare class gp_Pnt {
    * - `theYp`: updated value from the call.
    * - `theZp`: updated value from the call.
    */
-  Coord(theXp: number, theYp: number, theZp: number): { theXp: number; theYp: number; theZp: number };
+  Coord(theXp?: number, theYp?: number, theZp?: number): { theXp: number; theYp: number; theZp: number };
   /**
    * For this point, returns its three coordinates as a XYZ object.
    */
@@ -3227,7 +3425,7 @@ export declare class gp_Pnt2d {
    * - `theXp`: updated value from the call.
    * - `theYp`: updated value from the call.
    */
-  Coord(theXp: number, theYp: number): { theXp: number; theYp: number };
+  Coord(theXp?: number, theYp?: number): { theXp: number; theYp: number };
   /**
    * For this point, returns its two coordinates as a number pair.
    */
@@ -3338,7 +3536,7 @@ export declare class gp_XY {
    * - `theX`: updated value from the call.
    * - `theY`: updated value from the call.
    */
-  Coord(theX: number, theY: number): { theX: number; theY: number };
+  Coord(theX?: number, theY?: number): { theX: number; theY: number };
   ChangeCoord(theIndex: number): number;
   /**
    * Returns the X coordinate of this number pair.
@@ -3586,7 +3784,7 @@ export declare class gp_Dir {
    * - `theYv`: updated value from the call.
    * - `theZv`: updated value from the call.
    */
-  Coord(theXv: number, theYv: number, theZv: number): { theXv: number; theYv: number; theZv: number };
+  Coord(theXv?: number, theYv?: number, theZv?: number): { theXv: number; theYv: number; theZv: number };
   /**
    * Returns the X coordinate for a unit vector.
    */
@@ -3888,7 +4086,7 @@ export declare class gp_XYZ {
    * Raises OutOfRange if theIndex != {1, 2, 3}.
    */
   Coord(theIndex: number): number;
-  Coord(theX: number, theY: number, theZ: number): { theX: number; theY: number; theZ: number };
+  Coord(theX?: number, theY?: number, theZ?: number): { theX: number; theY: number; theZ: number };
   ChangeCoord(theIndex: number): number;
   /**
    * Returns a const ptr to coordinates location. Is useful for algorithms, but DOES NOT PERFORM ANY CHECKS!
@@ -4164,7 +4362,7 @@ export declare class gp_Cylinder {
    * - `theC3`: updated value from the call.
    * - `theD`: updated value from the call.
    */
-  Coefficients(theA1: number, theA2: number, theA3: number, theB1: number, theB2: number, theB3: number, theC1: number, theC2: number, theC3: number, theD: number): { theA1: number; theA2: number; theA3: number; theB1: number; theB2: number; theB3: number; theC1: number; theC2: number; theC3: number; theD: number };
+  Coefficients(theA1?: number, theA2?: number, theA3?: number, theB1?: number, theB2?: number, theB3?: number, theC1?: number, theC2?: number, theC3?: number, theD?: number): { theA1: number; theA2: number; theA3: number; theB1: number; theB2: number; theB3: number; theC1: number; theC2: number; theC3: number; theD: number };
   /**
    * Returns the "Location" point of the cylinder.
    */
@@ -4311,7 +4509,7 @@ export declare class gp_Dir2d {
    * - `theXv`: updated value from the call.
    * - `theYv`: updated value from the call.
    */
-  Coord(theXv: number, theYv: number): { theXv: number; theYv: number };
+  Coord(theXv?: number, theYv?: number): { theXv: number; theYv: number };
   /**
    * For this unit vector, returns its X coordinate.
    */
@@ -4689,7 +4887,7 @@ export declare class gp_Sphere {
    * - `theC3`: updated value from the call.
    * - `theD`: updated value from the call.
    */
-  Coefficients(theA1: number, theA2: number, theA3: number, theB1: number, theB2: number, theB3: number, theC1: number, theC2: number, theC3: number, theD: number): { theA1: number; theA2: number; theA3: number; theB1: number; theB2: number; theB3: number; theC1: number; theC2: number; theC3: number; theD: number };
+  Coefficients(theA1?: number, theA2?: number, theA3?: number, theB1?: number, theB2?: number, theB3?: number, theC1?: number, theC2?: number, theC3?: number, theD?: number): { theA1: number; theA2: number; theA3: number; theB1: number; theB2: number; theB3: number; theC1: number; theC2: number; theC3: number; theD: number };
   /**
    * Reverses the U parametrization of the sphere reversing the YAxis.
    */
@@ -4825,7 +5023,7 @@ export declare class gp_Vec2d {
    * - `theXv`: updated value from the call.
    * - `theYv`: updated value from the call.
    */
-  Coord(theXv: number, theYv: number): { theXv: number; theYv: number };
+  Coord(theXv?: number, theYv?: number): { theXv: number; theYv: number };
   /**
    * For this vector, returns its X coordinate.
    */
@@ -5076,7 +5274,7 @@ export declare class gp_Trsf2d {
    * Raises if theN < 0 and if the matrix of the transformation not inversible.
    */
   Powered(theN: number): gp_Trsf2d;
-  Transforms(theX: number, theY: number): { theX: number; theY: number };
+  Transforms(theX?: number, theY?: number): { theX: number; theY: number };
   /**
    * Transforms a doublet XY with a Trsf2d.
    * @param theCoord Mutated in place; read the updated value from this argument after the call.
@@ -5218,7 +5416,7 @@ export declare class gp_GTrsf {
    * - `theY`: updated value from the call.
    * - `theZ`: updated value from the call.
    */
-  Transforms(theX: number, theY: number, theZ: number): { theX: number; theY: number; theZ: number };
+  Transforms(theX?: number, theY?: number, theZ?: number): { theX: number; theY: number; theZ: number };
   Trsf(): gp_Trsf;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
@@ -5693,7 +5891,7 @@ export declare class Bnd_Box {
   /**
    * Returns False if the plane intersects the box.
    */
-  IsOut(P: unknown): boolean;
+  IsOut(P: gp_Pln): boolean;
   /**
    * Returns False if the <Box> intersects or is inside <me>.
    */
@@ -6310,7 +6508,7 @@ export declare class Poly_Triangle {
    * - `theN2`: updated value from the call.
    * - `theN3`: updated value from the call.
    */
-  Get(theN1: number, theN2: number, theN3: number): { theN1: number; theN2: number; theN3: number };
+  Get(theN1?: number, theN2?: number, theN3?: number): { theN1: number; theN2: number; theN3: number };
   /**
    * Get the node of given Index. Raises OutOfRange from {@link Standard | `Standard`} if Index is not in 1,2,3.
    */
@@ -17893,7 +18091,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * Constructor with two shapes <S1> - argument <Pl> - tool <PerformNow> - the flag: if <PerformNow>=True - the algorithm is performed immediately Obsolete.
    */
-  constructor(S1: TopoDS_Shape, Pl: unknown, PerformNow?: boolean);
+  constructor(S1: TopoDS_Shape, Pl: gp_Pln, PerformNow?: boolean);
   /**
    * Constructor with two shapes <S1> - argument <Sf> - tool <PerformNow> - the flag: if <PerformNow>=True - the algorithm is performed immediately Obsolete.
    */
@@ -17915,7 +18113,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * initialize the argument <Pl> - argument Obsolete
    */
-  Init1(Pl: unknown): void;
+  Init1(Pl: gp_Pln): void;
   /**
    * initialize the argument <Sf> - argument Obsolete
    */
@@ -17927,7 +18125,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * initialize the tool <Pl> - tool Obsolete
    */
-  Init2(Pl: unknown): void;
+  Init2(Pl: gp_Pln): void;
   /**
    * initialize the tool <Sf> - tool Obsolete
    */
@@ -18461,7 +18659,7 @@ export declare class Geom2dAPI_ProjectPointOnCurve {
    * @returns A result object with fields:
    * - `U`: updated value from the call.
    */
-  Parameter(Index: number, U: number): { U: number };
+  Parameter(Index: number, U?: number): { U: number };
   /**
    * Computes the distance between the point and its computed orthogonal projection on the curve. Index is a number of computed projected point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
    */
@@ -18522,7 +18720,7 @@ export declare class Geom2dAPI_ExtremaCurveCurve {
    * - `U1`: updated value from the call.
    * - `U2`: updated value from the call.
    */
-  Parameters(Index: number, U1: number, U2: number): { U1: number; U2: number };
+  Parameters(Index: number, U1?: number, U2?: number): { U1: number; U2: number };
   /**
    * Computes the distance between the end points of the extremum of index Index computed by this algorithm. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbExtrema ], where NbExtrema is the number of extrema computed by this algorithm.
    */
@@ -18539,7 +18737,7 @@ export declare class Geom2dAPI_ExtremaCurveCurve {
    * - `U1`: updated value from the call.
    * - `U2`: updated value from the call.
    */
-  LowerDistanceParameters(U1: number, U2: number): { U1: number; U2: number };
+  LowerDistanceParameters(U1?: number, U2?: number): { U1: number; U2: number };
   /**
    * Computes the distance between the end points of the shortest extremum computed by this algorithm. Exceptions - StdFail_NotDone if this algorithm fails.
    */
@@ -18755,7 +18953,7 @@ export declare class GeomAPI_ProjectPointOnSurf {
    * - `U`: updated value from the call.
    * - `V`: updated value from the call.
    */
-  Parameters(Index: number, U: number, V: number): { U: number; V: number };
+  Parameters(Index: number, U?: number, V?: number): { U: number; V: number };
   /**
    * Computes the distance between the point and its orthogonal projection on the surface. Index is a number of a computed point. Exceptions Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where NbPoints is the number of solution points.
    */
@@ -18770,7 +18968,7 @@ export declare class GeomAPI_ProjectPointOnSurf {
    * - `U`: updated value from the call.
    * - `V`: updated value from the call.
    */
-  LowerDistanceParameters(U: number, V: number): { U: number; V: number };
+  LowerDistanceParameters(U?: number, V?: number): { U: number; V: number };
   /**
    * Computes the distance between the point and its nearest orthogonal projection on the surface. Exceptions StdFail_NotDone if projection fails.
    */
@@ -19943,7 +20141,7 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
    * - `W2`: updated value from the call.
    * - `W3`: updated value from the call.
    */
-  CriteriumWeight(W1: number, W2: number, W3: number): { W1: number; W2: number; W3: number };
+  CriteriumWeight(W1?: number, W2?: number, W3?: number): { W1: number; W2: number; W3: number };
   /**
    * This is called by `Shape()`. It does nothing but may be redefined.
    */
@@ -20034,6 +20232,97 @@ export declare class BRepOffsetAPI_MakeOffset extends BRepBuilderAPI_MakeShape {
    * Converts each wire of the face into contour consisting only of arcs and segments. New 3D curves are built too.
    */
   static ConvertFace(theFace: TopoDS_Face, theAngleTolerance: number): TopoDS_Face;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
+ * Taper-adding transformations on a shape. The resulting shape is constructed by defining one face to be tapered after another one, as well as the geometric properties of their tapered transformation. Each tapered transformation is propagated along the series of faces which are tangential to one another and which contains the face to be tapered. This algorithm is useful in the construction of molds or dies. It facilitates the removal of the article being produced. A DraftAngle object provides a framework for:
+ *
+ * - initializing the construction algorithm with a given shape,
+ * - acquiring the data characterizing the faces to be tapered,
+ * - implementing the construction algorithm, and
+ * - consulting the results. Warning
+ * - This algorithm treats planar, cylindrical and conical faces.
+ * - Do not use shapes, which with a draft angle added to a face would modify the topology. This would, for example, involve creation of new vertices, edges or faces, or suppression of existing vertices, edges or faces.
+ * - Any face, which is continuous in tangency with the face to be tapered, will also be tapered. These connected faces must also respect the above criteria.
+ */
+export declare class BRepOffsetAPI_DraftAngle extends BRepBuilderAPI_ModifyShape {
+  /**
+   * Constructs an empty algorithm to perform taper-adding transformations on faces of a shape. Use the Init function to define the shape to be tapered.
+   */
+  constructor();
+  /**
+   * Initializes an algorithm to perform taper-adding transformations on faces of the shape S. S will be referred to as the initial shape of the algorithm.
+   */
+  constructor(S: TopoDS_Shape);
+  /**
+   * Cancels the results of all taper-adding transformations performed by this algorithm on the initial shape. These results will have been defined by successive calls to the function Add.
+   */
+  Clear(): void;
+  /**
+   * Initializes, or reinitializes this taper-adding algorithm with the shape S. S will be referred to as the initial shape of this algorithm.
+   */
+  Init(S: TopoDS_Shape): void;
+  /**
+   * Adds the face F, the direction Direction, the angle Angle, the plane NeutralPlane, and the flag Flag to the framework created at construction time, and with this data, defines the taper-adding transformation. F is a face, which belongs to the initial shape of this algorithm or to the shape loaded by the function Init. Only planar, cylindrical or conical faces can be tapered:
+   *
+   * - If the face F is planar, it is tapered by inclining it through the angle Angle about the line of intersection between the plane NeutralPlane and F. Direction indicates the side of NeutralPlane from which matter is removed if Angle is positive or added if Angle is negative.
+   * - If F is cylindrical or conical, it is transformed in the same way on a single face, resulting in a conical face if F is cylindrical, and a conical or cylindrical face if it is already conical. The taper-adding transformation is propagated from the face F along the series of planar, cylindrical or conical faces containing F, which are tangential to one another. Use the function AddDone to check if this taper-adding transformation is successful. Warning Nothing is done if:
+   * - the face F does not belong to the initial shape of this algorithm, or
+   * - the face F is not planar, cylindrical or conical. Exceptions
+   * - Standard_NullObject if the initial shape is not defined, i.e. if this algorithm has not been initialized with the non-empty constructor or the Init function.
+   * - Standard_ConstructionError if the previous call to Add has failed. The function AddDone ought to have been used to check for this, and the function Remove to cancel the results of the unsuccessful taper-adding transformation and to retrieve the previous shape.
+   */
+  Add(F: TopoDS_Face, Direction: gp_Dir, Angle: number, NeutralPlane: gp_Pln, Flag?: boolean): void;
+  /**
+   * Returns true if the previous taper-adding transformation performed by this algorithm in the last call to Add, was successful. If AddDone returns false:
+   *
+   * - the function ProblematicShape returns the face on which the error occurred,
+   * - the function Remove has to be used to cancel the results of the unsuccessful taper-adding transformation and to retrieve the previous shape. Exceptions Standard_NullObject if the initial shape has not been defined, i.e. if this algorithm has not been initialized with the non-empty constructor or the .Init function.
+   */
+  AddDone(): boolean;
+  /**
+   * Cancels the taper-adding transformation previously performed by this algorithm on the face F and the series of tangential faces which contain F, and retrieves the shape before the last taper-adding transformation. Warning You will have to use this function if the previous call to Add fails. Use the function AddDone to check it. Exceptions.
+   *
+   * - Standard_NullObject if the initial shape has not been defined, i.e. if this algorithm has not been initialized with the non-empty constructor or the Init function.
+   * - Standard_NoSuchObject if F has not been added or has already been removed.
+   */
+  Remove(F: TopoDS_Face): void;
+  /**
+   * Returns the shape on which an error occurred after an unsuccessful call to Add or when IsDone returns false. Exceptions Standard_NullObject if the initial shape has not been defined, i.e. if this algorithm has not been initialized with the non-empty constructor or the Init function.
+   */
+  ProblematicShape(): TopoDS_Shape;
+  /**
+   * Returns an error status when an error has occurred (Face, Edge or Vertex recomputation problem). Otherwise returns Draft_NoError. The method may be called if AddDone returns false, or when IsDone returns false.
+   */
+  Status(): unknown;
+  /**
+   * Returns all the faces which have been added together with the face <F>.
+   */
+  ConnectedFaces(F: TopoDS_Face): NCollection_List_TopoDS_Shape;
+  /**
+   * Returns all the faces on which a modification has been given.
+   */
+  ModifiedFaces(): NCollection_List_TopoDS_Shape;
+  /**
+   * Builds the resulting shape (redefined from MakeShape).
+   */
+  Build(theRange?: Message_ProgressRange): void;
+  CorrectWires(): void;
+  /**
+   * Returns the list of shapes generated from the shape .
+   */
+  Generated(S: TopoDS_Shape): NCollection_List_TopoDS_Shape;
+  /**
+   * Returns the list of shapes modified from the shape .
+   */
+  Modified(S: TopoDS_Shape): NCollection_List_TopoDS_Shape;
+  /**
+   * Returns the modified shape corresponding to . S can correspond to the entire initial shape or to its subshape. Raises exceptions Standard_NoSuchObject if S is not the initial shape or a subshape of the initial shape to which the transformation has been applied.
+   */
+  ModifiedShape(S: TopoDS_Shape): TopoDS_Shape;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -20282,27 +20571,27 @@ export declare class BRepExtrema_DistShapeShape {
    * @returns A result object with fields:
    * - `t`: updated value from the call.
    */
-  ParOnEdgeS1(N: number, t: number): { t: number };
+  ParOnEdgeS1(N: number, t?: number): { t: number };
   /**
    * gives the corresponding parameter t if the Nth solution is situated on an Edge of the first shape
    * @returns A result object with fields:
    * - `t`: updated value from the call.
    */
-  ParOnEdgeS2(N: number, t: number): { t: number };
+  ParOnEdgeS2(N: number, t?: number): { t: number };
   /**
    * gives the corresponding parameters (U,V) if the Nth solution is situated on an face of the first shape
    * @returns A result object with fields:
    * - `u`: updated value from the call.
    * - `v`: updated value from the call.
    */
-  ParOnFaceS1(N: number, u: number, v: number): { u: number; v: number };
+  ParOnFaceS1(N: number, u?: number, v?: number): { u: number; v: number };
   /**
    * gives the corresponding parameters (U,V) if the Nth solution is situated on an Face of the second shape
    * @returns A result object with fields:
    * - `u`: updated value from the call.
    * - `v`: updated value from the call.
    */
-  ParOnFaceS2(N: number, u: number, v: number): { u: number; v: number };
+  ParOnFaceS2(N: number, u?: number, v?: number): { u: number; v: number };
   /**
    * Sets unused parameter Obsolete.
    */
@@ -20774,7 +21063,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a plane.
    */
-  constructor(P: unknown);
+  constructor(P: gp_Pln);
   /**
    * Make a face from a cylinder.
    */
@@ -20820,7 +21109,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a plane and a wire.
    */
-  constructor(P: unknown, W: TopoDS_Wire, Inside?: boolean);
+  constructor(P: gp_Pln, W: TopoDS_Wire, Inside?: boolean);
   /**
    * Make a face from a cylinder and a wire.
    */
@@ -20844,7 +21133,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a face from a plane.
    */
-  constructor(P: unknown, UMin: number, UMax: number, VMin: number, VMax: number);
+  constructor(P: gp_Pln, UMin: number, UMax: number, VMin: number, VMax: number);
   /**
    * Make a face from a cylinder.
    */
@@ -21279,7 +21568,7 @@ export declare class BRepLib {
    * - `bToUpdate`: updated value from the call.
    * Dispose the returned envelope to release owned Handle fields.
    */
-  static BuildPCurveForEdgeOnPlane(theE: TopoDS_Edge, theF: TopoDS_Face, bToUpdate: boolean): { aC2D: Geom2d_Curve; bToUpdate: boolean; [Symbol.dispose](): void };
+  static BuildPCurveForEdgeOnPlane(theE: TopoDS_Edge, theF: TopoDS_Face, bToUpdate?: boolean): { aC2D: Geom2d_Curve; bToUpdate: boolean; [Symbol.dispose](): void };
   /**
    * Checks if the edge has a Tolerance smaller than MaxToleranceToCheck if so it will compute the radius of the cylindrical pipe surface that MinToleranceRequest is the minimum tolerance before it is useful to start testing. Usually it should be around 10e-5 contains all the curve representation of the edge returns True if the Edge tolerance had to be updated.
    */
@@ -21370,7 +21659,7 @@ export declare class BRepLib {
    * @returns A result object with fields:
    * - `theNewTol`: updated value from the call.
    */
-  static BoundingVertex(theLV: NCollection_List_TopoDS_Shape, theNewCenter: gp_Pnt, theNewTol: number): { theNewTol: number };
+  static BoundingVertex(theLV: NCollection_List_TopoDS_Shape, theNewCenter: gp_Pnt, theNewTol?: number): { theNewTol: number };
   /**
    * For an edge defined by 3d curve and tolerance and vertices defined by points, parameters on curve and tolerances, finds a range of curve between vertices not covered by vertices tolerances. Returns false if there is no such range. Otherwise, sets theFirst and theLast as its bounds.
    * @returns A result object with fields:
@@ -21378,7 +21667,7 @@ export declare class BRepLib {
    * - `theFirst`: updated value from the call.
    * - `theLast`: updated value from the call.
    */
-  static FindValidRange(theCurve: Adaptor3d_Curve, theTolE: number, theParV1: number, thePntV1: gp_Pnt, theTolV1: number, theParV2: number, thePntV2: gp_Pnt, theTolV2: number, theFirst: number, theLast: number): { returnValue: boolean; theFirst: number; theLast: number };
+  static FindValidRange(theCurve: Adaptor3d_Curve, theTolE: number, theParV1: number, thePntV1: gp_Pnt, theTolV1: number, theParV2: number, thePntV2: gp_Pnt, theTolV2: number, theFirst?: number, theLast?: number): { returnValue: boolean; theFirst: number; theLast: number };
   /**
    * Finds a range of 3d curve of the edge not covered by vertices tolerances. Returns false if there is no such range. Otherwise, sets theFirst and theLast as its bounds.
    * @returns A result object with fields:
@@ -21386,7 +21675,7 @@ export declare class BRepLib {
    * - `theFirst`: updated value from the call.
    * - `theLast`: updated value from the call.
    */
-  static FindValidRange(theEdge: TopoDS_Edge, theFirst: number, theLast: number): { returnValue: boolean; theFirst: number; theLast: number };
+  static FindValidRange(theEdge: TopoDS_Edge, theFirst?: number, theLast?: number): { returnValue: boolean; theFirst: number; theLast: number };
   /**
    * Enlarges the face on the given value.
    * @param theF The face to extend
@@ -21462,7 +21751,7 @@ export declare class BRepGProp {
    * @param VProps Mutated in place; read the updated value from this argument after the call.
    */
   static VolumePropertiesGK(S: TopoDS_Shape, VProps: GProp_GProps, Eps: number, OnlyClosed: boolean, IsUseSpan: boolean, CGFlag: boolean, IFlag: boolean, SkipShared: boolean): number;
-  static VolumePropertiesGK(S: TopoDS_Shape, VProps: GProp_GProps, thePln: unknown, Eps: number, OnlyClosed: boolean, IsUseSpan: boolean, CGFlag: boolean, IFlag: boolean, SkipShared: boolean): number;
+  static VolumePropertiesGK(S: TopoDS_Shape, VProps: GProp_GProps, thePln: gp_Pln, Eps: number, OnlyClosed: boolean, IsUseSpan: boolean, CGFlag: boolean, IFlag: boolean, SkipShared: boolean): number;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -21519,7 +21808,7 @@ export declare class BRepGProp_Face {
    * - `V1`: updated value from the call.
    * - `V2`: updated value from the call.
    */
-  Bounds(U1: number, U2: number, V1: number, V2: number): { U1: number; U2: number; V1: number; V2: number };
+  Bounds(U1?: number, U2?: number, V1?: number, V2?: number): { U1: number; U2: number; V1: number; V2: number };
   /**
    * Computes the point of parameter U, V on the Face and the normal to the face at this point.
    * @param P Mutated in place; read the updated value from this argument after the call.
@@ -21654,7 +21943,7 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
    * Sets the distances Dis1 and Dis2 which give the parameters of the chamfer along the contour of index IC generated using the Add function in the internal data structure of this algorithm. The face F identifies the side where Dis1 is measured. Warning Nothing is done if either the edge E or the face F does not belong to the initial shape.
    */
   SetDist(Dis: number, IC: number, F: TopoDS_Face): void;
-  GetDist(IC: number, Dis: number): { Dis: number };
+  GetDist(IC: number, Dis?: number): { Dis: number };
   /**
    * Sets the distances Dis1 and Dis2 which give the parameters of the chamfer along the contour of index IC generated using the Add function in the internal data structure of this algorithm. The face F identifies the side where Dis1 is measured. Warning Nothing is done if either the edge E or the face F does not belong to the initial shape.
    */
@@ -21665,7 +21954,7 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
    * - `Dis1`: updated value from the call.
    * - `Dis2`: updated value from the call.
    */
-  Dists(IC: number, Dis1: number, Dis2: number): { Dis1: number; Dis2: number };
+  Dists(IC: number, Dis1?: number, Dis2?: number): { Dis1: number; Dis2: number };
   /**
    * Adds a fillet contour in the builder (builds a contour of tangent edges to <E> and sets the distance <Dis1> and angle <Angle> ( parameters of the chamfer ) ).
    */
@@ -21680,7 +21969,7 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
    * - `Dis`: updated value from the call.
    * - `Angle`: updated value from the call.
    */
-  GetDistAngle(IC: number, Dis: number, Angle: number): { Dis: number; Angle: number };
+  GetDistAngle(IC: number, Dis?: number, Angle?: number): { Dis: number; Angle: number };
   /**
    * Sets the mode of chamfer.
    */
@@ -21896,7 +22185,7 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
    * - -1 is returned if IC is outside the bounds of the table of contours or if E does not belong to the contour of index IC.
    */
   Radius(IC: number, E: TopoDS_Edge): number;
-  GetBounds(IC: number, E: TopoDS_Edge, F: number, L: number): { returnValue: boolean; F: number; L: number };
+  GetBounds(IC: number, E: TopoDS_Edge, F?: number, L?: number): { returnValue: boolean; F: number; L: number };
   GetLaw(IC: number, E: TopoDS_Edge): Law_Function;
   SetLaw(IC: number, E: TopoDS_Edge, L: Law_Function): void;
   /**
@@ -23197,7 +23486,7 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
    * Returns the type of the surface: Plane, Cylinder, Cone, Sphere, Torus, BezierSurface, BSplineSurface, SurfaceOfRevolution, SurfaceOfExtrusion, OtherSurface.
    */
   GetType(): GeomAbs_SurfaceType;
-  Plane(): unknown;
+  Plane(): gp_Pln;
   Cylinder(): gp_Cylinder;
   Cone(): unknown;
   Sphere(): gp_Sphere;
@@ -23411,7 +23700,7 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
    * Returns the type of the surface: Plane, Cylinder, Cone, Sphere, Torus, BezierSurface, BSplineSurface, SurfaceOfRevolution, SurfaceOfExtrusion, OtherSurface.
    */
   GetType(): GeomAbs_SurfaceType;
-  Plane(): unknown;
+  Plane(): gp_Pln;
   Cylinder(): gp_Cylinder;
   Cone(): unknown;
   Sphere(): gp_Sphere;
@@ -23901,7 +24190,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
    * - `U`: updated value from the call.
    * - `V`: updated value from the call.
    */
-  PeriodicNormalization(U: number, V: number): { U: number; V: number };
+  PeriodicNormalization(U?: number, V?: number): { U: number; V: number };
   /**
    * Assigns the knot of index Index in the knots table in the corresponding parametric direction to be the origin of this periodic BSpline surface. As a consequence, the knots and poles tables are modified. Exceptions Standard_NoSuchObject if this BSpline surface is not periodic in the given parametric direction. Standard_DomainError if Index is outside the bounds of the knots table in the given parametric direction.
    */
@@ -24181,7 +24470,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
    * - `VFirstIndex`: updated value from the call.
    * - `VLastIndex`: updated value from the call.
    */
-  MovePoint(U: number, V: number, P: gp_Pnt, UIndex1: number, UIndex2: number, VIndex1: number, VIndex2: number, UFirstIndex: number, ULastIndex: number, VFirstIndex: number, VLastIndex: number): { UFirstIndex: number; ULastIndex: number; VFirstIndex: number; VLastIndex: number };
+  MovePoint(U: number, V: number, P: gp_Pnt, UIndex1: number, UIndex2: number, VIndex1: number, VIndex2: number, UFirstIndex?: number, ULastIndex?: number, VFirstIndex?: number, VLastIndex?: number): { UFirstIndex: number; ULastIndex: number; VFirstIndex: number; VLastIndex: number };
   /**
    * Returns true if the first control points row and the last control points row are identical. The tolerance criterion is Resolution from package gp.
    */
@@ -24518,7 +24807,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
    * - `UTolerance`: updated value from the call.
    * - `VTolerance`: updated value from the call.
    */
-  Resolution(Tolerance3D: number, UTolerance: number, VTolerance: number): { UTolerance: number; VTolerance: number };
+  Resolution(Tolerance3D: number, UTolerance?: number, VTolerance?: number): { UTolerance: number; VTolerance: number };
   /**
    * Creates a new object which is a copy of this BSpline surface.
    */
@@ -24695,7 +24984,7 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
    * @returns A result object with fields:
    * - `U`: updated value from the call.
    */
-  PeriodicNormalization(U: number): { U: number };
+  PeriodicNormalization(U?: number): { U: number };
   /**
    * Changes this BSpline curve into a periodic curve. To become periodic, the curve must first be closed. Next, the knot sequence must be periodic. For this, FirstUKnotIndex and LastUKnotIndex are used to compute I1 and I2, the indexes in the knots array of the knots corresponding to the first and last parameters of this BSpline curve. The period is therefore: Knots(I2) - Knots(I1). Consequently, the knots and poles tables are modified. Exceptions Standard_ConstructionError if this BSpline curve is not closed.
    */
@@ -24737,13 +25026,13 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
    * - `FirstModifiedPole`: updated value from the call.
    * - `LastModifiedPole`: updated value from the call.
    */
-  MovePoint(U: number, P: gp_Pnt, Index1: number, Index2: number, FirstModifiedPole: number, LastModifiedPole: number): { FirstModifiedPole: number; LastModifiedPole: number };
+  MovePoint(U: number, P: gp_Pnt, Index1: number, Index2: number, FirstModifiedPole?: number, LastModifiedPole?: number): { FirstModifiedPole: number; LastModifiedPole: number };
   /**
    * Move a point with parameter U to P. and makes it tangent at U be Tangent. StartingCondition = -1 means first can move EndingCondition = -1 means last point can move StartingCondition = 0 means the first point cannot move EndingCondition = 0 means the last point cannot move StartingCondition = 1 means the first point and tangent cannot move EndingCondition = 1 means the last point and tangent cannot move and so forth ErrorStatus != 0 means that there are not enough degree of freedom with the constrain to deform the curve accordingly.
    * @returns A result object with fields:
    * - `ErrorStatus`: updated value from the call.
    */
-  MovePointAndTangent(U: number, P: gp_Pnt, Tangent: gp_Vec, Tolerance: number, StartingCondition: number, EndingCondition: number, ErrorStatus: number): { ErrorStatus: number };
+  MovePointAndTangent(U: number, P: gp_Pnt, Tangent: gp_Vec, Tolerance: number, StartingCondition: number, EndingCondition: number, ErrorStatus?: number): { ErrorStatus: number };
   /**
    * Returns the continuity of the curve, the curve is at least C0. Raised if N < 0.
    */
@@ -24983,7 +25272,7 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
    * @returns A result object with fields:
    * - `UTolerance`: updated value from the call.
    */
-  Resolution(Tolerance3D: number, UTolerance: number): { UTolerance: number };
+  Resolution(Tolerance3D: number, UTolerance?: number): { UTolerance: number };
   /**
    * Creates a new object which is a copy of this BSpline curve.
    */
@@ -25071,7 +25360,7 @@ export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
    * - `C3`: updated value from the call.
    * - `D`: updated value from the call.
    */
-  Coefficients(A1: number, A2: number, A3: number, B1: number, B2: number, B3: number, C1: number, C2: number, C3: number, D: number): { A1: number; A2: number; A3: number; B1: number; B2: number; B3: number; C1: number; C2: number; C3: number; D: number };
+  Coefficients(A1?: number, A2?: number, A3?: number, B1?: number, B2?: number, B3?: number, C1?: number, C2?: number, C3?: number, D?: number): { A1: number; A2: number; A3: number; B1: number; B2: number; B3: number; C1: number; C2: number; C3: number; D: number };
   /**
    * Computes the coefficients of the implicit equation of this quadric in the absolute Cartesian coordinate system: A1.X**2 + A2.Y**2 + A3.Z**2 + 2.(B1.X.Y + B2.X.Z + B3.Y.Z) + 2.(C1.X + C2.Y + C3.Z) + D = 0.0 An implicit normalization is applied (i.e. A1 = A2 = 1. in the local coordinate system of this sphere).
    */
@@ -25365,7 +25654,7 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
    * @returns A result object with fields:
    * - `UTolerance`: updated value from the call.
    */
-  Resolution(Tolerance3D: number, UTolerance: number): { UTolerance: number };
+  Resolution(Tolerance3D: number, UTolerance?: number): { UTolerance: number };
   /**
    * Creates a new object which is a copy of this Bezier curve.
    */
@@ -25581,7 +25870,7 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
    * - `C3`: updated value from the call.
    * - `D`: updated value from the call.
    */
-  Coefficients(A1: number, A2: number, A3: number, B1: number, B2: number, B3: number, C1: number, C2: number, C3: number, D: number): { A1: number; A2: number; A3: number; B1: number; B2: number; B3: number; C1: number; C2: number; C3: number; D: number };
+  Coefficients(A1?: number, A2?: number, A3?: number, B1?: number, B2?: number, B3?: number, C1?: number, C2?: number, C3?: number, D?: number): { A1: number; A2: number; A3: number; B1: number; B2: number; B3: number; C1: number; C2: number; C3: number; D: number };
   /**
    * Returns the radius of this cylinder.
    */
@@ -26390,7 +26679,7 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
    * @returns A result object with fields:
    * - `U`: updated value from the call.
    */
-  PeriodicNormalization(U: number): { U: number };
+  PeriodicNormalization(U?: number): { U: number };
   /**
    * Changes this BSpline curve into a periodic curve. To become periodic, the curve must first be closed. Next, the knot sequence must be periodic. For this, FirstUKnotIndex and LastUKnotIndex are used to compute I1 and I2, the indexes in the knots array of the knots corresponding to the first and last parameters of this BSpline curve. The period is therefore Knot(I2) - Knot(I1). Consequently, the knots and poles tables are modified. Exceptions Standard_ConstructionError if this BSpline curve is not closed.
    */
@@ -26426,13 +26715,13 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
    * - `FirstModifiedPole`: updated value from the call.
    * - `LastModifiedPole`: updated value from the call.
    */
-  MovePoint(U: number, P: gp_Pnt2d, Index1: number, Index2: number, FirstModifiedPole: number, LastModifiedPole: number): { FirstModifiedPole: number; LastModifiedPole: number };
+  MovePoint(U: number, P: gp_Pnt2d, Index1: number, Index2: number, FirstModifiedPole?: number, LastModifiedPole?: number): { FirstModifiedPole: number; LastModifiedPole: number };
   /**
    * Move a point with parameter U to P. and makes it tangent at U be Tangent. StartingCondition = -1 means first can move EndingCondition = -1 means last point can move StartingCondition = 0 means the first point cannot move EndingCondition = 0 means the last point cannot move StartingCondition = 1 means the first point and tangent cannot move EndingCondition = 1 means the last point and tangent cannot move and so forth ErrorStatus != 0 means that there are not enough degree of freedom with the constrain to deform the curve accordingly.
    * @returns A result object with fields:
    * - `ErrorStatus`: updated value from the call.
    */
-  MovePointAndTangent(U: number, P: gp_Pnt2d, Tangent: gp_Vec2d, Tolerance: number, StartingCondition: number, EndingCondition: number, ErrorStatus: number): { ErrorStatus: number };
+  MovePointAndTangent(U: number, P: gp_Pnt2d, Tangent: gp_Vec2d, Tolerance: number, StartingCondition: number, EndingCondition: number, ErrorStatus?: number): { ErrorStatus: number };
   /**
    * Returns true if the degree of continuity of this BSpline curve is at least N. A BSpline curve is at least GeomAbs_C0. Exceptions Standard_RangeError if N is negative.
    */
@@ -26667,7 +26956,7 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
    * @returns A result object with fields:
    * - `UTolerance`: updated value from the call.
    */
-  Resolution(ToleranceUV: number, UTolerance: number): { UTolerance: number };
+  Resolution(ToleranceUV: number, UTolerance?: number): { UTolerance: number };
   /**
    * Creates a new object which is a copy of this BSpline curve.
    */
@@ -27580,7 +27869,7 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
    * @returns A result object with fields:
    * - `UTolerance`: updated value from the call.
    */
-  Resolution(ToleranceUV: number, UTolerance: number): { UTolerance: number };
+  Resolution(ToleranceUV: number, UTolerance?: number): { UTolerance: number };
   /**
    * Creates a new object which is a copy of this Bezier curve.
    */
@@ -28400,7 +28689,7 @@ export declare class GeomLib {
    * - `YGap`: updated value from the call.
    * - `ZGap`: updated value from the call.
    */
-  static Inertia(Points: NCollection_Array1_gp_Pnt, Bary: gp_Pnt, XDir: gp_Dir, YDir: gp_Dir, Xgap: number, YGap: number, ZGap: number): { Xgap: number; YGap: number; ZGap: number };
+  static Inertia(Points: NCollection_Array1_gp_Pnt, Bary: gp_Pnt, XDir: gp_Dir, YDir: gp_Dir, Xgap?: number, YGap?: number, ZGap?: number): { Xgap: number; YGap: number; ZGap: number };
   /**
    * Warning! This assume that the InParameter is an increasing sequence of real number and it will not check for that : Unpredictable result can happen if this is not satisfied. It is the caller responsibility to check for that property.
    *
@@ -28430,13 +28719,13 @@ export declare class GeomLib {
    * @returns A result object with fields:
    * - `MaxDistance`: updated value from the call.
    */
-  static EvalMaxParametricDistance(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: number, Parameters: NCollection_Array1_double, MaxDistance: number): { MaxDistance: number };
+  static EvalMaxParametricDistance(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: number, Parameters: NCollection_Array1_double, MaxDistance?: number): { MaxDistance: number };
   /**
    * this will compute the maximum distance at the parameters given in the Parameters array by projecting from the Curve to the reference curve and taking the minimum distance Than the maximum will be taken on those minimas.
    * @returns A result object with fields:
    * - `MaxDistance`: updated value from the call.
    */
-  static EvalMaxDistanceAlongParameter(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: number, Parameters: NCollection_Array1_double, MaxDistance: number): { MaxDistance: number };
+  static EvalMaxDistanceAlongParameter(Curve: Adaptor3d_Curve, AReferenceCurve: Adaptor3d_Curve, Tolerance: number, Parameters: NCollection_Array1_double, MaxDistance?: number): { MaxDistance: number };
   /**
    * Cancel,on the boundaries,the denominator first derivative in the directions wished by the user and set its value to 1.
    * @returns A result object with fields:
@@ -28459,7 +28748,7 @@ export declare class GeomLib {
    * - `isUClosed`: updated value from the call.
    * - `isVClosed`: updated value from the call.
    */
-  static IsClosed(S: Geom_Surface, Tol: number, isUClosed: boolean, isVClosed: boolean): { isUClosed: boolean; isVClosed: boolean };
+  static IsClosed(S: Geom_Surface, Tol: number, isUClosed?: boolean, isVClosed?: boolean): { isUClosed: boolean; isVClosed: boolean };
   /**
    * Returns true if the poles of U1 isoline and the poles of U2 isoline of surface are identical according to tolerance criterion. For rational surfaces Weights(i)*Poles(i) are checked.
    */
@@ -28488,7 +28777,7 @@ export declare class GeomLib {
    * - `theParam`: Line parameter.
    * - `theIsForward`: Flag indicating forward parameterization on a isoline.
    */
-  static isIsoLine(theC2D: Adaptor2d_Curve2d, theIsU: boolean, theParam: number, theIsForward: boolean): { returnValue: boolean; theIsU: boolean; theParam: number; theIsForward: boolean };
+  static isIsoLine(theC2D: Adaptor2d_Curve2d, theIsU?: boolean, theParam?: number, theIsForward?: boolean): { returnValue: boolean; theIsU: boolean; theParam: number; theIsForward: boolean };
   /**
    * Builds 3D curve for a isoline. This method takes corresponding isoline from the input surface.
    * @param theC2D Trimmed curve to be approximated.
@@ -28609,7 +28898,7 @@ export declare class GProp_GProps {
    * - `Iy`: static moment of inertia about Y
    * - `Iz`: static moment of inertia about Z
    */
-  StaticMoments(Ix: number, Iy: number, Iz: number): { Ix: number; Iy: number; Iz: number };
+  StaticMoments(Ix?: number, Iy?: number, Iz?: number): { Ix: number; Iy: number; Iz: number };
   /**
    * Computes the moment of inertia of the system about the axis A.
    * @param A axis about which the moment of inertia is computed
@@ -29750,7 +30039,7 @@ export declare class BRepTools {
    * - `VMin`: updated value from the call.
    * - `VMax`: updated value from the call.
    */
-  static UVBounds(F: TopoDS_Face, UMin: number, UMax: number, VMin: number, VMax: number): { UMin: number; UMax: number; VMin: number; VMax: number };
+  static UVBounds(F: TopoDS_Face, UMin?: number, UMax?: number, VMin?: number, VMax?: number): { UMin: number; UMax: number; VMin: number; VMax: number };
   /**
    * Returns in UMin, UMax, VMin, VMax the bounding values of the wire in the parametric space of F.
    * @returns A result object with fields:
@@ -29894,7 +30183,7 @@ export declare class BRepTools {
    * - `theUclosed`: updated value from the call.
    * - `theVclosed`: updated value from the call.
    */
-  static DetectClosedness(theFace: TopoDS_Face, theUclosed: boolean, theVclosed: boolean): { theUclosed: boolean; theVclosed: boolean };
+  static DetectClosedness(theFace: TopoDS_Face, theUclosed?: boolean, theVclosed?: boolean): { theUclosed: boolean; theVclosed: boolean };
   /**
    * Writes the shape to the file in an ASCII format TopTools_FormatVersion_VERSION_1. This alias writes shape with triangulation data.
    * @param theShape the shape to write
@@ -30018,7 +30307,7 @@ export declare class BRep_Tool {
    * - `Last`: updated value from the call.
    * Dispose the returned envelope to release owned Handle fields.
    */
-  static Curve(E: TopoDS_Edge, L: TopLoc_Location, First: number, Last: number): { returnValue: Geom_Curve; First: number; Last: number; [Symbol.dispose](): void };
+  static Curve(E: TopoDS_Edge, L: TopLoc_Location, First?: number, Last?: number): { returnValue: Geom_Curve; First: number; Last: number; [Symbol.dispose](): void };
   /**
    * Returns the 3D curve of the edge. May be a Null handle. In <First> and <Last> the parameter range. It can be a copy if there is a Location.
    * @returns A result object with fields:
@@ -30027,7 +30316,7 @@ export declare class BRep_Tool {
    * - `Last`: updated value from the call.
    * Dispose the returned envelope to release owned Handle fields.
    */
-  static Curve(E: TopoDS_Edge, First: number, Last: number): { returnValue: Geom_Curve; First: number; Last: number; [Symbol.dispose](): void };
+  static Curve(E: TopoDS_Edge, First?: number, Last?: number): { returnValue: Geom_Curve; First: number; Last: number; [Symbol.dispose](): void };
   /**
    * Returns the 3D polygon of the edge. May be a Null handle. Returns in <L> the location for the polygon.
    * @param L Mutated in place; read the updated value from this argument after the call.
@@ -30043,7 +30332,7 @@ export declare class BRep_Tool {
    * - `Last`: updated value from the call.
    * Dispose the returned envelope to release owned Handle fields.
    */
-  static CurveOnSurface(E: TopoDS_Edge, L: TopLoc_Location, First: number, Last: number): { C: Geom2d_Curve; S: Geom_Surface; First: number; Last: number; [Symbol.dispose](): void };
+  static CurveOnSurface(E: TopoDS_Edge, L: TopLoc_Location, First?: number, Last?: number): { C: Geom2d_Curve; S: Geom_Surface; First: number; Last: number; [Symbol.dispose](): void };
   /**
    * Returns the curve associated to the edge in the parametric space of the face. Returns a NULL handle if this curve does not exist. Returns in <First> and <Last> the parameter range. If the surface is a plane the curve can be not stored but created a new each time. The flag pointed by <theIsStored> serves to indicate storage status. It is valued if the pointer is non-null.
    * @returns A result object with fields:
@@ -30081,7 +30370,7 @@ export declare class BRep_Tool {
    * - `Last`: updated value from the call.
    * Dispose the returned envelope to release owned Handle fields.
    */
-  static CurveOnPlane(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number): { returnValue: Geom2d_Curve; First: number; Last: number; [Symbol.dispose](): void };
+  static CurveOnPlane(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First?: number, Last?: number): { returnValue: Geom2d_Curve; First: number; Last: number; [Symbol.dispose](): void };
   /**
    * Returns the polygon associated to the edge in the parametric space of the face. Returns a NULL handle if this polygon does not exist.
    */
@@ -30154,21 +30443,21 @@ export declare class BRep_Tool {
    * - `First`: updated value from the call.
    * - `Last`: updated value from the call.
    */
-  static Range(E: TopoDS_Edge, First: number, Last: number): { First: number; Last: number };
+  static Range(E: TopoDS_Edge, First?: number, Last?: number): { First: number; Last: number };
   /**
    * Gets the range of the edge on the pcurve on the surface.
    * @returns A result object with fields:
    * - `First`: updated value from the call.
    * - `Last`: updated value from the call.
    */
-  static Range(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First: number, Last: number): { First: number; Last: number };
+  static Range(E: TopoDS_Edge, S: Geom_Surface, L: TopLoc_Location, First?: number, Last?: number): { First: number; Last: number };
   /**
    * Gets the range of the edge on the pcurve on the face.
    * @returns A result object with fields:
    * - `First`: updated value from the call.
    * - `Last`: updated value from the call.
    */
-  static Range(E: TopoDS_Edge, F: TopoDS_Face, First: number, Last: number): { First: number; Last: number };
+  static Range(E: TopoDS_Edge, F: TopoDS_Face, First?: number, Last?: number): { First: number; Last: number };
   /**
    * Gets the UV locations of the extremities of the edge.
    * @param PFirst Mutated in place; read the updated value from this argument after the call.
@@ -30334,7 +30623,7 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
    * @returns A result object with fields:
    * - `UonE`: updated value from the call.
    */
-  Edge(U: number, E: TopoDS_Edge, UonE: number): { UonE: number };
+  Edge(U: number, E: TopoDS_Edge, UonE?: number): { UonE: number };
   FirstParameter(): number;
   LastParameter(): number;
   Continuity(): GeomAbs_Shape;
@@ -30854,7 +31143,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
    * - `returnValue`: the C++ return value
    * - `val`: updated value from the call.
    */
-  IntegerLimit(max: boolean, val: number): { returnValue: boolean; val: number };
+  IntegerLimit(max: boolean, val?: number): { returnValue: boolean; val: number };
   /**
    * Sets a Real limit (included) to <val>, the upper limit if <max> is True, the lower limit if <max> is False.
    */
@@ -30865,7 +31154,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
    * - `returnValue`: the C++ return value
    * - `val`: updated value from the call.
    */
-  RealLimit(max: boolean, val: number): { returnValue: boolean; val: number };
+  RealLimit(max: boolean, val?: number): { returnValue: boolean; val: number };
   /**
    * Sets (Clears if <def> empty) a unit definition, as an equation of dimensions. TypedValue just records this definition, does not exploit it, to be done as required by user applications.
    */
@@ -30894,7 +31183,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
    * - `endcase`: updated value from the call.
    * - `match`: updated value from the call.
    */
-  EnumDef(startcase: number, endcase: number, match: boolean): { returnValue: boolean; startcase: number; endcase: number; match: boolean };
+  EnumDef(startcase?: number, endcase?: number, match?: boolean): { returnValue: boolean; startcase: number; endcase: number; match: boolean };
   /**
    * Returns the value of an enumerative definition, from its rank Empty string if out of range or not an Enum.
    */
@@ -31277,7 +31566,7 @@ export declare class XSControl_Reader {
    * - `nbWithResult`: updated value from the call.
    * - `nbWithFail`: updated value from the call.
    */
-  GetStatsTransfer(list: NCollection_HSequence_handle_Standard_Transient, nbMapped: number, nbWithResult: number, nbWithFail: number): { nbMapped: number; nbWithResult: number; nbWithFail: number };
+  GetStatsTransfer(list: NCollection_HSequence_handle_Standard_Transient, nbMapped?: number, nbWithResult?: number, nbWithFail?: number): { nbMapped: number; nbWithResult: number; nbWithFail: number };
   /**
    * Sets parameters for shape processing.
    * @param theParameters the parameters for shape processing.
@@ -32481,7 +32770,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
    * - `returnValue`: the C++ return value
    * - `theResut`: updated value from the call.
    */
-  static GetLengthUnit(theDoc: TDocStd_Document, theResut: number): { returnValue: boolean; theResut: number };
+  static GetLengthUnit(theDoc: TDocStd_Document, theResut?: number): { returnValue: boolean; theResut: number };
   /**
    * Sets value of current internal unit to the document in meter.
    */
@@ -33132,7 +33421,7 @@ export declare class XCAFDoc_MaterialTool extends TDataStd_GenericEmpty {
    * - `aDensValType`: owned by the returned envelope.
    * Dispose the returned envelope to release owned Handle fields.
    */
-  static GetMaterial(MatL: TDF_Label, aDensity: number): { returnValue: boolean; aName: TCollection_HAsciiString; aDescription: TCollection_HAsciiString; aDensity: number; aDensName: TCollection_HAsciiString; aDensValType: TCollection_HAsciiString; [Symbol.dispose](): void };
+  static GetMaterial(MatL: TDF_Label, aDensity?: number): { returnValue: boolean; aName: TCollection_HAsciiString; aDescription: TCollection_HAsciiString; aDensity: number; aDensName: TCollection_HAsciiString; aDensValType: TCollection_HAsciiString; [Symbol.dispose](): void };
   /**
    * Find referred material and return density from it if no material --> return 0.
    */
@@ -33904,6 +34193,7 @@ export type OpenCascadeInstance = {
   TopLoc_Location: typeof TopLoc_Location;
   gp_Circ2d: typeof gp_Circ2d;
   gp_Vec: typeof gp_Vec;
+  gp_Pln: typeof gp_Pln;
   gp_Elips2d: typeof gp_Elips2d;
   gp_GTrsf2d: typeof gp_GTrsf2d;
   gp_Ax1: typeof gp_Ax1;
@@ -34226,6 +34516,7 @@ export type OpenCascadeInstance = {
   BRepOffsetAPI_MakeOffsetShape: typeof BRepOffsetAPI_MakeOffsetShape;
   BRepOffsetAPI_ThruSections: typeof BRepOffsetAPI_ThruSections;
   BRepOffsetAPI_MakeOffset: typeof BRepOffsetAPI_MakeOffset;
+  BRepOffsetAPI_DraftAngle: typeof BRepOffsetAPI_DraftAngle;
   BRepOffsetAPI_MakePipeShell: typeof BRepOffsetAPI_MakePipeShell;
   BRepExtrema_DistShapeShape: typeof BRepExtrema_DistShapeShape;
   BRepBndLib: typeof BRepBndLib;

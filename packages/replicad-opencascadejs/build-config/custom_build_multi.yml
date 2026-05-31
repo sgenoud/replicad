@@ -28,6 +28,7 @@ mainBuild:
     - symbol: gp_Elips
     - symbol: gp_Cylinder
     - symbol: gp_Sphere
+    - symbol: gp_Pln
     - symbol: gp_Trsf
     - symbol: gp_GTrsf
     - symbol: Geom2d_Line
@@ -169,6 +170,7 @@ mainBuild:
     - symbol: BRepOffsetAPI_MakeOffsetShape
     - symbol: BRepOffsetAPI_MakePipeShell
     - symbol: BRepOffsetAPI_MakeFilling
+    - symbol: BRepOffsetAPI_DraftAngle
     - symbol: BRepOffset_Mode
     - symbol: BRepFilletAPI_LocalOperation
     - symbol: BRepFilletAPI_MakeFillet

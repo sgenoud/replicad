@@ -1,8 +1,8 @@
 {
   "schema": "build-manifest-v2",
-  "timestamp": "2026-05-30T10:45:35Z",
+  "timestamp": "2026-05-31T05:14:05Z",
   "yaml_config": "custom_build_single.yml",
-  "yaml_hash": "4a9e300646d8",
+  "yaml_hash": "cf519fbcbd97",
   "validation_passed": true,
   "symbols": {
     "requested": [
@@ -48,6 +48,7 @@
       "BRepLib",
       "BRepMesh_DiscretRoot",
       "BRepMesh_IncrementalMesh",
+      "BRepOffsetAPI_DraftAngle",
       "BRepOffsetAPI_MakeFilling",
       "BRepOffsetAPI_MakeOffset",
       "BRepOffsetAPI_MakeOffsetShape",
@@ -223,6 +224,7 @@
       "gp_Elips2d",
       "gp_GTrsf",
       "gp_GTrsf2d",
+      "gp_Pln",
       "gp_Pnt",
       "gp_Pnt2d",
       "gp_Sphere",
@@ -278,7 +280,7 @@
       }
     ],
     "builtin": [],
-    "extra_compiled": 5099,
+    "extra_compiled": 5097,
     "pass": true
   },
   "outputs": [
@@ -286,7 +288,7 @@
       "name": "replicad_single.js",
       "wasm_file": "replicad_single.wasm",
       "wasm_exists": true,
-      "wasm_size": 22550046,
+      "wasm_size": 22703479,
       "js_exists": true,
       "js_size": 59120,
       "pass": true
@@ -314,12 +316,12 @@
       {
         "file": "Handle_math_NotSquare.cpp",
         "error_type": "compile_error",
-        "message": "/Users/rifont/git/tau/repos/opencascade.js/deps/OCCT/src/FoundationClasses/TKernel/Standard/Standard_Handle.hxx:68:9: error: cannot initialize a member subobject of type 'Standard_Transient *' with an rvalue of type 'math_NotSquare *'"
+        "message": "/opencascade.js/build/occt-includes/Standard_Handle.hxx:68:9: error: cannot initialize a member subobject of type 'Standard_Transient *' with an rvalue of type 'math_NotSquare *'"
       },
       {
         "file": "Handle_math_SingularMatrix.cpp",
         "error_type": "compile_error",
-        "message": "/Users/rifont/git/tau/repos/opencascade.js/deps/OCCT/src/FoundationClasses/TKernel/Standard/Standard_Handle.hxx:68:9: error: cannot initialize a member subobject of type 'Standard_Transient *' with an rvalue of type 'math_SingularMatrix *'"
+        "message": "/opencascade.js/build/occt-includes/Standard_Handle.hxx:68:9: error: cannot initialize a member subobject of type 'Standard_Transient *' with an rvalue of type 'math_SingularMatrix *'"
       }
     ]
   }

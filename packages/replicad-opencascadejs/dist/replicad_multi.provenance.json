@@ -1,16 +1,16 @@
 {
   "schema": "wasm-build-provenance-v1.1",
-  "buildId": "20260530T104559-O3-noLTO-multi",
-  "timestamp": "2026-05-30T10:45:59.649589+00:00",
+  "buildId": "20260531T051513-O3-noLTO-multi",
+  "timestamp": "2026-05-31T05:15:13.122271+00:00",
   "toolchain": {
     "emscripten": "5.0.1",
-    "llvm": "17",
-    "wasmOpt": "(version_123-685-g18ba06162)",
+    "llvm": "unknown",
+    "wasmOpt": "(version_125-181-g18ba06162)",
     "python": "3.14.4"
   },
   "source": {
     "occtCommit": "d3056ef80c9668f395da40f5fd7be186cae4501f",
-    "opencascadejsCommit": "1576ec864cd8443686b50992e633c7875294079e",
+    "opencascadejsCommit": "unknown",
     "filterPackagesHash": "8b3ad5b343d6",
     "pinnedDeps": {
       "occt": {
@@ -55,8 +55,8 @@
   },
   "linking": {
     "yamlConfig": "replicad_multi.js",
-    "yamlConfigHash": "68625b102b84",
-    "boundSymbols": 227,
+    "yamlConfigHash": "0d2c08fa5910",
+    "boundSymbols": 229,
     "symbolList": [
       "Message_ProgressRange",
       "TColgp_Array1OfDir",
@@ -85,6 +85,7 @@
       "gp_Elips",
       "gp_Cylinder",
       "gp_Sphere",
+      "gp_Pln",
       "gp_Trsf",
       "gp_GTrsf",
       "Geom2d_Line",
@@ -226,6 +227,7 @@
       "BRepOffsetAPI_MakeOffsetShape",
       "BRepOffsetAPI_MakePipeShell",
       "BRepOffsetAPI_MakeFilling",
+      "BRepOffsetAPI_DraftAngle",
       "BRepOffset_Mode",
       "BRepFilletAPI_LocalOperation",
       "BRepFilletAPI_MakeFillet",
@@ -310,7 +312,7 @@
       "-sSHARED_MEMORY=1",
       "-sENVIRONMENT=web,worker,node"
     ],
-    "linkDuration_s": 33.9
+    "linkDuration_s": 43.2
   },
   "postProcessing": {
     "wasmOptFlags": [
@@ -327,55 +329,22 @@
       "--enable-simd",
       "--enable-threads"
     ],
-    "preOptSize": 22079076,
-    "postOptSize": 22059964,
+    "preOptSize": 22225686,
+    "postOptSize": 22206339,
     "optReduction": "0.1%",
-    "wasmOptDuration_s": 67.7
+    "wasmOptDuration_s": 81.0
   },
   "output": {
-    "replicad_single.wasm": {
-      "size": 22550046,
-      "sha256": "0f33ae57edd0263c"
-    },
-    "opencascade_full_multi.wasm": {
-      "size": 40852397,
-      "sha256": "0349856343e67ed4"
-    },
     "replicad_multi.wasm": {
-      "size": 22059964,
-      "sha256": "783506730930e0fe"
-    },
-    "opencascade_full.wasm": {
-      "size": 41036092,
-      "sha256": "b533498aacef1924"
-    },
-    "opencascade_full_multi.js": {
-      "size": 80468
-    },
-    "replicad_single.js": {
-      "size": 59120
-    },
-    "opencascade_full.js": {
-      "size": 72290
+      "size": 22206339,
+      "sha256": "8fd981d8f14ee56b"
     },
     "replicad_multi.js": {
       "size": 66727
     },
-    "opencascade_full.d.ts": {
-      "size": 11130682,
-      "lines": 258069
-    },
     "replicad_multi.d.ts": {
-      "size": 1624332,
-      "lines": 34363
-    },
-    "replicad_single.d.ts": {
-      "size": 1624332,
-      "lines": 34363
-    },
-    "opencascade_full_multi.d.ts": {
-      "size": 11130682,
-      "lines": 258069
+      "size": 1639852,
+      "lines": 34649
     }
   },
   "sections": {},
@@ -387,5 +356,5 @@
     "total": 878,
     "dropped": 797
   },
-  "totalDuration_s": 0
+  "totalDuration_s": 144
 }
