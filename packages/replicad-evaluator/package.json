@@ -32,6 +32,8 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.1",
+    "replicad": "workspace:@taucad/replicad@^",
+    "replicad-opencascadejs": "workspace:@taucad/replicad-opencascadejs@^",
     "typescript": "5.1.6",
     "vite": "^4.5.5",
     "vite-plugin-dts": "^3.5.2",

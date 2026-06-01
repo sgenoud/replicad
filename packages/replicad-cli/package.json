@@ -43,9 +43,9 @@
     "commander": "^14.0.1",
     "jszip": "^3.10.1",
     "manifold-3d": "^3.0.1",
-    "replicad": "workspace:^",
+    "replicad": "workspace:@taucad/replicad@^",
     "replicad-evaluator": "workspace:^",
-    "replicad-opencascadejs": "workspace:^",
+    "replicad-opencascadejs": "workspace:@taucad/replicad-opencascadejs@^",
     "tsx": "^4.20.6"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { Command, Option } from "commander";
 import { getManifoldModule, setWasmUrl } from "manifold-3d/lib/wasm.js";
-import opencascadeModule from "replicad-opencascadejs/src/replicad_single.js";
+import opencascadeModule from "replicad-opencascadejs";
 import * as replicad from "replicad";
 import { createEvaluator } from "replicad-evaluator";
 import packageJson from "../package.json" with { type: "json" };
@@ -97,7 +97,7 @@ async function createCliEvaluator() {
     (opencascadeModule as any)?.default?.default ||
     (opencascadeModule as any)?.default ||
     opencascadeModule;
-  const wasmPath = require.resolve("replicad-opencascadejs/src/replicad_single.wasm");
+  const wasmPath = require.resolve("replicad-opencascadejs/wasm");
   const manifoldWasmPath = require.resolve("manifold-3d/manifold.wasm");
   setWasmUrl(manifoldWasmPath);
   const oc = await openCascadeFactory({

@@ -1,7 +1,6 @@
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 import { beforeAll } from "vitest";
-import opencascade from "../../replicad-opencascadejs/src/replicad_single.js";
+import opencascade from "replicad-opencascadejs";
 import * as replicad from "../../replicad/src/index";
 
 declare global {
@@ -12,11 +11,8 @@ declare global {
 beforeAll(async () => {
   if (globalThis.replicadEvaluatorReady) return;
 
-  const here = dirname(fileURLToPath(import.meta.url));
-  const opencascadeWasm = join(
-    here,
-    "../../replicad-opencascadejs/src/replicad_single.wasm"
-  );
+  const require = createRequire(import.meta.url);
+  const opencascadeWasm = require.resolve("replicad-opencascadejs/wasm");
 
   globalThis.replicadEvaluatorOC = await opencascade({
     locateFile: () => opencascadeWasm,

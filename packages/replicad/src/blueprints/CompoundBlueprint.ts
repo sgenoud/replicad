@@ -120,11 +120,14 @@ export default class CompoundBlueprint implements DrawingInterface {
   }
 
   toSVGPaths() {
-    return this.blueprints.flatMap((bp) => bp.toSVGPaths());
+    return this.blueprints.flatMap((bp) => bp.toSVGPaths()).sort();
   }
 
   toSVGGroup() {
-    return `<g>${this.blueprints.map((b) => b.toSVGPath()).join("")}</g>`;
+    return `<g>${this.blueprints
+      .map((b) => b.toSVGPath())
+      .sort()
+      .join("")}</g>`;
   }
 
   toSVG(margin = 1) {

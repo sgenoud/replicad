@@ -33,6 +33,20 @@ import { asSVG, viewbox } from "./svg";
 import { GCWithScope } from "../register";
 import { getSingleFace, SingleFace } from "../finders";
 
+const canonicalClosedCurveStart = (curves: Curve2D[]): Curve2D[] => {
+  if (curves.length <= 1) return curves;
+
+  const startIndex = curves
+    .map((curve, index) => ({ index, point: curve.firstPoint }))
+    .sort((a, b) => {
+      const [ax, ay] = a.point;
+      const [bx, by] = b.point;
+      return ax - bx || ay - by || a.index - b.index;
+    })[0].index;
+
+  return [...curves.slice(startIndex), ...curves.slice(0, startIndex)];
+};
+
 /**
  * A Blueprint is an abstract Sketch, a 2D set of curves that can then be
  * sketched on different surfaces (faces or planes)
@@ -248,14 +262,17 @@ export default class Blueprint implements DrawingInterface {
   toSVGPathD() {
     const r = GCWithScope();
     const bp = this.clone().mirror([1, 0], [0, 0], "plane");
+    const curves = bp.isClosed()
+      ? canonicalClosedCurveStart(bp.curves)
+      : bp.curves;
 
-    const compatibleCurves = approximateAsSvgCompatibleCurve(bp.curves);
+    const compatibleCurves = approximateAsSvgCompatibleCurve(curves);
 
     const path = compatibleCurves.flatMap((c) => {
       return adaptedCurveToPathElem(r(c.adaptor()), c.lastPoint);
     });
 
-    const [startX, startY] = bp.curves[0].firstPoint;
+    const [startX, startY] = curves[0].firstPoint;
     return `M ${round5(startX)} ${round5(startY)} ${path.join(" ")}${
       bp.isClosed() ? " Z" : ""
     }`;

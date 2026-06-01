@@ -189,26 +189,24 @@ export const makeBSplineApproximation = function makeBSplineApproximation(
   let splineBuilder: GeomAPI_PointsToBSpline;
 
   if (smoothing) {
-    splineBuilder = r(
-      new oc.GeomAPI_PointsToBSpline(
-        pnts,
-        smoothing[0],
-        smoothing[1],
-        smoothing[2],
-        degMax,
-        oc.GeomAbs_Shape.GeomAbs_C2,
-        tolerance
-      )
+    splineBuilder = r(new oc.GeomAPI_PointsToBSpline());
+    splineBuilder.Init(
+      pnts,
+      smoothing[0],
+      smoothing[1],
+      smoothing[2],
+      degMax,
+      oc.GeomAbs_Shape.GeomAbs_C2,
+      tolerance
     );
   } else {
-    splineBuilder = r(
-      new oc.GeomAPI_PointsToBSpline(
-        pnts,
-        degMin,
-        degMax,
-        oc.GeomAbs_Shape.GeomAbs_C2,
-        tolerance
-      )
+    splineBuilder = r(new oc.GeomAPI_PointsToBSpline());
+    splineBuilder.Init(
+      pnts,
+      degMin,
+      degMax,
+      oc.GeomAbs_Shape.GeomAbs_C2,
+      tolerance
     );
   }
 

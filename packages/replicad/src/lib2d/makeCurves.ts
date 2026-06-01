@@ -304,26 +304,24 @@ export function make2dInerpolatedBSplineCurve(
   let splineBuilder: Geom2dAPI_PointsToBSpline;
 
   if (smoothing) {
-    splineBuilder = r(
-      new oc.Geom2dAPI_PointsToBSpline(
-        pnts,
-        smoothing[0],
-        smoothing[1],
-        smoothing[2],
-        degMax,
-        oc.GeomAbs_Shape.GeomAbs_C2,
-        tolerance
-      )
+    splineBuilder = r(new oc.Geom2dAPI_PointsToBSpline());
+    splineBuilder.Init(
+      pnts,
+      smoothing[0],
+      smoothing[1],
+      smoothing[2],
+      degMax,
+      oc.GeomAbs_Shape.GeomAbs_C2,
+      tolerance
     );
   } else {
-    splineBuilder = r(
-      new oc.Geom2dAPI_PointsToBSpline(
-        pnts,
-        degMin,
-        degMax,
-        oc.GeomAbs_Shape.GeomAbs_C2,
-        tolerance
-      )
+    splineBuilder = r(new oc.Geom2dAPI_PointsToBSpline());
+    splineBuilder.Init(
+      pnts,
+      degMin,
+      degMax,
+      oc.GeomAbs_Shape.GeomAbs_C2,
+      tolerance
     );
   }
 
