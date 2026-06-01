@@ -261,12 +261,12 @@ export function edgeToCurve(e: Edge, face: Face): Curve2D {
 const poles3dTo2d = (poles: any, register: <T extends Deletable>(value: T) => T) => {
   const oc = getOC();
   const poles2d = register(
-    new oc.TColgp_Array1OfPnt2d_2(poles.Lower(), poles.Upper())
+    new oc.NCollection_Array1_gp_Pnt2d(poles.Lower(), poles.Upper())
   );
 
   for (let i = poles.Lower(); i <= poles.Upper(); i++) {
     const pole = register(poles.Value(i));
-    poles2d.SetValue(i, register(new oc.gp_Pnt2d_3(pole.X(), pole.Y())));
+    poles2d.SetValue(i, register(new oc.gp_Pnt2d(pole.X(), pole.Y())));
   }
 
   return poles2d;
@@ -287,16 +287,16 @@ const axis3dTo2d = (axis: any, register: <T extends Deletable>(value: T) => T) =
   const yDirection = register(axis.YDirection());
 
   return register(
-    new oc.gp_Ax22d_2(
-      register(new oc.gp_Pnt2d_3(location.X(), location.Y())),
+    new oc.gp_Ax22d(
+      register(new oc.gp_Pnt2d(location.X(), location.Y())),
       register(
-        new oc.gp_Dir2d_4(
+        new oc.gp_Dir2d(
           direction3dTo2d(xDirection)[0],
           direction3dTo2d(xDirection)[1]
         )
       ),
       register(
-        new oc.gp_Dir2d_4(
+        new oc.gp_Dir2d(
           direction3dTo2d(yDirection)[0],
           direction3dTo2d(yDirection)[1]
         )
@@ -314,7 +314,7 @@ export function edgeToCurveOnPlane(e: Edge): Curve2D {
   const oc = getOC();
   const r = GCWithScope();
 
-  const adaptor = r(new oc.BRepAdaptor_Curve_2(e.wrapped));
+  const adaptor = r(new oc.BRepAdaptor_Curve(e.wrapped));
   const curveType = findCurveType(adaptor.GetType());
   const firstParameter = adaptor.FirstParameter();
   const lastParameter = adaptor.LastParameter();
@@ -322,14 +322,12 @@ export function edgeToCurveOnPlane(e: Edge): Curve2D {
   const wrapAndTrim = (curve: any) =>
     orientCurveLikeEdge(
       new Curve2D(
-        new oc.Handle_Geom2d_Curve_2(
-          new oc.Geom2d_TrimmedCurve(
-            new oc.Handle_Geom2d_Curve_2(curve),
-            firstParameter,
-            lastParameter,
-            true,
-            true
-          )
+        new oc.Geom2d_TrimmedCurve(
+          curve,
+          firstParameter,
+          lastParameter,
+          true,
+          true
         )
       ),
       e
@@ -343,8 +341,8 @@ export function edgeToCurveOnPlane(e: Edge): Curve2D {
 
   if (curveType === "CIRCLE") {
     const circle = adaptor.Circle();
-    const curveCopy = new oc.Geom2d_Circle_1(
-      r(new oc.gp_Circ2d_3(axis3dTo2d(r(circle.Position()), r), circle.Radius()))
+    const curveCopy = new oc.Geom2d_Circle(
+      r(new oc.gp_Circ2d(axis3dTo2d(r(circle.Position()), r), circle.Radius()))
     );
 
     return wrapAndTrim(curveCopy);
@@ -352,9 +350,9 @@ export function edgeToCurveOnPlane(e: Edge): Curve2D {
 
   if (curveType === "ELLIPSE") {
     const ellipse = adaptor.Ellipse();
-    const curveCopy = new oc.Geom2d_Ellipse_1(
+    const curveCopy = new oc.Geom2d_Ellipse(
       r(
-        new oc.gp_Elips2d_3(
+        new oc.gp_Elips2d(
           axis3dTo2d(r(ellipse.Position()), r),
           ellipse.MajorRadius(),
           ellipse.MinorRadius()
@@ -366,44 +364,38 @@ export function edgeToCurveOnPlane(e: Edge): Curve2D {
   }
 
   if (curveType === "BEZIER_CURVE") {
-    const bezier = adaptor.Bezier().get();
-    const poles = poles3dTo2d(r(bezier.Poles_2()), r);
+    const bezier = adaptor.Bezier();
+    const poles = poles3dTo2d(r(bezier.Poles()), r);
     const curveCopy = bezier.IsRational()
-      ? new oc.Geom2d_BezierCurve_2(poles, bezier.Weights_2())
-      : new oc.Geom2d_BezierCurve_1(poles);
+      ? new oc.Geom2d_BezierCurve(poles, bezier.Weights())
+      : new oc.Geom2d_BezierCurve(poles);
     curveCopy.Segment(firstParameter, lastParameter);
 
-    return orientCurveLikeEdge(
-      new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy)),
-      e
-    );
+    return orientCurveLikeEdge(new Curve2D(curveCopy), e);
   }
 
   if (curveType === "BSPLINE_CURVE") {
-    const bspline = adaptor.BSpline().get();
-    const poles = poles3dTo2d(r(bspline.Poles_2()), r);
+    const bspline = adaptor.BSpline();
+    const poles = poles3dTo2d(r(bspline.Poles()), r);
     const curveCopy = bspline.IsRational()
-      ? new oc.Geom2d_BSplineCurve_2(
+      ? new oc.Geom2d_BSplineCurve(
           poles,
-          bspline.Weights_2(),
-          bspline.Knots_2(),
-          bspline.Multiplicities_2(),
+          bspline.Weights(),
+          bspline.Knots(),
+          bspline.Multiplicities(),
           bspline.Degree(),
           bspline.IsPeriodic()
         )
-      : new oc.Geom2d_BSplineCurve_1(
+      : new oc.Geom2d_BSplineCurve(
           poles,
-          bspline.Knots_2(),
-          bspline.Multiplicities_2(),
+          bspline.Knots(),
+          bspline.Multiplicities(),
           bspline.Degree(),
           bspline.IsPeriodic()
         );
     curveCopy.Segment(firstParameter, lastParameter, 1e-9);
 
-    return orientCurveLikeEdge(
-      new Curve2D(new oc.Handle_Geom2d_Curve_2(curveCopy)),
-      e
-    );
+    return orientCurveLikeEdge(new Curve2D(curveCopy), e);
   }
 
   throw new Error(`Unsupported projected curve type: ${curveType}`);

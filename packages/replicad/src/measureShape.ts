@@ -6,8 +6,6 @@ import type {
   GProp_GProps,
 } from "replicad-opencascadejs";
 import { GCWithScope, WrappingObj } from "./register";
-import { ProgressRange } from "./utils/ProgressRange";
-
 class PhysicalProperties extends WrappingObj<GProp_GProps> {
   get centerOfMass(): [number, number, number] {
     const r = GCWithScope();
@@ -103,8 +101,7 @@ export class DistanceTool extends WrappingObj<BRepExtrema_DistShapeShape> {
   distanceBetween(shape1: AnyShape, shape2: AnyShape): number {
     this.wrapped.LoadS1(shape1.wrapped);
     this.wrapped.LoadS2(shape2.wrapped);
-    const progress = new ProgressRange();
-    this.wrapped.Perform(progress.wrapped);
+    this.wrapped.Perform();
     return this.wrapped.Value();
   }
 }
@@ -130,8 +127,7 @@ export class DistanceQuery extends WrappingObj<BRepExtrema_DistShapeShape> {
 
   distanceTo(shape: AnyShape): number {
     this.wrapped.LoadS2(shape.wrapped);
-    const progress = new ProgressRange();
-    this.wrapped.Perform(progress.wrapped);
+    this.wrapped.Perform();
     return this.wrapped.Value();
   }
 }

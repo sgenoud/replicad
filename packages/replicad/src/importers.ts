@@ -23,7 +23,7 @@ export async function importSTEP(STLBlob: Blob) {
   const reader = r(new oc.STEPControl_Reader());
   if (reader.ReadFile(fileName)) {
     oc.FS.unlink("/" + fileName);
-    reader.TransferRoots(r(new oc.Message_ProgressRange()));
+    reader.TransferRoots();
     const stepShape = r(reader.OneShape());
 
     const shape = cast(stepShape);

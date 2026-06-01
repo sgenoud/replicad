@@ -17,16 +17,14 @@ import { getOC } from '../oclib.js';
 const guessFaceFromWires = (wires: Wire[]): Face => {
   const oc = getOC();
 
-  const faceBuilder = new oc.BRepOffsetAPI_MakeFilling(3, 15, 2, false, 1e-5, 1e-4, 1e-2, 0.1, 8, 9);
+  const faceBuilder = new oc.BRepOffsetAPI_MakeFilling();
   wires.forEach((wire, wireIndex) => {
     wire.edges.forEach((edge) => {
       faceBuilder.Add(edge.wrapped, oc.GeomAbs_Shape.GeomAbs_C0, wireIndex === 0);
     });
   });
 
-  const progress = new oc.Message_ProgressRange();
-  faceBuilder.Build(progress);
-  progress.delete();
+  faceBuilder.Build();
   const newFace = cast(faceBuilder.Shape());
 
   faceBuilder.delete();

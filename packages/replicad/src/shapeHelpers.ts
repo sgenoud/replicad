@@ -278,8 +278,7 @@ export const assembleWire = (listOfEdges: (Edge | Wire)[]): Wire => {
     }
   });
 
-  const progress = new oc.Message_ProgressRange();
-  wireBuilder.Build(progress);
+  wireBuilder.Build();
   const res = wireBuilder.Error();
   if (res !== oc.BRepBuilderAPI_WireError.BRepBuilderAPI_WireDone) {
     const errorNames = new Map([
@@ -300,7 +299,6 @@ export const assembleWire = (listOfEdges: (Edge | Wire)[]): Wire => {
 
   const wire = new Wire(wireBuilder.Wire());
   wireBuilder.delete();
-  progress.delete();
   return wire;
 };
 
@@ -337,20 +335,7 @@ export const makeNonPlanarFace = (wire: Wire): Face => {
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const faceBuilder = r(
-    new oc.BRepOffsetAPI_MakeFilling(
-      3,
-      15,
-      2,
-      false,
-      1e-5,
-      1e-4,
-      1e-2,
-      0.1,
-      8,
-      9
-    )
-  );
+  const faceBuilder = r(new oc.BRepOffsetAPI_MakeFilling());
   wire.edges.forEach((edge) => {
     faceBuilder.Add(
       r(edge).wrapped,
@@ -359,8 +344,7 @@ export const makeNonPlanarFace = (wire: Wire): Face => {
     );
   });
 
-  const progress = r(new oc.Message_ProgressRange());
-  faceBuilder.Build(progress);
+  faceBuilder.Build();
   const newFace = cast(faceBuilder.Shape());
 
   gc();
@@ -522,7 +506,6 @@ export const makeOffset = (
   tolerance = 1e-6
 ): Shape3D => {
   const oc = getOC();
-  const progress = new oc.Message_ProgressRange();
   const offsetBuilder = new oc.BRepOffsetAPI_MakeOffsetShape();
   offsetBuilder.PerformByJoin(
     face.wrapped,
@@ -532,13 +515,11 @@ export const makeOffset = (
     false,
     false,
     oc.GeomAbs_JoinType.GeomAbs_Arc,
-    false,
-    progress
+    false
   );
 
   const newShape = cast(downcast(offsetBuilder.Shape()));
   offsetBuilder.delete();
-  progress.delete();
 
   if (!isShape3D(newShape)) throw new Error("Could not offset to a 3d shape");
   return newShape;
@@ -566,14 +547,14 @@ function _weld(facesOrShells: Array<Face | Shell>): AnyShape {
   const r = GCWithScope();
 
   const shellBuilder = r(
-    new oc.BRepBuilderAPI_Sewing(1e-6, true, true, true, false)
+    new oc.BRepBuilderAPI_Sewing(1e-6, true, true, true)
   );
 
   facesOrShells.forEach(({ wrapped }) => {
     shellBuilder.Add(wrapped);
   });
 
-  shellBuilder.Perform(r(new oc.Message_ProgressRange()));
+  shellBuilder.Perform();
 
   return cast(downcast(shellBuilder.SewedShape()));
 }

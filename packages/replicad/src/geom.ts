@@ -56,7 +56,7 @@ export function makePln(origin: Point, dir: Point): gp_Pln {
   const direction = asDir(dir);
 
   const oc = getOC();
-  const pln = new oc.gp_Pln_3(orig, direction);
+  const pln = new oc.gp_Pln(orig, direction);
 
   orig.delete();
   direction.delete();

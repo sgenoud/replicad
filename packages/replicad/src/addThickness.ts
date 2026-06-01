@@ -126,8 +126,7 @@ function genericSweep(
   if (!law) sweepBuilder.Add(wire.wrapped, !!withContact, withCorrection);
   else sweepBuilder.SetLaw(wire.wrapped, law, !!withContact, withCorrection);
 
-  const progress = new oc.Message_ProgressRange();
-  sweepBuilder.Build(progress);
+  sweepBuilder.Build();
   if (!shellMode) {
     sweepBuilder.MakeSolid();
   }
@@ -145,7 +144,6 @@ function genericSweep(
   }
 
   sweepBuilder.delete();
-  progress.delete();
   return shape;
 }
 
@@ -303,7 +301,7 @@ export const loft = (
   const [r, gc] = localGC();
 
   const loftBuilder = r(
-    new oc.BRepOffsetAPI_ThruSections(!returnShell, ruled, 1e-6)
+    new oc.BRepOffsetAPI_ThruSections(!returnShell, ruled)
   );
 
   if (startPoint) {
@@ -314,8 +312,7 @@ export const loft = (
     loftBuilder.AddVertex(r(makeVertex(endPoint)).wrapped);
   }
 
-  const progress = r(new oc.Message_ProgressRange());
-  loftBuilder.Build(progress);
+  loftBuilder.Build();
   const shape = cast(loftBuilder.Shape());
   gc();
 
