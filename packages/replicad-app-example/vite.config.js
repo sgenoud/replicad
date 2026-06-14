@@ -7,6 +7,9 @@ export default defineConfig({
   build: {
     outDir: "build",
   },
+  worker: {
+    format: "es",
+  },
   server: {
     port: 4444,
   },
