@@ -716,9 +716,16 @@ const triangles: [Point2D, Point2D, Point2D][] = [
 ];
 
 test("build from triangles", () => {
-  const drawings = triangles
-    .sort(() => Math.random() - 0.4)
-    .map(([a, b, c]) => draw(a).lineTo(b).lineTo(c).close());
+  // Input order is fixed, not shuffled. fuseAll produces the same *geometry*
+  // regardless of input order, but toSVG() emits subpaths in input order, so a
+  // Math.random() shuffle here made the serialized SVG differ every run while
+  // the shape stayed identical — an exact-string snapshot of that is flaky by
+  // construction (it passed historically only by luck). A fixed non-identity
+  // permutation keeps this exercising fuseAll on scrambled input while making
+  // the snapshot reproducible. Order-independence of fuseAll is a separate
+  // property; assert it directly rather than via a randomized snapshot.
+  const scrambled = [...triangles].reverse();
+  const drawings = scrambled.map(([a, b, c]) => draw(a).lineTo(b).lineTo(c).close());
 
   const fused = fuseAll(drawings);
   expect(fused.toSVG()).toMatchSVGSnapshot();
