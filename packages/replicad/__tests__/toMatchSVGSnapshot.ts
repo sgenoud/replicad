@@ -17,6 +17,16 @@ function updateSnapshotState(
   return { ...originalSnapshotState, ...partialSnapshotState };
 }
 
+// The snapshot directory is already scoped per test file (dirname(testPath) +
+// __snapshots__), so the identifier only needs to disambiguate tests *within* a
+// file. `currentTestName` historically carried a leading "<relative-path> > "
+// segment that vitest 4 dropped, which silently orphaned every committed
+// baseline. Strip any such file-path prefix so the identifier is stable across
+// vitest versions and depends only on the test's own name.
+function testNameKey(currentTestName: string): string {
+  return currentTestName.replace(/^.*\.[cm]?[jt]sx? > /, "");
+}
+
 function createSnapshotIdentifier({
   testPath,
   currentTestName,
@@ -27,9 +37,9 @@ function createSnapshotIdentifier({
   snapshotState: any;
 }) {
   const counter = snapshotState._counters.get(currentTestName);
-  const snapshotIdentifier = `${path.basename(
-    testPath
-  )}-${currentTestName}-${counter}`
+  const snapshotIdentifier = `${path.basename(testPath)}-${testNameKey(
+    currentTestName
+  )}-${counter}`
     .replace(/\s+/g, "-")
     .replace(/\//g, "-")
     .replace(/>/g, "")
@@ -76,18 +86,22 @@ export default function toMatchSVGSnapshot(received: string) {
     `${snapshotIdentifier}-snap.svg`
   );
 
-  if (
-    snapshotState._updateSnapshot === "none" &&
-    !fs.existsSync(expectedSnapshot)
-  ) {
+  // Baselines are committed golden files. A missing one is a failure — never a
+  // silent auto-write — unless the run explicitly opts into recording with `-u`
+  // (which sets _updateSnapshot to "all"). Without this, a baseline renamed by a
+  // tooling change (e.g. a vitest upgrade altering the identifier) would be
+  // regenerated on the next local run and the test would pass against nothing.
+  if (snapshotState._updateSnapshot !== "all" && !fs.existsSync(expectedSnapshot)) {
     return {
       pass: false,
       message: () =>
-        `New snapshot was ${chalk.bold.red(
-          "not written"
-        )}. The update flag must be explicitly ` +
-        "passed to write a new snapshot.\n\n + This is likely because this test is run in a continuous " +
-        "integration (CI) environment in which snapshots are not written by default.\n\n",
+        `SVG snapshot ${chalk.bold.red("is missing")}: ${path.relative(
+          process.cwd(),
+          expectedSnapshot
+        )}\n\n` +
+        "Re-record it deliberately with `vitest -u` if the change is expected. " +
+        "It is not written automatically so a renamed or deleted baseline fails " +
+        "loudly instead of passing against a freshly-written file.\n\n",
     };
   }
 
