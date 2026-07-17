@@ -3,12 +3,25 @@
 This repo contains the code of the replicad studio
 website https://studio.replicad.xyz/
 
-You can run it locall by cloning the repo and running (you can use another
+You can run it locally by cloning the repo and running (you can use another
 package manager as well):
 
 ```bash
 cp -r replicad/packages/studio my-studio
 cd my-studio
+```
+
+The copied `package.json` contains `workspace:^` dependencies, which only work
+inside the monorepo. Replace them automatically with the latest published npm
+versions before installing:
+
+```bash
+npm pkg set \
+  dependencies.replicad="^$(npm view replicad version)" \
+  dependencies.replicad-evaluator="^$(npm view replicad-evaluator version)" \
+  dependencies.replicad-opencascadejs="^$(npm view replicad-opencascadejs version)" \
+  dependencies.replicad-threejs-helper="^$(npm view replicad-threejs-helper version)"
+
 npm install
 ```
 
