@@ -65,15 +65,14 @@ The generated package contains only the runtime artifacts listed in `package.jso
 The migration is covered at three levels:
 
 - direct `replicad-opencascadejs` tests exercise the generated single and multi modules, native face/edge extraction, located and free edges, bounded hash parity, and pthread startup;
-- the direct edge benchmark compares the historical JavaScript algorithm and native extractor without depending on the consumer-facing `replicad` package; and
-- Replicad tests cover the high-level mesh contract and an OCCT 8.0.1 STEPCAF export/readback regression that preserves a conical chamfer face.
+- Replicad tests cover the high-level mesh contract; and
+- package and consumer builds verify the generated artifacts through the public APIs.
 
 Run the package checks from the repository root after building the WASM artifacts:
 
 ```sh
 pnpm --filter replicad-opencascadejs test
-pnpm --filter replicad-opencascadejs benchmark:edge-mesh
 pnpm --filter replicad typecheck
-pnpm --filter replicad test --run
+pnpm --filter replicad test -- --run
 pnpm --filter replicad build
 ```
