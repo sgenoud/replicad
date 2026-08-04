@@ -23,6 +23,7 @@ function* commonSegmentsIteration(
   if (!nSegments) return;
 
   for (let i = 1; i <= nSegments; i++) {
+    // Ignore retrieval failures from degenerate intersections.
     try {
       const { Curve1, Curve2 } = intersector.Segment(i);
       Curve2.delete();
