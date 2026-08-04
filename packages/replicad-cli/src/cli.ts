@@ -9,7 +9,13 @@ import packageJson from "../package.json" with { type: "json" };
 import { saveBuildOutput } from "./saveOutput";
 import type { ProjectMode } from "./projectSvg";
 
-const FILE_TYPES = ["stl", "step", "stl-binary", "step-assembly", "json"];
+const FILE_TYPES = [
+  "stl",
+  "step",
+  "stl-binary",
+  "step-assembly",
+  "json",
+];
 
 const PROJECT_MODES = ["visible", "hidden"] as const;
 
@@ -40,7 +46,7 @@ async function parseArgs(argv: string[]) {
     .addOption(
       new Option(
         "--projection-mode <mode>",
-        "Projection mode when using --projection."
+        'Projection mode when using --projection.'
       )
         .choices(PROJECT_MODES)
         .implies({ projection: true })
@@ -109,8 +115,7 @@ async function getEvaluator() {
 }
 
 async function runCli(argv: string[]) {
-  const { done, exitCode, filetype, input, output, project } =
-    await parseArgs(argv);
+  const { done, exitCode, filetype, input, output, project } = await parseArgs(argv);
   if (done) {
     return exitCode;
   }
@@ -118,19 +123,21 @@ async function runCli(argv: string[]) {
   const code = await readFile(input, "utf8");
   const evaluator = await getEvaluator();
   const defaultParams = await evaluator.extractDefaultParamsFromCode(code);
-  const buildResult = await evaluator.buildShapesFromCode(
-    code,
-    defaultParams || {}
-  );
+  const buildResult = await evaluator.buildShapesFromCode(code, defaultParams || {});
 
   if (!Array.isArray(buildResult)) {
     throw new Error(buildResult?.message || "Failed to build shapes");
   }
 
-  await saveBuildOutput(evaluator, buildResult, output || input, {
-    fileType: filetype || "stl",
-    projectMode: project,
-  });
+  await saveBuildOutput(
+    evaluator,
+    buildResult,
+    output || input,
+    {
+      fileType: filetype || "stl",
+      projectMode: project,
+    }
+  );
 
   return 0;
 }

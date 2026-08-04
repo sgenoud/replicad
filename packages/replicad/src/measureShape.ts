@@ -55,7 +55,13 @@ export function measureShapeVolumeProperties(
 ): VolumePhysicalProperties {
   const oc = getOC();
   const properties = new oc.GProp_GProps();
-  oc.BRepGProp.VolumeProperties(shape.wrapped, properties, false, false, false);
+  oc.BRepGProp.VolumeProperties(
+    shape.wrapped,
+    properties,
+    false,
+    false,
+    false
+  );
   return new VolumePhysicalProperties(properties);
 }
 

@@ -1,4 +1,7 @@
-import { Geom2dAdaptor_Curve, Geom2d_Curve } from "replicad-opencascadejs";
+import {
+  Geom2dAdaptor_Curve,
+  Geom2d_Curve,
+} from "replicad-opencascadejs";
 
 import { CurveType, findCurveType } from "../definitionMaps";
 import precisionRound from "../utils/precisionRound";

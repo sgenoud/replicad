@@ -46,7 +46,11 @@ const guessFaceFromWires = (wires: Wire[]): Face => {
 
 const fixWire = (wire: Wire, baseFace: Face): Wire => {
   const oc = getOC();
-  const wireFixer = new oc.ShapeFix_Wire(wire.wrapped, baseFace.wrapped, 1e-9);
+  const wireFixer = new oc.ShapeFix_Wire(
+    wire.wrapped,
+    baseFace.wrapped,
+    1e-9
+  );
   wireFixer.FixEdgeCurves();
   wireFixer.delete();
   return wire;
