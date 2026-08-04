@@ -21,8 +21,6 @@ import {
   TopoDS_Shape,
 } from "replicad-opencascadejs";
 
-type Handle_Law_Function = ReturnType<Law_Function["Trim"]>;
-
 export const basicFaceExtrusion = (face: Face, extrusionVec: Vector): Solid => {
   const oc = getOC();
   const solidBuilder = new oc.BRepPrimAPI_MakePrism(
@@ -63,7 +61,7 @@ export const revolution = (
 export interface GenericSweepConfig {
   frenet?: boolean;
   auxiliarySpine?: Wire | Edge;
-  law?: null | Handle_Law_Function;
+  law?: null | Law_Function;
   transitionMode?: "right" | "transformed" | "round";
   withContact?: boolean;
   support?: TopoDS_Shape;
@@ -157,7 +155,7 @@ export interface ExtrusionProfile {
 const buildLawFromProfile = (
   extrusionLength: number,
   { profile, endFactor = 1 }: ExtrusionProfile
-): Handle_Law_Function => {
+): Law_Function => {
   let law: Law_S | Law_Linear;
   const oc = getOC();
 
