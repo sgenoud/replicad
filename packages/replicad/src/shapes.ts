@@ -1457,6 +1457,7 @@ export function downcast(shape: TopoDS_Shape): GenericTopo {
     [ta.TopAbs_FACE, oc.TopoDS.Face],
     [ta.TopAbs_SHELL, oc.TopoDS.Shell],
     [ta.TopAbs_SOLID, oc.TopoDS.Solid],
+    [ta.TopAbs_COMPSOLID, oc.ReplicadShapeCaster.CompSolid],
     [ta.TopAbs_COMPOUND, oc.TopoDS.Compound],
   ]);
 

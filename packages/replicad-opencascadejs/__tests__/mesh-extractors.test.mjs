@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
+import { createRequire } from "node:module";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -7,11 +8,23 @@ import { test } from "node:test";
 import initMulti from "../dist/replicad_multi.js";
 import initSingle from "../dist/replicad_single.js";
 
+const require = createRequire(import.meta.url);
+const initSingleCjs = require("replicad-opencascadejs");
+const initMultiCjs = require("replicad-opencascadejs/multi");
+
 const HASH_CODE_MAX = 2_147_483_647;
 const TOLERANCE = 0.1;
 const ANGULAR_TOLERANCE = 0.5;
 const distDir = fileURLToPath(new URL("../dist/", import.meta.url));
 const multiGluePath = join(distDir, "replicad_multi.js");
+
+test("CommonJS entry points expose the existing module factories", async () => {
+  assert.equal(typeof initMultiCjs, "function");
+  const oc = await initSingleCjs({
+    locateFile: () => join(distDir, "replicad_single.wasm"),
+  });
+  assert.equal(typeof oc.BRepPrimAPI_MakeBox, "function");
+});
 const runtimes = [
   {
     name: "single",

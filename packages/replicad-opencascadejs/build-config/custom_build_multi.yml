@@ -226,11 +226,9 @@ mainBuild:
   - symbol: TDataStd_GenericExtString
   - symbol: XCAFDoc_LengthUnit
   - symbol: TCollection_ExtendedString
-  - symbol: TCollection_HAsciiString
   - symbol: XCAFDoc_DocumentTool
   - symbol: XCAFDoc_ShapeTool
   - symbol: XCAFDoc_ColorTool
-  - symbol: XCAFDoc_MaterialTool
   - symbol: TDF_Label
   - symbol: TDataStd_Name
   - symbol: Quantity_ColorRGBA
@@ -244,6 +242,7 @@ mainBuild:
   - symbol: BRepToolsWrapper
   - symbol: GeomToolsWrapper
   - symbol: OCJS_ShapeHasher
+  - symbol: ReplicadShapeCaster
   - symbol: ReplicadMeshData
   - symbol: ReplicadMeshExtractor
   - symbol: ReplicadEdgeMeshData
@@ -259,7 +258,6 @@ mainBuild:
   - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory"]
   - -sENVIRONMENT=web,worker,node
   - --no-entry
-  - --emit-symbol-map
   - -sERROR_ON_UNDEFINED_SYMBOLS=0
   - -sSTACK_SIZE=8388608
   - -sWASM_BIGINT
@@ -271,6 +269,7 @@ mainBuild:
   - -sSHARED_MEMORY=1
 additionalCppFiles:
 - wrappers/shape-hasher.cpp
+- wrappers/shape-caster.cpp
 - wrappers/mesh-extractor.cpp
 - wrappers/edge-mesh-extractor.cpp
 - wrappers/brep-io.cpp

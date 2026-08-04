@@ -16,9 +16,9 @@
     "file-saver": "^2.0.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "replicad": "workspace:^",
-    "replicad-opencascadejs": "workspace:^",
-    "replicad-threejs-helper": "workspace:^",
+    "replicad": "^0.23.1",
+    "replicad-opencascadejs": "^0.23.0",
+    "replicad-threejs-helper": "^0.23.0",
     "three": "^0.155.0"
   },
   "devDependencies": {

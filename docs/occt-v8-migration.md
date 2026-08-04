@@ -15,6 +15,8 @@ The former `replicad_with_exceptions` build is removed. Both remaining builds us
 
 The multi build remains available for consumers that provide the browser isolation and worker environment required by Emscripten pthreads. Replicad's normal API is identical between the single and multi entry points.
 
+The package exposes the generated modules directly to ESM consumers and provides small CommonJS compatibility shims for `require()`. Both entry points initialize the same generated ESM modules and WebAssembly artifacts.
+
 ## OCCT 8 binding changes
 
 OCCT 8 and the updated generated bindings consolidate numbered overload classes into their public class names. Replicad therefore calls overloads such as `gp_Pnt(...)` directly instead of selecting generated names such as `gp_Pnt_2`.
@@ -64,7 +66,7 @@ This migration is built from the immutable OCCT 8.0.1 canary inputs:
 
 Adopting a later stable OpenCascade.js/libcascade 3.0.0 image is a separate follow-up. It is not part of this migration branch.
 
-The generated package contains only the runtime artifacts listed in `package.json`: JavaScript glue, WebAssembly, declarations, and symbol maps for both variants. Build manifests and provenance JSON remain local ignored diagnostics and are not versioned or packed.
+The generated package contains only the runtime artifacts listed in `package.json`: JavaScript glue, WebAssembly, and declarations for both variants. Build manifests, provenance JSON, and linker symbol maps remain local diagnostics and are not versioned or packed.
 
 ## Verification
 

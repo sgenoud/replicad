@@ -1,7 +1,8 @@
 import { readFile } from "node:fs/promises";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { Command, Option } from "commander";
-import { getManifoldModule } from "manifold-3d/lib/wasm.js";
+import { getManifoldModule, setWasmUrl } from "manifold-3d/lib/wasm.js";
 import opencascadeModule from "replicad-opencascadejs";
 import * as replicad from "replicad";
 import { createEvaluator } from "replicad-evaluator";
@@ -18,6 +19,8 @@ const FILE_TYPES = [
 ];
 
 const PROJECT_MODES = ["visible", "hidden"] as const;
+
+const require = createRequire(import.meta.url);
 
 let evaluatorPromise: Promise<ReturnType<typeof createEvaluator>> | null = null;
 let manifoldPromise: Promise<any> | null = null;
@@ -96,6 +99,7 @@ async function createCliEvaluator() {
     opencascadeModule;
   const oc = await openCascadeFactory();
   if (!manifoldPromise) {
+    setWasmUrl(require.resolve("manifold-3d/manifold.wasm"));
     manifoldPromise = getManifoldModule();
   }
   const manifold = await manifoldPromise;

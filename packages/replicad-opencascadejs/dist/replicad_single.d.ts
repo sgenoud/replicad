@@ -1302,7 +1302,7 @@ export declare class StepData_StepModel extends Interface_InterfaceModel {
   /**
    * Returns a string with the label attached to a given entity, same form as for PrintLabel.
    */
-  StringLabel(ent: Standard_Transient): TCollection_HAsciiString;
+  StringLabel(ent: Standard_Transient): unknown;
   /**
    * Return the encoding of STEP file for converting names into UNICODE. Initialized from "read.step.codepage" variable by constructor, which is Resource_UTF8 by default.
    */
@@ -1701,7 +1701,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   /**
    * Creates (if it does not exist) DimTolTool attribute on `DGTsLabel()`.
    */
-  static MaterialTool(acces: TDF_Label): XCAFDoc_MaterialTool;
+  static MaterialTool(acces: TDF_Label): unknown;
   /**
    * Checks for the MaterialTool attribute on the label's document Returns TRUE if Tool exists, ELSE if it has not been created.
    */
@@ -1831,74 +1831,6 @@ export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
    * It is possible to use <aRelocationTable> to get/set the relocation value of a source attribute.
    */
   Paste(intoAttribute: TDF_Attribute, aRelocationTable: unknown): void;
-  static get_type_name(): string;
-  static get_type_descriptor(): unknown;
-  DynamicType(): unknown;
-  NewEmpty(): TDF_Attribute;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * Provides tools to store and retrieve attributes (materials) of {@link TopoDS_Shape | `TopoDS_Shape`} in and from {@link TDocStd_Document | `TDocStd_Document`} A Document is intended to hold different attributes of ONE shape and it's sub-shapes Provide tools for management of Materialss section of document.
- */
-export declare class XCAFDoc_MaterialTool extends TDataStd_GenericEmpty {
-  constructor();
-  /**
-   * Creates (if not exist) MaterialTool.
-   */
-  static Set(L: TDF_Label): XCAFDoc_MaterialTool;
-  static GetID(): unknown;
-  /**
-   * returns the label under which colors are stored
-   */
-  BaseLabel(): TDF_Label;
-  /**
-   * Returns internal {@link XCAFDoc_ShapeTool | `XCAFDoc_ShapeTool`} tool.
-   */
-  ShapeTool(): XCAFDoc_ShapeTool;
-  /**
-   * Returns True if label belongs to a material table and is a Material definition.
-   */
-  IsMaterial(lab: TDF_Label): boolean;
-  /**
-   * Returns a sequence of materials currently stored in the material table.
-   * @param Labels Mutated in place; read the updated value from this argument after the call.
-   */
-  GetMaterialLabels(Labels: NCollection_Sequence_TDF_Label): void;
-  /**
-   * Adds a Material definition to a table and returns its label.
-   */
-  AddMaterial(aName: TCollection_HAsciiString, aDescription: TCollection_HAsciiString, aDensity: number, aDensName: TCollection_HAsciiString, aDensValType: TCollection_HAsciiString): TDF_Label;
-  /**
-   * Sets a link with GUID.
-   */
-  SetMaterial(L: TDF_Label, MatL: TDF_Label): void;
-  /**
-   * Sets a link with GUID Adds a Material as necessary.
-   */
-  SetMaterial(L: TDF_Label, aName: TCollection_HAsciiString, aDescription: TCollection_HAsciiString, aDensity: number, aDensName: TCollection_HAsciiString, aDensValType: TCollection_HAsciiString): void;
-  /**
-   * Returns Material assigned to <MatL> Returns False if no such Material is assigned.
-   * @returns A result object with fields:
-   * - `returnValue`: the C++ return value
-   * - `aName`: owned by the returned envelope.
-   * - `aDescription`: owned by the returned envelope.
-   * - `aDensity`: updated value from the call.
-   * - `aDensName`: owned by the returned envelope.
-   * - `aDensValType`: owned by the returned envelope.
-   * Dispose the returned envelope to release owned Handle fields.
-   */
-  static GetMaterial(MatL: TDF_Label, aDensity?: number): { returnValue: boolean; aName: TCollection_HAsciiString; aDescription: TCollection_HAsciiString; aDensity: number; aDensName: TCollection_HAsciiString; aDensValType: TCollection_HAsciiString; [Symbol.dispose](): void };
-  /**
-   * Find referred material and return density from it if no material --> return 0.
-   */
-  static GetDensityForShape(ShapeL: TDF_Label): number;
-  /**
-   * Returns the ID of the attribute.
-   */
-  ID(): unknown;
   static get_type_name(): string;
   static get_type_descriptor(): unknown;
   DynamicType(): unknown;
@@ -2356,11 +2288,11 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns the label for <ent>, as the Model does If <ent> is not in the Model or if no Model is loaded, a Null Handle is returned.
    */
-  EntityLabel(ent: Standard_Transient): TCollection_HAsciiString;
+  EntityLabel(ent: Standard_Transient): unknown;
   /**
    * Returns the Name of an Entity This Name is computed by the general service Name Returns a Null Handle if fails.
    */
-  EntityName(ent: Standard_Transient): TCollection_HAsciiString;
+  EntityName(ent: Standard_Transient): unknown;
   /**
    * Returns the Category Number determined for an entity it is computed by the class Category An unknown entity (number 0) gives a value -1.
    */
@@ -2416,7 +2348,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Same as above, but <name> is given through a Handle Especially useful with methods SelectionNames, etc...
    */
-  NamedItem(name: TCollection_HAsciiString): Standard_Transient;
+  NamedItem(name: unknown): Standard_Transient;
   /**
    * Returns the Ident attached to a Name, 0 if name not recorded.
    */
@@ -2428,7 +2360,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns the Name attached to an Item as a Variable of this WorkSession. If is Null or not recorded, returns an empty string.
    */
-  Name(item: Standard_Transient): TCollection_HAsciiString;
+  Name(item: Standard_Transient): unknown;
   /**
    * Adds an Item and returns its attached Ident. Does nothing if is already recorded (and returns its attached Ident) <active> if True commands call to SetActive (see below) Remark : the determined Ident is used if is a Dispatch, to fill the ShareOut.
    */
@@ -2468,7 +2400,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
    * - for a Selection, a Dispatch or a Modifier, its Label (see these classes)
    * - for any other kind of Variable, its cdl type
    */
-  ItemLabel(id: number): TCollection_HAsciiString;
+  ItemLabel(id: number): unknown;
   /**
    * Fills a Sequence with the List of Idents attached to the Items of which Type complies with (IsKind) <type> (alphabetic order) Remark : <type> = TYPE(Standard_Transient) gives all the Idents which are suitable in the WorkSession.
    */
@@ -2501,19 +2433,19 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns a TextParam, given its Ident in the Session Null result if <id> is not suitable for a TextParam (undefined, or defined for another kind of variable)
    */
-  TextParam(id: number): TCollection_HAsciiString;
+  TextParam(id: number): unknown;
   /**
    * Returns Text Value of a TextParam (a String) or an empty string if <it> is not in the WorkSession.
    */
-  TextValue(par: TCollection_HAsciiString): unknown;
+  TextValue(par: unknown): unknown;
   /**
    * Creates a new (empty) TextParam. A Name can be set (Optional) Returns the created TextParam (as an HAsciiString), or a Null Handle in case of Failure (see AddItem/AddNamedItem)
    */
-  NewTextParam(name?: string): TCollection_HAsciiString;
+  NewTextParam(name?: string): unknown;
   /**
    * Changes the Text Value of a TextParam (an HAsciiString) Returns True if Done, False if <it> is not in the WorkSession.
    */
-  SetTextValue(par: TCollection_HAsciiString, val: string): boolean;
+  SetTextValue(par: unknown, val: string): boolean;
   /**
    * Returns a Signature, given its Ident in the Session Null result if <id> is not suitable for a Signature (undefined, or defined for another kind of variable)
    */
@@ -2658,19 +2590,19 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Returns the defined File Prefix. Null Handle if not defined.
    */
-  FilePrefix(): TCollection_HAsciiString;
+  FilePrefix(): unknown;
   /**
    * Returns the defined Default File Root. It is used for Dispatches which have no specific root attached. Null Handle if not defined.
    */
-  DefaultFileRoot(): TCollection_HAsciiString;
+  DefaultFileRoot(): unknown;
   /**
    * Returns the defined File Extension. Null Handle if not defined.
    */
-  FileExtension(): TCollection_HAsciiString;
+  FileExtension(): unknown;
   /**
    * Returns the File Root defined for a Dispatch. Null if no Root Name is defined for it (hence, no File will be produced)
    */
-  FileRoot(disp: unknown): TCollection_HAsciiString;
+  FileRoot(disp: unknown): unknown;
   /**
    * Defines a File Prefix.
    */
@@ -3097,7 +3029,7 @@ export declare class Interface_InterfaceModel extends Standard_Transient {
   /**
    * Returns a string with the label attached to a given entity. Warning : While this string may be edited on the spot, if it is a read field, the returned value must be copied before.
    */
-  StringLabel(ent: Standard_Transient): TCollection_HAsciiString;
+  StringLabel(ent: Standard_Transient): unknown;
   /**
    * Searches a label which matches with one entity. Begins from <lastnum>+1 (default:1) and scans the entities until <NbEntities>. For the first which matches <label>, this method returns its Number. Returns 0 if nothing found Can be called recursively (labels are not specified as unique) <exact> : if True (default), exact match is required else, checks the END of entity label.
    *
@@ -3419,7 +3351,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Sets a specific Interpret function.
    */
-  SetInterpret(func: ((arg0: MoniTool_TypedValue, arg1: TCollection_HAsciiString, arg2: boolean) => TCollection_HAsciiString)): void;
+  SetInterpret(func: ((arg0: MoniTool_TypedValue, arg1: unknown, arg2: boolean) => unknown)): void;
   /**
    * Tells if a TypedValue has an Interpret.
    */
@@ -3427,7 +3359,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Sets a specific Satisfies function : it is added to the already defined criteria It must match the form : satisfies (val : HAsciiString) returns Boolean.
    */
-  SetSatisfies(func: ((arg0: TCollection_HAsciiString) => boolean), name: string): void;
+  SetSatisfies(func: ((arg0: unknown) => boolean), name: string): void;
   /**
    * Returns name of specific satisfy, empty string if none.
    */
@@ -3443,15 +3375,15 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Returns the value, as a Handle (can then be shared) Null if not defined.
    */
-  HStringValue(): TCollection_HAsciiString;
+  HStringValue(): unknown;
   /**
    * Interprets a value. <native> True : returns a native value <native> False : returns a coded value If the Interpret function is set, calls it Else, for an Enum, Native returns the Text, Coded returns the number STANDARD RETURNS : = hval means no specific interpretation Null means senseless Can also be redefined.
    */
-  Interpret(hval: TCollection_HAsciiString, native: boolean): TCollection_HAsciiString;
+  Interpret(hval: unknown, native: boolean): unknown;
   /**
    * Returns True if a value statifies the specification (remark : does not apply to Entity : see ObjectType, for this type, the string is just a comment)
    */
-  Satisfies(hval: TCollection_HAsciiString): boolean;
+  Satisfies(hval: unknown): boolean;
   /**
    * Clears the recorded Value : it is now unset.
    */
@@ -3463,7 +3395,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Forces a new Handle for the Value It can be empty, else (if Type is not free Text), it must satisfy the specification. Not only the value is changed, but also the way it is shared Remark : for Type=Object, this value is not controlled, it can be set as a comment Returns False (and did not set) if the new value does not satisfy the specification Can be redefined to be managed (in a subclass)
    */
-  SetHStringValue(hval: TCollection_HAsciiString): boolean;
+  SetHStringValue(hval: unknown): boolean;
   /**
    * Returns the value as integer, i.e. : For type = Integer, the integer itself; 0 if not set For type = Enum, the designated rank (see Enum definition) StartEnum - 1 if not set or not in the definition Else, returns 0.
    */
@@ -10126,271 +10058,6 @@ export declare class TCollection_ExtendedString {
    * @remarks **Note:** When case-insensitive, only ASCII characters (a-z, A-Z) are affected.
    */
   IsSameString(theOther: TCollection_ExtendedString, theIsCaseSensitive: boolean): boolean;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * A variable-length sequence of ASCII characters (normal 8-bit character type). It provides editing operations with built-in memory management to make HAsciiString objects easier to use than ordinary character arrays. HAsciiString objects are handles to strings.
- *
- * - HAsciiString strings may be shared by several objects.
- * - You may use an AsciiString object to get the actual string. Note: HAsciiString objects use an AsciiString string as a field.
- */
-export declare class TCollection_HAsciiString extends Standard_Transient {
-  /**
-   * Initializes a HAsciiString to an empty AsciiString.
-   */
-  constructor();
-  /**
-   * Initializes a HAsciiString with a CString.
-   */
-  constructor(message: string);
-  /**
-   * Initializes a HAsciiString with a single character.
-   */
-  constructor(value: number);
-  /**
-   * Initializes a HAsciiString with an integer value.
-   */
-  constructor(value: number);
-  /**
-   * Initializes a HAsciiString with a real value.
-   */
-  constructor(aString: unknown);
-  /**
-   * Initializes a HAsciiString with a AsciiString.
-   */
-  constructor(aString: TCollection_HAsciiString);
-  /**
-   * Initializes a HAsciiString with <length> space allocated. and filled with <filler>.This is useful for buffers.
-   */
-  constructor(length: number, filler: string);
-  /**
-   * Initializes a HAsciiString with a HExtendedString. If replaceNonAscii is non-null character, it will be used in place of any non-ascii character found in the source string. Otherwise, creates UTF-8 unicode string.
-   */
-  constructor(aString: unknown, replaceNonAscii: string);
-  /**
-   * Appends <other> to me.
-   */
-  AssignCat(other: string): void;
-  /**
-   * Appends <other> to me. Example: aString = aString + anotherString.
-   */
-  AssignCat(other: TCollection_HAsciiString): void;
-  /**
-   * Converts the first character into its corresponding upper-case character and the other characters into lowercase. Example: before me = "hellO " after me = "Hello ".
-   */
-  Capitalize(): void;
-  /**
-   * Creates a new string by concatenation of this ASCII string and the other ASCII string. Example: aString = aString + anotherString aString = aString + "Dummy" aString contains "I say " aString = aString + "Hello " + "Dolly" gives "I say Hello Dolly" Warning: To catenate more than one CString, you must put a String before. So the following example is WRONG ! aString = "Hello " + "Dolly" THIS IS NOT ALLOWED This rule is applicable to AssignCat (operator +=) too.
-   */
-  Cat(other: string): TCollection_HAsciiString;
-  /**
-   * Creates a new string by concatenation of this ASCII string and the other ASCII string. Example: aString = aString + anotherString.
-   */
-  Cat(other: TCollection_HAsciiString): TCollection_HAsciiString;
-  /**
-   * Modifies this ASCII string so that its length becomes equal to Width and the new characters are equal to Filler. New characters are added both at the beginning and at the end of this string. If Width is less than the length of this ASCII string, nothing happens. Example `occ::handle<TCollection_HAsciiString>` myAlphabet = new {@link TCollection_HAsciiString | `TCollection_HAsciiString`} ("abcdef"); myAlphabet->Center(9,' '); assert ( !strcmp( myAlphabet->`ToCString()`, " abcdef ") );.
-   */
-  Center(Width: number, Filler: string): void;
-  /**
-   * Replaces all characters equal to aChar by NewChar in this ASCII string. The substitution is case sensitive if CaseSensitive is true (default value). If you do not use the default case sensitive option, it does not matter whether aChar is upper-case or not. Example `occ::handle<TCollection_HAsciiString>` myMistake = new {@link TCollection_HAsciiString | `TCollection_HAsciiString`} ("Hather"); myMistake->ChangeAll('H','F'); assert ( !strcmp( myMistake->`ToCString()`, "Father") );.
-   */
-  ChangeAll(aChar: string, NewChar: string, CaseSensitive?: boolean): void;
-  /**
-   * Removes all characters contained in <me>. This produces an empty HAsciiString.
-   */
-  Clear(): void;
-  /**
-   * Returns the index of the first character of <me> that is present in <Set>. The search begins to the index FromIndex and ends to the the index ToIndex. Returns zero if failure. Raises an exception if FromIndex or ToIndex is out of range Example: before me = "aabAcAa", S = "Aa", FromIndex = 1, Toindex = 7 after me = "aabAcAa" returns 1.
-   */
-  FirstLocationInSet(Set: TCollection_HAsciiString, FromIndex: number, ToIndex: number): number;
-  /**
-   * Returns the index of the first character of <me> that is not present in the set <Set>. The search begins to the index FromIndex and ends to the the index ToIndex in <me>. Returns zero if failure. Raises an exception if FromIndex or ToIndex is out of range. Example: before me = "aabAcAa", S = "Aa", FromIndex = 1, Toindex = 7 after me = "aabAcAa" returns 3.
-   */
-  FirstLocationNotInSet(Set: TCollection_HAsciiString, FromIndex: number, ToIndex: number): number;
-  /**
-   * Insert a Character at position <where>. Example: aString contains "hy not ?" aString.Insert(1,'W'); gives "Why not ?" aString contains "Wh" aString.Insert(3,'y'); gives "Why" aString contains "Way" aString.Insert(2,'h'); gives "Why".
-   */
-  Insert(where: number, what: string): void;
-  /**
-   * Insert a HAsciiString at position <where>.
-   */
-  Insert(where: number, what: string): void;
-  /**
-   * Insert a HAsciiString at position <where>.
-   */
-  Insert(where: number, what: TCollection_HAsciiString): void;
-  /**
-   * Inserts the other ASCII string a after a specific index in the string <me> Example: before me = "cde" , Index = 0 , other = "ab" after me = "abcde" , other = "ab".
-   */
-  InsertAfter(Index: number, other: TCollection_HAsciiString): void;
-  /**
-   * Inserts the other ASCII string a before a specific index in the string <me> Raises an exception if Index is out of bounds Example: before me = "cde" , Index = 1 , other = "ab" after me = "abcde" , other = "ab".
-   */
-  InsertBefore(Index: number, other: TCollection_HAsciiString): void;
-  /**
-   * Returns True if the string <me> contains zero character.
-   */
-  IsEmpty(): boolean;
-  /**
-   * Returns TRUE if <me> is 'ASCII' less than <other>.
-   */
-  IsLess(other: TCollection_HAsciiString): boolean;
-  /**
-   * Returns TRUE if <me> is 'ASCII' greater than <other>.
-   */
-  IsGreater(other: TCollection_HAsciiString): boolean;
-  /**
-   * Converts a HAsciiString containing a numeric expression to an Integer. Example: "215" returns 215.
-   */
-  IntegerValue(): number;
-  /**
-   * Returns True if the string contains an integer value.
-   */
-  IsIntegerValue(): boolean;
-  /**
-   * Returns True if the string contains a real value.
-   */
-  IsRealValue(): boolean;
-  /**
-   * Returns True if the string contains only ASCII characters between ' ' and '~'. This means no control character and no extended ASCII code.
-   */
-  IsAscii(): boolean;
-  /**
-   * Returns True if the string S not contains same characters than the string <me>.
-   */
-  IsDifferent(S: TCollection_HAsciiString): boolean;
-  /**
-   * Returns True if the string S contains same characters than the string <me>.
-   */
-  IsSameString(S: TCollection_HAsciiString): boolean;
-  /**
-   * Returns True if the string S contains same characters than the string <me>.
-   */
-  IsSameString(S: TCollection_HAsciiString, CaseSensitive: boolean): boolean;
-  /**
-   * Removes all space characters in the beginning of the string.
-   */
-  LeftAdjust(): void;
-  /**
-   * Left justify. Length becomes equal to Width and the new characters are equal to Filler if Width < Length nothing happens Raises an exception if Width is less than zero Example: before me = "abcdef" , Width = 9 , Filler = ' ' after me = "abcdef ".
-   */
-  LeftJustify(Width: number, Filler: string): void;
-  /**
-   * Returns number of characters in <me>. This is the same functionality as 'strlen' in C.
-   */
-  Length(): number;
-  /**
-   * returns an index in the string <me> of the first occurrence of the string S in the string <me> from the starting index FromIndex to the ending index ToIndex returns zero if failure Raises an exception if FromIndex or ToIndex is out of range. Example: before me = "aabAaAa", S = "Aa", FromIndex = 1, ToIndex = 7 after me = "aabAaAa" returns 4
-   */
-  Location(other: TCollection_HAsciiString, FromIndex: number, ToIndex: number): number;
-  /**
-   * Returns the index of the nth occurrence of the character C in the string <me> from the starting index FromIndex to the ending index ToIndex. Returns zero if failure. Raises an exception if FromIndex or ToIndex is out of range Example: before me = "aabAa", N = 3, C = 'a', FromIndex = 1, ToIndex = 5 after me = "aabAa" returns 5.
-   */
-  Location(N: number, C: string, FromIndex: number, ToIndex: number): number;
-  /**
-   * Converts <me> to its lower-case equivalent.
-   */
-  LowerCase(): void;
-  /**
-   * Inserts the other string at the beginning of the string <me> Example: before me = "cde" , S = "ab" after me = "abcde" , S = "ab".
-   */
-  Prepend(other: TCollection_HAsciiString): void;
-  /**
-   * Converts a string containing a numeric expression to a Real. Example: "215" returns 215.0. "3.14159267" returns 3.14159267.
-   */
-  RealValue(): number;
-  /**
-   * Remove all the occurrences of the character C in the string Example: before me = "HellLLo", C = 'L' , CaseSensitive = True after me = "Hello".
-   */
-  RemoveAll(C: string, CaseSensitive: boolean): void;
-  /**
-   * Removes every <what> characters from <me>
-   */
-  RemoveAll(what: string): void;
-  /**
-   * Erases <ahowmany> characters from position <where>, <where> included. Example: aString contains "Hello" aString.Erase(2,2) erases 2 characters from position 1 This gives "Hlo".
-   */
-  Remove(where: number, ahowmany?: number): void;
-  /**
-   * Removes all space characters at the end of the string.
-   */
-  RightAdjust(): void;
-  /**
-   * Right justify. Length becomes equal to Width and the new characters are equal to Filler if Width < Length nothing happens Raises an exception if Width is less than zero Example: before me = "abcdef" , Width = 9 , Filler = ' ' after me = " abcdef".
-   */
-  RightJustify(Width: number, Filler: string): void;
-  /**
-   * Searches a CString in <me> from the beginning and returns position of first item <what> matching. It returns -1 if not found. Example: aString contains "Sample single test" aString.Search("le") returns 5.
-   */
-  Search(what: string): number;
-  /**
-   * Searches a String in <me> from the beginning and returns position of first item <what> matching. it returns -1 if not found.
-   */
-  Search(what: TCollection_HAsciiString): number;
-  /**
-   * Searches a CString in a String from the end and returns position of first item <what> matching. It returns -1 if not found. Example: aString contains "Sample single test" aString.SearchFromEnd("le") returns 12.
-   */
-  SearchFromEnd(what: string): number;
-  /**
-   * Searches a HAsciiString in another HAsciiString from the end and returns position of first item <what> matching. It returns -1 if not found.
-   */
-  SearchFromEnd(what: TCollection_HAsciiString): number;
-  /**
-   * Replaces one character in the string at position <where>. If <where> is less than zero or greater than the length of <me> an exception is raised. Example: aString contains "Garbake" astring.Replace(6,'g') gives <me> = "Garbage".
-   */
-  SetValue(where: number, what: string): void;
-  /**
-   * Replaces a part of <me> in the string at position <where>. If <where> is less than zero or greater than the length of <me> an exception is raised. Example: aString contains "Garbake" astring.Replace(6,'g') gives <me> = "Garbage".
-   */
-  SetValue(where: number, what: string): void;
-  /**
-   * Replaces a part of <me> by another string.
-   */
-  SetValue(where: number, what: TCollection_HAsciiString): void;
-  /**
-   * Splits a HAsciiString into two sub-strings. Example: aString contains "abcdefg" aString.Split(3) gives <me> = "abc" and returns "defg".
-   */
-  Split(where: number): TCollection_HAsciiString;
-  /**
-   * Creation of a sub-string of the string <me>. The sub-string starts to the index Fromindex and ends to the index ToIndex. Raises an exception if ToIndex or FromIndex is out of bounds Example: before me = "abcdefg", ToIndex=3, FromIndex=6 after me = "abcdefg" returns "cdef".
-   */
-  SubString(FromIndex: number, ToIndex: number): TCollection_HAsciiString;
-  /**
-   * Returns pointer to string (char *) This is useful for some casual manipulations Because this "char *" is 'const', you can't modify its contents.
-   */
-  ToCString(): string;
-  /**
-   * Extracts <whichone> token from <me>. By default, the <separators> is set to space and tabulation. By default, the token extracted is the first one (whichone = 1). <separators> contains all separators you need. If no token indexed by <whichone> is found, it returns an empty String.
-   * Example: aString contains "This is a message" aString.Token() returns "This" aString.Token(" ",4) returns "message" aString.Token(" ",2) returns "is" aString.Token(" ",9) returns "" Other separators than space character and tabulation are allowed aString contains "1234; test:message , value" aString.Token("; :,",4) returns "value" aString.Token("; :,",2) returns "test".
-   */
-  Token(separators?: string, whichone?: number): TCollection_HAsciiString;
-  /**
-   * Truncates <me> to <ahowmany> characters. Example: me = "Hello Dolly" -> Trunc(3) -> me = "Hel".
-   */
-  Trunc(ahowmany: number): void;
-  /**
-   * Converts <me> to its upper-case equivalent.
-   */
-  UpperCase(): void;
-  /**
-   * Length of the string ignoring all spaces (' ') and the control character at the end.
-   */
-  UsefullLength(): number;
-  /**
-   * Returns character at position <where> in <me>. If <where> is less than zero or greater than the length of <me>, an exception is raised. Example: aString contains "Hello" aString.Value(2) returns 'e'.
-   */
-  Value(where: number): string;
-  /**
-   * Returns the field myString.
-   */
-  String(): unknown;
-  IsSameState(other: TCollection_HAsciiString): boolean;
-  static get_type_name(): string;
-  static get_type_descriptor(): unknown;
-  DynamicType(): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -29293,7 +28960,7 @@ export declare class NCollection_HSequence_handle_TCollection_HAsciiString {
    * Append single item.
    * @param theItem the item to append
    */
-  Append(theItem: TCollection_HAsciiString): void;
+  Append(theItem: unknown): void;
   /**
    * Append another sequence.
    * @param theSequence the sequence to append
@@ -32615,7 +32282,7 @@ export declare class NCollection_Sequence_handle_TCollection_HAsciiString {
   /**
    * Append one item.
    */
-  Append(theItem: TCollection_HAsciiString): void;
+  Append(theItem: unknown): void;
   /**
    * Append one item.
    * @param theSeq Mutated in place; read the updated value from this argument after the call.
@@ -32624,7 +32291,7 @@ export declare class NCollection_Sequence_handle_TCollection_HAsciiString {
   /**
    * Prepend one item.
    */
-  Prepend(theItem: TCollection_HAsciiString): void;
+  Prepend(theItem: unknown): void;
   /**
    * Prepend one item.
    * @param theSeq Mutated in place; read the updated value from this argument after the call.
@@ -32633,7 +32300,7 @@ export declare class NCollection_Sequence_handle_TCollection_HAsciiString {
   /**
    * InsertBefore theIndex theItem.
    */
-  InsertBefore(theIndex: number, theItem: TCollection_HAsciiString): void;
+  InsertBefore(theIndex: number, theItem: unknown): void;
   InsertBefore(theIndex: number, theSeq: NCollection_Sequence_handle_TCollection_HAsciiString): void;
   /**
    * InsertAfter the position of iterator.
@@ -32643,7 +32310,7 @@ export declare class NCollection_Sequence_handle_TCollection_HAsciiString {
   /**
    * InsertAfter the position of iterator.
    */
-  InsertAfter(theIndex: number, theItem: TCollection_HAsciiString): void;
+  InsertAfter(theIndex: number, theItem: unknown): void;
   /**
    * Split in two sequences.
    * @param theSeq Mutated in place; read the updated value from this argument after the call.
@@ -32652,41 +32319,41 @@ export declare class NCollection_Sequence_handle_TCollection_HAsciiString {
   /**
    * First item access.
    */
-  First(): TCollection_HAsciiString;
+  First(): unknown;
   /**
    * First item access.
    */
-  ChangeFirst(): TCollection_HAsciiString;
+  ChangeFirst(): unknown;
   /**
    * Last item access.
    */
-  Last(): TCollection_HAsciiString;
+  Last(): unknown;
   /**
    * Last item access.
    */
-  ChangeLast(): TCollection_HAsciiString;
+  ChangeLast(): unknown;
   /**
    * Constant item access by theIndex.
    */
-  Value(theIndex: number): TCollection_HAsciiString;
+  Value(theIndex: number): unknown;
   /**
    * Variable item access by theIndex.
    */
-  ChangeValue(theIndex: number): TCollection_HAsciiString;
+  ChangeValue(theIndex: number): unknown;
   /**
    * Set item value by theIndex.
    */
-  SetValue(theIndex: number, theItem: TCollection_HAsciiString): void;
+  SetValue(theIndex: number, theItem: unknown): void;
   /**
    * 0-based checked access independent of `Lower()`/Upper().
    * @param theIndex 0-based index in [0, `Size()`-1]
    */
-  At(theIndex: number): TCollection_HAsciiString;
+  At(theIndex: number): unknown;
   /**
    * 0-based checked mutable access independent of `Lower()`/Upper().
    * @param theIndex 0-based index in [0, `Size()`-1]
    */
-  ChangeAt(theIndex: number): TCollection_HAsciiString;
+  ChangeAt(theIndex: number): unknown;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33028,6 +32695,14 @@ export declare class ReplicadMeshExtractor {
   constructor();
   static mesh(shape: TopoDS_Shape, tolerance: number, angularTolerance: number): void;
   static extract(shape: TopoDS_Shape, tolerance: number, angularTolerance: number, skipNormals: boolean): ReplicadMeshData;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class ReplicadShapeCaster {
+  constructor();
+  static CompSolid(shape: TopoDS_Shape): TopoDS_CompSolid;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33839,7 +33514,6 @@ export type OpenCascadeInstance = {
   XCAFDoc_ColorType: typeof XCAFDoc_ColorType;
   XCAFDoc_DocumentTool: typeof XCAFDoc_DocumentTool;
   XCAFDoc_LengthUnit: typeof XCAFDoc_LengthUnit;
-  XCAFDoc_MaterialTool: typeof XCAFDoc_MaterialTool;
   XCAFDoc_ShapeTool: typeof XCAFDoc_ShapeTool;
   IFSelect_ReturnStatus: typeof IFSelect_ReturnStatus;
   IFSelect_WorkSession: typeof IFSelect_WorkSession;
@@ -33897,7 +33571,6 @@ export type OpenCascadeInstance = {
   Standard_Failure: typeof Standard_Failure;
   Standard_Transient: typeof Standard_Transient;
   TCollection_ExtendedString: typeof TCollection_ExtendedString;
-  TCollection_HAsciiString: typeof TCollection_HAsciiString;
   BOPAlgo_GlueEnum: typeof BOPAlgo_GlueEnum;
   BOPAlgo_Options: typeof BOPAlgo_Options;
   BRepAlgoAPI_Algo: typeof BRepAlgoAPI_Algo;
@@ -34138,6 +33811,7 @@ export type OpenCascadeInstance = {
   ReplicadEdgeMeshExtractor: typeof ReplicadEdgeMeshExtractor;
   ReplicadMeshData: typeof ReplicadMeshData;
   ReplicadMeshExtractor: typeof ReplicadMeshExtractor;
+  ReplicadShapeCaster: typeof ReplicadShapeCaster;
   TColStd_IndexedDataMapOfStringString: typeof TColStd_IndexedDataMapOfStringString;
   TopoDS: typeof TopoDS;
   OCJS: typeof OCJS;
