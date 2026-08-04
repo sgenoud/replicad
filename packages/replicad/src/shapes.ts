@@ -1447,7 +1447,10 @@ export function downcast(shape: TopoDS_Shape): GenericTopo {
   const oc = getOC();
   const ta = oc.TopAbs_ShapeEnum;
 
-  const CAST_MAP = new Map<string, (s: TopoDS_Shape) => TopoDS_Shape>([
+  const CAST_MAP = new Map<
+    TopAbs_ShapeEnum,
+    (s: TopoDS_Shape) => TopoDS_Shape
+  >([
     [ta.TopAbs_VERTEX, oc.TopoDS.Vertex],
     [ta.TopAbs_EDGE, oc.TopoDS.Edge],
     [ta.TopAbs_WIRE, oc.TopoDS.Wire],
@@ -1457,7 +1460,7 @@ export function downcast(shape: TopoDS_Shape): GenericTopo {
     [ta.TopAbs_COMPOUND, oc.TopoDS.Compound],
   ]);
 
-  const myType = shapeType(shape) as string;
+  const myType = shapeType(shape);
   const caster = CAST_MAP.get(myType);
   if (!caster) throw new Error("Could not find a wrapper for this shape type");
   return caster(shape);
@@ -1468,7 +1471,7 @@ export function cast(shape: TopoDS_Shape): AnyShape {
   const ta = oc.TopAbs_ShapeEnum;
 
   const CAST_MAP = new Map<
-    string,
+    TopAbs_ShapeEnum,
     | typeof Vertex
     | typeof Edge
     | typeof Wire
@@ -1488,7 +1491,7 @@ export function cast(shape: TopoDS_Shape): AnyShape {
     [ta.TopAbs_COMPOUND, Compound],
   ]);
 
-  const Klass = CAST_MAP.get(shapeType(shape) as string);
+  const Klass = CAST_MAP.get(shapeType(shape));
 
   if (!Klass) throw new Error(`Could not find a wrapper for this shape type`);
   return new Klass(downcast(shape));
