@@ -361,8 +361,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   protected _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
     // Clean mesh to allow for coarser tolerance meshing to supercede the mesh living in WASM memory.
     // Without this, coarser tolerance meshing can return a mesh with finer tolerances due to OCCT caching of meshes.
-    this.oc.BRepTools.Clean(this.wrapped);
-    new this.oc.BRepMesh_IncrementalMesh(this.wrapped, tolerance, false, angularTolerance, false);
+    this.oc.ReplicadMeshExtractor.mesh(this.wrapped, tolerance, angularTolerance);
   }
 
   /**
@@ -764,7 +763,7 @@ export class Face extends Shape<TopoDS_Face> {
   }
 
   get UVBounds(): { uMin: number; uMax: number; vMin: number; vMax: number } {
-    const result = this.oc.BRepTools.UVBounds(this.wrapped);
+    const result = this.oc.BRepTools.UVBounds(this.wrapped, 0, 0, 0, 0);
     return {
       uMin: result.UMin,
       uMax: result.UMax,
@@ -797,7 +796,7 @@ export class Face extends Shape<TopoDS_Face> {
       new this.oc.GeomAPI_ProjectPointOnSurf(r(asPnt(point)), surface),
     );
 
-    const { U, V } = projectedPoint.LowerDistanceParameters();
+    const { U, V } = projectedPoint.LowerDistanceParameters(0, 0);
     return [U, V];
   }
 

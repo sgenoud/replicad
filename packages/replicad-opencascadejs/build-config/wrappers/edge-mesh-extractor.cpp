@@ -1,26 +1,25 @@
-// Edge-polyline extractor used by replicad's wireframe rendering path.
+// Edge-polyline extractor used by Replicad's wireframe rendering path.
 //
-// `ReplicadEdgeMeshExtractor::extract` walks every TopoDS_Edge in a shape
-// and emits a packed line-soup suitable for direct upload to a WebGL/WebGPU
-// vertex buffer:
-//   lines        : float[]   (6 floats per segment: x1,y1,z1, x2,y2,z2)
-//   edgeGroups   : int32[]   ({lineStart, segmentCount, edgeHash} per edge)
+// It emits packed line soup for bulk upload/read:
+//   lines      : float[] (6 floats per segment: x1,y1,z1, x2,y2,z2)
+//   edgeGroups : int32[] ({lineStart, lineVertexCount, edgeHash} per edge)
 //
-// Two-pass strategy:
-//   1. For edges that are already triangulated on a face (`PolygonOnTriangulation`),
-//      reuse the face's Poly_Triangulation nodes -- avoids re-meshing and keeps
-//      edges perfectly coincident with triangle boundaries.
-//   2. For "free" edges with no triangulation (typically wire-mode shapes),
-//      fall back to `GCPnts_TangentialDeflection` curve tessellation with the
-//      same tolerance/angularTolerance budget as the face mesher.
-//
-// `seenEdges` deduplicates edges shared between adjacent faces so a single
-// shared edge contributes exactly one polyline.
+// Face polygons are preferred so wireframe boundaries exactly match the face
+// triangulation. Free edges fall back to tangential-deflection tessellation.
+// Exact IsSame-compatible shape-map equality deduplicates edges shared by
+// adjacent faces; bounded public hashes are labels, never dedupe keys.
 
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
-#include <NCollection_Map.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Map.hxx>
+#include <cstdlib>
+
+class ReplicadEdgeMeshData;
+inline ReplicadEdgeMeshData ReplicadExtractEdgeMesh(
+  const TopoDS_Shape& shape,
+  double tolerance,
+  double angularTolerance);
 
 class ReplicadEdgeMeshData {
 public:
@@ -36,9 +35,9 @@ public:
   ReplicadEdgeMeshData(const ReplicadEdgeMeshData& other)
     : linesPtr_(other.linesPtr_), edgeGroupsPtr_(other.edgeGroupsPtr_),
       linesSize_(other.linesSize_), edgeGroupsSize_(other.edgeGroupsSize_) {
-    auto& m = const_cast<ReplicadEdgeMeshData&>(other);
-    m.linesPtr_ = nullptr;
-    m.edgeGroupsPtr_ = nullptr;
+    auto& moved = const_cast<ReplicadEdgeMeshData&>(other);
+    moved.linesPtr_ = nullptr;
+    moved.edgeGroupsPtr_ = nullptr;
   }
 
   int getLinesPtr() const { return static_cast<int>(reinterpret_cast<uintptr_t>(linesPtr_)); }
@@ -47,13 +46,189 @@ public:
   int getEdgeGroupsSize() const { return edgeGroupsSize_; }
 
 private:
-  float*   linesPtr_;
+  float* linesPtr_;
   int32_t* edgeGroupsPtr_;
   int linesSize_;
   int edgeGroupsSize_;
 
-  friend class ReplicadEdgeMeshExtractor;
+  friend ReplicadEdgeMeshData ReplicadExtractEdgeMesh(
+    const TopoDS_Shape&,
+    double,
+    double);
 };
+
+inline void ReplicadEnsureEdgeMesh(
+  const TopoDS_Shape& shape,
+  double tolerance,
+  double angularTolerance
+) {
+  if (BRepTools::Triangulation(shape, tolerance, false)) return;
+
+  BRepMesh_IncrementalMesh mesher(
+    shape,
+    tolerance,
+    false,
+    angularTolerance,
+    ReplicadConfigureThreadPool() > 1);
+}
+
+template <typename Visitor>
+void ReplicadVisitRenderableEdges(
+  const TopoDS_Shape& shape,
+  double tolerance,
+  double angularTolerance,
+  const Visitor& visit
+) {
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> seenEdges;
+
+  for (TopExp_Explorer faceExplorer(shape, TopAbs_FACE);
+       faceExplorer.More();
+       faceExplorer.Next()) {
+    const TopoDS_Face& face = TopoDS::Face(faceExplorer.Current());
+    TopLoc_Location faceLocation;
+    Handle(Poly_Triangulation) triangulation =
+      BRep_Tool::Triangulation(face, faceLocation);
+    if (triangulation.IsNull()) continue;
+
+    for (TopExp_Explorer edgeExplorer(face, TopAbs_EDGE);
+         edgeExplorer.More();
+         edgeExplorer.Next()) {
+      const TopoDS_Edge& edge = TopoDS::Edge(edgeExplorer.Current());
+      if (seenEdges.Contains(edge)) continue;
+
+      Handle(Poly_PolygonOnTriangulation) polygon =
+        BRep_Tool::PolygonOnTriangulation(edge, triangulation, faceLocation);
+      if (polygon.IsNull() || polygon->Nodes().Length() < 2) continue;
+
+      seenEdges.Add(edge);
+      visit(edge, triangulation, polygon, faceLocation, polygon->Nodes().Length());
+    }
+  }
+
+  for (TopExp_Explorer edgeExplorer(shape, TopAbs_EDGE);
+       edgeExplorer.More();
+       edgeExplorer.Next()) {
+    const TopoDS_Edge& edge = TopoDS::Edge(edgeExplorer.Current());
+    if (seenEdges.Contains(edge)) continue;
+
+    BRepAdaptor_Curve adaptor(edge);
+    GCPnts_TangentialDeflection deflection(
+      adaptor,
+      angularTolerance,
+      tolerance,
+      2,
+      1e-9,
+      1e-7);
+    if (deflection.NbPoints() < 2) continue;
+
+    seenEdges.Add(edge);
+    Handle(Poly_Triangulation) noTriangulation;
+    Handle(Poly_PolygonOnTriangulation) noPolygon;
+    visit(edge, noTriangulation, noPolygon, TopLoc_Location(), deflection.NbPoints());
+  }
+}
+
+inline ReplicadEdgeMeshData ReplicadExtractEdgeMesh(
+  const TopoDS_Shape& shape,
+  double tolerance,
+  double angularTolerance
+) {
+  ReplicadEnsureEdgeMesh(shape, tolerance, angularTolerance);
+  int totalSegments = 0;
+  int totalEdges = 0;
+  ReplicadVisitRenderableEdges(
+    shape,
+    tolerance,
+    angularTolerance,
+    [&](const TopoDS_Edge&,
+        const Handle(Poly_Triangulation)&,
+        const Handle(Poly_PolygonOnTriangulation)&,
+        const TopLoc_Location&,
+        int pointCount) {
+      totalSegments += pointCount - 1;
+      totalEdges++;
+    });
+
+  ReplicadEdgeMeshData result;
+  result.linesSize_ = totalSegments * 6;
+  if (result.linesSize_ > 0) {
+    result.linesPtr_ = static_cast<float*>(
+      std::malloc(result.linesSize_ * sizeof(float)));
+    if (!result.linesPtr_) throw std::bad_alloc();
+  }
+
+  result.edgeGroupsSize_ = totalEdges * 3;
+  if (result.edgeGroupsSize_ > 0) {
+    result.edgeGroupsPtr_ = static_cast<int32_t*>(
+      std::malloc(result.edgeGroupsSize_ * sizeof(int32_t)));
+    if (!result.edgeGroupsPtr_) throw std::bad_alloc();
+  }
+
+  int lineOffset = 0;
+  int groupOffset = 0;
+
+  ReplicadVisitRenderableEdges(
+    shape,
+    tolerance,
+    angularTolerance,
+    [&](const TopoDS_Edge& edge,
+        const Handle(Poly_Triangulation)& triangulation,
+        const Handle(Poly_PolygonOnTriangulation)& polygon,
+        const TopLoc_Location& location,
+        int) {
+      const int lineStart = lineOffset / 3;
+      gp_Pnt previous;
+      bool hasPrevious = false;
+
+      if (!polygon.IsNull()) {
+        const NCollection_Array1<int>& nodes = polygon->Nodes();
+        const gp_Trsf& transformation = location.Transformation();
+        for (int index = nodes.Lower(); index <= nodes.Upper(); index++) {
+          const gp_Pnt point = triangulation->Node(nodes.Value(index))
+            .Transformed(transformation);
+          if (hasPrevious) {
+            result.linesPtr_[lineOffset++] = static_cast<float>(previous.X());
+            result.linesPtr_[lineOffset++] = static_cast<float>(previous.Y());
+            result.linesPtr_[lineOffset++] = static_cast<float>(previous.Z());
+            result.linesPtr_[lineOffset++] = static_cast<float>(point.X());
+            result.linesPtr_[lineOffset++] = static_cast<float>(point.Y());
+            result.linesPtr_[lineOffset++] = static_cast<float>(point.Z());
+          }
+          previous = point;
+          hasPrevious = true;
+        }
+      } else {
+        BRepAdaptor_Curve adaptor(edge);
+        GCPnts_TangentialDeflection deflection(
+          adaptor,
+          angularTolerance,
+          tolerance,
+          2,
+          1e-9,
+          1e-7);
+        for (int index = 1; index <= deflection.NbPoints(); index++) {
+          const gp_Pnt point = deflection.Value(index);
+          if (hasPrevious) {
+            result.linesPtr_[lineOffset++] = static_cast<float>(previous.X());
+            result.linesPtr_[lineOffset++] = static_cast<float>(previous.Y());
+            result.linesPtr_[lineOffset++] = static_cast<float>(previous.Z());
+            result.linesPtr_[lineOffset++] = static_cast<float>(point.X());
+            result.linesPtr_[lineOffset++] = static_cast<float>(point.Y());
+            result.linesPtr_[lineOffset++] = static_cast<float>(point.Z());
+          }
+          previous = point;
+          hasPrevious = true;
+        }
+      }
+
+      result.edgeGroupsPtr_[groupOffset++] = lineStart;
+      result.edgeGroupsPtr_[groupOffset++] = (lineOffset / 3) - lineStart;
+      result.edgeGroupsPtr_[groupOffset++] =
+        ReplicadShapeHashCode(edge, ReplicadShapeHashUpperBound);
+    });
+
+  return result;
+}
 
 class ReplicadEdgeMeshExtractor {
 public:
@@ -62,149 +237,9 @@ public:
     double tolerance,
     double angularTolerance
   ) {
-    BRepMesh_IncrementalMesh mesher(shape, tolerance, false, angularTolerance, false);
-
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> seenEdges;
-
-    int totalSegments = 0;
-    int totalEdges = 0;
-
-    for (TopExp_Explorer faceEx(shape, TopAbs_FACE); faceEx.More(); faceEx.Next()) {
-      const TopoDS_Face& face = TopoDS::Face(faceEx.Current());
-      TopLoc_Location faceLoc;
-      Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(face, faceLoc);
-      if (tri.IsNull()) continue;
-
-      for (TopExp_Explorer edgeEx(face, TopAbs_EDGE); edgeEx.More(); edgeEx.Next()) {
-        const TopoDS_Edge& edge = TopoDS::Edge(edgeEx.Current());
-        if (seenEdges.Contains(edge)) continue;
-
-        TopLoc_Location edgeLoc;
-        Handle(Poly_PolygonOnTriangulation) polygon =
-          BRep_Tool::PolygonOnTriangulation(edge, tri, edgeLoc);
-        if (polygon.IsNull()) continue;
-
-        seenEdges.Add(edge);
-        int nNodes = polygon->Nodes().Length();
-        if (nNodes < 2) continue;
-        totalSegments += (nNodes - 1);
-        totalEdges++;
-      }
-    }
-
-    struct CurveTessInfo { TopoDS_Edge edge; int nbPts; };
-    std::vector<CurveTessInfo> curveEdges;
-
-    for (TopExp_Explorer edgeEx(shape, TopAbs_EDGE); edgeEx.More(); edgeEx.Next()) {
-      const TopoDS_Edge& edge = TopoDS::Edge(edgeEx.Current());
-      if (seenEdges.Contains(edge)) continue;
-      seenEdges.Add(edge);
-
-      BRepAdaptor_Curve adaptor(edge);
-      GCPnts_TangentialDeflection tangDef(adaptor, tolerance, angularTolerance, 2, 1e-9, 1e-7);
-      int nbPts = tangDef.NbPoints();
-      if (nbPts < 2) continue;
-
-      totalSegments += (nbPts - 1);
-      totalEdges++;
-      curveEdges.push_back({edge, nbPts});
-    }
-
-    ReplicadEdgeMeshData result;
-
-    result.linesSize_ = totalSegments * 6;
-    if (result.linesSize_ > 0) {
-      result.linesPtr_ = static_cast<float*>(std::malloc(result.linesSize_ * sizeof(float)));
-      if (!result.linesPtr_) throw std::bad_alloc();
-    }
-
-    result.edgeGroupsSize_ = totalEdges * 3;
-    if (result.edgeGroupsSize_ > 0) {
-      result.edgeGroupsPtr_ = static_cast<int32_t*>(std::malloc(result.edgeGroupsSize_ * sizeof(int32_t)));
-      if (!result.edgeGroupsPtr_) throw std::bad_alloc();
-    }
-
-    int lineOffset = 0;
-    int groupOffset = 0;
-    seenEdges.Clear();
-
-    for (TopExp_Explorer faceEx(shape, TopAbs_FACE); faceEx.More(); faceEx.Next()) {
-      const TopoDS_Face& face = TopoDS::Face(faceEx.Current());
-      TopLoc_Location faceLoc;
-      Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(face, faceLoc);
-      if (tri.IsNull()) continue;
-
-      for (TopExp_Explorer edgeEx(face, TopAbs_EDGE); edgeEx.More(); edgeEx.Next()) {
-        const TopoDS_Edge& edge = TopoDS::Edge(edgeEx.Current());
-        if (seenEdges.Contains(edge)) continue;
-
-        TopLoc_Location edgeLoc;
-        Handle(Poly_PolygonOnTriangulation) polygon =
-          BRep_Tool::PolygonOnTriangulation(edge, tri, edgeLoc);
-        if (polygon.IsNull()) continue;
-
-        seenEdges.Add(edge);
-        const NCollection_Array1<int>& nodes = polygon->Nodes();
-        if (nodes.Length() < 2) continue;
-
-        int lineStart = lineOffset / 3;
-        int pointCount = 0;
-        const gp_Trsf& trsf = edgeLoc.Transformation();
-
-        gp_Pnt prevPt;
-        bool hasPrev = false;
-
-        for (int i = nodes.Lower(); i <= nodes.Upper(); i++) {
-          gp_Pnt p = tri->Node(nodes.Value(i)).Transformed(trsf);
-          if (hasPrev) {
-            result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.X());
-            result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.Y());
-            result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.Z());
-            result.linesPtr_[lineOffset++] = static_cast<float>(p.X());
-            result.linesPtr_[lineOffset++] = static_cast<float>(p.Y());
-            result.linesPtr_[lineOffset++] = static_cast<float>(p.Z());
-            pointCount += 2;
-          }
-          prevPt = p;
-          hasPrev = true;
-        }
-
-        result.edgeGroupsPtr_[groupOffset++] = lineStart;
-        result.edgeGroupsPtr_[groupOffset++] = pointCount;
-        result.edgeGroupsPtr_[groupOffset++] = static_cast<int>(TopTools_ShapeMapHasher{}(edge) % 2147483647);
-      }
-    }
-
-    for (const auto& info : curveEdges) {
-      BRepAdaptor_Curve adaptor(info.edge);
-      GCPnts_TangentialDeflection tangDef(adaptor, tolerance, angularTolerance, 2, 1e-9, 1e-7);
-
-      int lineStart = lineOffset / 3;
-      int pointCount = 0;
-
-      gp_Pnt prevPt;
-      bool hasPrev = false;
-
-      for (int j = 1; j <= info.nbPts; j++) {
-        gp_Pnt p = tangDef.Value(j);
-        if (hasPrev) {
-          result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.X());
-          result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.Y());
-          result.linesPtr_[lineOffset++] = static_cast<float>(prevPt.Z());
-          result.linesPtr_[lineOffset++] = static_cast<float>(p.X());
-          result.linesPtr_[lineOffset++] = static_cast<float>(p.Y());
-          result.linesPtr_[lineOffset++] = static_cast<float>(p.Z());
-          pointCount += 2;
-        }
-        prevPt = p;
-        hasPrev = true;
-      }
-
-      result.edgeGroupsPtr_[groupOffset++] = lineStart;
-      result.edgeGroupsPtr_[groupOffset++] = pointCount;
-      result.edgeGroupsPtr_[groupOffset++] = static_cast<int>(TopTools_ShapeMapHasher{}(info.edge) % 2147483647);
-    }
-
-    return result;
+    return ReplicadExtractEdgeMesh(
+      shape,
+      tolerance,
+      angularTolerance);
   }
 };

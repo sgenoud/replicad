@@ -1,0 +1,4 @@
+/build-config/*.build-manifest.json
+/build-config/*.provenance.json
+/dist/*.build-manifest.json
+/dist/*.provenance.json
