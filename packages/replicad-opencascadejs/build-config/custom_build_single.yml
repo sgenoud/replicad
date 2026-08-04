@@ -257,6 +257,7 @@ mainBuild:
   - -sINITIAL_MEMORY=100MB
   - -sMAXIMUM_MEMORY=4GB
   - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory"]
+  - -sENVIRONMENT=web,worker,node
   - --no-entry
   - --emit-symbol-map
   - -sERROR_ON_UNDEFINED_SYMBOLS=0

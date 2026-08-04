@@ -176,12 +176,7 @@ export const make2dEllipse = (
   const oc = getOC();
   const [r, gc] = localGC();
   const ellipse = r(
-    new oc.gp_Elips2d(
-      r(axis2d(center, xDir)),
-      majorRadius,
-      minorRadius,
-      direct
-    )
+    new oc.gp_Elips2d(r(axis2d(center, xDir)), majorRadius, minorRadius, direct)
   );
 
   const segment = r(new oc.GC_MakeEllipse2d(ellipse)).Value();

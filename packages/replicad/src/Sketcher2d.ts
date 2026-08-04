@@ -10,10 +10,7 @@ import {
   SplineConfig,
   GenericSketcher,
 } from "./sketcherlib";
-import {
-  Geom2d_Curve,
-  Geom_Surface,
-} from "replicad-opencascadejs";
+import { Geom2d_Curve, Geom_Surface } from "replicad-opencascadejs";
 import {
   chamferCurves,
   Curve2D,
@@ -559,8 +556,7 @@ export class BaseSketcher2d {
     );
 
     const mirroredCurves = this.pendingCurves.map(
-      (c) =>
-        new Curve2D(c.innerCurve.Mirrored(mirrorAxis) as Geom2d_Curve)
+      (c) => new Curve2D(c.innerCurve.Mirrored(mirrorAxis) as Geom2d_Curve)
     );
     mirroredCurves.reverse();
     mirroredCurves.map((c) => c.reverse());

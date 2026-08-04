@@ -24,9 +24,7 @@ import {
 
 export const makeLine = (v1: Point, v2: Point): Edge => {
   const oc = getOC();
-  return new Edge(
-    new oc.BRepBuilderAPI_MakeEdge(asPnt(v1), asPnt(v2)).Edge()
-  );
+  return new Edge(new oc.BRepBuilderAPI_MakeEdge(asPnt(v1), asPnt(v2)).Edge());
 };
 
 export const makeCircle = (
@@ -107,10 +105,7 @@ export const makeHelix = (
   );
 
   const e = r(
-    new oc.BRepBuilderAPI_MakeEdge(
-      r(geomSeg.Value()),
-      r(geomSurf)
-    )
+    new oc.BRepBuilderAPI_MakeEdge(r(geomSeg.Value()), r(geomSurf))
   ).Edge();
 
   // 4. Convert to wire and fix building 3d geom from 2d geom
@@ -335,11 +330,7 @@ export const makeNonPlanarFace = (wire: Wire): Face => {
 
   const faceBuilder = r(new oc.BRepOffsetAPI_MakeFilling());
   wire.edges.forEach((edge) => {
-    faceBuilder.Add(
-      r(edge).wrapped,
-      oc.GeomAbs_Shape.GeomAbs_C0,
-      true
-    );
+    faceBuilder.Add(r(edge).wrapped, oc.GeomAbs_Shape.GeomAbs_C0, true);
   });
 
   faceBuilder.Build();
@@ -420,7 +411,9 @@ class EllpsoidTransform extends WrappingObj<gp_GTrsf> {
   }
 }
 
-function convertToJSArray(arrayOfPoints: NCollection_Array2_gp_Pnt): gp_Pnt[][] {
+function convertToJSArray(
+  arrayOfPoints: NCollection_Array2_gp_Pnt
+): gp_Pnt[][] {
   const newArray = [];
 
   for (let r = arrayOfPoints.LowerRow(); r <= arrayOfPoints.UpperRow(); r++) {
@@ -544,9 +537,7 @@ function _weld(facesOrShells: Array<Face | Shell>): AnyShape {
   const oc = getOC();
   const r = GCWithScope();
 
-  const shellBuilder = r(
-    new oc.BRepBuilderAPI_Sewing(1e-6, true, true, true)
-  );
+  const shellBuilder = r(new oc.BRepBuilderAPI_Sewing(1e-6, true, true, true));
 
   facesOrShells.forEach(({ wrapped }) => {
     shellBuilder.Add(wrapped);
@@ -587,9 +578,7 @@ export function makeSolid(facesOrShells: Array<Face | Shell>): Solid {
   const r = GCWithScope();
   const oc = getOC();
   const shell = _weld(facesOrShells);
-  const solid = cast(
-    r(new oc.ShapeFix_Solid()).SolidFromShell(shell.wrapped)
-  );
+  const solid = cast(r(new oc.ShapeFix_Solid()).SolidFromShell(shell.wrapped));
 
   if (!(solid instanceof Solid))
     throw new Error("Could not make a solid of faces and shells");
