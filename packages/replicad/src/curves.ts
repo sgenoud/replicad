@@ -1,8 +1,4 @@
-import {
-  Geom_CylindricalSurface,
-  gp_GTrsf2d,
-  Geom_Surface,
-} from "replicad-opencascadejs";
+import { gp_GTrsf2d, Geom_Surface } from "replicad-opencascadejs";
 
 import { GCWithScope, localGC, WrappingObj } from "./register";
 import type { Deletable } from "./register";
@@ -164,13 +160,12 @@ export const scaleTransform2d = (
 };
 
 export function faceRadius(face: Face): null | number {
-  const oc = getOC();
-  const [r, gc] = localGC();
-  const geomSurf = r(oc.BRep_Tool.Surface(face.wrapped));
-
   if (face.geomType !== "CYLINDRE") return null;
 
-  const cylinder = r((geomSurf as Geom_CylindricalSurface).Cylinder());
+  const oc = getOC();
+  const [r, gc] = localGC();
+  const surface = r(new oc.BRepAdaptor_Surface(face.wrapped));
+  const cylinder = r(surface.Cylinder());
   const radius = cylinder.Radius();
   gc();
   return radius;
@@ -200,7 +195,8 @@ export function curvesAsEdgesOnFace(
         "Only planar and cylidrical faces can be unwrapped for sketching"
       );
 
-    const cylinder = r((geomSurf as Geom_CylindricalSurface).Cylinder());
+    const surface = r(new oc.BRepAdaptor_Surface(face.wrapped));
+    const cylinder = r(surface.Cylinder());
     if (!cylinder.Direct()) {
       geomSurf = geomSurf.UReversed();
     }

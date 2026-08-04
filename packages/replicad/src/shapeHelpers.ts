@@ -19,7 +19,6 @@ import {
   GeomAPI_PointsToBSpline,
   gp_GTrsf,
   gp_Pnt,
-  NCollection_Array2_gp_Pnt,
 } from "replicad-opencascadejs";
 
 export const makeLine = (v1: Point, v2: Point): Edge => {
@@ -422,24 +421,6 @@ class EllpsoidTransform extends WrappingObj<gp_GTrsf> {
   }
 }
 
-function convertToJSArray(
-  arrayOfPoints: NCollection_Array2_gp_Pnt
-): gp_Pnt[][] {
-  const newArray = [];
-
-  for (let r = arrayOfPoints.LowerRow(); r <= arrayOfPoints.UpperRow(); r++) {
-    const row: gp_Pnt[] = [];
-    newArray.push(row);
-    for (let c = arrayOfPoints.LowerCol(); c <= arrayOfPoints.UpperCol(); c++) {
-      // @ts-expect-error Value binding missing from NCollection_Array2 d.ts
-      const pnt: gp_Pnt = arrayOfPoints.Value(r, c);
-      row.push(pnt);
-    }
-  }
-
-  return newArray;
-}
-
 /**
  * Creates an ellipsoid with the given lengths of the axes.
  *
@@ -462,15 +443,14 @@ export const makeEllipsoid = (
     sphericalSurface.UReversed()
   );
 
-  const poles = convertToJSArray(baseSurface.Poles());
   const transform = new EllpsoidTransform(aLength, bLength, cLength);
 
-  poles.forEach((columns, r) => {
-    columns.forEach((value, c) => {
-      const newPoint = transform.applyToPoint(value);
-      baseSurface.SetPole(r + 1, c + 1, newPoint);
-    });
-  });
+  for (let u = 1; u <= baseSurface.NbUPoles(); u++) {
+    for (let v = 1; v <= baseSurface.NbVPoles(); v++) {
+      const newPoint = transform.applyToPoint(baseSurface.Pole(u, v));
+      baseSurface.SetPole(u, v, newPoint);
+    }
+  }
   const shell = cast(
     r(new oc.BRepBuilderAPI_MakeShell(baseSurface.UReversed(), false)).Shell()
   ) as Shell;
