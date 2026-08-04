@@ -923,154 +923,6 @@ export declare class TDocStd_Document extends CDM_Document {
 }
 
 /**
- * Provides a tool to read STEP file and put it into DECAF document. Besides transfer of shapes (including assemblies) provided by STEPControl, supports also colors and part names.
- *
- * This reader supports reading files with external references i.e. multifile reading It behaves as usual Reader (from STEPControl) for the main file (e.g. if it is single file) Results of reading other files can be accessed by name of the file or by iterating on a readers
- */
-export declare class STEPCAFControl_Reader {
-  /**
-   * Creates a reader with an empty STEP model and sets ColorMode, LayerMode, NameMode and PropsMode to true.
-   */
-  constructor();
-  /**
-   * Creates a reader tool and attaches it to an already existing Session Clears the session if it was not yet set for STEP.
-   */
-  constructor(WS: XSControl_WorkSession, scratch?: boolean);
-  // dropped: ReadFile param 1 resolves to excluded type DESTEP_Parameters
-  // dropped: Perform param 2 resolves to excluded type DESTEP_Parameters
-  // dropped: Perform param 2 resolves to excluded type DESTEP_Parameters
-  // dropped: SetShapeFixParameters param 0 resolves to excluded type DE_ShapeFixParameters
-  /**
-   * Clears the internal data structures and attaches to a new session Clears the session if it was not yet set for STEP.
-   */
-  Init(WS: XSControl_WorkSession, scratch?: boolean): void;
-  /**
-   * Loads a file and returns the read status Provided for use like single-file reader.
-   * @param theFileName file to open
-   * @returns read status
-   */
-  ReadFile(theFileName: string): IFSelect_ReturnStatus;
-  /**
-   * Returns number of roots recognized for transfer Shortcut for `Reader()`.`NbRootsForTransfer()`
-   */
-  NbRootsForTransfer(): number;
-  /**
-   * Translates currently loaded STEP file into the document Returns True if succeeded, and False in case of fail Provided for use like single-file reader.
-   */
-  TransferOneRoot(num: number, doc: TDocStd_Document, theProgress?: Message_ProgressRange): boolean;
-  /**
-   * Translates currently loaded STEP file into the document Returns True if succeeded, and False in case of fail Provided for use like single-file reader.
-   */
-  Transfer(doc: TDocStd_Document, theProgress: Message_ProgressRange): boolean;
-  Perform(filename: unknown, doc: TDocStd_Document, theProgress: Message_ProgressRange): boolean;
-  /**
-   * Translate STEP file given by filename into the document Return True if succeeded, and False in case of fail.
-   */
-  Perform(filename: string, doc: TDocStd_Document, theProgress: Message_ProgressRange): boolean;
-  /**
-   * Returns data on external files Returns Null handle if no external files are read.
-   */
-  ExternFiles(): NCollection_DataMap_TCollection_AsciiString_handle_STEPCAFControl_ExternFile;
-  /**
-   * Returns data on external file by its name Returns False if no external file with given name is read.
-   * @returns A result object with fields:
-   * - `returnValue`: the C++ return value
-   * - `ef`: owned by the returned envelope.
-   * Dispose the returned envelope to release owned Handle fields.
-   */
-  ExternFile(name: string): { returnValue: boolean; ef: unknown; [Symbol.dispose](): void };
-  /**
-   * Returns basic reader.
-   */
-  ChangeReader(): STEPControl_Reader;
-  /**
-   * Returns basic reader as const.
-   */
-  Reader(): STEPControl_Reader;
-  /**
-   * Returns label of instance of an assembly component corresponding to a given NAUO.
-   */
-  static FindInstance(NAUO: unknown, STool: XCAFDoc_ShapeTool, Tool: unknown, ShapeLabelMap: NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher): TDF_Label;
-  /**
-   * Set ColorMode for indicate read Colors or not.
-   */
-  SetColorMode(colormode: boolean): void;
-  GetColorMode(): boolean;
-  /**
-   * Set NameMode for indicate read Name or not.
-   */
-  SetNameMode(namemode: boolean): void;
-  GetNameMode(): boolean;
-  /**
-   * Set LayerMode for indicate read Layers or not.
-   */
-  SetLayerMode(layermode: boolean): void;
-  GetLayerMode(): boolean;
-  /**
-   * PropsMode for indicate read Validation properties or not.
-   */
-  SetPropsMode(propsmode: boolean): void;
-  GetPropsMode(): boolean;
-  /**
-   * MetaMode for indicate read Metadata or not.
-   */
-  SetMetaMode(theMetaMode: boolean): void;
-  GetMetaMode(): boolean;
-  /**
-   * MetaMode for indicate whether to read Product Metadata or not.
-   */
-  SetProductMetaMode(theProductMetaMode: boolean): void;
-  GetProductMetaMode(): boolean;
-  /**
-   * Set SHUO mode for indicate write SHUO or not.
-   */
-  SetSHUOMode(shuomode: boolean): void;
-  GetSHUOMode(): boolean;
-  /**
-   * Set GDT mode for indicate write GDT or not.
-   */
-  SetGDTMode(gdtmode: boolean): void;
-  GetGDTMode(): boolean;
-  /**
-   * Set Material mode.
-   */
-  SetMatMode(matmode: boolean): void;
-  GetMatMode(): boolean;
-  /**
-   * Set View mode.
-   */
-  SetViewMode(viewmode: boolean): void;
-  /**
-   * Get View mode.
-   */
-  GetViewMode(): boolean;
-  GetShapeLabelMap(): NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher;
-  /**
-   * Sets parameters for shape processing.
-   * @param theParameters the parameters for shape processing.
-   */
-  SetShapeFixParameters(theParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
-  /**
-   * Returns parameters for shape processing that was set by `SetParameters()` method.
-   * @returns the parameters for shape processing. Empty map if no parameters were set.
-   */
-  GetShapeFixParameters(): NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString;
-  /**
-   * Sets flags defining operations to be performed on shapes.
-   * @param theFlags The flags defining operations to be performed on shapes.
-   */
-  SetShapeProcessFlags(theFlags: any): void;
-  /**
-   * Returns flags defining operations to be performed on shapes.
-   * @returns Pair of values defining operations to be performed on shapes and a boolean value that indicates whether the flags were set.
-   */
-  GetShapeProcessFlags(): [any, boolean];
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
  * Provides a tool to write DECAF document to the STEP file. Besides transfer of shapes (including assemblies) provided by STEPControl, supports also colors and part names.
  *
  * Also supports multifile writing
@@ -1383,105 +1235,6 @@ export declare class STEPControl_Writer {
    * @returns Pair of values defining operations to be performed on shapes and a boolean value that indicates whether the flags were set.
    */
   GetShapeProcessFlags(): [any, boolean];
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * SelectType is the basis used for SELECT_TYPE definitions from the EXPRESS form. A SELECT_TYPE in EXPRESS is an enumeration of Types, it corresponds in a way to a Super-Type, but with no specific Methods, and no exclusivity (a given Type can be member of several SELECT_TYPES, plus be itself a SUB_TYPE).
- *
- * A SelectType can be field of a Transient Entity or only used to control an input Argument
- *
- * This class implies to designate each member Type by a Case Number which is a positive Integer value (this allows a faster treatment).
- *
- * With this class, a specific SelectType can :
- *
- * - recognize an Entity as complying or not with its definition,
- * - storing it, with the guarantee that the stored Entity complies with the definition of the SelectType
- * - and (if judged useful) give the stored Entity under the good Type rather than simply "Transient".
- */
-export declare class StepData_SelectType {
-  /**
-   * Recognizes the Type of an Entity. Returns a positive Number which identifies the Type in the definition List of the SelectType. Returns Zero if its Type in not in this List.
-   */
-  CaseNum(ent: Standard_Transient): number;
-  /**
-   * Returns True if the Type of an Entity complies with the definition list of the SelectType. Also checks for a SelectMember Default Implementation looks for CaseNum or CaseMem positive.
-   */
-  Matches(ent: Standard_Transient): boolean;
-  /**
-   * Stores an Entity. This allows to define a specific SelectType class with one read method per member Type, which returns the Value casted with the good Type.
-   */
-  SetValue(ent: Standard_Transient): void;
-  /**
-   * Nullifies the Stored Entity.
-   */
-  Nullify(): void;
-  /**
-   * Returns the Stored Entity. Can be used to define specific read methods (see above)
-   */
-  Value(): Standard_Transient;
-  /**
-   * Returns True if there is no Stored Entity (i.e. it is Null)
-   */
-  IsNull(): boolean;
-  /**
-   * Returns the Effective (Dynamic) Type of the Stored Entity If it is Null, returns TYPE(Transient)
-   */
-  Type(): unknown;
-  /**
-   * Recognizes the Type of the stored Entity, or zero if it is Null or SelectMember. Calls the first method CaseNum on Value.
-   */
-  CaseNumber(): number;
-  /**
-   * Returns the Description which corresponds to <me> Null if no specific description to give. This description is used to control reading an check validity. Default returns a Null Handle, i.e. undefined description It can suffice if CaseNum and CaseMem give enough control.
-   */
-  Description(): unknown;
-  /**
-   * Returns a preferred SelectMember. Default returns a Null By default, a SelectMember can be set according to data type and Name : it is a SelectNamed if Name is defined.
-   *
-   * This method allows to define, for a specific SelectType, a specific SelectMember than SelectNamed. For instance for a Real plus a Name, a SelectReal plus a case number is a good solution, lighter than SelectNamed which is very multipurpose
-   */
-  NewMember(): unknown;
-  /**
-   * Recognize a SelectMember (kind, name). Returns a positive value which identifies the case in the List of immediate cases (distinct from the List of Entity Types). Zero if not recognizes Default returns 0, saying that no immediate value is allowed.
-   */
-  CaseMem(ent: unknown): number;
-  /**
-   * Returns the Type of the stored SelectMember, or zero if it is Null or Entity. Calls the method CaseMem on Value.
-   */
-  CaseMember(): number;
-  /**
-   * Returns Value as a SelectMember. Null if not a SelectMember.
-   */
-  Member(): unknown;
-  /**
-   * Returns the type name of SelectMember. If no SelectMember or with no type name, returns an empty string To change it, pass through the SelectMember itself.
-   */
-  SelectName(): string;
-  /**
-   * This internal method gives access to a value implemented by an Integer (to read it)
-   */
-  Int(): number;
-  /**
-   * This internal method gives access to a value implemented by an Integer (to set it) : a SelectMember MUST ALREADY BE THERE !
-   */
-  SetInt(val: number): void;
-  /**
-   * Gets the value as an Integer.
-   */
-  Integer(): number;
-  /**
-   * Sets a new Integer value, with an optional type name Warning : If a SelectMember is already set, works on it : value and name must then be accepted by this SelectMember.
-   */
-  SetInteger(val: number, name?: string): void;
-  Boolean(): boolean;
-  SetBoolean(val: boolean, name?: string): void;
-  Logical(): unknown;
-  SetLogical(val: unknown, name?: string): void;
-  Real(): number;
-  SetReal(val: number, name?: string): void;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -4827,152 +4580,6 @@ export declare class Poly_Connect {
    * Returns the index of the current triangle to which the iterator, defined with the function Initialize, points. This is an index in the triangles table specific to the triangulation analyzed by this tool.
    */
   Value(): number;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * Auxiliary tool for merging triangulation nodes for visualization purposes. Tool tries to merge all nodes within input triangulation, but split the ones on sharp corners at specified angle.
- */
-export declare class Poly_MergeNodesTool extends Standard_Transient {
-  /**
-   * Constructor.
-   * @param theSmoothAngle smooth angle in radians or 0.0 to disable merging by angle
-   * @param theMergeTolerance node merging maximum distance
-   * @param theNbFacets estimated number of facets for map preallocation
-   */
-  constructor(theSmoothAngle: number, theMergeTolerance?: number, theNbFacets?: number);
-  static get_type_name(): string;
-  static get_type_descriptor(): unknown;
-  DynamicType(): unknown;
-  /**
-   * Merge nodes of existing mesh and return the new mesh.
-   * @param theTris triangulation to add
-   * @param theTrsf transformation to apply
-   * @param theToReverse reverse triangle nodes order
-   * @param theSmoothAngle merge angle in radians
-   * @param theMergeTolerance linear merge tolerance
-   * @param theToForce return merged triangulation even if it's statistics is equal to input one
-   * @returns merged triangulation or NULL on no result
-   */
-  static MergeNodes(theTris: Poly_Triangulation, theTrsf: gp_Trsf, theToReverse: boolean, theSmoothAngle: number, theMergeTolerance?: number, theToForce?: boolean): Poly_Triangulation;
-  /**
-   * Return merge tolerance; 0.0 by default (only 3D points with exactly matching coordinates are merged).
-   */
-  MergeTolerance(): number;
-  /**
-   * Set merge tolerance.
-   */
-  SetMergeTolerance(theTolerance: number): void;
-  /**
-   * Return merge angle in radians; 0.0 by default (normals with non-exact directions are not merged).
-   */
-  MergeAngle(): number;
-  /**
-   * Set merge angle.
-   */
-  SetMergeAngle(theAngleRad: number): void;
-  /**
-   * Return TRUE if nodes with opposite normals should be merged; FALSE by default.
-   */
-  ToMergeOpposite(): boolean;
-  /**
-   * Set if nodes with opposite normals should be merged.
-   */
-  SetMergeOpposite(theToMerge: boolean): void;
-  /**
-   * Setup unit factor.
-   */
-  SetUnitFactor(theUnitFactor: number): void;
-  /**
-   * Return TRUE if degenerate elements should be discarded; TRUE by default.
-   */
-  ToDropDegenerative(): boolean;
-  /**
-   * Set if degenerate elements should be discarded.
-   */
-  SetDropDegenerative(theToDrop: boolean): void;
-  /**
-   * Return TRUE if equal elements should be filtered; FALSE by default.
-   */
-  ToMergeElems(): boolean;
-  /**
-   * Set if equal elements should be filtered.
-   */
-  SetMergeElems(theToMerge: boolean): void;
-  /**
-   * Compute normal for the mesh element.
-   */
-  computeTriNormal(): [number, number, number];
-  /**
-   * Add another triangulation to created one.
-   * @param theTris triangulation to add
-   * @param theTrsf transformation to apply
-   * @param theToReverse reverse triangle nodes order
-   */
-  AddTriangulation(theTris: Poly_Triangulation, theTrsf?: gp_Trsf, theToReverse?: boolean): void;
-  /**
-   * Prepare and return result triangulation (temporary data will be truncated to result size).
-   */
-  Result(): Poly_Triangulation;
-  /**
-   * Add new triangle.
-   * @param theElemNodes 3 element nodes
-   */
-  AddTriangle(theElemNodes: [gp_XYZ, gp_XYZ, gp_XYZ]): void;
-  /**
-   * Add new quad.
-   * @param theElemNodes 4 element nodes
-   */
-  AddQuad(theElemNodes: [gp_XYZ, gp_XYZ, gp_XYZ, gp_XYZ]): void;
-  /**
-   * Add new triangle or quad.
-   * @param theElemNodes element nodes
-   * @param theNbNodes number of element nodes, should be 3 or 4
-   */
-  AddElement(theElemNodes: gp_XYZ, theNbNodes: number): void;
-  /**
-   * Change node coordinates of element to be pushed.
-   * @param theIndex node index within current element, in 0..3 range
-   */
-  ChangeElementNode(theIndex: number): gp_XYZ;
-  /**
-   * Add new triangle or quad with nodes specified by `ChangeElementNode()`.
-   */
-  PushLastElement(theNbNodes: number): void;
-  /**
-   * Add new triangle with nodes specified by `ChangeElementNode()`.
-   */
-  PushLastTriangle(): void;
-  /**
-   * Add new quad with nodes specified by `ChangeElementNode()`.
-   */
-  PushLastQuad(): void;
-  /**
-   * Return current element node index defined by `PushLastElement()`.
-   */
-  ElementNodeIndex(theIndex: number): number;
-  /**
-   * Return number of nodes.
-   */
-  NbNodes(): number;
-  /**
-   * Return number of elements.
-   */
-  NbElements(): number;
-  /**
-   * Return number of discarded degenerate elements.
-   */
-  NbDegenerativeElems(): number;
-  /**
-   * Return number of merged equal elements.
-   */
-  NbMergedElems(): number;
-  /**
-   * Setup output triangulation for modifications. When set to NULL, the tool could be used as a merge map for filling in external mesh structure.
-   */
-  ChangeOutput(): Poly_Triangulation;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -28644,113 +28251,6 @@ export declare class NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Sh
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher {
-  /**
-   * Empty Constructor.
-   */
-  constructor();
-  /**
-   * Copy constructor.
-   */
-  constructor(theOther: NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher);
-  /**
-   * Constructor.
-   */
-  constructor(theNbBuckets: number, theAllocator?: unknown);
-  /**
-   * Constructor with custom hasher (copy).
-   * @param theHasher custom hasher instance
-   * @param theNbBuckets initial number of buckets
-   * @param theAllocator custom memory allocator
-   */
-  constructor(theHasher: unknown, theNbBuckets?: number, theAllocator?: unknown);
-  /**
-   * Exchange the content of two maps without re-allocations. Notice that allocators will be swapped as well!
-   * @param theOther Mutated in place; read the updated value from this argument after the call.
-   */
-  Exchange(theOther: NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher): void;
-  /**
-   * Returns const reference to the hasher.
-   */
-  GetHasher(): unknown;
-  /**
-   * Assignment. This method does not change the internal allocator.
-   */
-  Assign(theOther: NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher): NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher;
-  /**
-   * ReSize.
-   */
-  ReSize(N: number): void;
-  /**
-   * Bind binds Item to Key in map.
-   * @param theKey key to add/update
-   * @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
-   * @returns true if Key was not bound already
-   */
-  Bind(theKey: TopoDS_Shape, theItem: TDF_Label): boolean;
-  /**
-   * Bound binds Item to Key in map.
-   * @param theKey key to add/update
-   * @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
-   * @returns pointer to modifiable Item
-   */
-  Bound(theKey: TopoDS_Shape, theItem: TDF_Label): TDF_Label;
-  /**
-   * TryBind binds Item to Key in map only if Key is not yet bound.
-   * @param theKey key to add
-   * @param theItem item to bind if Key is not yet bound
-   * @returns true if Key was newly bound, false if Key already existed (no replacement)
-   */
-  TryBind(theKey: TopoDS_Shape, theItem: TDF_Label): boolean;
-  /**
-   * TryBound binds Item to Key in map only if Key is not yet bound.
-   * @param theKey key to add
-   * @param theItem item to bind if Key is not yet bound
-   * @returns reference to existing or newly bound Item
-   */
-  TryBound(theKey: TopoDS_Shape, theItem: TDF_Label): TDF_Label;
-  /**
-   * IsBound.
-   */
-  IsBound(theKey: TopoDS_Shape): boolean;
-  /**
-   * UnBind removes Item Key pair from map.
-   */
-  UnBind(theKey: TopoDS_Shape): boolean;
-  /**
-   * Seek returns pointer to Item by Key. Returns NULL is Key was not bound.
-   */
-  Seek(theKey: TopoDS_Shape): TDF_Label;
-  /**
-   * ChangeSeek returns modifiable pointer to Item by Key. Returns NULL is Key was not bound.
-   */
-  ChangeSeek(theKey: TopoDS_Shape): TDF_Label;
-  /**
-   * ChangeFind returns modifiable Item by Key. Raises if Key was not bound.
-   */
-  ChangeFind(theKey: TopoDS_Shape): TDF_Label;
-  /**
-   * Clear data. If doReleaseMemory is false then the table of buckets is not released and will be reused.
-   */
-  Clear(doReleaseMemory: boolean): void;
-  /**
-   * Clear data and reset allocator.
-   */
-  Clear(theAllocator: unknown): void;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
-/**
- * Purpose: The DataMap is a Map to store keys with associated Items. See Map from NCollection for a discussion about the number of buckets.
- *
- * The DataMap can be seen as an extended array where the Keys are the indices. For this reason the operator () is defined on DataMap to fetch an Item from a Key. So the following syntax can be used :
- *
- * anItem = aMap(aKey); aMap(aKey) = anItem;
- *
- * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
- */
 export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
@@ -34180,38 +33680,6 @@ export declare namespace FS {
 }
 
 
-/**
- * Emscripten WASM heap views.
- *
- * Typed array views into the WASM linear memory (`Module.buffer`). Each view
- * provides direct access to the heap at the corresponding element size and
- * signedness. Only available when listed in `-sEXPORTED_RUNTIME_METHODS`.
- *
- * **Important:** These views are invalidated when WASM memory grows
- * (`-sALLOW_MEMORY_GROWTH=1`). Do not cache references across calls that may
- * trigger allocation — re-read the property from the module instance instead.
- *
- * @see {@link https://emscripten.org/docs/api_reference/preamble.js.html#type-accessors-for-the-memory-model | Emscripten Heap Views}
- */
-
-/** Signed 8-bit integer view of the WASM heap. */
-export declare const HEAP8: Int8Array;
-/** Unsigned 8-bit integer view of the WASM heap. */
-export declare const HEAPU8: Uint8Array;
-/** Signed 16-bit integer view of the WASM heap. */
-export declare const HEAP16: Int16Array;
-/** Unsigned 16-bit integer view of the WASM heap. */
-export declare const HEAPU16: Uint16Array;
-/** Signed 32-bit integer view of the WASM heap. */
-export declare const HEAP32: Int32Array;
-/** Unsigned 32-bit integer view of the WASM heap. */
-export declare const HEAPU32: Uint32Array;
-/** 32-bit floating-point view of the WASM heap. */
-export declare const HEAPF32: Float32Array;
-/** 64-bit floating-point view of the WASM heap. */
-export declare const HEAPF64: Float64Array;
-
-
 declare global {
   namespace WebAssembly {
     /**
@@ -34330,7 +33798,6 @@ export type TopTools_IndexedMapOfShape = NCollection_IndexedMap_TopoDS_Shape_Top
 export type TopTools_ListOfShape = NCollection_List_TopoDS_Shape;
 export type TopTools_MapOfShape = NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher;
 export type TopTools_SequenceOfShape = NCollection_Sequence_TopoDS_Shape;
-export type XCAFDoc_DataMapOfShapeLabel = NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher;
 export type XSControl_WorkSessionMap = NCollection_DataMap_TCollection_AsciiString_handle_Standard_Transient;
 
 /**
@@ -34338,17 +33805,11 @@ export type XSControl_WorkSessionMap = NCollection_DataMap_TCollection_AsciiStri
  *
  * Returned by {@link init | `init`} after the WASM module is fully loaded. Access any
  * OCCT binding as a property (e.g. `oc.BRepPrimAPI_MakeBox`) and use
- * the Emscripten virtual filesystem (`oc.FS`) and WASM heap views (`oc.HEAP32`, `oc.HEAPU32`, `oc.HEAPF32`) and the live `WebAssembly.Memory` (`oc.wasmMemory`).
+ * the Emscripten virtual filesystem (`oc.FS`) and the live `WebAssembly.Memory` (`oc.wasmMemory`).
  */
 export type OpenCascadeInstance = {
   /** Emscripten virtual filesystem for reading/writing files in the WASM heap. */
   FS: typeof FS;
-  /** Signed 32-bit integer view of the WASM linear memory. Index by byte offset / 4. */
-  HEAP32: typeof HEAP32;
-  /** Unsigned 32-bit integer view of the WASM linear memory. Index by byte offset / 4. */
-  HEAPU32: typeof HEAPU32;
-  /** 32-bit floating-point view of the WASM linear memory. Index by byte offset / 4. */
-  HEAPF32: typeof HEAPF32;
   /**
    * The live `WebAssembly.Memory` instance backing the WASM linear memory.
    *
@@ -34366,12 +33827,10 @@ export type OpenCascadeInstance = {
   TDataStd_GenericExtString: typeof TDataStd_GenericExtString;
   TDataStd_Name: typeof TDataStd_Name;
   TDocStd_Document: typeof TDocStd_Document;
-  STEPCAFControl_Reader: typeof STEPCAFControl_Reader;
   STEPCAFControl_Writer: typeof STEPCAFControl_Writer;
   STEPControl_Reader: typeof STEPControl_Reader;
   STEPControl_StepModelType: typeof STEPControl_StepModelType;
   STEPControl_Writer: typeof STEPControl_Writer;
-  StepData_SelectType: typeof StepData_SelectType;
   StepData_StepModel: typeof StepData_StepModel;
   StlAPI: typeof StlAPI;
   StlAPI_Reader: typeof StlAPI_Reader;
@@ -34399,7 +33858,6 @@ export type OpenCascadeInstance = {
   GeomAbs_Shape: typeof GeomAbs_Shape;
   GeomAbs_SurfaceType: typeof GeomAbs_SurfaceType;
   Poly_Connect: typeof Poly_Connect;
-  Poly_MergeNodesTool: typeof Poly_MergeNodesTool;
   Poly_PolygonOnTriangulation: typeof Poly_PolygonOnTriangulation;
   Poly_Triangle: typeof Poly_Triangle;
   Poly_Triangulation: typeof Poly_Triangulation;
@@ -34621,7 +34079,6 @@ export type OpenCascadeInstance = {
   NCollection_DataMap_TDF_Label_TDF_Label: typeof NCollection_DataMap_TDF_Label_TDF_Label;
   NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher;
   NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher;
-  NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_TDF_Label_TopTools_ShapeMapHasher;
   NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher: typeof NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher;
   NCollection_DataMap_handle_TDF_Attribute_handle_TDF_Attribute: typeof NCollection_DataMap_handle_TDF_Attribute_handle_TDF_Attribute;
   NCollection_DynamicArray_handle_Standard_Transient: typeof NCollection_DynamicArray_handle_Standard_Transient;
