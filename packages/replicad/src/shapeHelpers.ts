@@ -387,7 +387,7 @@ export const makeCylinder = (
 };
 
 /**
- * Creates a sphere with the given radius.
+ * Creates a sphere with the given radius, centred on the origin.
  *
  * @category Solids
  */
@@ -433,7 +433,7 @@ class EllpsoidTransform extends WrappingObj<gp_GTrsf> {
 }
 
 /**
- * Creates an ellipsoid with the given lengths of the axes.
+ * Creates an ellipsoid with the given lengths of the axes, centred on the origin.
  *
  * @category Solids
  */
