@@ -716,9 +716,9 @@ const triangles: [Point2D, Point2D, Point2D][] = [
 ];
 
 test("build from triangles", () => {
-  const drawings = triangles
-    .sort(() => Math.random() - 0.4)
-    .map(([a, b, c]) => draw(a).lineTo(b).lineTo(c).close());
+  const drawings = triangles.map(([a, b, c]) =>
+    draw(a).lineTo(b).lineTo(c).close()
+  );
 
   const fused = fuseAll(drawings);
   expect(fused.toSVG()).toMatchSVGSnapshot();
