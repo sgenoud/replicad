@@ -290,8 +290,9 @@ buildFlags:
   - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory"]
   - --no-entry
   - --emit-symbol-map
+  #! OCCT's OSD_MemInfo references mallinfo, which Emscripten does not provide.
+  #! Keep that optional memory-reporting symbol unresolved until OCCT replaces it.
   - -sERROR_ON_UNDEFINED_SYMBOLS=0
-  - -Wl,--allow-undefined
   - -sSTACK_SIZE=8388608
   - -sWASM_BIGINT
   - -msimd128
