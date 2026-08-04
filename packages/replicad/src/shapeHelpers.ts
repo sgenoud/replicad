@@ -393,7 +393,7 @@ export const makeCylinder = (
 };
 
 /**
- * Creates a sphere with the given radius.
+ * Creates a sphere with the given radius, centred on the origin.
  *
  * @category Solids
  */
@@ -454,7 +454,7 @@ function convertToJSArray(arrayOfPoints: TColgp_Array2OfPnt): gp_Pnt[][] {
 }
 
 /**
- * Creates an ellipsoid with the given lengths of the axes.
+ * Creates an ellipsoid with the given lengths of the axes, centred on the origin.
  *
  * @category Solids
  */
