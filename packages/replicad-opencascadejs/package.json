@@ -1,20 +1,9 @@
 {
-  "name": "@taucad/replicad-opencascadejs",
-  "version": "0.23.0-beta.0",
-  "description": "OpencascadeJS custom build for replicad (Tau fork: SIMD without relaxed-simd, native WebAssembly exceptions)",
+  "name": "replicad-opencascadejs",
+  "version": "0.23.0",
+  "description": "OpencascadeJS custom build for replicad",
   "author": "Steve Genoud <steve@sgenoud.com>",
-  "contributors": [
-    "Tau Contributors"
-  ],
-  "homepage": "https://github.com/taucad/replicad/tree/main/packages/replicad-opencascadejs",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/taucad/replicad.git",
-    "directory": "packages/replicad-opencascadejs"
-  },
-  "bugs": {
-    "url": "https://github.com/taucad/replicad/issues"
-  },
+  "homepage": "",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -42,13 +31,12 @@
     "README.md",
     "LICENSE"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "pnpm run generateConfig && pnpm run buildSingle && pnpm run buildMulti",
     "generateConfig": "ytt -f build-source/ --output-files build-config",
-    "buildSingle": "cd build-config && docker run --rm -v \"$(pwd):/src\" -u \"$(id -u):$(id -g)\" ghcr.io/taucad/opencascade.js:alpha-single-threaded-arm64 link custom_build_single.yml && mkdir -p ../dist && mv replicad_single.js replicad_single.wasm replicad_single.d.ts replicad_single.js.symbols ../dist/ && cd -",
-    "buildMulti": "cd build-config && docker run --rm -v \"$(pwd):/src\" -u \"$(id -u):$(id -g)\" ghcr.io/taucad/opencascade.js:alpha-multi-threaded-arm64 link custom_build_multi.yml && mkdir -p ../dist && mv replicad_multi.js replicad_multi.wasm replicad_multi.d.ts replicad_multi.js.symbols ../dist/ && cd -"
+    "buildSingle": "cd build-config && docker run --rm -v \"$(pwd):/src\" -u \"$(id -u):$(id -g)\" ghcr.io/taucad/opencascade.js:canary-ebd263f1-single-threaded link custom_build_single.yml && mkdir -p ../dist && mv replicad_single.js replicad_single.wasm replicad_single.d.ts replicad_single.js.symbols ../dist/ && cd -",
+    "buildMulti": "cd build-config && docker run --rm -v \"$(pwd):/src\" -u \"$(id -u):$(id -g)\" ghcr.io/taucad/opencascade.js:canary-ebd263f1-multi-threaded link custom_build_multi.yml && mkdir -p ../dist && mv replicad_multi.js replicad_multi.wasm replicad_multi.d.ts replicad_multi.js.symbols ../dist/ && cd -",
+    "test": "node --test __tests__/*.test.mjs",
+    "benchmark:edge-mesh": "node benchmarks/edge-mesh-extractor.bench.mjs"
   }
 }

@@ -1,104 +1,79 @@
-# OCCT V8 Migration — replicad Perspective
+# OCCT 8.0.1 migration
 
-This document covers the replicad-specific changes for the OCCT V8 migration.
+This document covers the Replicad-specific parts of the OCCT 8.0.1 migration.
 
-## Summary
+## Runtime builds
 
-The OCCT V8 migration consolidates replicad's three WASM builds (`single`, `with_exceptions`, `multi`) into a **single unified build** using native WASM exceptions (`-fwasm-exceptions`).
+Replicad now ships two builds with the same generated binding surface:
 
-| Build variant | V7.6 / V8 (before) | V8 (after) |
-|---|---|---|
-| `replicad_single` | No exception support | Full exception support via `-fwasm-exceptions` |
-| `replicad_with_exceptions` | Separate build with `-fexceptions` | **Removed** — merged into single build |
-| `replicad_multi` | pthread-based multi-threading | **Removed** — deferred (see below) |
+| Build             | Purpose                                             | Exception handling            |
+| ----------------- | --------------------------------------------------- | ----------------------------- |
+| `replicad_single` | Default browser and Node runtime                    | Native WebAssembly exceptions |
+| `replicad_multi`  | Cross-origin-isolated runtimes with pthread support | Native WebAssembly exceptions |
 
-## Why a Single Build?
+The former `replicad_with_exceptions` build is removed. Both remaining builds use `-fwasm-exceptions`, so callers no longer need to choose between an exception-enabled and exception-disabled artifact.
 
-### Native WASM Exceptions (`-fwasm-exceptions`)
+The multi build remains available for consumers that provide the browser isolation and worker environment required by Emscripten pthreads. Replicad's normal API is identical between the single and multi entry points.
 
-The WebAssembly Exception Handling proposal (Phase 4) is now supported by 94.5%+ of browsers (Chrome 95+, Firefox 100+, Safari 15.2+). It provides:
+## OCCT 8 binding changes
 
-- **Zero-cost happy path**: No `invoke_SIG` wrapper overhead on every function call
-- **Proper stack traces**: `WebAssembly.Exception` objects preserve the call stack
-- **Smaller binary**: ~10-15% smaller than JavaScript-based exception handling (`-fexceptions`)
-- **No performance penalty**: Unlike `-fexceptions`, which added ~75% binary size and measurable runtime overhead, `-fwasm-exceptions` has negligible impact on non-throwing code paths
+OCCT 8 and the updated generated bindings consolidate numbered overload classes into their public class names. Replicad therefore calls overloads such as `gp_Pnt(...)` directly instead of selecting generated names such as `gp_Pnt_2`.
 
-This eliminates the need for a separate "with_exceptions" build. The single build has full exception decoding support with `OCJS.getStandard_FailureData()`.
+Reference-counted OCCT handles are also returned through their resolved wrapper type. Callers no longer invoke `.get()` merely to unwrap a generated handle. This changes the JavaScript binding surface, not OCCT's reference-counted ownership model.
 
-### Multi-threading Deferred
+The migration includes the corresponding changes across geometry construction, curves, projections, import/export, XCAF assembly export, sketches, measurements, and shape operations.
 
-Analysis revealed that OCCT's parallel algorithms were never actually activated in the replicad codebase:
+## Native rendering extractors
 
-- `BRepMesh_IncrementalMesh`: called with `isInParallel=false` (hardcoded in `shapes.ts`)
-- `BOPAlgo_Options::SetRunParallel()`: defaults to `false`
-- All benchmark operations showed **slower** performance with the multi-threaded build due to pthread infrastructure overhead (SharedArrayBuffer, mutex costs, pre-spawned workers)
+The face and edge rendering paths use Replicad-maintained C++ wrappers compiled into both WASM variants. The wrappers traverse OCCT topology and tessellation in native code, then return packed buffers for bulk JavaScript reads.
 
-Multi-threading will be revisited when explicit parallel algorithm activation is implemented upstream.
+This replaces the historical edge path's per-face, per-edge, and per-point Embind calls with one extraction call. The final direct A/B benchmark against that historical JavaScript implementation measured a 71.92× median speedup on its 32-instance premeshed fixture while preserving line geometry, group ranges, and bounded edge hashes.
 
-## replicad Source Changes
+The native implementation also preserves Replicad's existing topology-label contract:
 
-The following replicad source files were modified for OCCT V8 compatibility:
+- public shape hashes and face/edge group hashes use the same bounded `[1, 2^31 - 1]` function;
+- shared edges are deduplicated with exact OCCT shape identity rather than hash equality;
+- face occurrences are not deduplicated;
+- located face triangulations use their actual `TopLoc_Location`; and
+- free edges use the requested angular and linear deflection tolerances in OCCT's expected order.
 
-- **`packages/replicad/src/Sketcher.ts`**: Updated for V8 API changes
-- **`packages/replicad/src/shapes.ts`**: Updated mesh and shape operations
-- **`packages/replicad/src/geom.ts`**: Geometry utility updates
+These wrappers are part of the required `replicad-opencascadejs` module contract. An OCCT 7 module is not compatible with the broader OCCT 8 Replicad API, so the removed JavaScript extractor is not retained as a compatibility fallback.
 
-## Build Configuration
+## Build inputs
 
-### Single V8 YAML (`custom_build_single_v8.yml`)
+The build source lives in `packages/replicad-opencascadejs/build-source`. Generate the concrete configuration and build both artifacts with:
 
-Key changes from the V7.6 configuration:
-
-```yaml
-emccFlags:
-  - -flto                                    # Dead-code elimination at link
-  - -fwasm-exceptions                        # Native WASM exceptions
-  - -sEXPORT_EXCEPTION_HANDLING_HELPERS      # JS helpers for exception decoding
-  - -sEXPORT_ES6=1
-  - -sALLOW_MEMORY_GROWTH=1
-  - -sINITIAL_MEMORY=100MB
-  - -sMAXIMUM_MEMORY=4GB
-  - --no-entry
-  - --emit-symbol-map
-  - -O3
+```sh
+pnpm --dir packages/replicad-opencascadejs run generateConfig
+pnpm --dir packages/replicad-opencascadejs run buildSingle
+pnpm --dir packages/replicad-opencascadejs run buildMulti
 ```
 
-Bindings include `OCJS` and `Standard_Failure` for exception decoding (previously only in the `with_exceptions` build).
+This migration is built from the immutable OCCT 8.0.1 canary inputs:
 
-## Performance
+| Image                                                           | OCI index digest                                                          |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `ghcr.io/taucad/opencascade.js:canary-ebd263f1-single-threaded` | `sha256:215198af0e2ca4c5f308e5540869f2419784dc290062d3eb03d34e4f22e0188c` |
+| `ghcr.io/taucad/opencascade.js:canary-ebd263f1-multi-threaded`  | `sha256:5cb67064edc903ae50c254e32417da9662fa88ec2e734386c28a3806949862ce` |
 
-Benchmarks show V8 is significantly faster than V7.6, especially for boolean operations:
+Adopting a later stable OpenCascade.js/libcascade 3.0.0 image is a separate follow-up. It is not part of this migration branch.
 
-| Operation | V7.6.2 (ms) | V8 Single (ms) | Delta |
-|---|---|---|---|
-| fuse-two-boxes | 26.6 | 20.7 | -22% |
-| n-body-fuse | 65.1 | 48.3 | -26% |
-| deep-boolean-chain | 132.1 | 91.7 | -31% |
-| bottle | 342.3 | 254.4 | -26% |
-| birdhouse | 271.1 | 198.3 | -27% |
-| vase | 226.4 | 162.8 | -28% |
+The generated package contains only the runtime artifacts listed in `package.json`: JavaScript glue, WebAssembly, declarations, and symbol maps for both variants. Build manifests and provenance JSON remain local ignored diagnostics and are not versioned or packed.
 
-## Package Structure
+## Verification
 
+The migration is covered at three levels:
+
+- direct `replicad-opencascadejs` tests exercise the generated single and multi modules, native face/edge extraction, located and free edges, bounded hash parity, and pthread startup;
+- the direct edge benchmark compares the historical JavaScript algorithm and native extractor without depending on the consumer-facing `replicad` package; and
+- Replicad tests cover the high-level mesh contract and an OCCT 8.0.1 STEPCAF export/readback regression that preserves a conical chamfer face.
+
+Run the package checks from the repository root after building the WASM artifacts:
+
+```sh
+pnpm --filter replicad-opencascadejs test
+pnpm --filter replicad-opencascadejs benchmark:edge-mesh
+pnpm --filter replicad typecheck
+pnpm --filter replicad test --run
+pnpm --filter replicad build
 ```
-dist/
-  replicad-opencascadejs-0.21.0-v8.XX.tgz   # WASM + JS glue
-  replicad-0.21.0-v8.XX.tgz                 # replicad library
-```
-
-Consumers reference these tarballs via GitHub raw URLs:
-
-```yaml
-catalog:
-  replicad: "https://github.com/taucad/replicad/raw/main/dist/replicad-0.21.0-v8.XX.tgz"
-  replicad-opencascadejs: "https://github.com/taucad/replicad/raw/main/dist/replicad-opencascadejs-0.21.0-v8.XX.tgz"
-```
-
-## Removed Files
-
-- `build-config/custom_build_with_exceptions_v8.yml` — merged into `custom_build_single_v8.yml`
-- `build-config/custom_build_multi_v8.yml` — multi-threading deferred
-- `src/replicad_with_exceptions.*` — no longer needed
-- `src/replicad_multi.*` — no longer needed
-
-See `repos/opencascade.js/docs/occt-v8-migration.md` for build-level details.

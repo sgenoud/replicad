@@ -1,7 +1,7 @@
 {
-  "name": "@taucad/replicad",
-  "version": "0.23.3-beta.1",
-  "description": "The library to build browser based 3D models with code (Tau fork)",
+  "name": "replicad",
+  "version": "0.23.1",
+  "description": "The library to build browser based 3D models with code",
   "keywords": [
     "cad",
     "opencascadejs",
@@ -10,18 +10,7 @@
     "STL"
   ],
   "author": "Steve Genoud <steve@sgenoud.com>",
-  "contributors": [
-    "Tau Contributors"
-  ],
-  "homepage": "https://github.com/taucad/replicad/tree/main/packages/replicad",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/taucad/replicad.git",
-    "directory": "packages/replicad"
-  },
-  "bugs": {
-    "url": "https://github.com/taucad/replicad/issues"
-  },
+  "homepage": "https://replicad.xyz",
   "license": "MIT",
   "type": "module",
   "main": "./dist/replicad.cjs",
@@ -40,9 +29,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "vite build",
     "start": "NO_TYPES=true vite build --watch",
@@ -80,7 +66,7 @@
     "@types/opentype.js": "1.3.4",
     "flatbush": "^4.0.0",
     "opentype.js": "1.3.4",
-    "replicad-opencascadejs": "workspace:@taucad/replicad-opencascadejs@^"
+    "replicad-opencascadejs": "workspace:^"
   },
-  "gitHead": "0551a12628a69cb228fe67cb0b5e82ccbd27c0d2"
+  "gitHead": "6cb4e3931f9e3e64fb320c474ae9fa33468eddc3"
 }

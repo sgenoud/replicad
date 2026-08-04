@@ -12,14 +12,6 @@ import { getOC } from "../../src/oclib";
 import { ProjectionCamera } from "../../src/projection/ProjectionCamera";
 import { makeProjectedEdges } from "../../src/projection/makeProjectedEdges";
 
-const unwrapHandle = <T>(handle: T | { get: () => T }): T => {
-  if (handle && typeof (handle as { get?: unknown }).get === "function") {
-    return (handle as { get: () => T }).get();
-  }
-
-  return handle as T;
-};
-
 test("keeps trimmed ellipse arcs when splitting for SVG export", () => {
   const ellipseArc = make2dEllipseArc(
     5,
@@ -81,7 +73,7 @@ test("approximates rational beziers before SVG export", () => {
     ],
     [3, 0]
   );
-  const bezier = unwrapHandle(rationalBezier.adaptor().Bezier());
+  const bezier = rationalBezier.adaptor().Bezier();
   bezier.SetWeight(2, 0.2);
 
   expect(bezier.IsRational()).toBe(true);
@@ -102,7 +94,7 @@ test("approximates rational beziers before SVG export", () => {
   compatibleCurves.forEach((curve) => {
     if (curve.geomType === "BEZIER_CURVE") {
       const adaptor = curve.adaptor();
-      expect(unwrapHandle(adaptor.Bezier()).IsRational()).toBe(false);
+      expect(adaptor.Bezier().IsRational()).toBe(false);
       adaptor.delete?.();
     }
   });
