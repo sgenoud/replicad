@@ -18,9 +18,11 @@ const external = (id: string) => {
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      name: "replicadEvaluator",
-      fileName: "replicad-evaluator",
+      entry: {
+        index: resolve(__dirname, "src/index.ts"),
+        builder: resolve(__dirname, "src/builder.ts"),
+        "evaluate/browser": resolve(__dirname, "src/evaluate/browser.ts"),
+      },
       formats: ["es"],
     },
     sourcemap: true,
@@ -32,6 +34,8 @@ export default defineConfig({
   plugins: [
     dts({
       rollupTypes: false,
+      include: ["src"],
+      entryRoot: "src",
     }),
   ],
   test: {
