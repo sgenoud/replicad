@@ -3,11 +3,8 @@
 mainBuild:
   name: replicad_single.js
   bindings: #@ data.values.bindings
+  #! Pre-evaluate global constructors to reduce single-threaded startup work.
+  #! Pthread workers must instead run Embind registrations at runtime.
   emccFlags: #@ data.values.buildFlags + ["-sEVAL_CTORS=2"]
 
-additionalCppFiles:
-  - wrappers/shape-hasher.cpp
-  - wrappers/mesh-extractor.cpp
-  - wrappers/edge-mesh-extractor.cpp
-  - wrappers/brep-io.cpp
-  - wrappers/geom2d-io.cpp
+additionalCppFiles: #@ data.values.additionalCppFiles

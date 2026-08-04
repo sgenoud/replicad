@@ -258,7 +258,10 @@ export function edgeToCurve(e: Edge, face: Face): Curve2D {
   return new Curve2D(trimmed);
 }
 
-const poles3dTo2d = (poles: any, register: <T extends Deletable>(value: T) => T) => {
+const poles3dTo2d = (
+  poles: any,
+  register: <T extends Deletable>(value: T) => T
+) => {
   const oc = getOC();
   const poles2d = register(
     new oc.NCollection_Array1_gp_Pnt2d(poles.Lower(), poles.Upper())
@@ -279,7 +282,10 @@ const direction3dTo2d = (direction: any): Point2D => [
   direction.Y(),
 ];
 
-const axis3dTo2d = (axis: any, register: <T extends Deletable>(value: T) => T) => {
+const axis3dTo2d = (
+  axis: any,
+  register: <T extends Deletable>(value: T) => T
+) => {
   const oc = getOC();
 
   const location = register(axis.Location());

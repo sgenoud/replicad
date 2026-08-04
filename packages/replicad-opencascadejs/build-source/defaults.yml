@@ -288,6 +288,7 @@ buildFlags:
   - -sINITIAL_MEMORY=100MB
   - -sMAXIMUM_MEMORY=4GB
   - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory"]
+  - -sENVIRONMENT=web,worker,node
   - --no-entry
   - --emit-symbol-map
   #! OCCT's OSD_MemInfo references mallinfo, which Emscripten does not provide.
@@ -297,3 +298,10 @@ buildFlags:
   - -sWASM_BIGINT
   - -msimd128
   - -O3
+
+additionalCppFiles:
+  - wrappers/shape-hasher.cpp
+  - wrappers/mesh-extractor.cpp
+  - wrappers/edge-mesh-extractor.cpp
+  - wrappers/brep-io.cpp
+  - wrappers/geom2d-io.cpp

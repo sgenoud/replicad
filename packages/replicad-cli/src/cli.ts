@@ -1,8 +1,7 @@
 import { readFile } from "node:fs/promises";
-import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { Command, Option } from "commander";
-import { getManifoldModule, setWasmUrl } from "manifold-3d/lib/wasm.js";
+import { getManifoldModule } from "manifold-3d/lib/wasm.js";
 import opencascadeModule from "replicad-opencascadejs";
 import * as replicad from "replicad";
 import { createEvaluator } from "replicad-evaluator";
@@ -10,17 +9,9 @@ import packageJson from "../package.json" with { type: "json" };
 import { saveBuildOutput } from "./saveOutput";
 import type { ProjectMode } from "./projectSvg";
 
-const FILE_TYPES = [
-  "stl",
-  "step",
-  "stl-binary",
-  "step-assembly",
-  "json",
-];
+const FILE_TYPES = ["stl", "step", "stl-binary", "step-assembly", "json"];
 
 const PROJECT_MODES = ["visible", "hidden"] as const;
-
-const require = createRequire(import.meta.url);
 
 let evaluatorPromise: Promise<ReturnType<typeof createEvaluator>> | null = null;
 let manifoldPromise: Promise<any> | null = null;
@@ -49,7 +40,7 @@ async function parseArgs(argv: string[]) {
     .addOption(
       new Option(
         "--projection-mode <mode>",
-        'Projection mode when using --projection.'
+        "Projection mode when using --projection."
       )
         .choices(PROJECT_MODES)
         .implies({ projection: true })
@@ -97,12 +88,7 @@ async function createCliEvaluator() {
     (opencascadeModule as any)?.default?.default ||
     (opencascadeModule as any)?.default ||
     opencascadeModule;
-  const wasmPath = require.resolve("replicad-opencascadejs/wasm");
-  const manifoldWasmPath = require.resolve("manifold-3d/manifold.wasm");
-  setWasmUrl(manifoldWasmPath);
-  const oc = await openCascadeFactory({
-    locateFile: () => wasmPath,
-  });
+  const oc = await openCascadeFactory();
   if (!manifoldPromise) {
     manifoldPromise = getManifoldModule();
   }
@@ -123,7 +109,8 @@ async function getEvaluator() {
 }
 
 async function runCli(argv: string[]) {
-  const { done, exitCode, filetype, input, output, project } = await parseArgs(argv);
+  const { done, exitCode, filetype, input, output, project } =
+    await parseArgs(argv);
   if (done) {
     return exitCode;
   }
@@ -131,21 +118,19 @@ async function runCli(argv: string[]) {
   const code = await readFile(input, "utf8");
   const evaluator = await getEvaluator();
   const defaultParams = await evaluator.extractDefaultParamsFromCode(code);
-  const buildResult = await evaluator.buildShapesFromCode(code, defaultParams || {});
+  const buildResult = await evaluator.buildShapesFromCode(
+    code,
+    defaultParams || {}
+  );
 
   if (!Array.isArray(buildResult)) {
     throw new Error(buildResult?.message || "Failed to build shapes");
   }
 
-  await saveBuildOutput(
-    evaluator,
-    buildResult,
-    output || input,
-    {
-      fileType: filetype || "stl",
-      projectMode: project,
-    }
-  );
+  await saveBuildOutput(evaluator, buildResult, output || input, {
+    fileType: filetype || "stl",
+    projectMode: project,
+  });
 
   return 0;
 }

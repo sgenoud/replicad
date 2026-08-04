@@ -257,6 +257,7 @@ mainBuild:
   - -sINITIAL_MEMORY=100MB
   - -sMAXIMUM_MEMORY=4GB
   - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory"]
+  - -sENVIRONMENT=web,worker,node
   - --no-entry
   - --emit-symbol-map
   - -sERROR_ON_UNDEFINED_SYMBOLS=0
@@ -268,7 +269,6 @@ mainBuild:
   - -sUSE_PTHREADS=1
   - -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency
   - -sSHARED_MEMORY=1
-  - -sENVIRONMENT=web,worker,node
 additionalCppFiles:
 - wrappers/shape-hasher.cpp
 - wrappers/mesh-extractor.cpp

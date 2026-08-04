@@ -300,9 +300,7 @@ export const loft = (
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const loftBuilder = r(
-    new oc.BRepOffsetAPI_ThruSections(!returnShell, ruled)
-  );
+  const loftBuilder = r(new oc.BRepOffsetAPI_ThruSections(!returnShell, ruled));
 
   if (startPoint) {
     loftBuilder.AddVertex(r(makeVertex(startPoint)).wrapped);
