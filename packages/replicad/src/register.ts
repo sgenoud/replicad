@@ -16,6 +16,7 @@ if (!(globalThis as any).FinalizationRegistry) {
 
 const deletetableRegistry = new (globalThis as any).FinalizationRegistry(
   (heldValue: Deletable) => {
+    // Empty OCCT handles can resolve to null; never register or finalize them.
     if (!heldValue) return;
     try {
       heldValue.delete();
