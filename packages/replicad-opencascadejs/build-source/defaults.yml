@@ -20,7 +20,6 @@ bindings:
   - symbol: Interface_TypedValue
   - symbol: MoniTool_TypedValue
   - symbol: StepData_StepModel
-  - symbol: StepData_SelectType
 
   - symbol: gp_XYZ
   - symbol: gp_XY
@@ -124,7 +123,6 @@ bindings:
   - symbol: Poly_Triangle
   - symbol: Poly_Triangulation
   - symbol: Poly_PolygonOnTriangulation
-  - symbol: Poly_MergeNodesTool
 
   - symbol: BinTools
   - symbol: BRep_Tool
@@ -269,7 +267,6 @@ bindings:
   - symbol: XCAFDoc_ColorType
   - symbol: XSControl_WorkSession
   - symbol: STEPCAFControl_Writer
-  - symbol: STEPCAFControl_Reader
   - symbol: STEPControl_StepModelType
   - symbol: IFSelect_ReturnStatus
   - symbol: IFSelect_WorkSession
@@ -290,7 +287,7 @@ buildFlags:
   - -sALLOW_MEMORY_GROWTH=1
   - -sINITIAL_MEMORY=100MB
   - -sMAXIMUM_MEMORY=4GB
-  - -sEXPORTED_RUNTIME_METHODS=["FS","HEAP32","HEAPU32","HEAPF32","wasmMemory"]
+  - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory"]
   - --no-entry
   - --emit-symbol-map
   - -sERROR_ON_UNDEFINED_SYMBOLS=0
