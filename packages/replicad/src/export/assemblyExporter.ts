@@ -1,12 +1,8 @@
 import type {
   Quantity_ColorRGBA,
   TCollection_ExtendedString,
-  TCollection_HAsciiString,
   TDocStd_Document,
 } from "replicad-opencascadejs";
-// NOTE: XCAFDoc_VisMaterial* (PBR visual materials) are deliberately omitted from
-// the replicad-opencascadejs WASM build — they depend on Graphic3d/TKService which
-// requires TKOpenGl (unavailable in WASM).
 import { uuidv } from "../utils/uuid";
 import { getOC } from "../oclib";
 import { AnyShape } from "../shapes";
@@ -40,16 +36,11 @@ const wrapColor = (hex: string, alpha = 1): Quantity_ColorRGBA => {
 
 export class AssemblyExporter extends WrappingObj<TDocStd_Document> {}
 
-export type ShapeConfig = {
+type ShapeConfig = {
   shape: AnyShape;
   color?: string;
   alpha?: number;
   name?: string;
-  /** PBR metalness factor (0 = dielectric, 1 = metal). Threaded to GLTF only (not STEP; see note above). */
-  metalness?: number;
-  /** PBR roughness factor — threaded to GLTF only (not STEP; see note above). */
-  roughness?: number;
-  density?: number;
 };
 
 export function createAssembly(shapes: ShapeConfig[] = []): AssemblyExporter {
@@ -63,9 +54,8 @@ export function createAssembly(shapes: ShapeConfig[] = []): AssemblyExporter {
 
   const tool = oc.XCAFDoc_DocumentTool.ShapeTool(mainLabel);
   const ctool = oc.XCAFDoc_DocumentTool.ColorTool(mainLabel);
-  const matTool = oc.XCAFDoc_DocumentTool.MaterialTool(mainLabel);
 
-  for (const { shape, name, color, alpha, density } of shapes) {
+  for (const { shape, name, color, alpha } of shapes) {
     const shapeNode = tool.NewShape();
 
     tool.SetShape(shapeNode, shape.wrapped);
@@ -77,19 +67,6 @@ export function createAssembly(shapes: ShapeConfig[] = []): AssemblyExporter {
       wrapColor(color || "#f00", alpha ?? 1),
       oc.XCAFDoc_ColorType.XCAFDoc_ColorSurf
     );
-
-    if (density !== undefined) {
-      const wrapAscii = (string_: string): TCollection_HAsciiString =>
-        new oc.TCollection_HAsciiString(string_);
-      matTool.SetMaterial(
-        shapeNode,
-        wrapAscii(name || "material"),
-        wrapAscii(""),
-        density,
-        wrapAscii("g/cm3"),
-        wrapAscii("POSITIVE_RATIO_MEASURE")
-      );
-    }
   }
 
   tool.UpdateAssemblies();
@@ -142,7 +119,6 @@ export function exportSTEP(
   writer.SetColorMode(true);
   writer.SetLayerMode(true);
   writer.SetNameMode(true);
-  writer.SetMaterialMode(true);
   oc.Interface_Static.SetIVal("write.surfacecurve.mode", 1);
   oc.Interface_Static.SetIVal("write.precision.mode", 0);
   oc.Interface_Static.SetIVal("write.step.assembly", 2);
