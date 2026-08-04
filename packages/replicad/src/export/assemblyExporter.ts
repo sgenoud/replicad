@@ -155,6 +155,7 @@ export function exportSTEP(
   if (success) {
     const file = oc.FS.readFile("/" + filename);
     oc.FS.unlink("/" + filename);
+    // Emscripten's Uint8Array is ArrayBuffer-backed despite TypeScript's broader type.
     const blob = new Blob([file as BlobPart], { type: "application/STEP" });
     return blob;
   } else {
