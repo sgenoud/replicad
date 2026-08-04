@@ -193,9 +193,7 @@ export async function importSTLAsMesh(stlBlob: Blob): Promise<MeshShape> {
     const x = vertices[i * 3];
     const y = vertices[i * 3 + 1];
     const z = vertices[i * 3 + 2];
-    const key = `${Math.round(x * scale)}|${Math.round(y * scale)}|${Math.round(
-      z * scale
-    )}`;
+    const key = `${Math.round(x * scale)}|${Math.round(y * scale)}|${Math.round(z * scale)}`;
     const existing = seen.get(key);
     if (existing !== undefined) {
       mergeFrom.push(i);

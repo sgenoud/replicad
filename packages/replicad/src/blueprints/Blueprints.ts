@@ -111,12 +111,10 @@ export default class Blueprints implements DrawingInterface {
   }
 
   toSVG(margin = 1) {
-    const elements = this.blueprints
-      .map((bp) => {
-        if (bp instanceof Blueprint) return bp.toSVGPath();
-        else return bp.toSVGGroup();
-      })
-      .sort();
+    const elements = this.blueprints.map((bp) => {
+      if (bp instanceof Blueprint) return bp.toSVGPath();
+      else return bp.toSVGGroup();
+    }).sort();
 
     return asSVG(elements.join("\n    "), this.boundingBox, margin);
   }

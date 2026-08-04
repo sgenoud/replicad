@@ -184,7 +184,11 @@ export const iterTopo = function* iterTopo(
   topo: TopoEntity
 ): IterableIterator<TopoDS_Shape> {
   const oc = getOC();
-  const explorer = new oc.TopExp_Explorer(shape, asTopo(topo), asTopo("shape"));
+  const explorer = new oc.TopExp_Explorer(
+    shape,
+    asTopo(topo),
+    asTopo("shape")
+  );
   const seen: TopoDS_Shape[] = [];
   while (explorer.More()) {
     const item = explorer.Current();
@@ -550,7 +554,8 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
     writer.Transfer(
       this.wrapped,
-      this.oc.STEPControl_StepModelType.STEPControl_AsIs,
+      this.oc.STEPControl_StepModelType
+        .STEPControl_AsIs,
       true,
       progress
     );

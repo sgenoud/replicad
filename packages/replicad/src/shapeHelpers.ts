@@ -24,7 +24,9 @@ import {
 
 export const makeLine = (v1: Point, v2: Point): Edge => {
   const oc = getOC();
-  return new Edge(new oc.BRepBuilderAPI_MakeEdge(asPnt(v1), asPnt(v2)).Edge());
+  return new Edge(
+    new oc.BRepBuilderAPI_MakeEdge(asPnt(v1), asPnt(v2)).Edge()
+  );
 };
 
 export const makeCircle = (
@@ -105,7 +107,10 @@ export const makeHelix = (
   );
 
   const e = r(
-    new oc.BRepBuilderAPI_MakeEdge(r(geomSeg.Value()), r(geomSurf))
+    new oc.BRepBuilderAPI_MakeEdge(
+      r(geomSeg.Value()),
+      r(geomSurf)
+    )
   ).Edge();
 
   // 4. Convert to wire and fix building 3d geom from 2d geom
@@ -328,9 +333,15 @@ export const makeNonPlanarFace = (wire: Wire): Face => {
   const oc = getOC();
   const [r, gc] = localGC();
 
-  const faceBuilder = r(new oc.BRepOffsetAPI_MakeFilling());
+  const faceBuilder = r(
+    new oc.BRepOffsetAPI_MakeFilling()
+  );
   wire.edges.forEach((edge) => {
-    faceBuilder.Add(r(edge).wrapped, oc.GeomAbs_Shape.GeomAbs_C0, true);
+    faceBuilder.Add(
+      r(edge).wrapped,
+      oc.GeomAbs_Shape.GeomAbs_C0,
+      true
+    );
   });
 
   faceBuilder.Build();

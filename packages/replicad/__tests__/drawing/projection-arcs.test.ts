@@ -13,7 +13,15 @@ import { ProjectionCamera } from "../../src/projection/ProjectionCamera";
 import { makeProjectedEdges } from "../../src/projection/makeProjectedEdges";
 
 test("keeps trimmed ellipse arcs when splitting for SVG export", () => {
-  const ellipseArc = make2dEllipseArc(5, 3, Math.PI, 5.6, [0, 0], [1, 0], true);
+  const ellipseArc = make2dEllipseArc(
+    5,
+    3,
+    Math.PI,
+    5.6,
+    [0, 0],
+    [1, 0],
+    true
+  );
   const midpoint = ellipseArc.value(
     0.5 * (ellipseArc.firstParameter + ellipseArc.lastParameter)
   );
@@ -73,9 +81,9 @@ test("approximates rational beziers before SVG export", () => {
   const compatibleCurves = approximateAsSvgCompatibleCurve([rationalBezier]);
 
   expect(compatibleCurves.length).toBeGreaterThan(0);
-  expect(
-    samePoint(compatibleCurves[0].firstPoint, rationalBezier.firstPoint)
-  ).toBe(true);
+  expect(samePoint(compatibleCurves[0].firstPoint, rationalBezier.firstPoint)).toBe(
+    true
+  );
   expect(
     samePoint(
       compatibleCurves[compatibleCurves.length - 1].lastPoint,

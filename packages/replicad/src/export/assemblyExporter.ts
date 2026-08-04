@@ -133,7 +133,12 @@ export function exportSTEP(
   }
 
   const session = r(new oc.XSControl_WorkSession());
-  const writer = r(new oc.STEPCAFControl_Writer(session, false));
+  const writer = r(
+    new oc.STEPCAFControl_Writer(
+      session,
+      false
+    )
+  );
   writer.SetColorMode(true);
   writer.SetLayerMode(true);
   writer.SetNameMode(true);
