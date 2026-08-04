@@ -23,6 +23,12 @@ Reference-counted OCCT handles are also returned through their resolved wrapper 
 
 The migration includes the corresponding changes across geometry construction, curves, projections, import/export, XCAF assembly export, sketches, measurements, and shape operations.
 
+### Progress ranges
+
+The generated bindings now make the trailing `Message_ProgressRange` optional for `TransferRoots` and most `Build` and `Perform` methods. Omitting it materializes OCCT's default progress range internally, so this migration removes 15 manual progress-range allocations.
+
+Two writer APIs still require an explicit range: `STEPControl_Writer.Transfer(..., theProgress)` and `STEPCAFControl_Writer.Perform(..., theProgress)`. Replicad retains progress-range allocations at exactly those two callsites.
+
 ## Native rendering extractors
 
 The face and edge rendering paths use Replicad-maintained C++ wrappers compiled into both WASM variants. The wrappers traverse OCCT topology and tessellation in native code, then return packed buffers for bulk JavaScript reads.
