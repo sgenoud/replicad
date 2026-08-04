@@ -377,7 +377,7 @@ export const makeCylinder = (
 };
 
 /**
- * Creates a sphere with the given radius, centred on the origin.
+ * Creates a sphere with the given radius.
  *
  * @category Solids
  */
@@ -441,7 +441,7 @@ function convertToJSArray(
 }
 
 /**
- * Creates an ellipsoid with the given lengths of the axes, centred on the origin.
+ * Creates an ellipsoid with the given lengths of the axes.
  *
  * @category Solids
  */
