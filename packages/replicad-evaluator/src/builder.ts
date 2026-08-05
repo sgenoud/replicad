@@ -29,6 +29,19 @@ function formatException(oc: any, error: any) {
     } else {
       message = `Kernel error ${error}`;
     }
+  } else if (
+    typeof WebAssembly !== "undefined" &&
+    (WebAssembly as any).Exception &&
+    error instanceof (WebAssembly as any).Exception &&
+    typeof oc?.getExceptionMessage === "function"
+  ) {
+    try {
+      const [type, detail] = oc.getExceptionMessage(error);
+      message = [type, detail].filter(Boolean).join(": ") || String(error);
+      console.error(message, error);
+    } catch {
+      message = String(error);
+    }
   } else if (error?.message) {
     message = error.message;
     console.error(error);
