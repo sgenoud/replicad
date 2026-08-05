@@ -333,7 +333,18 @@ export const makeNonPlanarFace = (wire: Wire): Face => {
   const [r, gc] = localGC();
 
   const faceBuilder = r(
-    new oc.BRepOffsetAPI_MakeFilling()
+    new oc.BRepOffsetAPI_MakeFilling(
+      3,
+      15,
+      2,
+      false,
+      1e-5,
+      1e-4,
+      1e-2,
+      0.1,
+      8,
+      9
+    )
   );
   wire.edges.forEach((edge) => {
     faceBuilder.Add(
@@ -528,7 +539,9 @@ function _weld(facesOrShells: Array<Face | Shell>): AnyShape {
   const oc = getOC();
   const r = GCWithScope();
 
-  const shellBuilder = r(new oc.BRepBuilderAPI_Sewing(1e-6, true, true, true));
+  const shellBuilder = r(
+    new oc.BRepBuilderAPI_Sewing(1e-6, true, true, true, false)
+  );
 
   facesOrShells.forEach(({ wrapped }) => {
     shellBuilder.Add(wrapped);
