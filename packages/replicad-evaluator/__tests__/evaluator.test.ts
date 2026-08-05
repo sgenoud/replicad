@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import * as replicad from "../../replicad/src/index";
 import { createEvaluator } from "../src/index";
 
@@ -108,4 +108,33 @@ const main = ({ makeCylinder }) => makeCylinder(3, 8);
 
     expect(step).toHaveLength(1);
   });
+
+  test("decodes WebAssembly exceptions from failed OCCT operations", async () => {
+    const evaluator = createTestEvaluator();
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    try {
+      const result = await evaluator.buildShapesFromCode(
+        `
+const main = ({ makeBaseBox }) => makeBaseBox(10, 10, 10).fillet(100);
+        `,
+        {}
+      );
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          error: true,
+          message: expect.stringContaining("StdFail_NotDone"),
+        })
+      );
+      expect(result.message).not.toBe("[object WebAssembly.Exception]");
+      expect(consoleError).toHaveBeenCalledWith(
+        expect.stringContaining("StdFail_NotDone"),
+        expect.anything()
+      );
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
 });
