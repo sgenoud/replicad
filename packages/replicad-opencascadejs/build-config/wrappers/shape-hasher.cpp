@@ -12,7 +12,7 @@ inline int32_t ReplicadShapeHashCode(const TopoDS_Shape& shape, int32_t upperBou
     TopTools_ShapeMapHasher{}(shape) % static_cast<std::size_t>(upperBound) + 1);
 }
 
-class OCJS_ShapeHasher {
+class ReplicadShapeHasher {
 public:
   static int32_t HashCode(const TopoDS_Shape& shape, int32_t upperBound) {
     return ReplicadShapeHashCode(shape, upperBound);

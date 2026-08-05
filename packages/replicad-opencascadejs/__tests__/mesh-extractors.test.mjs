@@ -165,7 +165,7 @@ const expectedEdges = (oc, shape) =>
               groups.push(
                 start,
                 lines.length / 3 - start,
-                oc.OCJS_ShapeHasher.HashCode(edge, HASH_CODE_MAX)
+                oc.ReplicadShapeHasher.HashCode(edge, HASH_CODE_MAX)
               );
             }
           }
@@ -210,7 +210,7 @@ const expectedEdges = (oc, shape) =>
           groups.push(
             start,
             lines.length / 3 - start,
-            oc.OCJS_ShapeHasher.HashCode(edge, HASH_CODE_MAX)
+            oc.ReplicadShapeHasher.HashCode(edge, HASH_CODE_MAX)
           );
         }
       }
@@ -239,7 +239,7 @@ const expectedFaceIds = (oc, shape) =>
         oc.BRep_Tool.Triangulation(face, location, 0)
       );
       if (triangulation && !triangulation.isNull()) {
-        ids.push(oc.OCJS_ShapeHasher.HashCode(face, HASH_CODE_MAX));
+        ids.push(oc.ReplicadShapeHasher.HashCode(face, HASH_CODE_MAX));
       }
       explorer.Next();
     }
@@ -278,15 +278,15 @@ for (const runtime of runtimes) {
 
       try {
         for (const upperBound of [1, 7, 1_024, HASH_CODE_MAX]) {
-          const hash = oc.OCJS_ShapeHasher.HashCode(shape, upperBound);
+          const hash = oc.ReplicadShapeHasher.HashCode(shape, upperBound);
           expect(hash).toBeGreaterThanOrEqual(1);
           expect(hash).toBeLessThanOrEqual(upperBound);
-          expect(oc.OCJS_ShapeHasher.HashCode(shape, upperBound)).toBe(hash);
-          expect(oc.OCJS_ShapeHasher.HashCode(reversed, upperBound)).toBe(hash);
+          expect(oc.ReplicadShapeHasher.HashCode(shape, upperBound)).toBe(hash);
+          expect(oc.ReplicadShapeHasher.HashCode(reversed, upperBound)).toBe(hash);
         }
 
-        expect(oc.OCJS_ShapeHasher.HashCode(shape, HASH_CODE_MAX)).not.toBe(
-          oc.OCJS_ShapeHasher.HashCode(movedShape, HASH_CODE_MAX)
+        expect(oc.ReplicadShapeHasher.HashCode(shape, HASH_CODE_MAX)).not.toBe(
+          oc.ReplicadShapeHasher.HashCode(movedShape, HASH_CODE_MAX)
         );
       } finally {
         movedShape.delete();

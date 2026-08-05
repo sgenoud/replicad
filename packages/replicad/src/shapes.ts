@@ -240,7 +240,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   get hashCode(): number {
-    return this.oc.OCJS_ShapeHasher.HashCode(this.wrapped, HASH_CODE_MAX);
+    return this.oc.ReplicadShapeHasher.HashCode(this.wrapped, HASH_CODE_MAX);
   }
 
   get isNull(): boolean {
