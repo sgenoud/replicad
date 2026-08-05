@@ -275,7 +275,11 @@ importers:
         specifier: ^0.28.3
         version: 0.28.3(terser@5.38.1)
 
-  packages/replicad-opencascadejs: {}
+  packages/replicad-opencascadejs:
+    devDependencies:
+      vitest:
+        specifier: ^0.28.3
+        version: 0.28.3(terser@5.38.1)
 
   packages/replicad-threejs-helper:
     dependencies:
