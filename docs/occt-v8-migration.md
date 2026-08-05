@@ -13,6 +13,8 @@ Replicad now ships two builds with the same generated binding surface:
 
 The former `replicad_with_exceptions` build is removed. Both remaining builds use `-fwasm-exceptions`, so callers no longer need to choose between an exception-enabled and exception-disabled artifact.
 
+Consumers calling OpenCascade.js directly can decode a caught `WebAssembly.Exception` with `oc.getExceptionMessage(error)`, which returns the OCCT exception type and message. `replicad-evaluator` applies this decoding automatically when reporting failed geometry operations.
+
 The multi build remains available for consumers that provide the browser isolation and worker environment required by Emscripten pthreads. Replicad's normal API is identical between the single and multi entry points.
 
 The package exposes the generated modules directly to ESM consumers and provides small CommonJS compatibility shims for `require()`. Both entry points initialize the same generated ESM modules and WebAssembly artifacts.
