@@ -758,7 +758,7 @@ export class Edge extends _1DShape<TopoDS_Edge> {
 
 export class Wire extends _1DShape<TopoDS_Wire> {
   protected _geomAdaptor(): BRepAdaptor_CompCurve {
-    return new this.oc.BRepAdaptor_CompCurve(this.wrapped);
+    return new this.oc.BRepAdaptor_CompCurve(this.wrapped, false);
   }
 
   offset2D(
@@ -773,7 +773,8 @@ export class Wire extends _1DShape<TopoDS_Wire> {
 
     const offsetter = new this.oc.BRepOffsetAPI_MakeOffset(
       this.wrapped,
-      kinds[kind]
+      kinds[kind],
+      false
     );
     offsetter.Perform(offset, 0);
 
@@ -824,7 +825,7 @@ export class Surface extends WrappingObj<Adaptor3d_Surface> {
 
 export class Face extends Shape<TopoDS_Face> {
   protected _geomAdaptor(): Adaptor3d_Surface {
-    return new this.oc.BRepAdaptor_Surface(this.wrapped);
+    return new this.oc.BRepAdaptor_Surface(this.wrapped, false);
   }
 
   get surface(): Surface {
@@ -880,7 +881,11 @@ export class Face extends Shape<TopoDS_Face> {
     const surface = r(this.oc.BRep_Tool.Surface(this.wrapped));
 
     const projectedPoint = r(
-      new this.oc.GeomAPI_ProjectPointOnSurf(r(asPnt(point)), surface)
+      new this.oc.GeomAPI_ProjectPointOnSurf(
+        r(asPnt(point)),
+        surface,
+        this.oc.Extrema_ExtAlgo.Extrema_ExtAlgo_Grad
+      )
     );
 
     const { U, V } = projectedPoint.LowerDistanceParameters(0, 0);

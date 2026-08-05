@@ -22,7 +22,18 @@ import { getOC } from "../oclib.js";
 const guessFaceFromWires = (wires: Wire[]): Face => {
   const oc = getOC();
 
-  const faceBuilder = new oc.BRepOffsetAPI_MakeFilling();
+  const faceBuilder = new oc.BRepOffsetAPI_MakeFilling(
+    3,
+    15,
+    2,
+    false,
+    1e-5,
+    1e-4,
+    1e-2,
+    0.1,
+    8,
+    9
+  );
   wires.forEach((wire, wireIndex) => {
     wire.edges.forEach((edge) => {
       faceBuilder.Add(

@@ -299,7 +299,7 @@ export const loft = (
   const [r, gc] = localGC();
 
   const loftBuilder = r(
-    new oc.BRepOffsetAPI_ThruSections(!returnShell, ruled)
+    new oc.BRepOffsetAPI_ThruSections(!returnShell, ruled, 1e-6)
   );
 
   if (startPoint) {
