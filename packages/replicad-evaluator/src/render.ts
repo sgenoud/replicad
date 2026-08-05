@@ -5,7 +5,10 @@ interface Meshable {
   mesh: (
     config?: { tolerance: number; angularTolerance: number } | number
   ) => any;
-  meshEdges?: (config: { keepMesh: boolean }) => any;
+  meshEdges?: (config: {
+    keepMesh: boolean;
+    tolerance?: number;
+  }) => any;
 }
 
 interface SVGable {
@@ -312,11 +315,9 @@ function renderMesh(replicad: ReplicadLike, shapeConfig: MeshableConfiguration) 
 
   try {
     const hasMeshEdges = typeof shape.meshEdges === "function";
+    const meshOptions = { tolerance: 0.1, angularTolerance: 30 };
     const mesh = hasMeshEdges
-      ? shape.mesh({
-          tolerance: 0.1,
-          angularTolerance: 30,
-        })
+      ? shape.mesh(meshOptions)
       : shape.mesh();
 
     if (mesh) {
@@ -340,7 +341,10 @@ function renderMesh(replicad: ReplicadLike, shapeConfig: MeshableConfiguration) 
 
     shapeInfo.mesh = mesh;
     if (hasMeshEdges) {
-      shapeInfo.edges = shape.meshEdges({ keepMesh: true });
+      shapeInfo.edges = shape.meshEdges({
+        tolerance: meshOptions.tolerance,
+        keepMesh: true,
+      });
     }
   } catch (error: any) {
     console.error(error);

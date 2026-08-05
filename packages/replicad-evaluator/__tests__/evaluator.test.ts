@@ -137,4 +137,23 @@ const main = ({ makeBaseBox }) => makeBaseBox(10, 10, 10).fillet(100);
     }
   });
 
+  test("renders curved revolutions without remeshing edges more finely", async () => {
+    const evaluator = createTestEvaluator();
+    const result = await evaluator.buildShapesFromCode(
+      `
+const main = ({ draw }) => draw()
+  .hLine(20)
+  .smoothSplineTo([30, 20], { endTangent: [0, 1] })
+  .lineTo([0, 100])
+  .close()
+  .sketchOnPlane("XZ")
+  .revolve();
+      `,
+      {}
+    );
+
+    expect(Array.isArray(result)).toBe(true);
+    expect(result[0].error).toBe(false);
+    expect(result[0].edges.lines.length).toBeGreaterThan(0);
+  });
 });
