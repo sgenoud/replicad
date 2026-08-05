@@ -32647,14 +32647,6 @@ export declare class GeomToolsWrapper {
   [Symbol.dispose](): void;
 }
 
-export declare class OCJS_ShapeHasher {
-  constructor();
-  static HashCode(shape: TopoDS_Shape, upperBound: number): number;
-  /** Releases the C++ object. The caller must ensure no further access. */
-  delete(): void;
-  [Symbol.dispose](): void;
-}
-
 export declare class ReplicadEdgeMeshData {
   constructor();
   constructor(other: ReplicadEdgeMeshData);
@@ -32703,6 +32695,14 @@ export declare class ReplicadMeshExtractor {
 export declare class ReplicadShapeCaster {
   constructor();
   static CompSolid(shape: TopoDS_Shape): TopoDS_CompSolid;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+export declare class ReplicadShapeHasher {
+  constructor();
+  static HashCode(shape: TopoDS_Shape, upperBound: number): number;
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -33806,12 +33806,12 @@ export type OpenCascadeInstance = {
   NCollection_Sequence_int: typeof NCollection_Sequence_int;
   BRepToolsWrapper: typeof BRepToolsWrapper;
   GeomToolsWrapper: typeof GeomToolsWrapper;
-  OCJS_ShapeHasher: typeof OCJS_ShapeHasher;
   ReplicadEdgeMeshData: typeof ReplicadEdgeMeshData;
   ReplicadEdgeMeshExtractor: typeof ReplicadEdgeMeshExtractor;
   ReplicadMeshData: typeof ReplicadMeshData;
   ReplicadMeshExtractor: typeof ReplicadMeshExtractor;
   ReplicadShapeCaster: typeof ReplicadShapeCaster;
+  ReplicadShapeHasher: typeof ReplicadShapeHasher;
   TColStd_IndexedDataMapOfStringString: typeof TColStd_IndexedDataMapOfStringString;
   TopoDS: typeof TopoDS;
   OCJS: typeof OCJS;

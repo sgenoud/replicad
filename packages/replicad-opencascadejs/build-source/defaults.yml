@@ -271,7 +271,7 @@
 
     - symbol: BRepToolsWrapper
     - symbol: GeomToolsWrapper
-    - symbol: OCJS_ShapeHasher
+    - symbol: ReplicadShapeHasher
     - symbol: ReplicadShapeCaster
     - symbol: ReplicadMeshData
     - symbol: ReplicadMeshExtractor
