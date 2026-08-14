@@ -1,5 +1,5 @@
 import { resolve } from "path";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
@@ -17,7 +17,7 @@ export default defineConfig({
     process.env.NO_TYPES?.toLowerCase() === "true"
       ? null
       : dts({
-          rollupTypes: true,
+          bundleTypes: true,
         }),
   ].filter((a) => !!a),
   test: {

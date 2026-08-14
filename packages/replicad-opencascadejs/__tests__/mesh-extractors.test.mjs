@@ -251,7 +251,7 @@ for (const runtime of runtimes) {
   const init = async () => {
     expect(
       existsSync(runtime.wasmPath),
-      `Missing ${runtime.wasmPath}; run pnpm build first`
+      `Missing ${runtime.wasmPath}; run npm run build first`
     ).toBe(true);
     return runtime.initialize(runtime.wasmPath);
   };

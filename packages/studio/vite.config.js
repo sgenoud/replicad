@@ -64,6 +64,11 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: { exclude: ["replicad", "manifold-3d"] },
+  resolve: {
+    // npm workspaces may hoist peer dependencies from another application.
+    // Hooks and Three.js state require a single runtime instance.
+    dedupe: ["react", "react-dom", "three"],
+  },
   build: {
     outDir: "dist",
     manifest: true,

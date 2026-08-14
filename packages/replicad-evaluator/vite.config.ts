@@ -1,5 +1,5 @@
 import { resolve } from "path";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import dts from "vite-plugin-dts";
 
 const external = (id: string) => {
@@ -33,7 +33,6 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      rollupTypes: false,
       include: ["src"],
       entryRoot: "src",
     }),

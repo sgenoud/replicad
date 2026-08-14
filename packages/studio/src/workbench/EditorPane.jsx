@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { observer } from "mobx-react";
 import Editor from "@monaco-editor/react";
 
-import replicadTypes from "../../node_modules/replicad/dist/replicad.d.ts?raw";
+import replicadTypes from "replicad/types?raw";
 
 import Splitter, { GutterTheme, SplitDirection } from "@devbookhq/splitter";
 

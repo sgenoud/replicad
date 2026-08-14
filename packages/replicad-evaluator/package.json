@@ -35,9 +35,9 @@
     "replicad": "^0.23.1",
     "replicad-opencascadejs": "^0.23.0",
     "typescript": "5.1.6",
-    "vite": "^4.5.5",
-    "vite-plugin-dts": "^3.5.2",
-    "vitest": "^0.28.3"
+    "vite": "^8.2.1",
+    "vite-plugin-dts": "^5.0.3",
+    "vitest": "^4.1.10"
   },
   "files": [
     "dist"

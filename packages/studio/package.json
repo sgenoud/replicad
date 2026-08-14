@@ -52,13 +52,13 @@
     "react-portal": "^4.2.2",
     "react-router-dom": "^5.3.4",
     "react-use-rect": "^2.0.6",
-    "replicad": "workspace:^",
-    "replicad-evaluator": "workspace:^",
-    "replicad-opencascadejs": "workspace:^",
-    "replicad-threejs-helper": "workspace:^",
+    "replicad": "^0.23.1",
+    "replicad-evaluator": "^0.23.4",
+    "replicad-opencascadejs": "^0.23.0",
+    "replicad-threejs-helper": "^0.23.0",
     "styled-components": "^5.3.11",
     "three": "^0.155.0",
-    "vite-plugin-pwa": "^0.16.7"
+    "vite-plugin-pwa": "^1.3.0"
   },
   "devDependencies": {
     "@types/react-dom": "^18.3.5",
@@ -66,14 +66,14 @@
     "@types/three": "^0.155.1",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^6.0.5",
     "babel-plugin-styled-components": "1.13.3",
     "binaryen": "^101.0.0",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "prettier": "^2.8.8",
-    "vite": "^4.5.5",
-    "workbox-window": "^7.3.0"
+    "vite": "^8.2.1",
+    "workbox-window": "^7.4.0"
   }
 }
