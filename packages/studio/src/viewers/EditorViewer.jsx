@@ -85,6 +85,9 @@ export default observer(function EditorViewer({
   return (
     <Canvas
       orthographic
+      // ClipPlane caps the clipped region with a stencil buffer. three.js
+      // stopped requesting one by default in r163, so ask for it explicitly.
+      gl={{ stencil: true }}
       onCreated={(state) => (state.gl.localClippingEnabled = true)}
     >
       <InfiniteGrid />
