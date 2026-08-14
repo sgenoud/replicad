@@ -42,18 +42,14 @@ const main = () => {
 
   // Example serializing a shape directly to the virtual FS
   const oc = replicad.getOC();
-  oc.BinTools.Write_3(
-    solid._wrapped,
-    "some_file.brep",
-    new oc.Message_ProgressRange_1()
-  );
+  oc.BinTools.Write(solid._wrapped, "some_file.brep");
   console.log("serialized to file contents: ");
   console.log(oc.FS.readFile("some_file.brep"));
   const resultShape = profile.sketchOnPlane("XZ").extrude(3);
-  oc.BinTools.Read_2(
+  oc.BinTools.Read(
     resultShape._wrapped,
     "some_file.brep",
-    new oc.Message_ProgressRange_1()
+    new oc.Message_ProgressRange()
   );
   // resultShape now contains the deseralized object.
   // Note this silently fails if file isn't found
