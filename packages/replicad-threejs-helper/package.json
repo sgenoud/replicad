@@ -10,9 +10,19 @@
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "https://replicad.xyz",
   "license": "MIT",
-  "main": "dist/umd/replicad-threejs-helper.js",
+  "main": "dist/cjs/replicad-threejs-helper.cjs",
   "module": "dist/es/replicad-threejs-helper.js",
+  "types": "dist/replicad-threejs-helper.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/replicad-threejs-helper.d.ts",
+      "import": "./dist/es/replicad-threejs-helper.js",
+      "require": "./dist/cjs/replicad-threejs-helper.cjs",
+      "default": "./dist/es/replicad-threejs-helper.js"
+    },
+    "./package.json": "./package.json"
+  },
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -31,21 +41,19 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.js",
-    "start": "rollup -w -c rollup.config.js",
+    "build": "vite build",
+    "start": "vite build --watch",
     "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme minimal src",
     "build-docss": "typedoc --help"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.1",
-    "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/three": "^0.185.4",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.1.0",
     "prettier": "^2.4.1",
-    "rollup": "^3.30.0",
-    "rollup-plugin-ts": "3.1.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^8.2.1",
+    "vite-plugin-dts": "^5.0.3"
   }
 }
