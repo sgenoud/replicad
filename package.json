@@ -8,7 +8,9 @@
   "license": "MIT",
   "scripts": {
     "prepare-packages": "lerna exec --ignore replicad-opencascadejs --no-private --no-bail -- npm run build",
-    "publish-packages": "lerna publish"
+    "publish-packages": "lerna publish",
+    "test": "npm test --workspaces --if-present -- --run",
+    "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "devDependencies": {
     "eslint": "^8.1.0",

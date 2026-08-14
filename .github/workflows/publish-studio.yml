@@ -1,6 +1,6 @@
 name: "Publish pages"
 
-on: 
+on:
   push:
     branches: [main]
   pull_request:
@@ -29,6 +29,14 @@ jobs:
       - name: Build packages
         run: npm run prepare-packages
 
+      # Runs after the build: replicad-evaluator and replicad-cli resolve
+      # replicad through its published entry points, so they need dist/.
+      - name: Run the tests
+        run: npm test
+
+      - name: Typecheck
+        run: npm run typecheck
+
       - name: Build the studio
         run: npm run build --workspace=studio
 
@@ -42,7 +50,7 @@ jobs:
           accountId: d0e0387dd16b671a301d1ce6e7b73609
           projectName: replicad-studio
           directory: packages/studio/dist
-          wranglerVersion: '3'
+          wranglerVersion: "3"
 
       - name: Publish the example app
         uses: cloudflare/pages-action@v1
@@ -51,4 +59,4 @@ jobs:
           accountId: d0e0387dd16b671a301d1ce6e7b73609
           projectName: replicad-example-app
           directory: packages/replicad-app-example/build
-          wranglerVersion: '3'
+          wranglerVersion: "3"
