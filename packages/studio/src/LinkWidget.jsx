@@ -9,6 +9,7 @@ import loadCode from "./utils/loadCode";
 import saveShape from "./utils/saveShape";
 
 import StandardUI from "./components/StandardUI.jsx";
+import CompatibilityNotice from "./components/CompatibilityNotice.jsx";
 import { LinkEditor } from "./components/LinkEditor.jsx";
 
 const CenterInfo = styled.div`
@@ -125,6 +126,7 @@ export default function LinkWidget() {
   const [computedShapes, updateComputedShapes] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [compatibilityWarning, setCompatibilityWarning] = useState(null);
 
   const [labels, setLabels] = useState([]);
 
@@ -153,6 +155,7 @@ export default function LinkWidget() {
       paramsToCompute.current = null;
       updateComputedShapes(null);
       setDefaultParams(null);
+      setCompatibilityWarning(null);
     };
   }, [code]);
 
@@ -165,7 +168,19 @@ export default function LinkWidget() {
           readyToBuild.current = false;
           return builderAPI.buildShapesFromCode(code, buildParams);
         })
-        .then((geometry) => {
+        .then(async (geometry) => {
+          const replacements = await builderAPI.getCompatibilityReplacements();
+          setCompatibilityWarning(
+            replacements.length
+              ? `This model uses an older OpenCascade API (${replacements
+                  .map(
+                    ({ legacy, replacement }) => `${legacy} → ${replacement}`
+                  )
+                  .join(
+                    ", "
+                  )}). Its author should update the code to use the unnumbered API names.`
+              : null
+          );
           updateComputedShapes(geometry);
           setGeometryHasBeenComputed(true);
           readyToBuild.current = true;
@@ -298,6 +313,7 @@ export default function LinkWidget() {
         onSave={(format) => saveShape("defaultShape", format, code)}
         canSave={geometryHasBeenComputed}
       />
+      <CompatibilityNotice message={compatibilityWarning} />
       <AdditionalInfo>
         <a href="https://replicad.xyz" target="_blank">
           {" replicad "}

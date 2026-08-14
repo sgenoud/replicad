@@ -1,4 +1,10 @@
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import {
+  copyFile,
+  mkdir,
+  mkdtemp,
+  readFile,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -6,7 +12,9 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 const PACKAGE_ROOT = fileURLToPath(new URL("..", import.meta.url));
-const BIN_PATH = fileURLToPath(new URL("../bin/replicad-cli.js", import.meta.url));
+const BIN_PATH = fileURLToPath(
+  new URL("../bin/replicad-cli.js", import.meta.url)
+);
 
 function runCli(args: string[]) {
   return spawnSync(process.execPath, [BIN_PATH, ...args], {
@@ -39,7 +47,9 @@ const main = ({ makeCylinder }) => makeCylinder(8, 20);
   }, 60000);
 
   test("writes hidden lines when projection mode is hidden", async () => {
-    const workdir = await mkdtemp(join(tmpdir(), "replicad-cli-project-hidden-"));
+    const workdir = await mkdtemp(
+      join(tmpdir(), "replicad-cli-project-hidden-")
+    );
     const input = join(workdir, "project-hidden.js");
 
     await writeFile(
@@ -66,7 +76,9 @@ const main = ({ draw }) => draw()
   }, 60000);
 
   test("keeps projected contours as separate svg paths", async () => {
-    const workdir = await mkdtemp(join(tmpdir(), "replicad-cli-project-paths-"));
+    const workdir = await mkdtemp(
+      join(tmpdir(), "replicad-cli-project-paths-")
+    );
     const input = join(workdir, "project-paths.js");
 
     await writeFile(
@@ -112,7 +124,9 @@ const main = ({ makeCylinder }) => makeCylinder(8, 20).meshShape();
   }, 60000);
 
   test("fails clearly when projecting mesh-only output", async () => {
-    const workdir = await mkdtemp(join(tmpdir(), "replicad-cli-mesh-projection-"));
+    const workdir = await mkdtemp(
+      join(tmpdir(), "replicad-cli-mesh-projection-")
+    );
     const input = join(workdir, "mesh-projection.js");
 
     await writeFile(
@@ -126,7 +140,32 @@ const main = ({ makeCylinder }) => makeCylinder(8, 20).meshShape();
     const result = runCli(["-p", input]);
 
     expect(result.status).toBe(1);
-    expect(result.stderr).toContain("Projection export requires a non-mesh 3D shape");
+    expect(result.stderr).toContain(
+      "Projection export requires a non-mesh 3D shape"
+    );
+  }, 60000);
+
+  test("runs legacy numbered OpenCascade APIs with an upgrade warning", async () => {
+    const workdir = await mkdtemp(
+      join(tmpdir(), "replicad-cli-compatibility-")
+    );
+    const example = fileURLToPath(
+      new URL("./fixtures/legacy-serialization.js", import.meta.url)
+    );
+    const input = join(workdir, "serialization.js");
+    const output = join(workdir, "serialization");
+    await copyFile(example, input);
+
+    const result = runCli(["-f", "json", input, output]);
+
+    expect(result.status).toBe(0);
+    expect(result.stderr).toContain("OpenCascade compatibility mode was used");
+    expect(result.stderr).toContain(
+      "oc.Message_ProgressRange_1 → oc.Message_ProgressRange"
+    );
+    expect(result.stderr).toContain("oc.BinTools.Write_3 → oc.BinTools.Write");
+    expect(result.stderr).toContain("oc.BinTools.Read_2 → oc.BinTools.Read");
+    expect(await readFile(`${output}.json`, "utf8")).toContain('"mesh"');
   }, 60000);
 
   test("writes json to the requested output stem", async () => {

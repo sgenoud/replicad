@@ -22,7 +22,10 @@ const main = ({ makeCylinder }, params) => {
 
     const defaultParams = await evaluator.extractDefaultParamsFromCode(code);
     const defaultName = await evaluator.extractDefaultNameFromCode(code);
-    const result = await evaluator.buildShapesFromCode(code, defaultParams || {});
+    const result = await evaluator.buildShapesFromCode(
+      code,
+      defaultParams || {}
+    );
     const stl = await evaluator.exportShape("stl");
 
     expect(defaultParams).toEqual({ radius: 7 });
@@ -85,7 +88,10 @@ export const labels = (params: Params) => [
 
     const defaultParams = await evaluator.extractDefaultParamsFromCode(code);
     const defaultName = await evaluator.extractDefaultNameFromCode(code);
-    const result = await evaluator.buildShapesFromCode(code, defaultParams || {});
+    const result = await evaluator.buildShapesFromCode(
+      code,
+      defaultParams || {}
+    );
     const labels = await evaluator.computeLabels(code, defaultParams || {});
     const stl = await evaluator.exportShape("stl");
 
@@ -111,7 +117,9 @@ const main = ({ makeCylinder }) => makeCylinder(3, 8);
 
   test("decodes WebAssembly exceptions from failed OCCT operations", async () => {
     const evaluator = createTestEvaluator();
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     try {
       const result = await evaluator.buildShapesFromCode(
@@ -135,6 +143,43 @@ const main = ({ makeBaseBox }) => makeBaseBox(10, 10, 10).fillet(100);
     } finally {
       consoleError.mockRestore();
     }
+  });
+
+  test("temporarily restores and reports numbered OpenCascade APIs", async () => {
+    const evaluator = createTestEvaluator();
+    const result = await evaluator.buildShapesFromCode(
+      `
+const main = ({ makeCylinder }) => {
+  const shape = makeCylinder(3, 8);
+  const progress = new oc.Message_ProgressRange_1();
+  oc.BinTools.Write_3(shape._wrapped, "compatibility-test.brep", progress);
+  return shape;
+};
+      `,
+      {}
+    );
+
+    expect(Array.isArray(result)).toBe(true);
+    expect(evaluator.getCompatibilityReplacements()).toEqual([
+      {
+        legacy: "oc.Message_ProgressRange_1",
+        replacement: "oc.Message_ProgressRange",
+      },
+      {
+        legacy: "oc.BinTools.Write_3",
+        replacement: "oc.BinTools.Write",
+      },
+    ]);
+    expect(
+      globalThis.replicadEvaluatorOC.Message_ProgressRange_1
+    ).toBeUndefined();
+    expect(globalThis.replicadEvaluatorOC.BinTools.Write_3).toBeUndefined();
+
+    await evaluator.buildShapesFromCode(
+      `const main = ({ makeCylinder }) => makeCylinder(2, 4);`,
+      {}
+    );
+    expect(evaluator.getCompatibilityReplacements()).toEqual([]);
   });
 
   test("renders curved revolutions without remeshing edges more finely", async () => {

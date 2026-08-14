@@ -57,6 +57,7 @@ const service = {
   extractDefaultNameFromCode: (...args) =>
     evaluator.extractDefaultNameFromCode(...args),
   exportShape: (...args) => evaluator.exportShape(...args),
+  getCompatibilityReplacements: () => evaluator.getCompatibilityReplacements(),
   edgeInfo: (...args) => evaluator.edgeInfo(...args),
   faceInfo: (...args) => evaluator.faceInfo(...args),
 };

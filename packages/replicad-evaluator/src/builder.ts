@@ -1,9 +1,11 @@
 import { exportShapeEntries } from "./export";
 import { BuilderHelper } from "./helper";
+import { createOpenCascadeCompatibilitySession } from "./openCascadeCompatibility";
 import { renderOutput, ShapeStandardizer } from "./render";
 import type {
   CodeEvaluator,
   GenericRecord,
+  OpenCascadeCompatibilityReplacement,
   ReplicadLike,
   RuntimeResolver,
 } from "./types";
@@ -88,6 +90,7 @@ async function withTemporaryGlobals<T>(
 
 export function createBuilder({ runtime, codeEvaluator }: BuilderOptions) {
   const shapesMemory = createShapeMemory();
+  let compatibilityReplacements: OpenCascadeCompatibilityReplacement[] = [];
 
   const ensureRuntimeReady = async () => {
     const currentRuntime = await runtime();
@@ -238,6 +241,11 @@ try {
     let defaultName;
     const helper = new BuilderHelper(currentRuntime.replicad);
     const standardizer = new ShapeStandardizer(currentRuntime.replicad);
+    const compatibility = createOpenCascadeCompatibilitySession({
+      oc: currentRuntime.oc,
+      replicad: currentRuntime.replicad,
+    });
+    compatibilityReplacements = [];
 
     try {
       shapes = await withTemporaryGlobals(
@@ -247,15 +255,18 @@ try {
             standardizer.registerAdapter.bind(standardizer),
         },
         async () => {
-          const result = await runCode(code, params);
+          const result = await compatibility.run(() => runCode(code, params));
           defaultName = code
-            ? await extractDefaultNameFromCode(code)
+            ? await compatibility.run(() => extractDefaultNameFromCode(code))
             : undefined;
           return result;
         }
       );
     } catch (error) {
       return formatException(currentRuntime.oc, error);
+    } finally {
+      compatibilityReplacements = [...compatibility.replacements];
+      compatibility.restore();
     }
 
     return renderOutput(shapes, {
@@ -345,6 +356,7 @@ try {
     extractDefaultName: extractDefaultNameFromCode,
     exportShape,
     getShapeEntries,
+    getCompatibilityReplacements: () => [...compatibilityReplacements],
     loadFont,
     faceInfo,
     edgeInfo,

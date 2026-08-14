@@ -10,6 +10,7 @@ import { InfoBottomLeft, InfoTopRight } from "../components/FloatingInfo";
 import DownloadDialog from "../visualiser/editor/DownloadDialog";
 import ParamsEditor from "../visualiser/editor/ParamsEditor";
 import LoadingScreen from "../components/LoadingScreen";
+import CompatibilityNotice from "../components/CompatibilityNotice";
 import EditorViewer from "../viewers/EditorViewer";
 
 import { observer } from "mobx-react";
@@ -74,8 +75,18 @@ export const VisualizerButtons = observer(() => {
   );
 });
 
-const LoadingInfo = styled(InfoBottomLeft)`
-  color: var(--color-primary-light);
+const BottomLeftWidgets = styled(InfoBottomLeft)`
+  align-items: flex-start;
+  gap: 0.75em;
+  max-height: none;
+  overflow: visible;
+`;
+
+const SelectedInfo = styled.div`
+  padding: 8px;
+  border: 1px solid var(--color-primary-light);
+  border-radius: 10px;
+  background-color: var(--bg-color);
 `;
 
 export default observer(function VisualizerPane() {
@@ -113,18 +124,21 @@ export default observer(function VisualizerPane() {
         <DownloadDialog onClose={() => store.ui.changeDownload(false)} />
       )}
 
-      {(store.selectedInfo.faceInitialized ||
-        store.selectedInfo.edgeInitialized) && (
-        <InfoBottomLeft>
-          <FaceInfo />
-          <EdgeInfo />
-        </InfoBottomLeft>
-      )}
-
-      {store.shapeLoaded && store.processing && (
-        <LoadingInfo noBg>
-          <Loading size="3em" />
-        </LoadingInfo>
+      {(store.compatibilityWarning ||
+        store.selectedInfo.faceInitialized ||
+        store.selectedInfo.edgeInitialized ||
+        (store.shapeLoaded && store.processing)) && (
+        <BottomLeftWidgets noBg>
+          <CompatibilityNotice inline message={store.compatibilityWarning} />
+          {(store.selectedInfo.faceInitialized ||
+            store.selectedInfo.edgeInitialized) && (
+            <SelectedInfo>
+              <FaceInfo />
+              <EdgeInfo />
+            </SelectedInfo>
+          )}
+          {store.shapeLoaded && store.processing && <Loading size="3em" />}
+        </BottomLeftWidgets>
       )}
     </>
   );

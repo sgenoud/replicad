@@ -8,6 +8,7 @@ import {
   InfoTopRight as InfoTopRightRaw,
 } from "../components/FloatingInfo.jsx";
 import LoadingScreen from "../components/LoadingScreen.jsx";
+import CompatibilityNotice from "../components/CompatibilityNotice.jsx";
 
 import Download from "../icons/Download.jsx";
 import Configure from "../icons/Configure.jsx";
@@ -153,6 +154,7 @@ const EditorView = observer(function Editor() {
       ) : (
         <LoadingScreen />
       )}
+      <CompatibilityNotice message={store.compatibilityWarning} />
       <Toolbar>
         <ButtonBar>
           {store.currentMesh.length > 1 && !store.error ? (
@@ -229,6 +231,9 @@ const EditorView = observer(function Editor() {
           <div>Error</div>
           <div>{store.error?.message}</div>
           {store.error.stack && <pre>{store.error.stack}</pre>}
+          {store.compatibilityWarning && (
+            <div>{store.compatibilityWarning}</div>
+          )}
         </ErrorOverlay>
       )}
     </>

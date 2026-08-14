@@ -50,6 +50,14 @@ export const ErrorOverlay = styled.div`
   }
 `;
 
+const WarningOverlay = styled(ErrorOverlay)`
+  border-color: #d28b00;
+
+  & > :first-child {
+    color: #d28b00;
+  }
+`;
+
 export default observer(function EditorPane() {
   const store = useEditorStore();
   const editorRef = React.useRef(null);
@@ -111,7 +119,9 @@ export default observer(function EditorPane() {
         direction={SplitDirection.Vertical}
         gutterTheme={GutterTheme.Dark}
         gutterClassName="custom-gutter-theme"
-        initialSizes={store.error ? [75, 25] : [100]}
+        initialSizes={
+          store.error || store.compatibilityWarning ? [75, 25] : [100]
+        }
       >
         <Editor
           defaultLanguage={language}
@@ -127,13 +137,21 @@ export default observer(function EditorPane() {
             minimap: { enabled: false },
           }}
         />
-        {store.error && (
+        {store.error ? (
           <ErrorOverlay>
             <div>Error</div>
             <div>{store.error?.message}</div>
             {store.error.stack && <pre>{store.error.stack}</pre>}
+            {store.compatibilityWarning && (
+              <div>{store.compatibilityWarning}</div>
+            )}
           </ErrorOverlay>
-        )}
+        ) : store.compatibilityWarning ? (
+          <WarningOverlay>
+            <div>Compatibility warning</div>
+            <div>{store.compatibilityWarning}</div>
+          </WarningOverlay>
+        ) : null}
       </Splitter>
     </>
   );

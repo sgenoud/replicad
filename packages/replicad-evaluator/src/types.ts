@@ -59,6 +59,11 @@ export interface CreateEvaluatorOptions {
   tempDir?: string;
 }
 
+export interface OpenCascadeCompatibilityReplacement {
+  legacy: string;
+  replacement: string;
+}
+
 export interface EvaluatorService {
   ready: () => Promise<boolean>;
   buildShapesFromCode: (code: string, params?: GenericRecord) => Promise<any>;
@@ -73,6 +78,7 @@ export interface EvaluatorService {
     meshConfig?: GenericRecord
   ) => Promise<any[]>;
   getShapeEntries: (shapeId?: string) => any[];
+  getCompatibilityReplacements: () => OpenCascadeCompatibilityReplacement[];
   loadFont: (
     fontData: string | ArrayBuffer,
     fontName?: string,

@@ -7,6 +7,7 @@ export type {
   CreateEvaluatorOptions,
   EvaluateModuleOptions,
   EvaluatorService,
+  OpenCascadeCompatibilityReplacement,
   ReplicadLike,
   RuntimeContext,
   RuntimeResolver,
