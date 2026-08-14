@@ -79,12 +79,11 @@ const AppState = types
       self.ui.deHighlight();
       self.processing = true;
       try {
-        const mesh = yield api.buildShapesFromCode(
-          self.currentValues.code,
-          params
-        );
-
-        const replacements = yield api.getCompatibilityReplacements();
+        const { shapes: mesh, compatibilityReplacements: replacements } =
+          yield api.buildShapesFromCodeWithMetadata(
+            self.currentValues.code,
+            params
+          );
         self.compatibilityWarning = replacements.length
           ? `OpenCascade compatibility mode was used (${replacements
               .map(({ legacy, replacement }) => `${legacy} → ${replacement}`)

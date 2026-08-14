@@ -49,7 +49,13 @@ const evaluator = createBuilder({
 
 const service = {
   ready: () => ensureReplicadReady().then(() => true),
-  buildShapesFromCode: (...args) => evaluator.buildShapesFromCode(...args),
+  buildShapesFromCodeWithMetadata: async (...args) => {
+    const shapes = await evaluator.buildShapesFromCode(...args);
+    return {
+      shapes,
+      compatibilityReplacements: evaluator.getCompatibilityReplacements(),
+    };
+  },
   loadFont: (...args) => evaluator.loadFont(...args),
   computeLabels: (...args) => evaluator.computeLabels(...args),
   extractDefaultParamsFromCode: (...args) =>
@@ -57,7 +63,6 @@ const service = {
   extractDefaultNameFromCode: (...args) =>
     evaluator.extractDefaultNameFromCode(...args),
   exportShape: (...args) => evaluator.exportShape(...args),
-  getCompatibilityReplacements: () => evaluator.getCompatibilityReplacements(),
   edgeInfo: (...args) => evaluator.edgeInfo(...args),
   faceInfo: (...args) => evaluator.faceInfo(...args),
 };

@@ -161,35 +161,37 @@ export default function LinkWidget() {
 
   const build = useCallback(
     (buildParams) => {
+      if (!code) return;
       setIsLoading(true);
       builderAPI
         .ready()
         .then(() => {
           readyToBuild.current = false;
-          return builderAPI.buildShapesFromCode(code, buildParams);
+          return builderAPI.buildShapesFromCodeWithMetadata(code, buildParams);
         })
-        .then(async (geometry) => {
-          const replacements = await builderAPI.getCompatibilityReplacements();
-          setCompatibilityWarning(
-            replacements.length
-              ? `This model uses an older OpenCascade API (${replacements
-                  .map(
-                    ({ legacy, replacement }) => `${legacy} → ${replacement}`
-                  )
-                  .join(
-                    ", "
-                  )}). Its author should update the code to use the unnumbered API names.`
-              : null
-          );
-          updateComputedShapes(geometry);
-          setGeometryHasBeenComputed(true);
-          readyToBuild.current = true;
-          setIsLoading(false);
-          if (paramsToCompute.current) {
-            build({ ...paramsToCompute.current });
-            paramsToCompute.current = null;
+        .then(
+          ({ shapes: geometry, compatibilityReplacements: replacements }) => {
+            setCompatibilityWarning(
+              replacements.length
+                ? `This model uses an older OpenCascade API (${replacements
+                    .map(
+                      ({ legacy, replacement }) => `${legacy} → ${replacement}`
+                    )
+                    .join(
+                      ", "
+                    )}). Its author should update the code to use the unnumbered API names.`
+                : null
+            );
+            updateComputedShapes(geometry);
+            setGeometryHasBeenComputed(true);
+            readyToBuild.current = true;
+            setIsLoading(false);
+            if (paramsToCompute.current) {
+              build({ ...paramsToCompute.current });
+              paramsToCompute.current = null;
+            }
           }
-        })
+        )
         .then(() => {
           return builderAPI.computeLabels(code, buildParams);
         })
@@ -212,8 +214,8 @@ export default function LinkWidget() {
   );
 
   useEffect(() => {
-    build();
-  }, [build]);
+    if (code) build();
+  }, [build, code]);
 
   const loadFont = useCallback(
     async (fontData, fontName, forceUpdate) => {
