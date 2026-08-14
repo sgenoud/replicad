@@ -4,7 +4,7 @@
   "description": "OpencascadeJS custom build for replicad",
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "",
-  "license": "MIT",
+  "license": "LGPL-2.1-only",
   "type": "module",
   "main": "./dist/replicad_single.cjs",
   "module": "./dist/replicad_single.js",
