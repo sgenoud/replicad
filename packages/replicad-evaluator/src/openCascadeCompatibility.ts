@@ -2,6 +2,10 @@ import type { OpenCascadeCompatibilityReplacement } from "./types";
 
 const LEGACY_MEMBER_ERROR =
   /(?:^|\s)(?:(globalThis)\.)?((?:[A-Za-z_$][\w$]*\.)*)([A-Za-z_$][\w$]*_\d+) is not (?:a function|a constructor)/;
+// WebKit reports the value that failed (usually `undefined`) as the subject and
+// puts the useful member name in the evaluated expression instead.
+const WEBKIT_LEGACY_MEMBER_ERROR =
+  /is not (?:a function|a constructor)[\s\S]*?\bevaluating\s+['"](?:new\s+)?(?:(globalThis)\.)?((?:[A-Za-z_$][\w$]*\.)*)([A-Za-z_$][\w$]*_\d+)\s*\(/i;
 const NUMBERED_SUFFIX = /_\d+$/;
 const MAX_RETRIES = 20;
 
@@ -16,7 +20,9 @@ function detectLegacyMember(error: unknown) {
     error && typeof error === "object" && "message" in error
       ? String((error as { message?: unknown }).message)
       : String(error);
-  const match = message.match(LEGACY_MEMBER_ERROR);
+  const match =
+    message.match(LEGACY_MEMBER_ERROR) ??
+    message.match(WEBKIT_LEGACY_MEMBER_ERROR);
   if (!match) return null;
 
   const ownerPath = match[2].slice(0, -1);
