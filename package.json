@@ -7,7 +7,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "prepare-packages": "lerna exec pnpm build --no-private --no-bail",
+    "prepare-packages": "lerna exec --ignore replicad-opencascadejs pnpm build --no-private --no-bail",
     "publish-packages": "lerna publish"
   },
   "devDependencies": {
