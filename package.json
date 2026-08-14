@@ -17,5 +17,9 @@
     "lerna": "^10.0.0",
     "prettier": "^2.4.1"
   },
-  "packageManager": "npm@10.9.4"
+  "packageManager": "npm@11.17.0",
+  "allowScripts": {
+    "core-js@3.50.0": true,
+    "esbuild@0.28.2": true
+  }
 }
