@@ -34,7 +34,8 @@
     "start": "NO_TYPES=true vite build --watch",
     "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme default src",
     "build-docss": "typedoc --help",
-    "test": "vitest"
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "24.0.1",

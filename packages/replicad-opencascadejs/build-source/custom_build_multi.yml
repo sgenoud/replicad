@@ -1,0 +1,10 @@
+#@ load("@ytt:data", "data")
+
+mainBuild:
+  name: replicad_multi.js
+  bindings: #@ data.values.bindings
+  #! EVAL_CTORS is intentionally omitted because constructor evaluation order is
+  #! non-deterministic under pthread workers, which run Embind registrations at runtime.
+  emccFlags: #@ data.values.buildFlags + ["-pthread", "-sUSE_PTHREADS=1", "-sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency", "-sSHARED_MEMORY=1"]
+
+additionalCppFiles: #@ data.values.additionalCppFiles

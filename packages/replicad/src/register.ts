@@ -16,6 +16,8 @@ if (!(globalThis as any).FinalizationRegistry) {
 
 const deletetableRegistry = new (globalThis as any).FinalizationRegistry(
   (heldValue: Deletable) => {
+    // Empty OCCT handles can resolve to null; never register or finalize them.
+    if (!heldValue) return;
     try {
       heldValue.delete();
     } catch (e) {
@@ -47,7 +49,9 @@ export class WrappingObj<Type extends Deletable> {
       this._wrapped.delete();
     }
 
-    deletetableRegistry.register(this, newWrapped, newWrapped);
+    if (newWrapped) {
+      deletetableRegistry.register(this, newWrapped, newWrapped);
+    }
     this._wrapped = newWrapped;
   }
 
@@ -60,7 +64,9 @@ export class WrappingObj<Type extends Deletable> {
 
 export const GCWithScope = () => {
   function gcWithScope<Type extends Deletable>(value: Type): Type {
-    deletetableRegistry.register(gcWithScope, value);
+    if (value) {
+      deletetableRegistry.register(gcWithScope, value);
+    }
     return value;
   }
 
@@ -69,7 +75,9 @@ export const GCWithScope = () => {
 
 export const GCWithObject = (obj: any) => {
   function registerForGC<Type extends Deletable>(value: Type): Type {
-    deletetableRegistry.register(obj, value);
+    if (value) {
+      deletetableRegistry.register(obj, value);
+    }
     return value;
   }
 

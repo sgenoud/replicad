@@ -6,8 +6,6 @@ import type {
   GProp_GProps,
 } from "replicad-opencascadejs";
 import { GCWithScope, WrappingObj } from "./register";
-import { ProgressRange } from "./utils/ProgressRange";
-
 class PhysicalProperties extends WrappingObj<GProp_GProps> {
   get centerOfMass(): [number, number, number] {
     const r = GCWithScope();
@@ -38,8 +36,8 @@ export function measureShapeSurfaceProperties(
   shape: Face | Shape3D
 ): SurfacePhysicalProperties {
   const oc = getOC();
-  const properties = new oc.GProp_GProps_1();
-  oc.BRepGProp.SurfaceProperties_1(shape.wrapped, properties, false, false);
+  const properties = new oc.GProp_GProps();
+  oc.BRepGProp.SurfaceProperties(shape.wrapped, properties, false, false);
   return new SurfacePhysicalProperties(properties);
 }
 
@@ -47,7 +45,7 @@ export function measureShapeLinearProperties(
   shape: AnyShape
 ): LinearPhysicalProperties {
   const oc = getOC();
-  const properties = new oc.GProp_GProps_1();
+  const properties = new oc.GProp_GProps();
   oc.BRepGProp.LinearProperties(shape.wrapped, properties, false, false);
   return new LinearPhysicalProperties(properties);
 }
@@ -56,8 +54,8 @@ export function measureShapeVolumeProperties(
   shape: Shape3D
 ): VolumePhysicalProperties {
   const oc = getOC();
-  const properties = new oc.GProp_GProps_1();
-  oc.BRepGProp.VolumeProperties_1(
+  const properties = new oc.GProp_GProps();
+  oc.BRepGProp.VolumeProperties(
     shape.wrapped,
     properties,
     false,
@@ -97,14 +95,13 @@ export function measureLength(shape: AnyShape) {
 export class DistanceTool extends WrappingObj<BRepExtrema_DistShapeShape> {
   constructor() {
     const oc = getOC();
-    super(new oc.BRepExtrema_DistShapeShape_1());
+    super(new oc.BRepExtrema_DistShapeShape());
   }
 
   distanceBetween(shape1: AnyShape, shape2: AnyShape): number {
     this.wrapped.LoadS1(shape1.wrapped);
     this.wrapped.LoadS2(shape2.wrapped);
-    const progress = new ProgressRange();
-    this.wrapped.Perform(progress.wrapped);
+    this.wrapped.Perform();
     return this.wrapped.Value();
   }
 }
@@ -124,14 +121,13 @@ export function measureDistanceBetween(
 export class DistanceQuery extends WrappingObj<BRepExtrema_DistShapeShape> {
   constructor(shape: AnyShape) {
     const oc = getOC();
-    super(new oc.BRepExtrema_DistShapeShape_1());
+    super(new oc.BRepExtrema_DistShapeShape());
     this.wrapped.LoadS1(shape.wrapped);
   }
 
   distanceTo(shape: AnyShape): number {
     this.wrapped.LoadS2(shape.wrapped);
-    const progress = new ProgressRange();
-    this.wrapped.Perform(progress.wrapped);
+    this.wrapped.Perform();
     return this.wrapped.Value();
   }
 }

@@ -73,7 +73,7 @@ test("approximates rational beziers before SVG export", () => {
     ],
     [3, 0]
   );
-  const bezier = rationalBezier.adaptor().Bezier().get();
+  const bezier = rationalBezier.adaptor().Bezier();
   bezier.SetWeight(2, 0.2);
 
   expect(bezier.IsRational()).toBe(true);
@@ -94,7 +94,7 @@ test("approximates rational beziers before SVG export", () => {
   compatibleCurves.forEach((curve) => {
     if (curve.geomType === "BEZIER_CURVE") {
       const adaptor = curve.adaptor();
-      expect(adaptor.Bezier().get().IsRational()).toBe(false);
+      expect(adaptor.Bezier().IsRational()).toBe(false);
       adaptor.delete?.();
     }
   });
@@ -123,7 +123,7 @@ test("rebuilds projected spline edges from their 3d geometry", () => {
 
   const rebuiltCurve = edgeToCurveOnPlane(projectedSpline!);
   const oc = getOC();
-  const adaptor = new oc.BRepAdaptor_Curve_2(projectedSpline!.wrapped);
+  const adaptor = new oc.BRepAdaptor_Curve(projectedSpline!.wrapped);
   const first = adaptor.FirstParameter();
   const last = adaptor.LastParameter();
 

@@ -22,7 +22,7 @@ export const approximateAsBSpline = (
   };
 
   const convert = r(
-    new oc.Geom2dConvert_ApproxCurve_2(
+    new oc.Geom2dConvert_ApproxCurve(
       adaptor.ShallowCopy(),
       tolerance,
       continuities[continuity],
@@ -43,7 +43,7 @@ export const BSplineToBezier = (adaptor: Geom2dAdaptor_Curve): Curve2D[] => {
   const lastParameter = adaptor.LastParameter();
 
   const oc = getOC();
-  const convert = new oc.Geom2dConvert_BSplineCurveToBezierCurve_2(
+  const convert = new oc.Geom2dConvert_BSplineCurveToBezierCurve(
     handle,
     firstParameter,
     lastParameter,
@@ -99,7 +99,7 @@ export function approximateAsSvgCompatibleCurve(
     }
 
     if (curveType === "BEZIER_CURVE") {
-      const b = adaptor.Bezier().get();
+      const b = adaptor.Bezier();
       const deg = b.Degree();
 
       if (!b.IsRational() && [1, 2, 3].includes(deg)) {
@@ -108,7 +108,7 @@ export function approximateAsSvgCompatibleCurve(
     }
 
     if (curveType === "BSPLINE_CURVE") {
-      const bspline = adaptor.BSpline().get();
+      const bspline = adaptor.BSpline();
 
       if (!bspline.IsRational()) {
         const c = BSplineToBezier(adaptor);

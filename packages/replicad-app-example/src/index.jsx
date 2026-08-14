@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App.jsx";
 
 // This is here to compensate for a bug in vite
-import "replicad-opencascadejs/src/replicad_single.wasm?url";
+import "replicad-opencascadejs/wasm?url";
 
 ReactDOM.render(
   <React.StrictMode>

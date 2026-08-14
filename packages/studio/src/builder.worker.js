@@ -6,7 +6,6 @@ import { getManifoldModule, setWasmUrl } from "manifold-3d/lib/wasm.js";
 import manifoldWasmUrl from "manifold-3d/manifold.wasm?url";
 
 import initOpenCascade from "./initOCSingle.js";
-import initOpenCascadeWithExceptions from "./initOCWithExceptions.js";
 
 self.replicad = replicad;
 
@@ -22,6 +21,7 @@ const loadManifold = async () => {
   return manifoldModulePromise;
 };
 
+const OC = initOpenCascade();
 const MANIFOLD = loadManifold();
 
 async function ensureReplicadReady() {
@@ -33,43 +33,6 @@ async function ensureReplicadReady() {
   }
   return oc;
 }
-
-const ocVersions = {
-  withExceptions: null,
-  single: null,
-  current: null,
-};
-
-let OC = Promise.reject("OpenCascade not initialized");
-
-function enableExceptions() {
-  if (!ocVersions.withExceptions) {
-    ocVersions.withExceptions = initOpenCascadeWithExceptions();
-  }
-  ocVersions.current = "withExceptions";
-  OC = ocVersions.withExceptions;
-}
-
-function disableExceptions() {
-  if (!ocVersions.single) {
-    ocVersions.single = initOpenCascade();
-  }
-  ocVersions.current = "single";
-  OC = ocVersions.single;
-}
-
-async function toggleExceptions() {
-  if (ocVersions.current === "single") {
-    enableExceptions();
-  } else {
-    disableExceptions();
-  }
-
-  await OC;
-  return ocVersions.current;
-}
-
-disableExceptions();
 
 const evaluator = createBuilder({
   codeEvaluator: createBrowserCodeEvaluator(),
@@ -96,8 +59,6 @@ const service = {
   exportShape: (...args) => evaluator.exportShape(...args),
   edgeInfo: (...args) => evaluator.edgeInfo(...args),
   faceInfo: (...args) => evaluator.faceInfo(...args),
-  toggleExceptions,
-  exceptionsEnabled: () => ocVersions.current === "withExceptions",
 };
 
 expose(service, self);

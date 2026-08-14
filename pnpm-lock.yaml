@@ -242,9 +242,6 @@ importers:
       parse-css-color:
         specifier: ^0.2.1
         version: 0.2.1
-      replicad:
-        specifier: "*"
-        version: link:../replicad
       rollup:
         specifier: ^4.52.5
         version: 4.60.0
@@ -258,6 +255,12 @@ importers:
       "@types/node":
         specifier: ^22.13.1
         version: 22.13.1
+      replicad:
+        specifier: ^0.23.1
+        version: link:../replicad
+      replicad-opencascadejs:
+        specifier: ^0.23.0
+        version: link:../replicad-opencascadejs
       typescript:
         specifier: 5.1.6
         version: 5.1.6
@@ -271,7 +274,11 @@ importers:
         specifier: ^0.28.3
         version: 0.28.3(terser@5.38.1)
 
-  packages/replicad-opencascadejs: {}
+  packages/replicad-opencascadejs:
+    devDependencies:
+      vitest:
+        specifier: ^0.28.3
+        version: 0.28.3(terser@5.38.1)
 
   packages/replicad-threejs-helper:
     dependencies:

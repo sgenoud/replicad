@@ -1,10 +1,10 @@
 #@ load("@ytt:data", "data")
 
-#@ data.values.buildFlags.extend(["-sDISABLE_EXCEPTION_CATCHING=1"])
-
 mainBuild:
   name: replicad_single.js
   bindings: #@ data.values.bindings
-  emccFlags: #@ data.values.buildFlags
+  #! Pre-evaluate global constructors to reduce single-threaded startup work.
+  #! Pthread workers must instead run Embind registrations at runtime.
+  emccFlags: #@ data.values.buildFlags + ["-sEVAL_CTORS=2"]
 
-additionalCppCode: #@ data.values.additionalCppCode
+additionalCppFiles: #@ data.values.additionalCppFiles

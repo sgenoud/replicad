@@ -63,7 +63,6 @@ const AppState = types
     error: false,
     faceInfo: null,
     processingInfo: null,
-    exceptionMode: "single",
   }))
   .actions((self) => ({
     updateCode(newCode) {
@@ -73,10 +72,6 @@ const AppState = types
     initCode: flow(function* () {
       const code = yield codeInit();
       self.updateCode(code);
-    }),
-
-    toggleExceptions: flow(function* toggleExceptions() {
-      self.exceptionMode = yield api.toggleExceptions();
     }),
 
     process: flow(function* process(params) {
@@ -119,7 +114,6 @@ const AppState = types
 
     const run = async () => {
       if (!self.currentValues.code) return;
-      self.exceptionMode;
       await processor();
     };
 

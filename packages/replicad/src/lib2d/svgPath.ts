@@ -20,7 +20,7 @@ export const adaptedCurveToPathElem = (
     return `L ${endpoint}`;
   }
   if (curveType === "BEZIER_CURVE") {
-    const curve = adaptor.Bezier().get();
+    const curve = adaptor.Bezier();
     const deg = curve.Degree();
 
     if (deg === 1) {
@@ -71,7 +71,7 @@ export const adaptedCurveToPathElem = (
         ? endpoint
         : `${round5(endX)} ${round5(endY + 0.0001)}`;
 
-    const dir0 = new oc.gp_Dir2d_1();
+    const dir0 = new oc.gp_Dir2d();
     const angle = 180 - curve.XAxis().Direction().Angle(dir0) * RAD2DEG;
     dir0.delete();
 

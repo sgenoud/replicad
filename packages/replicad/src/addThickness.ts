@@ -15,7 +15,7 @@ import { localGC } from "./register";
 import { Vector, makeAx1, Point } from "./geom";
 import { DEG2RAD } from "./constants";
 import {
-  Handle_Law_Function,
+  Law_Function,
   Law_Linear,
   Law_S,
   TopoDS_Shape,
@@ -23,7 +23,7 @@ import {
 
 export const basicFaceExtrusion = (face: Face, extrusionVec: Vector): Solid => {
   const oc = getOC();
-  const solidBuilder = new oc.BRepPrimAPI_MakePrism_1(
+  const solidBuilder = new oc.BRepPrimAPI_MakePrism(
     face.wrapped,
     extrusionVec.wrapped,
     false,
@@ -43,7 +43,7 @@ export const revolution = (
   const oc = getOC();
   const ax = makeAx1(center, direction);
 
-  const revolBuilder = new oc.BRepPrimAPI_MakeRevol_1(
+  const revolBuilder = new oc.BRepPrimAPI_MakeRevol(
     face.wrapped,
     ax,
     angle * DEG2RAD,
@@ -61,7 +61,7 @@ export const revolution = (
 export interface GenericSweepConfig {
   frenet?: boolean;
   auxiliarySpine?: Wire | Edge;
-  law?: null | Handle_Law_Function;
+  law?: null | Law_Function;
   transitionMode?: "right" | "transformed" | "round";
   withContact?: boolean;
   support?: TopoDS_Shape;
@@ -104,28 +104,27 @@ function genericSweep(
       transformed: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_Transformed,
       round: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RoundCorner,
       right: oc.BRepBuilderAPI_TransitionMode.BRepBuilderAPI_RightCorner,
-    }[transitionMode] as any;
+    }[transitionMode];
     if (mode) sweepBuilder.SetTransitionMode(mode);
   }
 
   if (support) {
-    sweepBuilder.SetMode_4(support);
+    sweepBuilder.SetMode(support);
   } else if (frenet) {
-    sweepBuilder.SetMode_1(frenet);
+    sweepBuilder.SetMode(frenet);
   }
   if (auxiliarySpine) {
-    sweepBuilder.SetMode_5(
+    sweepBuilder.SetMode(
       auxiliarySpine.wrapped,
       false,
-      oc.BRepFill_TypeOfContact.BRepFill_NoContact as any
+      oc.BRepFill_TypeOfContact.BRepFill_NoContact
     );
   }
 
-  if (!law) sweepBuilder.Add_1(wire.wrapped, !!withContact, withCorrection);
-  else sweepBuilder.SetLaw_1(wire.wrapped, law, !!withContact, withCorrection);
+  if (!law) sweepBuilder.Add(wire.wrapped, !!withContact, withCorrection);
+  else sweepBuilder.SetLaw(wire.wrapped, law, !!withContact, withCorrection);
 
-  const progress = new oc.Message_ProgressRange_1();
-  sweepBuilder.Build(progress);
+  sweepBuilder.Build();
   if (!shellMode) {
     sweepBuilder.MakeSolid();
   }
@@ -143,7 +142,6 @@ function genericSweep(
   }
 
   sweepBuilder.delete();
-  progress.delete();
   return shape;
 }
 
@@ -157,13 +155,13 @@ export interface ExtrusionProfile {
 const buildLawFromProfile = (
   extrusionLength: number,
   { profile, endFactor = 1 }: ExtrusionProfile
-): Handle_Law_Function => {
+): Law_Function => {
   let law: Law_S | Law_Linear;
   const oc = getOC();
 
   if (profile === "s-curve") {
     law = new oc.Law_S();
-    law.Set_1(0, 1, extrusionLength, endFactor);
+    law.Set(0, 1, extrusionLength, endFactor);
   } else if (profile === "linear") {
     law = new oc.Law_Linear();
     law.Set(0, 1, extrusionLength, endFactor);
@@ -312,8 +310,7 @@ export const loft = (
     loftBuilder.AddVertex(r(makeVertex(endPoint)).wrapped);
   }
 
-  const progress = r(new oc.Message_ProgressRange_1());
-  loftBuilder.Build(progress);
+  loftBuilder.Build();
   const shape = cast(loftBuilder.Shape());
   gc();
 

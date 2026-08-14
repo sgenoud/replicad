@@ -22,21 +22,15 @@ function* commonSegmentsIteration(
   const nSegments = intersector.NbSegments();
   if (!nSegments) return;
 
-  const oc = getOC();
-
   for (let i = 1; i <= nSegments; i++) {
-    const h1 = new oc.Handle_Geom2d_Curve_1();
-    const h2 = new oc.Handle_Geom2d_Curve_1();
+    // Ignore retrieval failures from degenerate intersections.
     try {
-      // There seem to be a bug in occt where it returns segments but fails to
-      // fetch them.
-      intersector.Segment(i, h1, h2);
+      const { Curve1, Curve2 } = intersector.Segment(i);
+      Curve2.delete();
+      yield new Curve2D(Curve1);
     } catch (e) {
       continue;
     }
-
-    yield new Curve2D(h1);
-    h2.delete();
   }
 }
 
@@ -49,13 +43,13 @@ export const intersectCurves = (
     return { intersections: [], commonSegments: [], commonSegmentsPoints: [] };
 
   const oc = getOC();
-  const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
+  const intersector = new oc.Geom2dAPI_InterCurveCurve();
 
   let intersections;
   let commonSegments;
 
   try {
-    intersector.Init_1(first.wrapped, second.wrapped, precision);
+    intersector.Init(first.wrapped, second.wrapped, precision);
 
     intersections = Array.from(pointsIteration(intersector));
     commonSegments = Array.from(commonSegmentsIteration(intersector));
@@ -87,12 +81,12 @@ export const intersectCurves = (
 
 export const selfIntersections = (curve: Curve2D, precision = 1e-9) => {
   const oc = getOC();
-  const intersector = new oc.Geom2dAPI_InterCurveCurve_1();
+  const intersector = new oc.Geom2dAPI_InterCurveCurve();
 
   let intersections;
 
   try {
-    intersector.Init_1(curve.wrapped, curve.wrapped, precision);
+    intersector.Init(curve.wrapped, curve.wrapped, precision);
 
     intersections = Array.from(pointsIteration(intersector));
   } catch (e) {
