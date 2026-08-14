@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import * as chalk from "chalk";
+import chalk from "chalk";
 import { matcherHint, printDiffOrStringify } from "jest-matcher-utils";
 
 import { diffSVGToSnapshot } from "./diffSVGToSnapshot";
@@ -17,6 +17,20 @@ function updateSnapshotState(
   return { ...originalSnapshotState, ...partialSnapshotState };
 }
 
+// Vitest has changed whether `currentTestName` is prefixed with the test file
+// path ("__tests__/drawing/booleans.test.ts > fuses two circles") or is just
+// the test name ("fuses two circles"). Strip any such prefix so that snapshot
+// filenames stay stable across those versions -- otherwise every baseline is
+// orphaned and the tests silently rewrite them instead of comparing.
+function stripFilePrefix(currentTestName: string, testPath: string) {
+  const fileName = path.basename(testPath);
+  const markerEnd = currentTestName.lastIndexOf(fileName);
+  if (markerEnd === -1) return currentTestName;
+  return currentTestName
+    .slice(markerEnd + fileName.length)
+    .replace(/^\s*>\s*/, "");
+}
+
 function createSnapshotIdentifier({
   testPath,
   currentTestName,
@@ -27,9 +41,8 @@ function createSnapshotIdentifier({
   snapshotState: any;
 }) {
   const counter = snapshotState._counters.get(currentTestName);
-  const snapshotIdentifier = `${path.basename(
-    testPath
-  )}-${currentTestName}-${counter}`
+  const testName = stripFilePrefix(currentTestName, testPath);
+  const snapshotIdentifier = `${path.basename(testPath)}-${testName}-${counter}`
     .replace(/\s+/g, "-")
     .replace(/\//g, "-")
     .replace(/>/g, "")

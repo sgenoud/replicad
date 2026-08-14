@@ -1,5 +1,5 @@
-import axios from "axios";
 import JSZip from "jszip";
+import fetchCode from "../../utils/fetchCode";
 import loadCode from "../../utils/loadCode";
 
 const DEFAULT_SCRIPT = `
@@ -39,8 +39,7 @@ const TEST_URL =
 const loadFromUrl = async (url) => {
   const codeUrl = decodeURIComponent(url === "test-shape" ? TEST_URL : url);
 
-  const response = await axios.get(codeUrl);
-  return response.data;
+  return await fetchCode(codeUrl);
 };
 
 export const exportCode = async (rawCode) => {

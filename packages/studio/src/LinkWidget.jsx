@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 
 import builderAPI from "./utils/builderAPI";
+import fetchCode from "./utils/fetchCode";
 import loadCode from "./utils/loadCode";
 import saveShape from "./utils/saveShape";
 
@@ -64,8 +64,7 @@ const useCode = (readyToBuild, setError) => {
 
     async function loadCodeFromUrl() {
       try {
-        const response = await axios.get(codeUrl);
-        setCode(response.data);
+        setCode(await fetchCode(codeUrl));
         readyToBuild.current = true;
       } catch (e) {
         console.error(e);
