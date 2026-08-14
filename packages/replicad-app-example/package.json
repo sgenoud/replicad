@@ -4,6 +4,7 @@
   "description": "A simple React app based on replicad.",
   "private": true,
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "start": "vite",
     "build": "vite build",

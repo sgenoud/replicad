@@ -19,9 +19,12 @@ export default defineConfig({
   build: {
     lib: {
       entry: {
-        index: resolve(__dirname, "src/index.ts"),
-        builder: resolve(__dirname, "src/builder.ts"),
-        "evaluate/browser": resolve(__dirname, "src/evaluate/browser.ts"),
+        index: resolve(import.meta.dirname, "src/index.ts"),
+        builder: resolve(import.meta.dirname, "src/builder.ts"),
+        "evaluate/browser": resolve(
+          import.meta.dirname,
+          "src/evaluate/browser.ts"
+        ),
       },
       formats: ["es"],
     },
