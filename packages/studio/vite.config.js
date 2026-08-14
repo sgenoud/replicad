@@ -1,11 +1,50 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import { defineConfig } from "vite";
 import reactPlugin from "@vitejs/plugin-react";
 
 import { VitePWA } from "vite-plugin-pwa";
 
+const TRAILING_SOURCEMAP_COMMENT = /\n\/\/# sourceMappingURL=(\S+)[ \t]*\n?$/;
+
+// manifold-3d ships `//# sourceMappingURL=` comments but not the .map files
+// themselves: its package.json `files` list covers `lib/*.js` and never
+// `lib/*.js.map`. Because we keep it out of optimizeDeps, vite serves those
+// files straight from disk and logs a "Failed to load source map" error for
+// each one. Returning the code from a `load` hook is what fixes it -- vite
+// only extracts sourcemaps for files it reads itself, so a `transform` hook
+// would run too late.
+const stripMissingSourcemapComments = () => ({
+  name: "strip-missing-sourcemap-comments",
+  apply: "serve",
+  load(id) {
+    const file = id.split("?")[0];
+    if (!file.includes("/node_modules/manifold-3d/") || !file.endsWith(".js")) {
+      return null;
+    }
+
+    let code;
+    try {
+      code = fs.readFileSync(file, "utf-8");
+    } catch {
+      return null;
+    }
+
+    const match = code.match(TRAILING_SOURCEMAP_COMMENT);
+    // Leave it alone if the map is actually there.
+    if (!match || fs.existsSync(path.resolve(path.dirname(file), match[1]))) {
+      return null;
+    }
+
+    return { code: code.replace(TRAILING_SOURCEMAP_COMMENT, "\n"), map: null };
+  },
+});
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    stripMissingSourcemapComments(),
     reactPlugin(),
     VitePWA({
       manifest: {
