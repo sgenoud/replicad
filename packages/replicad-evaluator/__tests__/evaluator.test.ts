@@ -182,6 +182,43 @@ const main = ({ makeCylinder }) => {
     expect(evaluator.getCompatibilityReplacements()).toEqual([]);
   });
 
+  test("applies highlights registered through the $ helper", async () => {
+    const evaluator = createTestEvaluator();
+    const result = await evaluator.buildShapesFromCode(
+      `
+const main = ({ makeBaseBox }) => {
+  $.highlightEdge((e) => e.inPlane("XY", 0));
+  return makeBaseBox(10, 10, 10);
+};
+      `,
+      {}
+    );
+
+    expect(result[0].error).toBe(false);
+    // The four edges of the box sitting in the XY plane.
+    expect(result[0].highlight).toHaveLength(4);
+  });
+
+  test("does not let a $ helper highlight override a per-shape one", async () => {
+    const evaluator = createTestEvaluator();
+    const result = await evaluator.buildShapesFromCode(
+      `
+const main = ({ makeBaseBox, EdgeFinder }) => {
+  $.highlightEdge((e) => e.inPlane("XY", 0));
+  return {
+    shape: makeBaseBox(10, 10, 10),
+    highlight: new EdgeFinder().inPlane("XY", 10),
+  };
+};
+      `,
+      {}
+    );
+
+    expect(result[0].error).toBe(false);
+    // The shape's own finder wins: the four edges on the opposite face.
+    expect(result[0].highlight).toHaveLength(4);
+  });
+
   test("renders curved revolutions without remeshing edges more finely", async () => {
     const evaluator = createTestEvaluator();
     const result = await evaluator.buildShapesFromCode(

@@ -1,4 +1,5 @@
 import type { ReplicadLike } from "./types";
+import type { CleanConfig } from "./render";
 
 const adaptSketchDebugShape = (replicad: ReplicadLike, shape: any) => {
   if (!replicad.Sketch || !(shape instanceof replicad.Sketch)) return shape;
@@ -49,20 +50,28 @@ export class BuilderHelper {
     return this.highlightEdge(edgeFinder);
   }
 
-  apply(config: Array<Record<string, any>>) {
+  apply(config: CleanConfig[]): CleanConfig[] {
     const nextConfig = config.concat(
       this.shapes.map((shape, index) => ({
         shape: adaptSketchDebugShape(this.replicad, shape),
         name: `Debug ${index}`,
+        labels: [],
       }))
     );
 
+    // renderOutput runs normalizeHighlight before beforeRender (and so before
+    // this), which resolves highlightEdge/highlightFace into `highlight` and
+    // drops them. So the globally registered finders have to be resolved the
+    // same way here, rather than set as the raw keys nothing reads anymore.
     nextConfig.forEach((shapeConfig) => {
-      if (this.edgeFinder && !shapeConfig.highlightEdge) {
-        shapeConfig.highlightEdge = this.edgeFinder;
+      if (shapeConfig.highlight) return;
+
+      if (this.edgeFinder && this.replicad.EdgeFinder) {
+        shapeConfig.highlight = this.edgeFinder(new this.replicad.EdgeFinder());
+        return;
       }
-      if (this.faceFinder && !shapeConfig.highlightFace) {
-        shapeConfig.highlightFace = this.faceFinder;
+      if (this.faceFinder && this.replicad.FaceFinder) {
+        shapeConfig.highlight = this.faceFinder(new this.replicad.FaceFinder());
       }
     });
 

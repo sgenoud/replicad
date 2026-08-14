@@ -1,6 +1,11 @@
 import type { ReplicadLike } from "./types";
 
-const DEFAULT_MESH_CONFIG = {
+export type MeshConfig = {
+  tolerance?: number;
+  angularTolerance?: number;
+};
+
+const DEFAULT_MESH_CONFIG: MeshConfig = {
   tolerance: 0.01,
   angularTolerance: 30,
 };
@@ -15,7 +20,7 @@ const isMeshShape = (replicad: ReplicadLike, shape: any) => {
 const buildBlob = (
   shape: any,
   fileType: string,
-  meshConfig = DEFAULT_MESH_CONFIG
+  meshConfig: MeshConfig = DEFAULT_MESH_CONFIG
 ) => {
   if (fileType === "stl") return shape.blobSTL(meshConfig);
   if (fileType === "stl-binary") {
@@ -30,7 +35,7 @@ export function exportShapeEntries(
   shapesMemory: Record<string, any[]>,
   fileType = "stl",
   shapeId = "defaultShape",
-  meshConfig = DEFAULT_MESH_CONFIG
+  meshConfig: MeshConfig = DEFAULT_MESH_CONFIG
 ) {
   if (!shapesMemory[shapeId]) {
     throw new Error(`Shape ${shapeId} not computed yet`);

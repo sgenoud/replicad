@@ -5,10 +5,7 @@ interface Meshable {
   mesh: (
     config?: { tolerance: number; angularTolerance: number } | number
   ) => any;
-  meshEdges?: (config: {
-    keepMesh: boolean;
-    tolerance?: number;
-  }) => any;
+  meshEdges?: (config: { keepMesh: boolean; tolerance?: number }) => any;
 }
 
 interface SVGable {
@@ -72,7 +69,9 @@ type MeshableConfiguration = {
 };
 
 const isInstanceOf = (value: any, maybeConstructor: any) => {
-  return typeof maybeConstructor === "function" && value instanceof maybeConstructor;
+  return (
+    typeof maybeConstructor === "function" && value instanceof maybeConstructor
+  );
 };
 
 const isSVGable = (replicad: ReplicadLike, shape: any): shape is SVGable => {
@@ -128,7 +127,7 @@ function createBasicShapeConfig(
 function normalizeColorAndOpacity<T extends Record<string, any>>(
   shape: T
 ): T & { color: string | undefined; opacity: number | undefined } {
-  const { color, opacity, ...rest } = shape;
+  const { color, opacity } = shape;
 
   const normalizedColor = color ? normalizeColor(color) : undefined;
   let configuredOpacity: undefined | number = opacity;
@@ -137,8 +136,10 @@ function normalizeColorAndOpacity<T extends Record<string, any>>(
     configuredOpacity = opacity ?? normalizedColor.alpha;
   }
 
+  // Spreading `shape` rather than a rest object keeps this provably `T`:
+  // the two keys below are overwritten either way.
   return {
-    ...rest,
+    ...shape,
     color: normalizedColor?.color,
     opacity: configuredOpacity,
   };
@@ -224,7 +225,9 @@ function normalizeLabels<T extends Record<string, any>>(
   };
 }
 
-function checkShapeConfigIsValid<T extends Record<string, any> & { shape: unknown }>(
+function checkShapeConfigIsValid<
+  T extends Record<string, any> & { shape: unknown }
+>(
   replicad: ReplicadLike,
   shape: T
 ): shape is T & { shape: Meshable | SVGable } {
@@ -297,7 +300,10 @@ function renderSVG(shapeConfig: SVGShapeConfiguration) {
   };
 }
 
-function renderMesh(replicad: ReplicadLike, shapeConfig: MeshableConfiguration) {
+function renderMesh(
+  replicad: ReplicadLike,
+  shapeConfig: MeshableConfiguration
+) {
   const { name, shape, color, opacity, labels, highlight, solidType } =
     shapeConfig;
   const shapeInfo = {
@@ -316,15 +322,16 @@ function renderMesh(replicad: ReplicadLike, shapeConfig: MeshableConfiguration) 
   try {
     const hasMeshEdges = typeof shape.meshEdges === "function";
     const meshOptions = { tolerance: 0.1, angularTolerance: 30 };
-    const mesh = hasMeshEdges
-      ? shape.mesh(meshOptions)
-      : shape.mesh();
+    const mesh = hasMeshEdges ? shape.mesh(meshOptions) : shape.mesh();
 
     if (mesh) {
       if (!Array.isArray(mesh.vertices) && ArrayBuffer.isView(mesh.vertices)) {
         mesh.vertices = Array.from(mesh.vertices);
       }
-      if (!Array.isArray(mesh.triangles) && ArrayBuffer.isView(mesh.triangles)) {
+      if (
+        !Array.isArray(mesh.triangles) &&
+        ArrayBuffer.isView(mesh.triangles)
+      ) {
         mesh.triangles = Array.from(mesh.triangles);
       }
       if (!Array.isArray(mesh.normals) && ArrayBuffer.isView(mesh.normals)) {
@@ -340,7 +347,7 @@ function renderMesh(replicad: ReplicadLike, shapeConfig: MeshableConfiguration) 
     }
 
     shapeInfo.mesh = mesh;
-    if (hasMeshEdges) {
+    if (typeof shape.meshEdges === "function") {
       shapeInfo.edges = shape.meshEdges({
         tolerance: meshOptions.tolerance,
         keepMesh: true,
@@ -382,10 +389,7 @@ interface RenderOutputOptions {
   defaultName?: string;
 }
 
-export function renderOutput(
-  shapes: unknown,
-  options: RenderOutputOptions
-) {
+export function renderOutput(shapes: unknown, options: RenderOutputOptions) {
   const {
     replicad,
     shapeStandardizer,
