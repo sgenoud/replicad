@@ -451,27 +451,28 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     const heapU32 = new Uint32Array(buffer);
     const heapI32 = new Int32Array(buffer);
 
+    // The extractor exposes its pointers as signed 32 bit integers. Above 2GiB
+    // of heap they come back negative, which would make subarray() count from
+    // the end of the view; `>>> 0` reads them back as unsigned offsets.
+    const verticesPtr = raw.getVerticesPtr() >>> 0;
     const vertices = Array.from(
-      heapF32.subarray(
-        raw.getVerticesPtr() / 4,
-        raw.getVerticesPtr() / 4 + raw.getVerticesSize()
-      )
+      heapF32.subarray(verticesPtr / 4, verticesPtr / 4 + raw.getVerticesSize())
     );
+    const normalsPtr = raw.getNormalsPtr() >>> 0;
     const normals = Array.from(
-      heapF32.subarray(
-        raw.getNormalsPtr() / 4,
-        raw.getNormalsPtr() / 4 + raw.getNormalsSize()
-      )
+      heapF32.subarray(normalsPtr / 4, normalsPtr / 4 + raw.getNormalsSize())
     );
+    const trianglesPtr = raw.getTrianglesPtr() >>> 0;
     const trianglesRaw = heapU32.subarray(
-      raw.getTrianglesPtr() / 4,
-      raw.getTrianglesPtr() / 4 + raw.getTrianglesSize()
+      trianglesPtr / 4,
+      trianglesPtr / 4 + raw.getTrianglesSize()
     );
     const triangles = Array.from(trianglesRaw);
 
+    const faceGroupsPtr = raw.getFaceGroupsPtr() >>> 0;
     const groupsRaw = heapI32.subarray(
-      raw.getFaceGroupsPtr() / 4,
-      raw.getFaceGroupsPtr() / 4 + raw.getFaceGroupsSize()
+      faceGroupsPtr / 4,
+      faceGroupsPtr / 4 + raw.getFaceGroupsSize()
     );
     const faceGroups: { start: number; count: number; faceId: number }[] = [];
     for (let i = 0; i < groupsRaw.length; i += 3) {
@@ -514,16 +515,16 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     const heapF32 = new Float32Array(buffer);
     const heapI32 = new Int32Array(buffer);
 
+    // See the equivalent comment in mesh() about the signed pointers.
+    const linesPtr = raw.getLinesPtr() >>> 0;
     const lines = Array.from(
-      heapF32.subarray(
-        raw.getLinesPtr() / 4,
-        raw.getLinesPtr() / 4 + raw.getLinesSize()
-      )
+      heapF32.subarray(linesPtr / 4, linesPtr / 4 + raw.getLinesSize())
     );
 
+    const edgeGroupsPtr = raw.getEdgeGroupsPtr() >>> 0;
     const groupsRaw = heapI32.subarray(
-      raw.getEdgeGroupsPtr() / 4,
-      raw.getEdgeGroupsPtr() / 4 + raw.getEdgeGroupsSize()
+      edgeGroupsPtr / 4,
+      edgeGroupsPtr / 4 + raw.getEdgeGroupsSize()
     );
     const edgeGroups: { start: number; count: number; edgeId: number }[] = [];
     for (let i = 0; i < groupsRaw.length; i += 3) {
