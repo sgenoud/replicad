@@ -1,0 +1,53 @@
+{
+  "name": "replicad-script",
+  "version": "0.17.4",
+  "description": "The library to build browser based 3D models with code",
+  "keywords": [
+    "cad",
+    "opencascadejs",
+    "brep",
+    "STEP",
+    "STL"
+  ],
+  "author": "Steve Genoud <steve@sgenoud.com>",
+  "homepage": "https://replicad.xyz",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/replicad-script.cjs",
+  "module": "./dist/replicad-script.js",
+  "types": "./dist/replicad-script.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/replicad-script.js",
+      "require": "./dist/replicad-script.umd.cjs"
+    }
+  },
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "start": "NO_TYPES=true vite build --watch",
+    "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme default src",
+    "build-docss": "typedoc --help",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.1.0",
+    "replicad": "^0.17.4",
+    "rollup": "3.28.0",
+    "rollup-plugin-ts": "3.4.4",
+    "typedoc": "^0.24.8",
+    "typescript": "^5.1.6",
+    "vite": "^4.0.4",
+    "vite-plugin-dts": "^3.5.2",
+    "vitest": "^0.28.3"
+  },
+  "dependencies": {}
+}
