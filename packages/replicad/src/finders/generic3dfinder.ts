@@ -60,16 +60,21 @@ export abstract class Finder3d<Type extends FaceOrEdge> extends Finder<
   }
 
   /**
-   * Filter to find elements that are at a specified distance from a point.
+   * Filter to find elements that are at a specified distance from a point,
+   * within the given tolerance.
    *
    * @category Filter
    */
-  atDistance(distance: number, point: Point = [0, 0, 0]): this {
+  atDistance(
+    distance: number,
+    point: Point = [0, 0, 0],
+    tolerance = 1e-6
+  ): this {
     const vertex = makeVertex(point);
     const query = new DistanceQuery(vertex);
 
     const checkPoint = ({ element }: { element: Type }) => {
-      return Math.abs(query.distanceTo(element) - distance) < 1e-6;
+      return Math.abs(query.distanceTo(element) - distance) < tolerance;
     };
 
     this.filters.push(checkPoint);
@@ -82,7 +87,17 @@ export abstract class Finder3d<Type extends FaceOrEdge> extends Finder<
    * @category Filter
    */
   containsPoint(point: Point): this {
-    return this.atDistance(0, point);
+    return this.near(point);
+  }
+
+  /**
+   * Filter to find elements that are near a certain point, within the given
+   * tolerance.
+   *
+   * @category Filter
+   */
+  near(point: Point, tolerance = 1e-6): this {
+    return this.atDistance(0, point, tolerance);
   }
 
   /**

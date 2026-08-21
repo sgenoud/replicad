@@ -35,6 +35,7 @@ import { makeProjectedEdges } from "./projection/makeProjectedEdges";
 
 import offset, { Offset2DConfig } from "./blueprints/offset";
 import { CornerFinder } from "./finders/cornerFinder";
+import type { FinderFunction } from "./finders/definitions";
 import { fillet2D, chamfer2D } from "./blueprints/customCorners";
 import { edgeToCurve, edgeToCurveOnPlane } from "./curves";
 import { BSplineApproximationConfig } from "./shapeHelpers";
@@ -158,8 +159,11 @@ export class Drawing implements DrawingInterface {
    *
    * @category Drawing Modifications
    */
-  fillet(radius: number, filter?: (c: CornerFinder) => CornerFinder): Drawing {
-    const finder = filter && filter(new CornerFinder());
+  fillet(
+    radius: number,
+    filter?: FinderFunction<CornerFinder, Shape2D>
+  ): Drawing {
+    const finder = filter && filter(new CornerFinder(), this.innerShape);
     return new Drawing(fillet2D(this.innerShape, radius, finder));
   }
 
@@ -169,8 +173,11 @@ export class Drawing implements DrawingInterface {
    *
    * @category Drawing Modifications
    */
-  chamfer(radius: number, filter?: (c: CornerFinder) => CornerFinder): Drawing {
-    const finder = filter && filter(new CornerFinder());
+  chamfer(
+    radius: number,
+    filter?: FinderFunction<CornerFinder, Shape2D>
+  ): Drawing {
+    const finder = filter && filter(new CornerFinder(), this.innerShape);
     return new Drawing(chamfer2D(this.innerShape, radius, finder));
   }
 

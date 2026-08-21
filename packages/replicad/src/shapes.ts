@@ -34,7 +34,11 @@ import {
   BRepAdaptor_Curve,
   BRepAdaptor_CompCurve,
 } from "replicad-opencascadejs";
-import { EdgeFinder, FaceFinder } from "./finders/index.js";
+import {
+  EdgeFinder,
+  FaceFinder,
+  type FinderFunction,
+} from "./finders/index.js";
 import {
   rotate,
   translate,
@@ -110,12 +114,12 @@ export type ChamferRadius =
   | number
   | {
       distances: [number, number];
-      selectedFace: (f: FaceFinder) => FaceFinder;
+      selectedFace: FinderFunction<FaceFinder, AnyShape>;
     }
   | {
       distance: number;
       angle: number;
-      selectedFace: (f: FaceFinder) => FaceFinder;
+      selectedFace: FinderFunction<FaceFinder, AnyShape>;
     };
 
 export type FilletRadius = number | [number, number];
@@ -1172,7 +1176,7 @@ export class _3DShape<Type extends TopoDS_Shape>
   ): Shape3D;
   shell(
     thickness: number,
-    finderFcn: (f: FaceFinder) => FaceFinder,
+    finderFcn: FinderFunction<FaceFinder, AnyShape>,
     tolerance?: number
   ): Shape3D;
   shell(
@@ -1180,7 +1184,7 @@ export class _3DShape<Type extends TopoDS_Shape>
     toleranceOrFinderFcn:
       | null
       | number
-      | ((f: FaceFinder) => FaceFinder) = null,
+      | FinderFunction<FaceFinder, AnyShape> = null,
     tolerance = 1e-3
   ): Shape3D {
     const tol =
@@ -1195,7 +1199,7 @@ export class _3DShape<Type extends TopoDS_Shape>
       const ff = new FaceFinder();
       filter =
         typeof toleranceOrFinderFcn === "function"
-          ? toleranceOrFinderFcn(ff)
+          ? toleranceOrFinderFcn(ff, this)
           : ff;
     } else {
       thickness = thicknessOrConfig.thickness;
@@ -1293,7 +1297,7 @@ export class _3DShape<Type extends TopoDS_Shape>
    */
   fillet(
     radiusConfig: RadiusConfig<FilletRadius>,
-    filter?: (e: EdgeFinder) => EdgeFinder
+    filter?: FinderFunction<EdgeFinder, AnyShape>
   ): Shape3D {
     const r = GCWithScope();
 
@@ -1308,7 +1312,7 @@ export class _3DShape<Type extends TopoDS_Shape>
     if (isFilletRadius(radiusConfig) && filter) {
       config = {
         radius: radiusConfig,
-        filter: filter(new EdgeFinder()),
+        filter: filter(new EdgeFinder(), this),
       };
     }
 
@@ -1346,7 +1350,7 @@ export class _3DShape<Type extends TopoDS_Shape>
    */
   chamfer(
     radiusConfig: RadiusConfig<ChamferRadius>,
-    filter?: (e: EdgeFinder) => EdgeFinder
+    filter?: FinderFunction<EdgeFinder, AnyShape>
   ): Shape3D {
     const r = GCWithScope();
 
@@ -1359,7 +1363,7 @@ export class _3DShape<Type extends TopoDS_Shape>
     if (isChamferRadius(radiusConfig) && filter) {
       config = {
         radius: radiusConfig,
-        filter: filter(new EdgeFinder()),
+        filter: filter(new EdgeFinder(), this),
       };
     }
     const edgesFound = this._builderIter(
@@ -1368,7 +1372,7 @@ export class _3DShape<Type extends TopoDS_Shape>
         if (isNumber(r)) return chamferBuilder.Add(r, e);
 
         const finder = new FaceFinder();
-        const face = r.selectedFace(finder).find(this, { unique: true });
+        const face = r.selectedFace(finder, this).find(this, { unique: true });
         if (!face) throw new Error("Could not find face for chamfer");
 
         if ("distances" in r) {
@@ -1417,7 +1421,7 @@ export class _3DShape<Type extends TopoDS_Shape>
    */
   draft(
     angle: number,
-    faceFinder: (e: FaceFinder) => FaceFinder,
+    faceFinder: FinderFunction<FaceFinder, AnyShape>,
     neutralPlane: Plane | PlaneName = "XY"
   ) {
     const oc = getOC();
@@ -1427,7 +1431,7 @@ export class _3DShape<Type extends TopoDS_Shape>
     const plane = makePln(inputPlane.origin, inputPlane.zDir);
     const dir = asDir(inputPlane.zDir);
 
-    const faces = faceFinder(new FaceFinder()).find(this);
+    const faces = faceFinder(new FaceFinder(), this).find(this);
     faces.forEach((f) =>
       drafter.Add(f.wrapped, dir, angle * DEG2RAD, plane, false)
     );

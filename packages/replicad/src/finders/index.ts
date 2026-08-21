@@ -1,6 +1,6 @@
-import { Finder, FilterFcn } from "./definitions";
+import { Finder, FilterFcn, FinderFunction } from "./definitions";
 
-export type { FilterFcn };
+export type { FilterFcn, FinderFunction };
 
 /**
  * Combine a set of finder filters (defined with radius) to pass as a filter

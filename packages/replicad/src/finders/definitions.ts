@@ -15,6 +15,11 @@ export type FilterFcn<Type> = {
   normal: Vector | null;
 };
 
+export type FinderFunction<FinderType, ShapeType> = (
+  finder: FinderType,
+  shape: ShapeType
+) => FinderType;
+
 export abstract class Finder<Type, FilterType> {
   protected filters: (({ element, normal }: FilterFcn<Type>) => boolean)[];
 
