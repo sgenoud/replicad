@@ -1,6 +1,6 @@
 {
   "name": "studio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The replicad studio",
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "https://studio.replicad.xyz",
@@ -51,8 +51,8 @@
     "react-portal": "^4.3.0",
     "react-router-dom": "^5.3.4",
     "react-use-rect": "^2.0.6",
-    "replicad": "^1.0.0",
-    "replicad-evaluator": "^1.0.0",
+    "replicad": "^1.0.1",
+    "replicad-evaluator": "^1.0.1",
     "replicad-opencascadejs": "^1.0.0",
     "replicad-threejs-helper": "^1.0.0",
     "styled-components": "^5.3.11",

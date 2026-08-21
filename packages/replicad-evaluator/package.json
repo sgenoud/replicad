@@ -1,6 +1,6 @@
 {
   "name": "replicad-evaluator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Portable code evaluation and shape building for replicad",
   "author": "Steve Genoud <steve@sgenoud.com>",
   "homepage": "https://replicad.xyz",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.1",
-    "replicad": "^1.0.0",
+    "replicad": "^1.0.1",
     "replicad-opencascadejs": "^1.0.0",
     "typescript": "^5.9.3",
     "vite": "^8.2.1",
