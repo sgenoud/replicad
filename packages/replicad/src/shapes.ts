@@ -215,6 +215,20 @@ export interface ShapeMesh {
   faceGroups: { start: number; count: number; faceId: number }[];
 }
 
+type MeshHeap = Float32Array | Uint32Array | Int32Array;
+
+const extractFromPointer = (
+  heap: MeshHeap,
+  pointer: number,
+  size: number
+): number[] => {
+  // The extractor exposes pointers as signed 32 bit integers. Above 2GiB of
+  // heap they come back negative, so read them as unsigned byte offsets before
+  // converting them to typed-array indexes.
+  const start = (pointer >>> 0) / heap.BYTES_PER_ELEMENT;
+  return Array.from(heap.subarray(start, start + size));
+};
+
 export const shapeType = (shape: TopoDS_Shape): TopAbs_ShapeEnum => {
   if (shape.IsNull()) throw new Error("This shape has not type, it is null");
   return shape.ShapeType();
@@ -451,28 +465,26 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     const heapU32 = new Uint32Array(buffer);
     const heapI32 = new Int32Array(buffer);
 
-    // The extractor exposes its pointers as signed 32 bit integers. Above 2GiB
-    // of heap they come back negative, which would make subarray() count from
-    // the end of the view; `>>> 0` reads them back as unsigned offsets.
-    const verticesPtr = raw.getVerticesPtr() >>> 0;
-    const vertices = Array.from(
-      heapF32.subarray(verticesPtr / 4, verticesPtr / 4 + raw.getVerticesSize())
+    const vertices = extractFromPointer(
+      heapF32,
+      raw.getVerticesPtr(),
+      raw.getVerticesSize()
     );
-    const normalsPtr = raw.getNormalsPtr() >>> 0;
-    const normals = Array.from(
-      heapF32.subarray(normalsPtr / 4, normalsPtr / 4 + raw.getNormalsSize())
+    const normals = extractFromPointer(
+      heapF32,
+      raw.getNormalsPtr(),
+      raw.getNormalsSize()
     );
-    const trianglesPtr = raw.getTrianglesPtr() >>> 0;
-    const trianglesRaw = heapU32.subarray(
-      trianglesPtr / 4,
-      trianglesPtr / 4 + raw.getTrianglesSize()
+    const triangles = extractFromPointer(
+      heapU32,
+      raw.getTrianglesPtr(),
+      raw.getTrianglesSize()
     );
-    const triangles = Array.from(trianglesRaw);
 
-    const faceGroupsPtr = raw.getFaceGroupsPtr() >>> 0;
-    const groupsRaw = heapI32.subarray(
-      faceGroupsPtr / 4,
-      faceGroupsPtr / 4 + raw.getFaceGroupsSize()
+    const groupsRaw = extractFromPointer(
+      heapI32,
+      raw.getFaceGroupsPtr(),
+      raw.getFaceGroupsSize()
     );
     const faceGroups: { start: number; count: number; faceId: number }[] = [];
     for (let i = 0; i < groupsRaw.length; i += 3) {
@@ -515,16 +527,16 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     const heapF32 = new Float32Array(buffer);
     const heapI32 = new Int32Array(buffer);
 
-    // See the equivalent comment in mesh() about the signed pointers.
-    const linesPtr = raw.getLinesPtr() >>> 0;
-    const lines = Array.from(
-      heapF32.subarray(linesPtr / 4, linesPtr / 4 + raw.getLinesSize())
+    const lines = extractFromPointer(
+      heapF32,
+      raw.getLinesPtr(),
+      raw.getLinesSize()
     );
 
-    const edgeGroupsPtr = raw.getEdgeGroupsPtr() >>> 0;
-    const groupsRaw = heapI32.subarray(
-      edgeGroupsPtr / 4,
-      edgeGroupsPtr / 4 + raw.getEdgeGroupsSize()
+    const groupsRaw = extractFromPointer(
+      heapI32,
+      raw.getEdgeGroupsPtr(),
+      raw.getEdgeGroupsSize()
     );
     const edgeGroups: { start: number; count: number; edgeId: number }[] = [];
     for (let i = 0; i < groupsRaw.length; i += 3) {
