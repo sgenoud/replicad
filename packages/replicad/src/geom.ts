@@ -33,7 +33,11 @@ export function isPoint(p: unknown): p is Point {
   return false;
 }
 
-export const makeAx3 = (center: Point, dir: Point, xDir?: Point): gp_Ax3 => {
+export const makeAx3 = (
+  center: Point,
+  dir: Direction,
+  xDir?: Direction
+): gp_Ax3 => {
   const oc = getOC();
   const origin = asPnt(center);
   const direction = asDir(dir);
@@ -51,7 +55,7 @@ export const makeAx3 = (center: Point, dir: Point, xDir?: Point): gp_Ax3 => {
   return axis;
 };
 
-export function makePln(origin: Point, dir: Point): gp_Pln {
+export function makePln(origin: Point, dir: Direction): gp_Pln {
   const orig = asPnt(origin);
   const direction = asDir(dir);
 
@@ -64,7 +68,11 @@ export function makePln(origin: Point, dir: Point): gp_Pln {
   return pln;
 }
 
-export const makeAx2 = (center: Point, dir: Point, xDir?: Point): gp_Ax2 => {
+export const makeAx2 = (
+  center: Point,
+  dir: Direction,
+  xDir?: Direction
+): gp_Ax2 => {
   const oc = getOC();
   const origin = asPnt(center);
   const direction = asDir(dir);
@@ -82,7 +90,7 @@ export const makeAx2 = (center: Point, dir: Point, xDir?: Point): gp_Ax2 => {
   return axis;
 };
 
-export const makeAx1 = (center: Point, dir: Point): gp_Ax1 => {
+export const makeAx1 = (center: Point, dir: Direction): gp_Ax1 => {
   const oc = getOC();
   const origin = asPnt(center);
   const direction = asDir(dir);
@@ -199,7 +207,7 @@ export class Vector extends WrappingObj<gp_Vec> {
   rotate(
     angle: number,
     center: Point = [0, 0, 0],
-    direction: Point = [0, 0, 1]
+    direction: Direction = [0, 0, 1]
   ): Vector {
     const ax = makeAx1(center, direction);
     this.wrapped.Rotate(ax, angle * DEG2RAD);
@@ -208,19 +216,40 @@ export class Vector extends WrappingObj<gp_Vec> {
   }
 }
 
-type Direction = Point | "X" | "Y" | "Z";
+export const AXIS_NAMES = ["X", "Y", "Z", "-X", "-Y", "-Z"] as const;
+export type AxisName = (typeof AXIS_NAMES)[number];
 
-const DIRECTIONS: Record<string, Point> = {
+/** A vector-like point or a named principal axis. */
+export type Direction = Point | AxisName;
+
+const DIRECTIONS: Record<AxisName, SimplePoint> = {
   X: [1, 0, 0],
   Y: [0, 1, 0],
   Z: [0, 0, 1],
+  "-X": [-1, 0, 0],
+  "-Y": [0, -1, 0],
+  "-Z": [0, 0, -1],
 };
 
-export function makeDirection(p: Direction): Point {
-  if (p === "X" || p === "Y" || p === "Z") {
-    return DIRECTIONS[p];
+export function resolveDirection(direction: Direction): Point {
+  if (typeof direction !== "string") return direction;
+
+  const resolved = DIRECTIONS[direction];
+  if (!resolved) {
+    throw new Error(
+      `Invalid direction "${direction}". Expected one of: ${AXIS_NAMES.join(
+        ", "
+      )}.`
+    );
   }
-  return p;
+  return resolved;
+}
+
+// Compatibility alias for the original public helper.
+export const makeDirection = resolveDirection;
+
+export function makeDirVector(direction: Direction): Vector {
+  return new Vector(resolveDirection(direction));
 }
 
 export function asPnt(coords: Point): gp_Pnt {
@@ -230,14 +259,16 @@ export function asPnt(coords: Point): gp_Pnt {
   return pnt;
 }
 
-export function asDir(coords: Point): gp_Dir {
-  const v = new Vector(coords);
+export function asDir(direction: Direction): gp_Dir {
+  const v = makeDirVector(direction);
   const dir = v.toDir();
   v.delete();
   return dir;
 }
 
-type CoordSystem = "reference" | { origin: Point; zDir: Point; xDir: Point };
+type CoordSystem =
+  | "reference"
+  | { origin: Point; zDir: Direction; xDir: Direction };
 
 export class Transformation extends WrappingObj<gp_Trsf> {
   constructor(transform?: gp_Trsf) {
@@ -272,7 +303,7 @@ export class Transformation extends WrappingObj<gp_Trsf> {
   rotate(
     angle: number,
     position: Point = [0, 0, 0],
-    direction: Point = [0, 0, 1]
+    direction: Direction = [0, 0, 1]
   ): Transformation {
     const dir = asDir(direction);
     const origin = asPnt(position);
@@ -380,12 +411,12 @@ export class Plane {
 
   constructor(
     origin: Point,
-    xDirection: Point | null = null,
-    normal: Point = [0, 0, 1]
+    xDirection: Direction | null = null,
+    normal: Direction = [0, 0, 1]
   ) {
     this.oc = getOC();
 
-    const zDir = new Vector(normal);
+    const zDir = makeDirVector(normal);
     if (zDir.Length === 0) {
       throw new Error("normal should be non null");
     }
@@ -393,11 +424,13 @@ export class Plane {
 
     let xDir: Vector;
     if (!xDirection) {
-      const ax3 = makeAx3(origin, zDir);
-      xDir = new Vector(ax3.XDirection());
+      const ax3 = makeAx3(origin, this.zDir);
+      const defaultXDirection = ax3.XDirection();
+      xDir = makeDirVector(defaultXDirection);
+      defaultXDirection.delete();
       ax3.delete();
     } else {
-      xDir = new Vector(xDirection);
+      xDir = makeDirVector(xDirection);
     }
 
     if (xDir.Length === 0) {
@@ -462,9 +495,8 @@ export class Plane {
   }
 
   pivot(angle: number, direction: Direction = [1, 0, 0]): Plane {
-    const dir = makeDirection(direction);
-    const zDir = new Vector(this.zDir).rotate(angle, [0, 0, 0], dir);
-    const xDir = new Vector(this.xDir).rotate(angle, [0, 0, 0], dir);
+    const zDir = new Vector(this.zDir).rotate(angle, [0, 0, 0], direction);
+    const xDir = new Vector(this.xDir).rotate(angle, [0, 0, 0], direction);
 
     return new Plane(this.origin, xDir, zDir);
   }

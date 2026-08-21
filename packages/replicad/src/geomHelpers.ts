@@ -3,6 +3,7 @@ import {
   Plane,
   PlaneName,
   Point,
+  Direction,
   Transformation,
   Vector,
 } from "./geom";
@@ -48,7 +49,7 @@ export function rotate(
   shape: TopoDS_Shape,
   angle: number,
   position: Point = [0, 0, 0],
-  direction: Point = [0, 0, 1]
+  direction: Direction = [0, 0, 1]
 ): TopoDS_Shape {
   const transformation = new Transformation();
   transformation.rotate(angle, position, direction);

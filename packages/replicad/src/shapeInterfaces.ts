@@ -1,4 +1,10 @@
-import type { BoundingBox, Plane, PlaneName, Point } from "./geom.js";
+import type {
+  BoundingBox,
+  Direction,
+  Plane,
+  PlaneName,
+  Point,
+} from "./geom.js";
 
 export interface Shape3DLike<
   ShapeT,
@@ -17,7 +23,7 @@ export interface Shape3DLike<
   rotate(
     angle: number,
     position?: Point,
-    direction?: Point
+    direction?: Direction
   ): ShapeT;
   scale(scale: number, center?: Point): ShapeT;
   mirror(inputPlane?: Plane | PlaneName | Point, origin?: Point): ShapeT;

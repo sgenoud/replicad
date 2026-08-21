@@ -1,7 +1,7 @@
-import { Point, Plane, PlaneName, Vector } from "../geom";
+import { Direction, Point, Plane, PlaneName, Vector } from "../geom";
 import { makePlane } from "../geomHelpers";
 import { Face, AnyShape, Edge, CurveType } from "../shapes";
-import { Direction, PLANE_TO_DIR, StandardPlane } from "./definitions";
+import { PLANE_TO_DIR, StandardPlane } from "./definitions";
 import { Finder3d } from "./generic3dfinder";
 
 /**
@@ -22,7 +22,7 @@ export class EdgeFinder extends Finder3d<Edge> {
    *
    * @category Filter
    */
-  inDirection(direction: Direction | Point): this {
+  inDirection(direction: Direction): this {
     return this.atAngleWith(direction, 0);
   }
 

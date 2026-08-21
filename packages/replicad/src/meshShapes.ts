@@ -1,5 +1,6 @@
 import {
   BoundingBox,
+  Direction,
   Plane,
   PlaneName,
   Point,
@@ -114,12 +115,16 @@ export class MeshShape
     return this.translate([0, 0, distance]);
   }
 
-  rotate(angle: number, position?: Point, direction?: Point): MeshShape;
+  rotate(
+    angle: number,
+    position?: Point,
+    direction?: Direction
+  ): MeshShape;
   rotate(vector: Point): MeshShape;
   rotate(
     angleOrVector: Point | number,
     position: Point = [0, 0, 0],
-    direction: Point = [0, 0, 1]
+    direction: Direction = [0, 0, 1]
   ): MeshShape {
     if (typeof angleOrVector !== "number") {
       const newShape = this.wrapped.rotate(asVec3(angleOrVector));

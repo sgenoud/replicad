@@ -1,5 +1,13 @@
 import type { gp_Ax2 } from "replicad-opencascadejs";
-import { asDir, asPnt, makeAx2, Point, Vector } from "../geom";
+import {
+  asDir,
+  asPnt,
+  Direction,
+  makeAx2,
+  makeDirVector,
+  Point,
+  Vector,
+} from "../geom";
 import type { BoundingBox } from "../geom";
 import { WrappingObj } from "../register";
 export type CubeFace = "front" | "back" | "top" | "bottom" | "left" | "right";
@@ -43,8 +51,8 @@ export function lookFromPlane(projectionPlane: ProjectionPlane) {
   return new ProjectionCamera([0, 0, 0], dir, xAxis);
 }
 
-function defaultXDir(direction: Point) {
-  const dir = new Vector(direction);
+function defaultXDir(direction: Direction) {
+  const dir = makeDirVector(direction);
   let yAxis: Point = new Vector([0, 0, 1]);
   let xAxis: Point = yAxis.cross(dir);
   if (xAxis.Length === 0) {
@@ -57,10 +65,10 @@ function defaultXDir(direction: Point) {
 export class ProjectionCamera extends WrappingObj<gp_Ax2> {
   constructor(
     position: Point = [0, 0, 0],
-    direction: Point = [0, 0, 1],
-    xAxis?: Point
+    direction: Direction = [0, 0, 1],
+    xAxis?: Direction
   ) {
-    const xDir = xAxis ? new Vector(xAxis) : defaultXDir(direction);
+    const xDir = xAxis ? makeDirVector(xAxis) : defaultXDir(direction);
     const ax2 = makeAx2(position, direction, xDir);
     super(ax2);
   }
@@ -91,12 +99,12 @@ export class ProjectionCamera extends WrappingObj<gp_Ax2> {
     return this;
   }
 
-  setXAxis(xAxis: Point) {
+  setXAxis(xAxis: Direction) {
     this.wrapped.SetYDirection(asDir(xAxis));
     return this;
   }
 
-  setYAxis(yAxis: Point) {
+  setYAxis(yAxis: Direction) {
     this.wrapped.SetYDirection(asDir(yAxis));
     return this;
   }

@@ -6,7 +6,7 @@ import {
   makeEllipse,
   makeHelix,
 } from "../shapeHelpers";
-import { Plane, PlaneName, Point, Vector } from "../geom";
+import { Direction, Plane, PlaneName, Point, Vector } from "../geom";
 import Sketcher from "../Sketcher";
 import { makePlane } from "../geomHelpers";
 import Sketch from "./Sketch";
@@ -240,7 +240,7 @@ export const sketchHelix = (
   height: number,
   radius: number,
   center: Point = [0, 0, 0],
-  dir: Point = [0, 0, 1],
+  dir: Direction = [0, 0, 1],
   lefthand = false
 ): Sketch => {
   return new Sketch(

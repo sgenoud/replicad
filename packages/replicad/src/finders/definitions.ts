@@ -1,18 +1,11 @@
-import { Vector, Point } from "../geom";
+import { AxisName, Vector } from "../geom";
 import { Face, Edge } from "../shapes";
 
-export type Direction = "X" | "Y" | "Z";
-export const DIRECTIONS: Record<Direction, Point> = {
-  X: [1, 0, 0],
-  Y: [0, 1, 0],
-  Z: [0, 0, 1],
-};
-
 export type StandardPlane = "XY" | "XZ" | "YZ";
-export const PLANE_TO_DIR: Record<StandardPlane, [number, number, number]> = {
-  YZ: [1, 0, 0],
-  XZ: [0, 1, 0],
-  XY: [0, 0, 1],
+export const PLANE_TO_DIR: Record<StandardPlane, AxisName> = {
+  YZ: "X",
+  XZ: "Y",
+  XY: "Z",
 };
 
 export type FaceOrEdge = Face | Edge;

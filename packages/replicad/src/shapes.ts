@@ -2,6 +2,7 @@ import { WrappingObj, GCWithScope } from "./register.js";
 import {
   Vector,
   Point,
+  Direction,
   Plane,
   PlaneName,
   asPnt,
@@ -362,7 +363,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   rotate(
     angle: number,
     position: Point = [0, 0, 0],
-    direction: Point = [0, 0, 1]
+    direction: Direction = [0, 0, 1]
   ): this {
     const newShape = cast(rotate(this.wrapped, angle, position, direction));
     this.delete();

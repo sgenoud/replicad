@@ -11,7 +11,15 @@ import {
   isShape3D,
   Shell,
 } from "./shapes";
-import { asPnt, makeAx3, makeAx2, Point, Vector, makeAx1 } from "./geom";
+import {
+  asPnt,
+  Direction,
+  makeAx3,
+  makeAx2,
+  Point,
+  Vector,
+  makeAx1,
+} from "./geom";
 import { getOC } from "./oclib.js";
 import { GCWithScope, localGC, WrappingObj } from "./register.js";
 import zip from "./utils/zip";
@@ -31,7 +39,7 @@ export const makeLine = (v1: Point, v2: Point): Edge => {
 export const makeCircle = (
   radius: number,
   center: Point = [0, 0, 0],
-  normal: Point = [0, 0, 1]
+  normal: Direction = [0, 0, 1]
 ): Edge => {
   const oc = getOC();
   const [r, gc] = localGC();
@@ -50,8 +58,8 @@ export const makeEllipse = (
   majorRadius: number,
   minorRadius: number,
   center: Point = [0, 0, 0],
-  normal: Point = [0, 0, 1],
-  xDir?: Point
+  normal: Direction = [0, 0, 1],
+  xDir?: Direction
 ): Edge => {
   const oc = getOC();
   const [r, gc] = localGC();
@@ -74,7 +82,7 @@ export const makeHelix = (
   height: number,
   radius: number,
   center: Point = [0, 0, 0],
-  dir: Point = [0, 0, 1],
+  dir: Direction = [0, 0, 1],
   lefthand = false
 ): Wire => {
   const oc = getOC();
@@ -139,8 +147,8 @@ export const makeEllipseArc = (
   startAngle: number,
   endAngle: number,
   center: Point = [0, 0, 0],
-  normal: Point = [0, 0, 1],
-  xDir?: Point
+  normal: Direction = [0, 0, 1],
+  xDir?: Direction
 ): Edge => {
   const oc = getOC();
   const [r, gc] = localGC();
@@ -374,7 +382,7 @@ export const makeCylinder = (
   radius: number,
   height: number,
   location: Point = [0, 0, 0],
-  direction: Point = [0, 0, 1]
+  direction: Direction = [0, 0, 1]
 ): Solid => {
   const oc = getOC();
   const axis = makeAx2(location, direction);

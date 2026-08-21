@@ -1,12 +1,6 @@
-import {
-  Direction,
-  DIRECTIONS,
-  FaceOrEdge,
-  FilterFcn,
-  Finder,
-} from "./definitions";
+import { FaceOrEdge, FilterFcn, Finder } from "./definitions";
 
-import { Vector, Point } from "../geom";
+import { Direction, makeDirVector, Vector, Point } from "../geom";
 import { DEG2RAD } from "../constants";
 import { AnyShape } from "../shapes";
 import { makeBox, makeVertex } from "../shapeHelpers";
@@ -49,13 +43,8 @@ export abstract class Finder3d<Type extends FaceOrEdge> extends Finder<
    *
    * @category Filter
    */
-  atAngleWith(direction: Direction | Point = "Z", angle = 0): this {
-    let myDirection: Vector;
-    if (typeof direction === "string") {
-      myDirection = new Vector(DIRECTIONS[direction]);
-    } else {
-      myDirection = new Vector(direction);
-    }
+  atAngleWith(direction: Direction = "Z", angle = 0): this {
+    const myDirection = makeDirVector(direction);
 
     const checkAngle = ({ normal }: { normal: Vector | null }) => {
       // We do not care about the orientation
