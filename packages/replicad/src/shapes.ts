@@ -1051,7 +1051,11 @@ export class _3DShape<Type extends TopoDS_Shape>
     other: Shape3D,
     {
       optimisation = "none",
-    }: { optimisation?: "none" | "commonFace" | "sameFace" } = {}
+      simplify = true,
+    }: {
+      optimisation?: "none" | "commonFace" | "sameFace";
+      simplify?: boolean;
+    } = {}
   ): Shape3D {
     const r = GCWithScope();
     const newBody = r(
@@ -1065,7 +1069,7 @@ export class _3DShape<Type extends TopoDS_Shape>
     }
 
     newBody.Build();
-    newBody.SimplifyResult(true, true, 1e-3);
+    if (simplify) newBody.SimplifyResult(true, true, 1e-3);
     const newShape = cast(newBody.Shape());
     if (!isShape3D(newShape)) throw new Error("Could not fuse as a 3d shape");
 
@@ -1081,7 +1085,11 @@ export class _3DShape<Type extends TopoDS_Shape>
     tool: Shape3D,
     {
       optimisation = "none",
-    }: { optimisation?: "none" | "commonFace" | "sameFace" } = {}
+      simplify = true,
+    }: {
+      optimisation?: "none" | "commonFace" | "sameFace";
+      simplify?: boolean;
+    } = {}
   ): Shape3D {
     const r = GCWithScope();
     const cutter = r(new this.oc.BRepAlgoAPI_Cut(this.wrapped, tool.wrapped));
@@ -1092,7 +1100,7 @@ export class _3DShape<Type extends TopoDS_Shape>
       cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull);
     }
     cutter.Build();
-    cutter.SimplifyResult(true, true, 1e-3);
+    if (simplify) cutter.SimplifyResult(true, true, 1e-3);
 
     const newShape = cast(cutter.Shape());
     if (!isShape3D(newShape)) throw new Error("Could not cut as a 3d shape");
@@ -1104,13 +1112,16 @@ export class _3DShape<Type extends TopoDS_Shape>
    *
    * @category Shape Modifications
    */
-  intersect(tool: AnyShape): Shape3D {
+  intersect(
+    tool: AnyShape,
+    { simplify = true }: { simplify?: boolean } = {}
+  ): Shape3D {
     const r = GCWithScope();
     const intersector = r(
       new this.oc.BRepAlgoAPI_Common(this.wrapped, tool.wrapped)
     );
     intersector.Build();
-    intersector.SimplifyResult(true, true, 1e-3);
+    if (simplify) intersector.SimplifyResult(true, true, 1e-3);
 
     const newShape = cast(intersector.Shape());
     if (!isShape3D(newShape))
