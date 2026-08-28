@@ -51,11 +51,16 @@ export {
 export type { FaceUVBounds } from "./faceGeometry";
 export {
   cutShape,
+  draftShape,
   fuseShapes,
   intersectShapes,
   shellShape,
 } from "./shapeOperations";
-export type { BooleanOperationOptions, ShellOptions } from "./shapeOperations";
+export type {
+  BooleanOperationOptions,
+  DraftOptions,
+  ShellOptions,
+} from "./shapeOperations";
 export { chamferShape, filletShape } from "./shapeEdgeOperations";
 export type {
   ChamferEdgeConfig,

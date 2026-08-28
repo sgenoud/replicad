@@ -1,5 +1,8 @@
 import type { TopoDS_Face, TopoDS_Shape } from "replicad-opencascadejs";
 
+import { DEG2RAD } from "./constants.js";
+import { asDir, makePln, type Plane, type PlaneName } from "./geom.js";
+import { makePlane } from "./geomHelpers.js";
 import { getOC } from "./oclib.js";
 import { GCWithScope } from "./register.js";
 import { unwrapShape, type ShapeInput } from "./shapeInternals/shapeInput.js";
@@ -12,6 +15,12 @@ export interface ShellOptions {
   faces: Iterable<ShapeInput<TopoDS_Face>>;
   thickness: number;
   tolerance?: number;
+}
+
+export interface DraftOptions {
+  faces: Iterable<ShapeInput<TopoDS_Face>>;
+  angle: number;
+  neutralPlane?: Plane | PlaneName;
 }
 
 const configureGlue = (
@@ -109,4 +118,30 @@ export function shellShape(
   );
 
   return builder.Shape();
+}
+
+/** Applies a draft angle to the supplied faces of a shape. */
+export function draftShape(
+  shapeInput: ShapeInput,
+  { faces, angle, neutralPlane = "XY" }: DraftOptions
+): TopoDS_Shape {
+  const oc = getOC();
+  const shape = unwrapShape(shapeInput);
+  const builder = new oc.BRepOffsetAPI_DraftAngle(shape);
+  const inputPlane = makePlane(neutralPlane);
+  const plane = makePln(inputPlane.origin, inputPlane.zDir);
+  const direction = asDir(inputPlane.zDir);
+
+  for (const face of faces) {
+    builder.Add(unwrapShape(face), direction, angle * DEG2RAD, plane, false);
+  }
+
+  builder.Build();
+  const result = builder.ModifiedShape(shape);
+
+  builder.delete();
+  plane.delete();
+  direction.delete();
+  inputPlane.delete();
+  return result;
 }

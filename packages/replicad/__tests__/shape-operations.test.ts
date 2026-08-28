@@ -2,6 +2,8 @@ import { expect, test } from "vitest";
 import {
   cast,
   cutShape,
+  draftShape,
+  FaceFinder,
   fuseShapes,
   intersectShapes,
   isShape3D,
@@ -35,6 +37,30 @@ test("standalone boolean operations accept wrapped and raw shapes", () => {
 
   left.delete();
   right.delete();
+});
+
+test("standalone draft operation accepts explicitly selected faces", () => {
+  const shape = makeBaseBox(10, 10, 10);
+  const faces = new FaceFinder().atAngleWith("X").find(shape);
+  const drafted = cast(
+    draftShape(shape, { faces, angle: 5, neutralPlane: "XY" })
+  );
+
+  expect(isShape3D(drafted)).toBe(true);
+
+  const methodInput = makeBaseBox(10, 10, 10);
+  const methodResult = methodInput.draft(
+    5,
+    (finder) => finder.atAngleWith("X"),
+    "XY"
+  );
+  expect(isShape3D(methodResult)).toBe(true);
+
+  drafted.delete();
+  methodResult.delete();
+  methodInput.delete();
+  faces.forEach((face) => face.delete());
+  shape.delete();
 });
 
 test("standalone shell operation accepts explicitly selected faces", () => {
