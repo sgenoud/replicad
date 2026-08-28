@@ -5,7 +5,6 @@ import {
   Direction,
   Plane,
   PlaneName,
-  asPnt,
   BoundingBox,
   asDir,
   makePln,
@@ -32,6 +31,20 @@ import {
   type STLExportOptions,
 } from "./shapeExport.js";
 import {
+  Curve,
+  Surface,
+  type CurveLike,
+  type SurfaceType,
+} from "./shapeGeometry.js";
+import {
+  faceCenter,
+  faceNormalAt,
+  faceUVBounds,
+  faceUVCoordinates,
+  pointOnFace,
+  type FaceUVBounds,
+} from "./faceGeometry.js";
+import {
   downcast,
   iterTopo,
   shapeType,
@@ -49,8 +62,6 @@ import {
   TopoDS_Solid,
   TopoDS_Compound,
   TopoDS_CompSolid,
-  gp_Vec,
-  gp_Pnt,
   Adaptor3d_Surface,
   BRepAdaptor_Curve,
   BRepAdaptor_CompCurve,
@@ -67,9 +78,10 @@ import {
   scale as scaleShape,
   makePlane,
 } from "./geomHelpers";
-import { CurveType, findCurveType } from "./definitionMaps";
+import type { CurveType } from "./definitionMaps";
 
-export type { CurveType };
+export { Curve, Surface };
+export type { CurveLike, CurveType, SurfaceType };
 
 export type AnyShape =
   | Vertex
@@ -80,18 +92,6 @@ export type AnyShape =
   | Solid
   | CompSolid
   | Compound;
-
-export interface CurveLike {
-  delete(): void;
-  Value(v: number): gp_Pnt;
-  IsPeriodic(): boolean;
-  Period(): number;
-  IsClosed(): boolean;
-  FirstParameter(): number;
-  LastParameter(): number;
-  GetType?(): any;
-  D1(v: number, p: gp_Pnt, vPrime: gp_Vec): void;
-}
 
 /**
  * We can defined a chamfer with only a number - in that case it will be
@@ -485,72 +485,6 @@ export abstract class _1DShape<Type extends TopoDS_Shape> extends Shape<Type> {
   }
 }
 
-export class Curve extends WrappingObj<CurveLike> {
-  get repr(): string {
-    const { startPoint, endPoint } = this;
-    const retVal = `start: (${this.startPoint.repr}) end:(${this.endPoint.repr}}`;
-    startPoint.delete();
-    endPoint.delete();
-    return retVal;
-  }
-
-  get curveType(): CurveType {
-    const technicalType = this.wrapped.GetType && this.wrapped.GetType();
-    return findCurveType(technicalType);
-  }
-
-  get startPoint(): Vector {
-    const umin = this.wrapped.Value(this.wrapped.FirstParameter());
-    return new Vector(umin);
-  }
-
-  get endPoint(): Vector {
-    const umax = this.wrapped.Value(this.wrapped.LastParameter());
-    return new Vector(umax);
-  }
-
-  protected _mapParameter(position: number): number {
-    const firstParam = this.wrapped.FirstParameter();
-    const lastParam = this.wrapped.LastParameter();
-
-    return firstParam + (lastParam - firstParam) * position;
-  }
-
-  pointAt(position = 0.5): Vector {
-    return new Vector(this.wrapped.Value(this._mapParameter(position)));
-  }
-
-  tangentAt(position = 0.5): Vector {
-    const pos = this._mapParameter(position);
-
-    const tmp = new this.oc.gp_Pnt();
-    const res = new this.oc.gp_Vec();
-
-    this.wrapped.D1(pos, tmp, res);
-    const tangent = new Vector(res);
-
-    tmp.delete();
-    res.delete();
-
-    return tangent;
-  }
-
-  get isClosed(): boolean {
-    const isClosed = this.wrapped.IsClosed();
-    return isClosed;
-  }
-
-  get isPeriodic(): boolean {
-    const isPeriodic = this.wrapped.IsPeriodic();
-    return isPeriodic;
-  }
-
-  get period(): number {
-    const period = this.wrapped.Period();
-    return period;
-  }
-}
-
 export class Edge extends _1DShape<TopoDS_Edge> {
   protected _geomAdaptor(): BRepAdaptor_Curve {
     return new this.oc.BRepAdaptor_Curve(this.wrapped);
@@ -587,43 +521,6 @@ export class Wire extends _1DShape<TopoDS_Wire> {
     return newShape;
   }
 }
-export type SurfaceType =
-  | "PLANE"
-  | "CYLINDRE"
-  | "CONE"
-  | "SPHERE"
-  | "TORUS"
-  | "BEZIER_SURFACE"
-  | "BSPLINE_SURFACE"
-  | "REVOLUTION_SURFACE"
-  | "EXTRUSION_SURFACE"
-  | "OFFSET_SURFACE"
-  | "OTHER_SURFACE";
-
-export class Surface extends WrappingObj<Adaptor3d_Surface> {
-  get surfaceType(): SurfaceType {
-    const ga = this.oc.GeomAbs_SurfaceType;
-
-    const CAST_MAP: Map<any, SurfaceType> = new Map([
-      [ga.GeomAbs_Plane, "PLANE"],
-      [ga.GeomAbs_Cylinder, "CYLINDRE"],
-      [ga.GeomAbs_Cone, "CONE"],
-      [ga.GeomAbs_Sphere, "SPHERE"],
-      [ga.GeomAbs_Torus, "TORUS"],
-      [ga.GeomAbs_BezierSurface, "BEZIER_SURFACE"],
-      [ga.GeomAbs_BSplineSurface, "BSPLINE_SURFACE"],
-      [ga.GeomAbs_SurfaceOfRevolution, "REVOLUTION_SURFACE"],
-      [ga.GeomAbs_SurfaceOfExtrusion, "EXTRUSION_SURFACE"],
-      [ga.GeomAbs_OffsetSurface, "OFFSET_SURFACE"],
-      [ga.GeomAbs_OtherSurface, "OTHER_SURFACE"],
-    ]);
-
-    const shapeType = CAST_MAP.get(this.wrapped.GetType());
-    if (!shapeType) throw new Error("surface type not found");
-    return shapeType;
-  }
-}
-
 export class Face extends Shape<TopoDS_Face> {
   protected _geomAdaptor(): Adaptor3d_Surface {
     return new this.oc.BRepAdaptor_Surface(this.wrapped, false);
@@ -651,79 +548,24 @@ export class Face extends Shape<TopoDS_Face> {
     return geomType;
   }
 
-  get UVBounds(): { uMin: number; uMax: number; vMin: number; vMax: number } {
-    const result = this.oc.BRepTools.UVBounds(this.wrapped, 0, 0, 0, 0);
-    return {
-      uMin: result.UMin,
-      uMax: result.UMax,
-      vMin: result.VMin,
-      vMax: result.VMax,
-    };
+  get UVBounds(): FaceUVBounds {
+    return faceUVBounds(this.wrapped);
   }
 
   pointOnSurface(u: number, v: number): Vector {
-    const { uMin, uMax, vMin, vMax } = this.UVBounds;
-    const surface = this._geomAdaptor();
-    const p = new this.oc.gp_Pnt();
-
-    const absoluteU = u * (uMax - uMin) + uMin;
-    const absoluteV = v * (vMax - vMin) + vMin;
-
-    surface.D0(absoluteU, absoluteV, p);
-    const point = new Vector(p);
-    surface.delete();
-    p.delete();
-
-    return point;
+    return pointOnFace(this.wrapped, u, v);
   }
 
   uvCoordinates(point: Point): [number, number] {
-    const r = GCWithScope();
-    const surface = r(this.oc.BRep_Tool.Surface(this.wrapped));
-
-    const projectedPoint = r(
-      new this.oc.GeomAPI_ProjectPointOnSurf(
-        r(asPnt(point)),
-        surface,
-        this.oc.Extrema_ExtAlgo.Extrema_ExtAlgo_Grad
-      )
-    );
-
-    const { U, V } = projectedPoint.LowerDistanceParameters(0, 0);
-    return [U, V];
+    return faceUVCoordinates(this.wrapped, point);
   }
 
   normalAt(locationVector?: Point): Vector {
-    let u = 0;
-    let v = 0;
-
-    const r = GCWithScope();
-
-    if (!locationVector) {
-      const { uMin, uMax, vMin, vMax } = this.UVBounds;
-      u = 0.5 * (uMin + uMax);
-      v = 0.5 * (vMin + vMax);
-    } else {
-      [u, v] = this.uvCoordinates(locationVector);
-    }
-
-    const p = r(new this.oc.gp_Pnt());
-    const vn = r(new this.oc.gp_Vec());
-
-    const props = r(new this.oc.BRepGProp_Face(this.wrapped, false));
-    props.Normal(u, v, p, vn);
-
-    const normal = new Vector(vn);
-    return normal;
+    return faceNormalAt(this.wrapped, locationVector);
   }
 
   get center(): Vector {
-    const properties = new this.oc.GProp_GProps();
-    this.oc.BRepGProp.SurfaceProperties(this.wrapped, properties, 1e-7, true);
-
-    const center = new Vector(properties.CentreOfMass());
-    properties.delete();
-    return center;
+    return faceCenter(this.wrapped);
   }
 
   outerWire(): Wire {

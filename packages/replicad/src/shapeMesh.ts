@@ -1,15 +1,13 @@
-import type { TopoDS_Face, TopoDS_Shape } from "replicad-opencascadejs";
+import type { TopoDS_Face } from "replicad-opencascadejs";
 
 import { getOC } from "./oclib.js";
 import { GCWithScope } from "./register.js";
+import { unwrapShape, type ShapeInput } from "./shapeInternals/shapeInput.js";
 
-export interface WrappedTopoShape<Type extends TopoDS_Shape = TopoDS_Shape> {
-  readonly wrapped: Type;
-}
-
-export type ShapeInput<Type extends TopoDS_Shape = TopoDS_Shape> =
-  | Type
-  | WrappedTopoShape<Type>;
+export type {
+  ShapeInput,
+  WrappedTopoShape,
+} from "./shapeInternals/shapeInput.js";
 
 export interface MeshOptions {
   tolerance?: number;
@@ -35,12 +33,6 @@ export interface ShapeEdgeMesh {
 }
 
 type MeshHeap = Float32Array | Uint32Array | Int32Array;
-
-export const unwrapShape = <Type extends TopoDS_Shape>(
-  shape: ShapeInput<Type>
-): Type => {
-  return "wrapped" in shape ? shape.wrapped : shape;
-};
 
 const extractFromPointer = (
   heap: MeshHeap,
