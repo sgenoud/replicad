@@ -55,11 +55,29 @@ export class WrappingObj<Type extends Deletable> {
     this._wrapped = newWrapped;
   }
 
-  delete() {
-    deletetableRegistry.unregister(this.wrapped);
-    this.wrapped?.delete();
+  delete(): void {
+    const wrapped = this._wrapped;
+    if (wrapped === null) return;
+
+    // Consider the wrapper deleted even if deleting the underlying object throws.
     this._wrapped = null;
+    deletetableRegistry.unregister(wrapped);
+    wrapped.delete();
   }
+}
+
+export interface WrappingObj<Type extends Deletable> extends Disposable {}
+
+// Do not polyfill Symbol.dispose: unsupported runtimes can continue to use
+// replicad's existing explicit deletion and finalization behavior.
+if (typeof Symbol.dispose === "symbol") {
+  Object.defineProperty(WrappingObj.prototype, Symbol.dispose, {
+    configurable: true,
+    writable: true,
+    value(this: WrappingObj<Deletable>): void {
+      this.delete();
+    },
+  });
 }
 
 export const GCWithScope = () => {
