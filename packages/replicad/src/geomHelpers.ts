@@ -7,12 +7,16 @@ import {
   Transformation,
   Vector,
 } from "./geom";
-import { Face } from "./shapes";
 import { Point2D } from "./lib2d";
 import { TopoDS_Shape } from "replicad-opencascadejs";
 
+export interface PlaneFace {
+  pointOnSurface(u: number, v: number): Vector;
+  normalAt(point: Point): Vector;
+}
+
 export const makePlaneFromFace = (
-  face: Face,
+  face: PlaneFace,
   originOnSurface: Point2D = [0, 0]
 ): Plane => {
   const originPoint = face.pointOnSurface(...originOnSurface);

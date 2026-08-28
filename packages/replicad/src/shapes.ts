@@ -6,11 +6,9 @@ import {
   Plane,
   PlaneName,
   BoundingBox,
-  asDir,
-  makePln,
 } from "./geom.js";
 import type { Shape3DLike } from "./shapeInterfaces.js";
-import { DEG2RAD, HASH_CODE_MAX } from "./constants.js";
+import { HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
 import { getManifold } from "./manifoldlib.js";
 import { MeshShape } from "./meshShapes.js";
@@ -46,6 +44,7 @@ import {
 } from "./faceGeometry.js";
 import {
   cutShape,
+  draftShape,
   fuseShapes,
   intersectShapes,
   shellShape,
@@ -82,13 +81,7 @@ import {
   FaceFinder,
   type FinderFunction,
 } from "./finders/index.js";
-import {
-  rotate,
-  translate,
-  mirror,
-  scale as scaleShape,
-  makePlane,
-} from "./geomHelpers";
+import { rotate, translate, mirror, scale as scaleShape } from "./geomHelpers";
 import type { CurveType } from "./definitionMaps";
 
 export { Curve, Surface };
@@ -846,27 +839,13 @@ export class _3DShape<Type extends TopoDS_Shape>
     angle: number,
     faceFinder: FinderFunction<FaceFinder, AnyShape>,
     neutralPlane: Plane | PlaneName = "XY"
-  ) {
-    const oc = getOC();
-    const drafter = new oc.BRepOffsetAPI_DraftAngle(this.wrapped);
-
-    const inputPlane = makePlane(neutralPlane);
-    const plane = makePln(inputPlane.origin, inputPlane.zDir);
-    const dir = asDir(inputPlane.zDir);
-
+  ): Shape3D {
     const faces = faceFinder(new FaceFinder(), this).find(this);
-    faces.forEach((f) =>
-      drafter.Add(f.wrapped, dir, angle * DEG2RAD, plane, false)
+    const newShape = cast(
+      draftShape(this.wrapped, { faces, angle, neutralPlane })
     );
-
-    drafter.Build();
-    const newShape = drafter.ModifiedShape(this.wrapped);
-
-    drafter.delete();
-    plane.delete();
-    dir.delete();
-
-    return cast(newShape);
+    if (!isShape3D(newShape)) throw new Error("Could not draft as a 3d shape");
+    return newShape;
   }
 }
 
