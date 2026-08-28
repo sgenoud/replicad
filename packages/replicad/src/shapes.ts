@@ -16,6 +16,22 @@ import { getOC } from "./oclib.js";
 import { getManifold } from "./manifoldlib.js";
 import { MeshShape } from "./meshShapes.js";
 import {
+  mesh as extractShapeMesh,
+  meshEdges as extractShapeEdgeMesh,
+  triangulateFace,
+  type FaceTriangulation,
+  type MeshOptions,
+  type ShapeEdgeMesh,
+  type ShapeMesh,
+} from "./shapeMesh.js";
+import {
+  deserializeTopoShape,
+  exportShapeSTEP,
+  exportShapeSTL,
+  serializeShape,
+  type STLExportOptions,
+} from "./shapeExport.js";
+import {
   downcast,
   iterTopo,
   shapeType,
@@ -152,36 +168,10 @@ export type RadiusConfig<R = number> =
 
 export { downcast, iterTopo, shapeType };
 
-export interface FaceTriangulation {
-  vertices: number[];
-  trianglesIndexes: number[];
-  verticesNormals: number[];
-}
-
-export interface ShapeMesh {
-  triangles: number[];
-  vertices: number[];
-  normals: number[];
-  faceGroups: { start: number; count: number; faceId: number }[];
-}
-
-type MeshHeap = Float32Array | Uint32Array | Int32Array;
-
-const extractFromPointer = (
-  heap: MeshHeap,
-  pointer: number,
-  size: number
-): number[] => {
-  // The extractor exposes pointers as signed 32 bit integers. Above 2GiB of
-  // heap they come back negative, so read them as unsigned byte offsets before
-  // converting them to typed-array indexes.
-  const start = (pointer >>> 0) / heap.BYTES_PER_ELEMENT;
-  return Array.from(heap.subarray(start, start + size));
-};
+export type { FaceTriangulation, ShapeMesh };
 
 export function deserializeShape(data: string): AnyShape {
-  const oc = getOC();
-  return cast(oc.BRepToolsWrapper.Read(data));
+  return cast(deserializeTopoShape(data));
 }
 
 export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
@@ -194,8 +184,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
   }
 
   serialize(): string {
-    const oc = getOC();
-    return oc.BRepToolsWrapper.Write(this.wrapped);
+    return serializeShape(this.wrapped);
   }
 
   get hashCode(): number {
@@ -378,76 +367,14 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return bbox;
   }
 
-  protected _mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): void {
-    // ReplicadMeshExtractor.mesh clears cached triangulations before rebuilding so the requested tolerance is honored even after a finer prior mesh.
-    this.oc.ReplicadMeshExtractor.mesh(
-      this.wrapped,
-      tolerance,
-      angularTolerance
-    );
-  }
-
   /**
    * Exports the current shape as a set of triangle. These can be used by threejs
    * for instance to represent the the shape
    *
    * @category Shape Export
    */
-  mesh({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): ShapeMesh {
-    const raw = this.oc.ReplicadMeshExtractor.extract(
-      this.wrapped,
-      tolerance,
-      angularTolerance,
-      false
-    );
-
-    // Take fresh typed-array views off the live WebAssembly.Memory buffer AFTER
-    // extract() has returned. extract() may trigger memory.grow() which detaches
-    // any previously-cached HEAP* views; reading wasmMemory.buffer here is
-    // guaranteed to return the current backing ArrayBuffer.
-    const buffer = this.oc.wasmMemory.buffer;
-    const heapF32 = new Float32Array(buffer);
-    const heapU32 = new Uint32Array(buffer);
-    const heapI32 = new Int32Array(buffer);
-
-    const vertices = extractFromPointer(
-      heapF32,
-      raw.getVerticesPtr(),
-      raw.getVerticesSize()
-    );
-    const normals = extractFromPointer(
-      heapF32,
-      raw.getNormalsPtr(),
-      raw.getNormalsSize()
-    );
-    const triangles = extractFromPointer(
-      heapU32,
-      raw.getTrianglesPtr(),
-      raw.getTrianglesSize()
-    );
-
-    const groupsRaw = extractFromPointer(
-      heapI32,
-      raw.getFaceGroupsPtr(),
-      raw.getFaceGroupsSize()
-    );
-    const faceGroups: { start: number; count: number; faceId: number }[] = [];
-    for (let i = 0; i < groupsRaw.length; i += 3) {
-      faceGroups.push({
-        start: groupsRaw[i],
-        count: groupsRaw[i + 1],
-        faceId: groupsRaw[i + 2],
-      });
-    }
-
-    raw.delete();
-
-    return {
-      triangles,
-      vertices,
-      normals,
-      faceGroups,
-    };
+  mesh(options: MeshOptions = {}): ShapeMesh {
+    return extractShapeMesh(this.wrapped, options);
   }
 
   /**
@@ -456,45 +383,8 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    *
    * @category Shape Export
    */
-  meshEdges({ tolerance = 1e-3, angularTolerance = 0.1 } = {}): {
-    lines: number[];
-    edgeGroups: { start: number; count: number; edgeId: number }[];
-  } {
-    const raw = this.oc.ReplicadEdgeMeshExtractor.extract(
-      this.wrapped,
-      tolerance,
-      angularTolerance
-    );
-
-    // Take fresh views off wasmMemory.buffer after extract() returns; see the
-    // equivalent comment in mesh() for the detachment rationale.
-    const buffer = this.oc.wasmMemory.buffer;
-    const heapF32 = new Float32Array(buffer);
-    const heapI32 = new Int32Array(buffer);
-
-    const lines = extractFromPointer(
-      heapF32,
-      raw.getLinesPtr(),
-      raw.getLinesSize()
-    );
-
-    const groupsRaw = extractFromPointer(
-      heapI32,
-      raw.getEdgeGroupsPtr(),
-      raw.getEdgeGroupsSize()
-    );
-    const edgeGroups: { start: number; count: number; edgeId: number }[] = [];
-    for (let i = 0; i < groupsRaw.length; i += 3) {
-      edgeGroups.push({
-        start: groupsRaw[i],
-        count: groupsRaw[i + 1],
-        edgeId: groupsRaw[i + 2],
-      });
-    }
-
-    raw.delete();
-
-    return { lines, edgeGroups };
+  meshEdges(options: MeshOptions = {}): ShapeEdgeMesh {
+    return extractShapeEdgeMesh(this.wrapped, options);
   }
 
   /**
@@ -503,36 +393,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    * @category Shape Export
    */
   blobSTEP(): Blob {
-    const filename = "blob.step";
-    const writer = new this.oc.STEPControl_Writer();
-
-    this.oc.Interface_Static.SetIVal("write.step.schema", 5);
-    const progress = new this.oc.Message_ProgressRange();
-
-    writer.Transfer(
-      this.wrapped,
-      this.oc.STEPControl_StepModelType
-        .STEPControl_AsIs,
-      true,
-      progress
-    );
-
-    // Convert to a .STEP File
-    const done = writer.Write(filename);
-    writer.delete();
-    progress.delete();
-
-    if (done === this.oc.IFSelect_ReturnStatus.IFSelect_RetDone) {
-      // Read the STEP File from the filesystem and clean up
-      const file = this.oc.FS.readFile("/" + filename);
-      this.oc.FS.unlink("/" + filename);
-
-      // Return the contents of the STEP File
-      const blob = new Blob([file as BlobPart], { type: "application/STEP" });
-      return blob;
-    } else {
-      throw new Error("WRITE STEP FILE FAILED.");
-    }
+    return exportShapeSTEP(this.wrapped);
   }
 
   /**
@@ -543,26 +404,8 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
    *
    * @category Shape Export
    */
-  blobSTL({
-    tolerance = 1e-3,
-    angularTolerance = 0.1,
-    binary = false,
-  } = {}): Blob {
-    this._mesh({ tolerance, angularTolerance });
-    const filename = "blob.stl";
-    const done = this.oc.StlAPI.Write(this.wrapped, filename, !binary);
-
-    if (done) {
-      // Read the STEP File from the filesystem and clean up
-      const file = this.oc.FS.readFile("/" + filename);
-      this.oc.FS.unlink("/" + filename);
-
-      // Return the contents of the STEP File
-      const blob = new Blob([file as BlobPart], { type: "application/sla" });
-      return blob;
-    } else {
-      throw new Error("WRITE STL FILE FAILED.");
-    }
+  blobSTL(options: STLExportOptions = {}): Blob {
+    return exportShapeSTL(this.wrapped, options);
   }
 }
 
@@ -901,74 +744,7 @@ export class Face extends Shape<TopoDS_Face> {
    * @ignore
    */
   triangulation(index0 = 0): FaceTriangulation | null {
-    const r = GCWithScope();
-
-    const aLocation = r(new this.oc.TopLoc_Location());
-    const triangulation = r(
-      this.oc.BRep_Tool.Triangulation(this.wrapped, aLocation, 0)
-    );
-
-    if (!triangulation || triangulation.isNull()) return null;
-
-    const transformation = r(aLocation.Transformation());
-
-    const triangulatedFace: FaceTriangulation = {
-      vertices: [],
-      trianglesIndexes: [],
-      verticesNormals: [],
-    };
-
-    const tri = triangulation;
-    const nbNodes = tri.NbNodes();
-
-    // write vertex buffer
-    triangulatedFace.vertices = new Array(nbNodes * 3);
-    for (let i = 1; i <= nbNodes; i++) {
-      const p = r(r(tri.Node(i)).Transformed(transformation));
-      triangulatedFace.vertices[(i - 1) * 3 + 0] = p.X();
-      triangulatedFace.vertices[(i - 1) * 3 + 1] = p.Y();
-      triangulatedFace.vertices[(i - 1) * 3 + 2] = p.Z();
-    }
-
-    const orient = this.orientation;
-    const normalSign = orient === "backward" ? -1 : 1;
-
-    if (!tri.HasNormals()) {
-      tri.ComputeNormals();
-    }
-    triangulatedFace.verticesNormals = new Array(nbNodes * 3);
-    for (let i = 1; i <= nbNodes; i++) {
-      const d = r(r(tri.Normal(i)).Transformed(transformation));
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 0] = d.X() * normalSign;
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 1] = d.Y() * normalSign;
-      triangulatedFace.verticesNormals[(i - 1) * 3 + 2] = d.Z() * normalSign;
-    }
-
-    // write triangle buffer
-    const nbTriangles = tri.NbTriangles();
-    triangulatedFace.trianglesIndexes = new Array(nbTriangles * 3);
-    let validFaceTriCount = 0;
-    for (let nt = 1; nt <= nbTriangles; nt++) {
-      const t = r(tri.Triangle(nt));
-      let n1 = t.Value(1);
-      let n2 = t.Value(2);
-      const n3 = t.Value(3);
-      if (orient === "backward") {
-        const tmp = n1;
-        n1 = n2;
-        n2 = tmp;
-      }
-      // if(TriangleIsValid(nodes.Value(1), nodes.Value(n2), nodes.Value(n3))) {
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 0] =
-        n1 - 1 + index0;
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 1] =
-        n2 - 1 + index0;
-      triangulatedFace.trianglesIndexes[validFaceTriCount * 3 + 2] =
-        n3 - 1 + index0;
-      validFaceTriCount++;
-      // }
-    }
-    return triangulatedFace;
+    return triangulateFace(this.wrapped, index0);
   }
 }
 
