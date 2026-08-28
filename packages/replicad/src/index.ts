@@ -34,6 +34,21 @@ export type {
 } from "./shapeMesh";
 export { exportShapeSTEP, exportShapeSTL, serializeShape } from "./shapeExport";
 export type { STLExportOptions } from "./shapeExport";
+export {
+  curvePointAt,
+  curveTangentAt,
+  curveType,
+  surfaceType,
+} from "./shapeGeometry";
+export type { CurveInput, SurfaceInput } from "./shapeGeometry";
+export {
+  faceCenter,
+  faceNormalAt,
+  faceUVBounds,
+  faceUVCoordinates,
+  pointOnFace,
+} from "./faceGeometry";
+export type { FaceUVBounds } from "./faceGeometry";
 export * from "./shapeHelpers";
 export * from "./measureShape";
 export * from "./finders";
