@@ -15,6 +15,13 @@ import { DEG2RAD, HASH_CODE_MAX } from "./constants.js";
 import { getOC } from "./oclib.js";
 import { getManifold } from "./manifoldlib.js";
 import { MeshShape } from "./meshShapes.js";
+import {
+  downcast,
+  iterTopo,
+  shapeType,
+  type TopoEntity,
+} from "./shapeInternals/topology.js";
+import { makeCaster } from "./shapeInternals/casting.js";
 
 import {
   TopoDS_Face,
@@ -26,8 +33,6 @@ import {
   TopoDS_Solid,
   TopoDS_Compound,
   TopoDS_CompSolid,
-  TopAbs_ShapeEnum,
-  STEPControl_StepModelType,
   gp_Vec,
   gp_Pnt,
   Adaptor3d_Surface,
@@ -59,29 +64,6 @@ export type AnyShape =
   | Solid
   | CompSolid
   | Compound;
-
-type TopoEntity =
-  | "vertex"
-  | "edge"
-  | "wire"
-  | "face"
-  | "shell"
-  | "solid"
-  | "solidCompound"
-  | "compound"
-  | "shape";
-
-type GenericTopo =
-  | TopoDS_Vertex
-  | TopoDS_Face
-  | TopoDS_Shape
-  | TopoDS_Edge
-  | TopoDS_Wire
-  | TopoDS_Shell
-  | TopoDS_Vertex
-  | TopoDS_Solid
-  | TopoDS_Compound
-  | TopoDS_CompSolid;
 
 export interface CurveLike {
   delete(): void;
@@ -168,44 +150,7 @@ export type RadiusConfig<R = number> =
   | R
   | { filter: EdgeFinder; radius: R; keep?: boolean };
 
-const asTopo = (entity: TopoEntity): TopAbs_ShapeEnum => {
-  const oc = getOC();
-
-  return {
-    vertex: oc.TopAbs_ShapeEnum.TopAbs_VERTEX,
-    wire: oc.TopAbs_ShapeEnum.TopAbs_WIRE,
-    face: oc.TopAbs_ShapeEnum.TopAbs_FACE,
-    shell: oc.TopAbs_ShapeEnum.TopAbs_SHELL,
-    solid: oc.TopAbs_ShapeEnum.TopAbs_SOLID,
-    solidCompound: oc.TopAbs_ShapeEnum.TopAbs_COMPSOLID,
-    compound: oc.TopAbs_ShapeEnum.TopAbs_COMPOUND,
-    edge: oc.TopAbs_ShapeEnum.TopAbs_EDGE,
-    shape: oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
-  }[entity] as TopAbs_ShapeEnum;
-};
-
-export const iterTopo = function* iterTopo(
-  shape: TopoDS_Shape,
-  topo: TopoEntity
-): IterableIterator<TopoDS_Shape> {
-  const oc = getOC();
-  const explorer = new oc.TopExp_Explorer(
-    shape,
-    asTopo(topo),
-    asTopo("shape")
-  );
-  const seen: TopoDS_Shape[] = [];
-  while (explorer.More()) {
-    const item = explorer.Current();
-    const isDuplicate = seen.some((s) => s.IsSame(item));
-    if (!isDuplicate) {
-      seen.push(item);
-      yield item;
-    }
-    explorer.Next();
-  }
-  explorer.delete();
-};
+export { downcast, iterTopo, shapeType };
 
 export interface FaceTriangulation {
   vertices: number[];
@@ -232,11 +177,6 @@ const extractFromPointer = (
   // converting them to typed-array indexes.
   const start = (pointer >>> 0) / heap.BYTES_PER_ELEMENT;
   return Array.from(heap.subarray(start, start + size));
-};
-
-export const shapeType = (shape: TopoDS_Shape): TopAbs_ShapeEnum => {
-  if (shape.IsNull()) throw new Error("This shape has not type, it is null");
-  return shape.ShapeType();
 };
 
 export function deserializeShape(data: string): AnyShape {
@@ -1466,57 +1406,13 @@ export function isWire(shape: AnyShape): shape is Wire {
   return shape instanceof Wire;
 }
 
-export function downcast(shape: TopoDS_Shape): GenericTopo {
-  const oc = getOC();
-  const ta = oc.TopAbs_ShapeEnum;
-
-  const CAST_MAP = new Map<
-    TopAbs_ShapeEnum,
-    (s: TopoDS_Shape) => TopoDS_Shape
-  >([
-    [ta.TopAbs_VERTEX, oc.TopoDS.Vertex],
-    [ta.TopAbs_EDGE, oc.TopoDS.Edge],
-    [ta.TopAbs_WIRE, oc.TopoDS.Wire],
-    [ta.TopAbs_FACE, oc.TopoDS.Face],
-    [ta.TopAbs_SHELL, oc.TopoDS.Shell],
-    [ta.TopAbs_SOLID, oc.TopoDS.Solid],
-    [ta.TopAbs_COMPSOLID, oc.ReplicadShapeCaster.CompSolid],
-    [ta.TopAbs_COMPOUND, oc.TopoDS.Compound],
-  ]);
-
-  const myType = shapeType(shape);
-  const caster = CAST_MAP.get(myType);
-  if (!caster) throw new Error("Could not find a wrapper for this shape type");
-  return caster(shape);
-}
-
-export function cast(shape: TopoDS_Shape): AnyShape {
-  const oc = getOC();
-  const ta = oc.TopAbs_ShapeEnum;
-
-  const CAST_MAP = new Map<
-    TopAbs_ShapeEnum,
-    | typeof Vertex
-    | typeof Edge
-    | typeof Wire
-    | typeof Face
-    | typeof Shell
-    | typeof Solid
-    | typeof CompSolid
-    | typeof Compound
-  >([
-    [ta.TopAbs_VERTEX, Vertex],
-    [ta.TopAbs_EDGE, Edge],
-    [ta.TopAbs_WIRE, Wire],
-    [ta.TopAbs_FACE, Face],
-    [ta.TopAbs_SHELL, Shell],
-    [ta.TopAbs_SOLID, Solid],
-    [ta.TopAbs_COMPSOLID, CompSolid],
-    [ta.TopAbs_COMPOUND, Compound],
-  ]);
-
-  const Klass = CAST_MAP.get(shapeType(shape));
-
-  if (!Klass) throw new Error(`Could not find a wrapper for this shape type`);
-  return new Klass(downcast(shape));
-}
+export const cast = makeCaster<AnyShape>({
+  vertex: Vertex,
+  edge: Edge,
+  wire: Wire,
+  face: Face,
+  shell: Shell,
+  solid: Solid,
+  solidCompound: CompSolid,
+  compound: Compound,
+});
