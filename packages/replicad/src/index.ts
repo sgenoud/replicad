@@ -49,6 +49,13 @@ export {
   pointOnFace,
 } from "./faceGeometry";
 export type { FaceUVBounds } from "./faceGeometry";
+export {
+  cutShape,
+  fuseShapes,
+  intersectShapes,
+  shellShape,
+} from "./shapeOperations";
+export type { BooleanOperationOptions, ShellOptions } from "./shapeOperations";
 export * from "./shapeHelpers";
 export * from "./measureShape";
 export * from "./finders";

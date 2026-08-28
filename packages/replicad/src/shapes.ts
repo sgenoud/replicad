@@ -45,6 +45,13 @@ import {
   type FaceUVBounds,
 } from "./faceGeometry.js";
 import {
+  cutShape,
+  fuseShapes,
+  intersectShapes,
+  shellShape,
+  type BooleanOperationOptions,
+} from "./shapeOperations.js";
+import {
   downcast,
   iterTopo,
   shapeType,
@@ -605,28 +612,9 @@ export class _3DShape<Type extends TopoDS_Shape>
    *
    * @category Shape Modifications
    */
-  fuse(
-    other: Shape3D,
-    {
-      optimisation = "none",
-    }: { optimisation?: "none" | "commonFace" | "sameFace" } = {}
-  ): Shape3D {
-    const r = GCWithScope();
-    const newBody = r(
-      new this.oc.BRepAlgoAPI_Fuse(this.wrapped, other.wrapped)
-    );
-    if (optimisation === "commonFace") {
-      newBody.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueShift);
-    }
-    if (optimisation === "sameFace") {
-      newBody.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull);
-    }
-
-    newBody.Build();
-    newBody.SimplifyResult(true, true, 1e-3);
-    const newShape = cast(newBody.Shape());
+  fuse(other: Shape3D, options: BooleanOperationOptions = {}): Shape3D {
+    const newShape = cast(fuseShapes(this.wrapped, other.wrapped, options));
     if (!isShape3D(newShape)) throw new Error("Could not fuse as a 3d shape");
-
     return newShape;
   }
 
@@ -635,24 +623,8 @@ export class _3DShape<Type extends TopoDS_Shape>
    *
    * @category Shape Modifications
    */
-  cut(
-    tool: Shape3D,
-    {
-      optimisation = "none",
-    }: { optimisation?: "none" | "commonFace" | "sameFace" } = {}
-  ): Shape3D {
-    const r = GCWithScope();
-    const cutter = r(new this.oc.BRepAlgoAPI_Cut(this.wrapped, tool.wrapped));
-    if (optimisation === "commonFace") {
-      cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueShift);
-    }
-    if (optimisation === "sameFace") {
-      cutter.SetGlue(this.oc.BOPAlgo_GlueEnum.BOPAlgo_GlueFull);
-    }
-    cutter.Build();
-    cutter.SimplifyResult(true, true, 1e-3);
-
-    const newShape = cast(cutter.Shape());
+  cut(tool: Shape3D, options: BooleanOperationOptions = {}): Shape3D {
+    const newShape = cast(cutShape(this.wrapped, tool.wrapped, options));
     if (!isShape3D(newShape)) throw new Error("Could not cut as a 3d shape");
     return newShape;
   }
@@ -663,14 +635,7 @@ export class _3DShape<Type extends TopoDS_Shape>
    * @category Shape Modifications
    */
   intersect(tool: AnyShape): Shape3D {
-    const r = GCWithScope();
-    const intersector = r(
-      new this.oc.BRepAlgoAPI_Common(this.wrapped, tool.wrapped)
-    );
-    intersector.Build();
-    intersector.SimplifyResult(true, true, 1e-3);
-
-    const newShape = cast(intersector.Shape());
+    const newShape = cast(intersectShapes(this.wrapped, tool.wrapped));
     if (!isShape3D(newShape))
       throw new Error("Could not intersect as a 3d shape");
     return newShape;
@@ -764,29 +729,14 @@ export class _3DShape<Type extends TopoDS_Shape>
       filter = thicknessOrConfig.filter;
     }
 
-    const r = GCWithScope();
-
     const filteredFaces = filter.find(this);
-    const facesToRemove = r(new this.oc.NCollection_List_TopoDS_Shape());
-
-    filteredFaces.forEach((face: Face) => {
-      facesToRemove.Append(face.wrapped);
-    });
-
-    const shellBuilder = r(new this.oc.BRepOffsetAPI_MakeThickSolid());
-
-    shellBuilder.MakeThickSolidByJoin(
-      this.wrapped,
-      facesToRemove,
-      -thickness,
-      tol,
-      this.oc.BRepOffset_Mode.BRepOffset_Skin,
-      false,
-      false,
-      this.oc.GeomAbs_JoinType.GeomAbs_Arc,
-      false
+    const newShape = cast(
+      shellShape(this.wrapped, {
+        faces: filteredFaces,
+        thickness,
+        tolerance: tol,
+      })
     );
-    const newShape = cast(shellBuilder.Shape());
     if (!isShape3D(newShape)) throw new Error("Could not shell as a 3d shape");
 
     return newShape;
