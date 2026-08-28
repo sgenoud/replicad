@@ -28,21 +28,28 @@ const TOPOLOGY_KINDS = [
 export type TopologyKind = (typeof TOPOLOGY_KINDS)[number];
 export type TopoEntity = TopologyKind | "shape";
 
-export type GenericTopo =
-  | TopoDS_Vertex
-  | TopoDS_Face
-  | TopoDS_Shape
-  | TopoDS_Edge
-  | TopoDS_Wire
-  | TopoDS_Shell
-  | TopoDS_Solid
-  | TopoDS_Compound
-  | TopoDS_CompSolid;
+export interface TopologyMap {
+  vertex: TopoDS_Vertex;
+  edge: TopoDS_Edge;
+  wire: TopoDS_Wire;
+  face: TopoDS_Face;
+  shell: TopoDS_Shell;
+  solid: TopoDS_Solid;
+  solidCompound: TopoDS_CompSolid;
+  compound: TopoDS_Compound;
+  shape: TopoDS_Shape;
+}
+
+export type GenericTopo = TopologyMap[TopoEntity];
+
+type DowncastMap = {
+  [Entity in TopoEntity]: (shape: TopoDS_Shape) => TopologyMap[Entity];
+};
 
 interface TopologyDefinitions {
   shapeEnum: Record<TopoEntity, TopAbs_ShapeEnum>;
   kindOf: Map<TopAbs_ShapeEnum, TopologyKind>;
-  downcast: Record<TopologyKind, (shape: TopoDS_Shape) => GenericTopo>;
+  downcast: DowncastMap;
 }
 
 const buildDefinitions = (oc: OpenCascadeInstance): TopologyDefinitions => {
@@ -64,6 +71,7 @@ const buildDefinitions = (oc: OpenCascadeInstance): TopologyDefinitions => {
     shapeEnum,
     kindOf: new Map(TOPOLOGY_KINDS.map((kind) => [shapeEnum[kind], kind])),
     downcast: {
+      shape: (shape) => shape,
       vertex: (shape) => oc.TopoDS.Vertex(shape),
       edge: (shape) => oc.TopoDS.Edge(shape),
       wire: (shape) => oc.TopoDS.Wire(shape),
@@ -93,10 +101,15 @@ const definitions = (): TopologyDefinitions => {
 const asTopo = (entity: TopoEntity): TopAbs_ShapeEnum =>
   definitions().shapeEnum[entity];
 
-export const iterTopo = function* iterTopo(
+const downcastTo = <Entity extends TopoEntity>(
   shape: TopoDS_Shape,
-  topo: TopoEntity
-): IterableIterator<TopoDS_Shape> {
+  entity: Entity
+): TopologyMap[Entity] => definitions().downcast[entity](shape);
+
+export function* iterTopo<Entity extends TopoEntity>(
+  shape: TopoDS_Shape,
+  topo: Entity
+): IterableIterator<TopologyMap[Entity]> {
   const oc = getOC();
   const explorer = new oc.TopExp_Explorer(shape, asTopo(topo), asTopo("shape"));
   try {
@@ -106,14 +119,14 @@ export const iterTopo = function* iterTopo(
       const isDuplicate = seen.some((s) => s.IsSame(item));
       if (!isDuplicate) {
         seen.push(item);
-        yield item;
+        yield downcastTo(item, topo);
       }
       explorer.Next();
     }
   } finally {
     explorer.delete();
   }
-};
+}
 
 export const shapeType = (shape: TopoDS_Shape): TopAbs_ShapeEnum => {
   if (shape.IsNull()) throw new Error("This shape has not type, it is null");

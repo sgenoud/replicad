@@ -56,6 +56,11 @@ export {
   shellShape,
 } from "./shapeOperations";
 export type { BooleanOperationOptions, ShellOptions } from "./shapeOperations";
+export { chamferShape, filletShape } from "./shapeEdgeOperations";
+export type {
+  ChamferEdgeConfig,
+  FilletEdgeConfig,
+} from "./shapeEdgeOperations";
 export * from "./shapeHelpers";
 export * from "./measureShape";
 export * from "./finders";
