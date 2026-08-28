@@ -128,6 +128,19 @@ Ideally the computation should be done in a worker.
 
 This all needs a bunch of helper, this should come soon(-ish)
 
+## Deterministic resource disposal
+
+In runtimes that support [explicit resource management](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/using), OpenCascade-backed replicad objects can be disposed at the end of a scope with `using`:
+
+```js
+{
+  using shape = makeBaseBox(10, 10, 10);
+  // Use shape here.
+}
+```
+
+replicad does not polyfill `Symbol.dispose` and does not use `using` internally. In unsupported runtimes, continue to call `delete()` explicitly or rely on the existing finalization behavior. This currently applies to objects backed by `WrappingObj`; not every deletable replicad object supports `using` yet.
+
 ## License
 
 Copyright (C) 2021 QuaroTech Sàrl
