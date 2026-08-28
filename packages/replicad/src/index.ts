@@ -25,6 +25,15 @@ export * from "./geomHelpers";
 export * from "./shapes";
 export * from "./shapeInterfaces";
 export * from "./meshShapes";
+export { mesh, meshEdges, triangulateFace } from "./shapeMesh";
+export type {
+  MeshOptions,
+  ShapeEdgeMesh,
+  ShapeInput,
+  WrappedTopoShape,
+} from "./shapeMesh";
+export { exportShapeSTEP, exportShapeSTL, serializeShape } from "./shapeExport";
+export type { STLExportOptions } from "./shapeExport";
 export * from "./shapeHelpers";
 export * from "./measureShape";
 export * from "./finders";
