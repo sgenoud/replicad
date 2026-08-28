@@ -23,10 +23,12 @@ const countingExplorer = () => {
 test("iterTopo frees the explorer when the consumer breaks out early", () => {
   const shape = makeBaseBox(10, 10, 10);
   const { deletes, restore } = countingExplorer();
+  const returnedShapes: { delete(): void }[] = [];
 
   try {
     let seen = 0;
-    for (const _edge of iterTopo(shape.wrapped, "edge")) {
+    for (const edge of iterTopo(shape.wrapped, "edge")) {
+      returnedShapes.push(edge);
       seen += 1;
       if (seen === 2) break;
     }
@@ -36,9 +38,11 @@ test("iterTopo frees the explorer when the consumer breaks out early", () => {
 
     // a full iteration still deletes exactly once
     const all = Array.from(iterTopo(shape.wrapped, "edge"));
+    returnedShapes.push(...all);
     expect(all).toHaveLength(12);
     expect(deletes).toHaveLength(2);
   } finally {
+    returnedShapes.forEach((returnedShape) => returnedShape.delete());
     restore();
     shape.delete();
   }

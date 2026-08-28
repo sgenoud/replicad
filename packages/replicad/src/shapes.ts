@@ -1,4 +1,4 @@
-import { WrappingObj, GCWithScope } from "./register.js";
+import { WrappingObj } from "./register.js";
 import {
   Vector,
   Point,
@@ -52,11 +52,15 @@ import {
   type BooleanOperationOptions,
 } from "./shapeOperations.js";
 import {
-  downcast,
-  iterTopo,
-  shapeType,
-  type TopoEntity,
-} from "./shapeInternals/topology.js";
+  chamferShape,
+  filletShape,
+  isFilletRadius,
+  mapSelectedEdges,
+  selectEdgeRadii,
+  type ChamferEdgeConfig,
+  type FilletRadius,
+} from "./shapeEdgeOperations.js";
+import { downcast, iterTopo, shapeType } from "./shapeInternals/topology.js";
 import { makeCaster } from "./shapeInternals/casting.js";
 
 import {
@@ -127,11 +131,7 @@ export type ChamferRadius =
       selectedFace: FinderFunction<FaceFinder, AnyShape>;
     };
 
-export type FilletRadius = number | [number, number];
-
-function isNumber(r: unknown): r is number {
-  return typeof r === "number";
-}
+export type { FilletRadius };
 
 function isChamferRadius(r: unknown): r is ChamferRadius {
   if (typeof r === "number") return true;
@@ -143,14 +143,6 @@ function isChamferRadius(r: unknown): r is ChamferRadius {
         "selectedFace" in obj) ||
       ("distance" in obj && "angle" in obj && "selectedFace" in obj)
     );
-  }
-  return false;
-}
-
-function isFilletRadius(r: unknown): r is FilletRadius {
-  if (typeof r === "number") return true;
-  if (Array.isArray(r) && r.length === 2) {
-    return r.every(isNumber);
   }
   return false;
 }
@@ -174,6 +166,7 @@ export type RadiusConfig<R = number> =
   | { filter: EdgeFinder; radius: R; keep?: boolean };
 
 export { downcast, iterTopo, shapeType };
+export type { TopoEntity, TopologyMap } from "./shapeInternals/topology.js";
 
 export type { FaceTriangulation, ShapeMesh };
 
@@ -346,26 +339,16 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
     return newShape as typeof this;
   }
 
-  protected _iterTopo(topo: TopoEntity): IterableIterator<TopoDS_Shape> {
-    return iterTopo(this.wrapped, topo);
-  }
-
-  protected _listTopo(topo: TopoEntity): TopoDS_Shape[] {
-    return Array.from(this._iterTopo(topo)).map((e) => {
-      return downcast(e);
-    });
-  }
-
   get edges(): Edge[] {
-    return this._listTopo("edge").map((e) => new Edge(e));
+    return Array.from(iterTopo(this.wrapped, "edge"), (edge) => new Edge(edge));
   }
 
   get faces(): Face[] {
-    return this._listTopo("face").map((e) => new Face(e));
+    return Array.from(iterTopo(this.wrapped, "face"), (face) => new Face(face));
   }
 
   get wires(): Wire[] {
-    return this._listTopo("wire").map((e) => new Wire(e));
+    return Array.from(iterTopo(this.wrapped, "wire"), (wire) => new Wire(wire));
   }
 
   get boundingBox(): BoundingBox {
@@ -742,51 +725,6 @@ export class _3DShape<Type extends TopoDS_Shape>
     return newShape;
   }
 
-  protected _builderIter<R = number>(
-    radiusConfigInput: RadiusConfig<R>,
-    builderAdd: (r: R, edge: TopoDS_Edge) => void,
-    isRadius: (r: unknown) => r is R
-  ): number {
-    if (isRadius(radiusConfigInput)) {
-      let edgeCount = 0;
-      for (const rawEdge of this._iterTopo("edge")) {
-        builderAdd(radiusConfigInput, downcast(rawEdge));
-        edgeCount += 1;
-      }
-      return edgeCount;
-    }
-
-    let radiusConfigFun: (e: Edge) => R | null;
-    let finalize: null | (() => void) = null;
-
-    if (typeof radiusConfigInput === "function") {
-      radiusConfigFun = radiusConfigInput;
-    } else {
-      radiusConfigFun = (element: Edge) => {
-        const shouldKeep = radiusConfigInput.filter.shouldKeep(element);
-        return shouldKeep ? radiusConfigInput.radius || (1 as R) : null;
-      };
-
-      if (radiusConfigInput.filter && !radiusConfigInput.keep) {
-        finalize = () => radiusConfigInput.filter.delete();
-      }
-    }
-
-    let edgeAddedCount = 0;
-    for (const e of this._iterTopo("edge")) {
-      const rawEdge = downcast(e);
-      const edge = new Edge(rawEdge);
-      const radius = radiusConfigFun(edge);
-      if (radius) {
-        builderAdd(radius, rawEdge);
-        edgeAddedCount += 1;
-      }
-      edge.delete();
-    }
-    finalize && finalize();
-    return edgeAddedCount;
-  }
-
   /**
    * Creates a new shapes with some edges filletted, as specified in the
    * radius config.
@@ -807,15 +745,6 @@ export class _3DShape<Type extends TopoDS_Shape>
     radiusConfig: RadiusConfig<FilletRadius>,
     filter?: FinderFunction<EdgeFinder, AnyShape>
   ): Shape3D {
-    const r = GCWithScope();
-
-    const filletBuilder = r(
-      new this.oc.BRepFilletAPI_MakeFillet(
-        this.wrapped,
-        this.oc.ChFi3d_FilletShape.ChFi3d_Rational
-      )
-    );
-
     let config = radiusConfig;
     if (isFilletRadius(radiusConfig) && filter) {
       config = {
@@ -824,18 +753,13 @@ export class _3DShape<Type extends TopoDS_Shape>
       };
     }
 
-    const edgesFound = this._builderIter(
+    const selectedEdges = selectEdgeRadii(
+      this.wrapped,
       config,
-      (r, e) => {
-        if (isNumber(r)) return filletBuilder.Add(r, e);
-        console.log(e);
-        return filletBuilder.Add(r[0], r[1], e);
-      },
-      isFilletRadius
+      isFilletRadius,
+      (edge) => new Edge(edge)
     );
-    if (!edgesFound) throw new Error("Could not fillet, no edge was selected");
-
-    const newShape = cast(filletBuilder.Shape());
+    const newShape = cast(filletShape(this.wrapped, selectedEdges));
     if (!isShape3D(newShape)) throw new Error("Could not fillet as a 3d shape");
     return newShape;
   }
@@ -860,12 +784,6 @@ export class _3DShape<Type extends TopoDS_Shape>
     radiusConfig: RadiusConfig<ChamferRadius>,
     filter?: FinderFunction<EdgeFinder, AnyShape>
   ): Shape3D {
-    const r = GCWithScope();
-
-    const chamferBuilder = r(
-      new this.oc.BRepFilletAPI_MakeChamfer(this.wrapped)
-    );
-
     let config = radiusConfig;
 
     if (isChamferRadius(radiusConfig) && filter) {
@@ -874,38 +792,35 @@ export class _3DShape<Type extends TopoDS_Shape>
         filter: filter(new EdgeFinder(), this),
       };
     }
-    const edgesFound = this._builderIter(
-      config,
-      (r, e) => {
-        if (isNumber(r)) return chamferBuilder.Add(r, e);
 
-        const finder = new FaceFinder();
-        const face = r.selectedFace(finder, this).find(this, { unique: true });
+    const selectedEdges = selectEdgeRadii(
+      this.wrapped,
+      config,
+      isChamferRadius,
+      (edge) => new Edge(edge)
+    );
+    const chamfers = mapSelectedEdges(
+      selectedEdges,
+      ({ radius, edge }): ChamferEdgeConfig => {
+        if (typeof radius === "number") return { radius, edge };
+
+        const face = radius
+          .selectedFace(new FaceFinder(), this)
+          .find(this, { unique: true });
         if (!face) throw new Error("Could not find face for chamfer");
 
-        if ("distances" in r) {
-          return chamferBuilder.Add(
-            r.distances[0] ?? 1,
-            r.distances[1] ?? 1,
-            e,
-            face.wrapped
-          );
-        }
-
-        if ("distance" in r) {
-          return chamferBuilder.AddDA(
-            r.distance,
-            r.angle * DEG2RAD,
-            e,
-            face.wrapped
-          );
-        }
-      },
-      isChamferRadius
+        return "distances" in radius
+          ? { edge, face, distances: radius.distances }
+          : {
+              edge,
+              face,
+              distance: radius.distance,
+              angle: radius.angle,
+            };
+      }
     );
-    if (!edgesFound) throw new Error("Could not chamfer, no edge was selected");
+    const newShape = cast(chamferShape(this.wrapped, chamfers));
 
-    const newShape = cast(chamferBuilder.Shape());
     if (!isShape3D(newShape))
       throw new Error("Could not chamfer as a 3d shape");
     return newShape;
