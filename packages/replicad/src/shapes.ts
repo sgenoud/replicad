@@ -434,7 +434,7 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
   get boundingBox(): BoundingBox {
     const bbox = new BoundingBox();
-    this.oc.BRepBndLib.Add(this.wrapped, bbox.wrapped, true);
+    this.oc.BRepBndLib.AddOptimal(this.wrapped, bbox.wrapped, false, false);
     return bbox;
   }
 
