@@ -48,7 +48,9 @@ import {
   fuseShapes,
   intersectShapes,
   shellShape,
+  splitShape,
   type BooleanOperationOptions,
+  type PlaneSplitResult,
 } from "./shapeFunctions/operations.js";
 import {
   chamferShape,
@@ -170,6 +172,7 @@ export type {
   FaceTriangulation,
   FaceUVBounds,
   MeshOptions,
+  PlaneSplitResult,
   ShapeEdgeMesh,
   ShapeMesh,
   STLExportOptions,
@@ -206,6 +209,42 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
   isEqual(other: AnyShape): boolean {
     return this.wrapped.IsEqual(other.wrapped);
+  }
+
+  /**
+   * Splits the solid parts of this shape with an oriented plane and groups
+   * them by side. Non-solid results are ignored.
+   *
+   * `offset` translates the splitting plane along its normal. Each side is
+   * `null` when empty, the resulting shape when it contains one piece, or a
+   * `Compound` when it contains multiple disconnected pieces. Positive is the
+   * direction of the plane's normal.
+   *
+   * @category Shape Modifications
+   */
+  split(
+    plane: Plane | PlaneName = "XY",
+    offset = 0,
+    tolerance = 1e-7
+  ): PlaneSplitResult<Solid | Compound> {
+    const result = splitShape(this.wrapped, plane, offset, tolerance);
+    const castResult = (
+      piece: TopoDS_Solid | TopoDS_Compound | null
+    ): Solid | Compound | null => {
+      if (!piece) return null;
+      const resultShape = cast(piece);
+      if (resultShape instanceof Solid || resultShape instanceof Compound) {
+        return resultShape;
+      }
+      resultShape.delete();
+      throw new Error("Split produced an unexpected non-solid shape");
+    };
+
+    return {
+      positive: castResult(result.positive),
+      negative: castResult(result.negative),
+      on: castResult(result.on),
+    };
   }
 
   /**
@@ -350,6 +389,13 @@ export class Shape<Type extends TopoDS_Shape> extends WrappingObj<Type> {
 
   get faces(): Face[] {
     return Array.from(iterTopo(this.wrapped, "face"), (face) => new Face(face));
+  }
+
+  get solids(): Solid[] {
+    return Array.from(
+      iterTopo(this.wrapped, "solid"),
+      (solid) => new Solid(solid)
+    );
   }
 
   get wires(): Wire[] {
