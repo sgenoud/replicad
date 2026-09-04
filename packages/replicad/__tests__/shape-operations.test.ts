@@ -1,9 +1,11 @@
 import { expect, test } from "vitest";
 import {
   cast,
+  Compound,
   FaceFinder,
   isShape3D,
   makeBaseBox,
+  makePlane,
   measureVolume,
   topMost,
 } from "../src/index";
@@ -13,6 +15,7 @@ import {
   fuseShapes,
   intersectShapes,
   shellShape,
+  splitShape,
 } from "../src/shapeFunctions/index";
 
 const volumeOf = (rawShape: ReturnType<typeof fuseShapes>): number => {
@@ -39,6 +42,56 @@ test("standalone boolean operations accept wrapped and raw shapes", () => {
 
   left.delete();
   right.delete();
+});
+
+test("split separates pieces by side and accepts a plane offset", () => {
+  const shape = makeBaseBox(10, 10, 10);
+  const result = shape.split("XY", 4);
+
+  expect(result.positive).not.toBeInstanceOf(Compound);
+  expect(result.negative).not.toBeInstanceOf(Compound);
+  expect(result.on).toBeNull();
+  expect(measureVolume(result.positive!.asShape3D())).toBeCloseTo(600);
+  expect(measureVolume(result.negative!.asShape3D())).toBeCloseTo(400);
+
+  result.positive!.delete();
+  result.negative!.delete();
+  shape.delete();
+});
+
+test("split returns a compound when one side has multiple pieces", () => {
+  const block = makeBaseBox(6, 2, 4);
+  const notch = makeBaseBox(2, 4, 3).translateZ(1);
+  const shape = block.cut(notch);
+  const plane = makePlane("XY", 2);
+  const result = shape.split(plane);
+
+  expect(result.positive).toBeInstanceOf(Compound);
+  expect(result.negative).not.toBeInstanceOf(Compound);
+  const positivePieces = result.positive!.solids;
+  expect(positivePieces).toHaveLength(2);
+
+  positivePieces.forEach((piece) => piece.delete());
+  result.positive!.delete();
+  result.negative!.delete();
+  plane.delete();
+  shape.delete();
+  block.delete();
+  notch.delete();
+});
+
+test("standalone split accepts wrapped shapes and leaves missed shapes whole", () => {
+  const shape = makeBaseBox(10, 10, 10);
+  const result = splitShape(shape, "XY", 20);
+
+  expect(result.positive).toBeNull();
+  expect(result.negative).not.toBeNull();
+  expect(result.on).toBeNull();
+  const piece = cast(result.negative!);
+  expect(measureVolume(piece.asShape3D())).toBeCloseTo(1000);
+
+  piece.delete();
+  shape.delete();
 });
 
 test("standalone draft operation accepts explicitly selected faces", () => {

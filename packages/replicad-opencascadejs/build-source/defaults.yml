@@ -176,6 +176,7 @@
 
     - symbol: BRepAlgoAPI_Algo
     - symbol: BRepAlgoAPI_BuilderAlgo
+    - symbol: BRepAlgoAPI_Splitter
     - symbol: BRepAlgoAPI_BooleanOperation
     - symbol: BRepAlgoAPI_Cut
     - symbol: BRepAlgoAPI_Fuse
