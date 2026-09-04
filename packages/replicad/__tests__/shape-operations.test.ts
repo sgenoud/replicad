@@ -11,6 +11,7 @@ import {
 } from "../src/index";
 import {
   cutShape,
+  cutShapeWithPlane,
   draftShape,
   fuseShapes,
   intersectShapes,
@@ -65,13 +66,19 @@ test("split returns a compound when one side has multiple pieces", () => {
   const shape = block.cut(notch);
   const plane = makePlane("XY", 2);
   const result = shape.split(plane);
+  const cutResult = shape.cutPlane(plane, 0, "positive");
 
   expect(result.positive).toBeInstanceOf(Compound);
   expect(result.negative).not.toBeInstanceOf(Compound);
   const positivePieces = result.positive!.solids;
   expect(positivePieces).toHaveLength(2);
+  expect(cutResult).toBeInstanceOf(Compound);
+  const cutPieces = cutResult!.solids;
+  expect(cutPieces).toHaveLength(2);
 
   positivePieces.forEach((piece) => piece.delete());
+  cutPieces.forEach((piece) => piece.delete());
+  cutResult!.delete();
   result.positive!.delete();
   result.negative!.delete();
   plane.delete();
@@ -91,6 +98,41 @@ test("standalone split accepts wrapped shapes and leaves missed shapes whole", (
   expect(measureVolume(piece.asShape3D())).toBeCloseTo(1000);
 
   piece.delete();
+  shape.delete();
+});
+
+test("cutPlane keeps the selected half-space", () => {
+  const shape = makeBaseBox(10, 10, 10);
+  const positive = shape.cutPlane("XY", 4);
+  const negative = shape.cutPlane("XY", 4, "negative");
+
+  expect(positive).not.toBeNull();
+  expect(negative).not.toBeNull();
+  expect(measureVolume(positive!)).toBeCloseTo(600);
+  expect(measureVolume(negative!)).toBeCloseTo(400);
+
+  negative!.delete();
+  positive!.delete();
+  shape.delete();
+});
+
+test("standalone plane cut accepts wrapped shapes", () => {
+  const shape = makeBaseBox(10, 10, 10);
+  const result = cutShapeWithPlane(shape, "XY", 7, "negative");
+
+  expect(result).not.toBeNull();
+  const cut = cast(result!);
+  expect(measureVolume(cut.asShape3D())).toBeCloseTo(700);
+
+  cut.delete();
+  shape.delete();
+});
+
+test("cutPlane returns null when the retained half-space is empty", () => {
+  const shape = makeBaseBox(10, 10, 10);
+  const result = shape.cutPlane("XY", 11);
+
+  expect(result).toBeNull();
   shape.delete();
 });
 

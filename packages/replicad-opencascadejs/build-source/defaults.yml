@@ -203,6 +203,7 @@
     - symbol: BRepPrimAPI_MakeOneAxis
     - symbol: BRepPrimAPI_MakeCylinder
     - symbol: BRepPrimAPI_MakeBox
+    - symbol: BRepPrimAPI_MakeHalfSpace
     - symbol: BRepCheck_Analyzer
     - symbol: BRepPrimAPI_MakeSweep
     - symbol: BRepPrimAPI_MakePrism
