@@ -18,8 +18,14 @@
   "types": "./dist/replicad.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/replicad.d.ts",
       "import": "./dist/replicad.js",
       "require": "./dist/replicad.umd.cjs"
+    },
+    "./shape-functions": {
+      "types": "./dist/shape-functions.d.ts",
+      "import": "./dist/shape-functions.js",
+      "require": "./dist/shape-functions.cjs"
     },
     "./types": "./dist/replicad.d.ts"
   },
@@ -31,7 +37,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && REPLICAD_UMD=true vite build",
     "start": "NO_TYPES=true vite build --watch",
     "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme default src",
     "build-docss": "typedoc --help",

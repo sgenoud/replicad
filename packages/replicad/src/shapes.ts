@@ -20,20 +20,20 @@ import {
   type MeshOptions,
   type ShapeEdgeMesh,
   type ShapeMesh,
-} from "./shapeMesh.js";
+} from "./shapeFunctions/mesh.js";
 import {
   deserializeTopoShape,
   exportShapeSTEP,
   exportShapeSTL,
   serializeShape,
   type STLExportOptions,
-} from "./shapeExport.js";
+} from "./shapeFunctions/export.js";
 import {
   Curve,
   Surface,
   type CurveLike,
   type SurfaceType,
-} from "./shapeGeometry.js";
+} from "./shapeFunctions/geometry.js";
 import {
   faceCenter,
   faceNormalAt,
@@ -41,7 +41,7 @@ import {
   faceUVCoordinates,
   pointOnFace,
   type FaceUVBounds,
-} from "./faceGeometry.js";
+} from "./shapeFunctions/faceGeometry.js";
 import {
   cutShape,
   draftShape,
@@ -49,7 +49,7 @@ import {
   intersectShapes,
   shellShape,
   type BooleanOperationOptions,
-} from "./shapeOperations.js";
+} from "./shapeFunctions/operations.js";
 import {
   chamferShape,
   filletShape,
@@ -58,9 +58,9 @@ import {
   selectEdgeRadii,
   type ChamferEdgeConfig,
   type FilletRadius,
-} from "./shapeEdgeOperations.js";
-import { downcast, iterTopo, shapeType } from "./shapeInternals/topology.js";
-import { makeCaster } from "./shapeInternals/casting.js";
+} from "./shapeFunctions/edgeOperations.js";
+import { downcast, iterTopo, shapeType } from "./shapeFunctions/topology.js";
+import { makeCaster } from "./shapeFunctions/casting.js";
 
 import {
   TopoDS_Face,
@@ -159,7 +159,7 @@ export type RadiusConfig<R = number> =
   | { filter: EdgeFinder; radius: R; keep?: boolean };
 
 export { downcast, iterTopo, shapeType };
-export type { TopoEntity, TopologyMap } from "./shapeInternals/topology.js";
+export type { TopoEntity, TopologyMap } from "./shapeFunctions/topology.js";
 
 export type { FaceTriangulation, ShapeMesh };
 

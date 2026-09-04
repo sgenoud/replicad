@@ -1,8 +1,8 @@
 import type { TopoDS_Shape } from "replicad-opencascadejs";
 
-import { getOC } from "./oclib.js";
-import { prepareShapeForMesh, type MeshOptions } from "./shapeMesh.js";
-import { unwrapShape, type ShapeInput } from "./shapeInternals/shapeInput.js";
+import { getOC } from "../oclib.js";
+import { prepareShapeForMesh, type MeshOptions } from "./mesh.js";
+import { unwrapShape, type ShapeInput } from "./shapeInput.js";
 
 export interface STLExportOptions extends MeshOptions {
   binary?: boolean;
