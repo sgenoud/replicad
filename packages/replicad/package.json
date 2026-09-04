@@ -27,6 +27,7 @@
       "import": "./dist/shape-functions.js",
       "require": "./dist/shape-functions.cjs"
     },
+    "./shape-functions/types": "./dist/shape-functions.d.ts",
     "./types": "./dist/replicad.d.ts"
   },
   "directories": {

@@ -122,6 +122,21 @@ const config = {
         watch: process.env.TYPEDOC_WATCH === "true",
       },
     ],
+    [
+      // The `replicad/shape-functions` entry point gets its own reference, so
+      // that adding it does not reshape the URLs of the main API reference.
+      "docusaurus-plugin-typedoc",
+      {
+        id: "shape-functions",
+        name: "Shape functions",
+        entryPoints: ["../replicad/src/shapeFunctions/index.ts"],
+        tsconfig: "../replicad/tsconfig.json",
+        out: "docs/api-shape-functions",
+        useCodeBlocks: true,
+
+        watch: process.env.TYPEDOC_WATCH === "true",
+      },
+    ],
   ],
 };
 

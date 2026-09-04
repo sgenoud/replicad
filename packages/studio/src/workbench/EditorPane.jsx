@@ -5,6 +5,7 @@ import { observer } from "mobx-react";
 import Editor from "@monaco-editor/react";
 
 import replicadTypes from "replicad/types?raw";
+import replicadShapeFnsTypes from "replicad/shape-functions/types?raw";
 
 import Splitter, { GutterTheme, SplitDirection } from "@devbookhq/splitter";
 
@@ -74,10 +75,15 @@ export default observer(function EditorPane() {
         content: `declare module 'replicad' { ${replicadTypes} }`,
       },
       {
+        content: `declare module 'replicad/shape-functions' { ${replicadShapeFnsTypes} }`,
+      },
+      {
         content: `
   import * as replicadAll from 'replicad';
+  import * as replicadShapeFnsAll from 'replicad/shape-functions';
   declare global {
   declare var replicad = replicadAll;
+  declare var replicadShapeFns = replicadShapeFnsAll;
   }
 `,
       },

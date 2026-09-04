@@ -46,6 +46,32 @@ const main = ({ makeCylinder }) => makeCylinder(8, 20);
     expect(output).toContain("viewBox=");
   }, 60000);
 
+  test("evaluates code importing replicad/shape-functions", async () => {
+    const workdir = await mkdtemp(join(tmpdir(), "replicad-cli-shape-fns-"));
+    const input = join(workdir, "shape-fns.js");
+
+    await writeFile(
+      input,
+      `
+import { cast, makeBaseBox } from "replicad";
+import { cutShape } from "replicad/shape-functions";
+
+export function main() {
+  return cast(cutShape(makeBaseBox(10, 10, 10), makeBaseBox(4, 4, 20)));
+}
+      `.trimStart(),
+      "utf8"
+    );
+
+    const result = runCli(["-f", "stl", input]);
+
+    expect(result.status).toBe(0);
+    expect(result.stderr).toBe("");
+
+    const output = await readFile(join(workdir, "shape-fns.stl"), "utf8");
+    expect(output).toContain("facet normal");
+  }, 60000);
+
   test("writes hidden lines when projection mode is hidden", async () => {
     const workdir = await mkdtemp(
       join(tmpdir(), "replicad-cli-project-hidden-")

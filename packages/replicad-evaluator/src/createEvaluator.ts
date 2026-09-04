@@ -20,6 +20,7 @@ function createRuntimeResolver(
 
     return {
       replicad: options.replicad,
+      shapeFns: options.shapeFns,
       oc,
       manifold,
       fontPath: options.fontPath,

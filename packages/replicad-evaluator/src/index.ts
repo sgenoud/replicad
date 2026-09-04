@@ -9,6 +9,7 @@ export type {
   EvaluatorService,
   OpenCascadeCompatibilityReplacement,
   ReplicadLike,
+  ReplicadShapeFnsLike,
   RuntimeContext,
   RuntimeResolver,
 } from "./types";
