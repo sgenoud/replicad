@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { makeBaseBox, getOC } from "../src/index";
-import { iterTopo } from "../src/shapeInternals/topology";
+import { iterTopo } from "../src/shapeFunctions/topology";
 
 const countingExplorer = () => {
   const oc = getOC() as any;

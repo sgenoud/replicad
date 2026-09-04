@@ -1,11 +1,11 @@
 import type { TopoDS_Face, TopoDS_Shape } from "replicad-opencascadejs";
 
-import { DEG2RAD } from "./constants.js";
-import { asDir, makePln, type Plane, type PlaneName } from "./geom.js";
-import { makePlane } from "./geomHelpers.js";
-import { getOC } from "./oclib.js";
-import { GCWithScope } from "./register.js";
-import { unwrapShape, type ShapeInput } from "./shapeInternals/shapeInput.js";
+import { DEG2RAD } from "../constants.js";
+import { asDir, makePln, type Plane, type PlaneName } from "../geom.js";
+import { makePlane } from "../geomHelpers.js";
+import { getOC } from "../oclib.js";
+import { GCWithScope } from "../register.js";
+import { unwrapShape, type ShapeInput } from "./shapeInput.js";
 
 export interface BooleanOperationOptions {
   optimisation?: "none" | "commonFace" | "sameFace";

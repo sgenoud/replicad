@@ -25,47 +25,45 @@ export * from "./geomHelpers";
 export * from "./shapes";
 export * from "./shapeInterfaces";
 export * from "./meshShapes";
-export { mesh, meshEdges, triangulateFace } from "./shapeMesh";
-export type {
-  MeshOptions,
-  ShapeEdgeMesh,
-  ShapeInput,
-  WrappedTopoShape,
-} from "./shapeMesh";
-export { exportShapeSTEP, exportShapeSTL, serializeShape } from "./shapeExport";
-export type { STLExportOptions } from "./shapeExport";
 export {
+  chamferShape,
   curvePointAt,
   curveTangentAt,
   curveType,
-  surfaceType,
-} from "./shapeGeometry";
-export type { CurveInput, SurfaceInput } from "./shapeGeometry";
-export {
+  cutShape,
+  draftShape,
+  exportShapeSTEP,
+  exportShapeSTL,
   faceCenter,
   faceNormalAt,
   faceUVBounds,
   faceUVCoordinates,
-  pointOnFace,
-} from "./faceGeometry";
-export type { FaceUVBounds } from "./faceGeometry";
-export {
-  cutShape,
-  draftShape,
+  filletShape,
   fuseShapes,
   intersectShapes,
+  mesh,
+  meshEdges,
+  pointOnFace,
+  serializeShape,
   shellShape,
-} from "./shapeOperations";
+  surfaceType,
+  triangulateFace,
+} from "./shapeFunctions";
 export type {
   BooleanOperationOptions,
-  DraftOptions,
-  ShellOptions,
-} from "./shapeOperations";
-export { chamferShape, filletShape } from "./shapeEdgeOperations";
-export type {
   ChamferEdgeConfig,
+  CurveInput,
+  DraftOptions,
+  FaceUVBounds,
   FilletEdgeConfig,
-} from "./shapeEdgeOperations";
+  MeshOptions,
+  ShapeEdgeMesh,
+  ShapeInput,
+  ShellOptions,
+  STLExportOptions,
+  SurfaceInput,
+  WrappedTopoShape,
+} from "./shapeFunctions";
 export * from "./shapeHelpers";
 export * from "./measureShape";
 export * from "./finders";
