@@ -1,5 +1,6 @@
 import { expect, test } from "vitest";
-import { makeBaseBox, mesh, meshEdges, triangulateFace } from "../src/index";
+import { makeBaseBox } from "../src/index";
+import { mesh, meshEdges, triangulateFace } from "../src/shapeFunctions/index";
 
 test("native mesh groups preserve public shape hashes", () => {
   const shape = makeBaseBox(10, 20, 30);

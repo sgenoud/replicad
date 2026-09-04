@@ -21,6 +21,11 @@ entry point:
 import { fuseShapes, filletShape, shellShape } from "replicad/shape-functions";
 ```
 
+Most of them live *only* there: the main `replicad` entry point exports the
+classes and the model building blocks, not the operations behind them. A few
+names it has always exported — `cast` among them, along with the `Curve` and
+`Surface` classes — stay available from both.
+
 ## What they are
 
 A shape function is stateless. It takes an OpenCascade topological shape (a
@@ -38,8 +43,9 @@ const tool = makeBaseBox(4, 4, 20);
 const cut = cutShape(base, tool);
 ```
 
-Because they return raw shapes, you use `cast` from the main entry point to
-bring the result back into the class hierarchy:
+Because they return raw shapes, you use `cast` — which stays on the main entry
+point, since it builds the classes — to bring the result back into the class
+hierarchy:
 
 ```js
 const solid = cast(cut);
@@ -51,7 +57,7 @@ The entry point covers the boolean operations (`fuseShapes`, `cutShape`,
 `shellShape`, `draftShape`), meshing (`mesh`, `meshEdges`, `triangulateFace`),
 export (`exportShapeSTEP`, `exportShapeSTL`, `serializeShape`), the geometry
 helpers (`faceNormalAt`, `faceCenter`, `curveTangentAt`, …) and the topology
-helpers (`iterTopo`, `downcast`, `shapeType`, `makeCaster`).
+helpers.
 
 The full list is in the [shape functions API
 reference](../api-shape-functions/index.md).
@@ -63,13 +69,14 @@ and it manages memory for you.
 
 They become useful when you are:
 
-- **walking a shape's topology yourself**, for instance to find or classify
-  subshapes without going through a finder:
+- **meshing or exporting a shape you did not build with replicad**. `mesh`,
+  `meshEdges`, `exportShapeSTEP` and `exportShapeSTL` all take a raw shape, so
+  you can display or write one out without building a wrapper for it:
 
   ```js
-  import { iterTopo } from "replicad/shape-functions";
+  import { exportShapeSTEP } from "replicad/shape-functions";
 
-  const edgeCount = [...iterTopo(shape.wrapped, "edge")].length;
+  const blob = exportShapeSTEP(someTopoDSShape);
   ```
 
 - **integrating with other OpenCascade code**, where you already hold
@@ -79,9 +86,10 @@ They become useful when you are:
   map the eight topology kinds onto your own classes, the same way replicad
   builds its own `cast`.
 
-Note that the class methods do more than call these functions: they also delete
-the shapes they consume. When you call the functions directly, you are
-responsible for the lifetime of the shapes you create.
+Keep in mind that some class methods do more than call the matching function.
+The transformations (`translate`, `rotate`, `mirror`, `scale`), as well as
+`outerWire` and `innerWires`, delete the shape they are called on; the raw
+functions never delete anything, so their inputs are yours to manage.
 
 ## In the studio and the CLI
 
@@ -105,10 +113,10 @@ the `replicadShapeFns` global, next to the `replicad` and `oc` globals:
 
 ```js
 const main = ({ makeBaseBox, cast }) => {
-  const box = makeBaseBox(10, 10, 10);
-  const edges = [...replicadShapeFns.iterTopo(box.wrapped, "edge")];
+  const base = makeBaseBox(10, 10, 10);
+  const tool = makeBaseBox(4, 4, 20);
 
-  return box;
+  return cast(replicadShapeFns.cutShape(base, tool));
 };
 ```
 

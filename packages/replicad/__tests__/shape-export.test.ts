@@ -1,11 +1,10 @@
 import { expect, test } from "vitest";
+import { deserializeShape, makeBaseBox } from "../src/index";
 import {
-  deserializeShape,
   exportShapeSTEP,
   exportShapeSTL,
-  makeBaseBox,
   serializeShape,
-} from "../src/index";
+} from "../src/shapeFunctions/index";
 
 test("standalone shape serialization accepts wrapped and raw shapes", () => {
   const shape = makeBaseBox(10, 20, 30);

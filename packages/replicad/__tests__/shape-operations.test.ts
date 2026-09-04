@@ -1,17 +1,19 @@
 import { expect, test } from "vitest";
 import {
   cast,
-  cutShape,
-  draftShape,
   FaceFinder,
-  fuseShapes,
-  intersectShapes,
   isShape3D,
   makeBaseBox,
   measureVolume,
-  shellShape,
   topMost,
 } from "../src/index";
+import {
+  cutShape,
+  draftShape,
+  fuseShapes,
+  intersectShapes,
+  shellShape,
+} from "../src/shapeFunctions/index";
 
 const volumeOf = (rawShape: ReturnType<typeof fuseShapes>): number => {
   const shape = cast(rawShape);
