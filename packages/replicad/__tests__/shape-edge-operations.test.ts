@@ -1,12 +1,6 @@
 import { expect, test } from "vitest";
-import {
-  cast,
-  chamferShape,
-  filletShape,
-  isShape3D,
-  makeBaseBox,
-  measureVolume,
-} from "../src/index";
+import { cast, isShape3D, makeBaseBox, measureVolume } from "../src/index";
+import { chamferShape, filletShape } from "../src/shapeFunctions/index";
 
 const asVolume = (rawShape: ReturnType<typeof filletShape>): number => {
   const shape = cast(rawShape);

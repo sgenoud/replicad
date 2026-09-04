@@ -25,45 +25,6 @@ export * from "./geomHelpers";
 export * from "./shapes";
 export * from "./shapeInterfaces";
 export * from "./meshShapes";
-export {
-  chamferShape,
-  curvePointAt,
-  curveTangentAt,
-  curveType,
-  cutShape,
-  draftShape,
-  exportShapeSTEP,
-  exportShapeSTL,
-  faceCenter,
-  faceNormalAt,
-  faceUVBounds,
-  faceUVCoordinates,
-  filletShape,
-  fuseShapes,
-  intersectShapes,
-  mesh,
-  meshEdges,
-  pointOnFace,
-  serializeShape,
-  shellShape,
-  surfaceType,
-  triangulateFace,
-} from "./shapeFunctions";
-export type {
-  BooleanOperationOptions,
-  ChamferEdgeConfig,
-  CurveInput,
-  DraftOptions,
-  FaceUVBounds,
-  FilletEdgeConfig,
-  MeshOptions,
-  ShapeEdgeMesh,
-  ShapeInput,
-  ShellOptions,
-  STLExportOptions,
-  SurfaceInput,
-  WrappedTopoShape,
-} from "./shapeFunctions";
 export * from "./shapeHelpers";
 export * from "./measureShape";
 export * from "./finders";

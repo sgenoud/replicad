@@ -1,4 +1,5 @@
 import { expect, test } from "vitest";
+import { makeBaseBox } from "../src/index";
 import {
   curvePointAt,
   curveTangentAt,
@@ -7,10 +8,9 @@ import {
   faceNormalAt,
   faceUVBounds,
   faceUVCoordinates,
-  makeBaseBox,
   pointOnFace,
   surfaceType,
-} from "../src/index";
+} from "../src/shapeFunctions/index";
 
 test("standalone curve geometry functions match the wrapper API", () => {
   const shape = makeBaseBox(10, 20, 30);

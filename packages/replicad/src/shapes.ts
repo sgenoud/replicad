@@ -161,7 +161,19 @@ export type RadiusConfig<R = number> =
 export { downcast, iterTopo, shapeType };
 export type { TopoEntity, TopologyMap } from "./shapeFunctions/topology.js";
 
-export type { FaceTriangulation, ShapeMesh };
+/**
+ * The types naming this module's own API surface. The functions they belong to
+ * live in the `replicad/shape-functions` entry point.
+ */
+export type {
+  BooleanOperationOptions,
+  FaceTriangulation,
+  FaceUVBounds,
+  MeshOptions,
+  ShapeEdgeMesh,
+  ShapeMesh,
+  STLExportOptions,
+};
 
 export function deserializeShape(data: string): AnyShape {
   return cast(deserializeTopoShape(data));
