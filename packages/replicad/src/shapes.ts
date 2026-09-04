@@ -44,12 +44,14 @@ import {
 } from "./shapeFunctions/faceGeometry.js";
 import {
   cutShape,
+  cutShapeWithPlane,
   draftShape,
   fuseShapes,
   intersectShapes,
   shellShape,
   splitShape,
   type BooleanOperationOptions,
+  type PlaneSide,
   type PlaneSplitResult,
 } from "./shapeFunctions/operations.js";
 import {
@@ -172,6 +174,7 @@ export type {
   FaceTriangulation,
   FaceUVBounds,
   MeshOptions,
+  PlaneSide,
   PlaneSplitResult,
   ShapeEdgeMesh,
   ShapeMesh,
@@ -672,6 +675,28 @@ export class _3DShape<Type extends TopoDS_Shape>
     const newShape = cast(intersectShapes(this.wrapped, tool.wrapped));
     if (!isShape3D(newShape))
       throw new Error("Could not intersect as a 3d shape");
+    return newShape;
+  }
+
+  /**
+   * Cuts this shape with a plane and retains one of its half-spaces.
+   * Positive is the direction of the plane normal and is kept by default.
+   *
+   * @category Shape Modifications
+   */
+  cutPlane(
+    plane: Plane | PlaneName = "XY",
+    offset = 0,
+    keep: PlaneSide = "positive"
+  ): Solid | Compound | null {
+    const result = cutShapeWithPlane(this.wrapped, plane, offset, keep);
+    if (!result) return null;
+
+    const newShape = cast(result);
+    if (!(newShape instanceof Solid) && !(newShape instanceof Compound)) {
+      newShape.delete();
+      throw new Error("Could not cut plane as a solid shape");
+    }
     return newShape;
   }
 

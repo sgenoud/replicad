@@ -13251,6 +13251,30 @@ export declare class BRepPrimAPI_MakeCylinder extends BRepPrimAPI_MakeOneAxis {
 }
 
 /**
+ * Describes functions to build half-spaces. A half-space is an infinite solid, limited by a surface. It is built from a face or a shell, which bounds it, and with a reference point, which specifies the side of the surface where the matter of the half-space is located. A half-space is a tool commonly used in topological operations to cut another shape. A MakeHalfSpace object provides a framework for:
+ *
+ * - defining and implementing the construction of a half-space, and
+ * - consulting the result.
+ */
+export declare class BRepPrimAPI_MakeHalfSpace extends BRepBuilderAPI_MakeShape {
+  /**
+   * Make a HalfSpace defined with a Face and a Point.
+   */
+  constructor(Face: TopoDS_Face, RefPnt: gp_Pnt);
+  /**
+   * Make a HalfSpace defined with a Shell and a Point.
+   */
+  constructor(Shell: TopoDS_Shell, RefPnt: gp_Pnt);
+  /**
+   * Returns the constructed half-space as a solid.
+   */
+  Solid(): TopoDS_Solid;
+  /** Releases the C++ object. The caller must ensure no further access. */
+  delete(): void;
+  [Symbol.dispose](): void;
+}
+
+/**
  * The abstract class MakeOneAxis is the root class of algorithms used to construct rotational primitives.
  */
 export declare class BRepPrimAPI_MakeOneAxis extends BRepBuilderAPI_MakeShape {
@@ -33643,6 +33667,7 @@ export type OpenCascadeInstance = {
   BRepOffsetAPI_ThruSections: typeof BRepOffsetAPI_ThruSections;
   BRepPrimAPI_MakeBox: typeof BRepPrimAPI_MakeBox;
   BRepPrimAPI_MakeCylinder: typeof BRepPrimAPI_MakeCylinder;
+  BRepPrimAPI_MakeHalfSpace: typeof BRepPrimAPI_MakeHalfSpace;
   BRepPrimAPI_MakeOneAxis: typeof BRepPrimAPI_MakeOneAxis;
   BRepPrimAPI_MakePrism: typeof BRepPrimAPI_MakePrism;
   BRepPrimAPI_MakeRevol: typeof BRepPrimAPI_MakeRevol;

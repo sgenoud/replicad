@@ -8,6 +8,7 @@ import type {
 import { DEG2RAD } from "../constants.js";
 import {
   asDir,
+  asPnt,
   makePln,
   type Plane,
   type PlaneName,
@@ -34,6 +35,8 @@ export interface DraftOptions {
   angle: number;
   neutralPlane?: Plane | PlaneName;
 }
+
+export type PlaneSide = "positive" | "negative";
 
 /** Pieces grouped by their position relative to an oriented plane. */
 export interface PlaneSplitResult<T> {
@@ -208,6 +211,73 @@ export function splitShape(
     negative: asShape(grouped.negative),
     on: asShape(grouped.on),
   };
+}
+
+/**
+ * Cuts a shape with the half-space defined by an oriented plane.
+ *
+ * `keep` identifies the side that remains. Positive is the direction of the
+ * plane normal. The offset translates the plane along that normal.
+ */
+export function cutShapeWithPlane(
+  shapeInput: ShapeInput,
+  inputPlane: Plane | PlaneName = "XY",
+  offset = 0,
+  keep: PlaneSide = "positive"
+): TopoDS_Solid | TopoDS_Compound | null {
+  const oc = getOC();
+  const r = GCWithScope();
+  const shape = unwrapShape(shapeInput);
+  const basePlane = r(makePlane(inputPlane));
+  const plane =
+    offset === 0
+      ? basePlane
+      : r(
+          basePlane.translate([
+            basePlane.zDir.x * offset,
+            basePlane.zDir.y * offset,
+            basePlane.zDir.z * offset,
+          ])
+        );
+  const ocPlane = r(makePln(plane.origin, plane.zDir));
+  const faceBuilder = r(new oc.BRepBuilderAPI_MakeFace(ocPlane));
+  const face = r(faceBuilder.Face());
+
+  // MakeHalfSpace creates the side containing its reference point. Build the
+  // side that should be removed, then subtract it from the input shape.
+  const removedSign = keep === "negative" ? 1 : -1;
+  const referencePoint = r(
+    asPnt([
+      plane.origin.x + plane.zDir.x * removedSign,
+      plane.origin.y + plane.zDir.y * removedSign,
+      plane.origin.z + plane.zDir.z * removedSign,
+    ])
+  );
+  const halfSpaceBuilder = r(
+    new oc.BRepPrimAPI_MakeHalfSpace(face, referencePoint)
+  );
+  const halfSpace = r(halfSpaceBuilder.Solid());
+
+  const builder = r(new oc.BRepAlgoAPI_Cut(shape, halfSpace));
+  builder.Build();
+  if (builder.HasErrors()) throw new Error("Could not cut shape with plane");
+
+  const cutResult = builder.Shape();
+  const solids: TopoDS_Solid[] =
+    cutResult.ShapeType() === oc.TopAbs_ShapeEnum.TopAbs_SOLID
+      ? [oc.TopoDS.Solid(cutResult)]
+      : [...iterTopo(cutResult, "solid")];
+  cutResult.delete();
+
+  if (!solids.length) return null;
+  if (solids.length === 1) return solids[0];
+
+  const compound = new oc.TopoDS_Compound();
+  const compoundBuilder = r(new oc.TopoDS_Builder());
+  compoundBuilder.MakeCompound(compound);
+  solids.forEach((solid) => compoundBuilder.Add(compound, solid));
+  solids.forEach((solid) => solid.delete());
+  return compound;
 }
 
 /**
