@@ -134,6 +134,7 @@ return main(replicad, __inputParams || dp)
       filename: "__entry__.ts",
       globals: {
         replicad: currentRuntime.replicad,
+        replicadShapeFns: currentRuntime.shapeFns,
         oc: currentRuntime.oc,
       },
     });
@@ -144,6 +145,7 @@ return main(replicad, __inputParams || dp)
     return await runInContextAsOC(code, {
       oc: currentRuntime.oc,
       replicad: currentRuntime.replicad,
+      replicadShapeFns: currentRuntime.shapeFns,
       __inputParams: params,
     });
   };

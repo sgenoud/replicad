@@ -45,6 +45,15 @@ const sidebars = {
       },
       items: require("./docs/api/typedoc-sidebar.cjs"),
     },
+    {
+      type: "category",
+      label: "Shape functions API",
+      link: {
+        type: "doc",
+        id: "api-shape-functions/index",
+      },
+      items: require("./docs/api-shape-functions/typedoc-sidebar.cjs"),
+    },
   ],
 };
 

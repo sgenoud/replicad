@@ -1,5 +1,7 @@
 import type { Plugin } from "rollup";
 
+import { isExternalModule } from "./externalGlobals";
+
 const REMOTE_ID_RE = /^(https?:\/\/|data:)/;
 
 const isRemoteId = (id: string) => REMOTE_ID_RE.test(id);
@@ -11,7 +13,7 @@ export function createUrlResolverPlugin(fetchImpl?: typeof fetch): Plugin {
   return {
     name: "replicad-evaluator-url-resolver",
     async resolveId(source, importer) {
-      if (source === "replicad") return null;
+      if (isExternalModule(source)) return null;
       if (isRemoteId(source)) return source;
       if (importer && /^https?:\/\//.test(importer) && source.startsWith(".")) {
         return new URL(source, importer).href;

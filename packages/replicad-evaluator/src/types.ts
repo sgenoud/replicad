@@ -23,8 +23,15 @@ export interface ReplicadLike extends GenericRecord {
   FaceFinder?: new (...args: any[]) => any;
 }
 
+/**
+ * The `replicad/shape-functions` entry point: the functional layer operating
+ * directly on OpenCascade shapes.
+ */
+export type ReplicadShapeFnsLike = GenericRecord;
+
 export interface RuntimeContext {
   replicad: ReplicadLike;
+  shapeFns?: ReplicadShapeFnsLike;
   oc: any;
   manifold?: any;
   fontPath?: string;
@@ -50,6 +57,7 @@ export interface CodeEvaluator {
 
 export interface CreateEvaluatorOptions {
   replicad: ReplicadLike;
+  shapeFns?: ReplicadShapeFnsLike;
   oc?: any | Promise<any>;
   manifold?: any | Promise<any>;
   fontPath?: string;

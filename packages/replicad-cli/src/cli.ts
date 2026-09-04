@@ -5,6 +5,7 @@ import { Command, Option } from "commander";
 import { getManifoldModule, setWasmUrl } from "manifold-3d/lib/wasm.js";
 import opencascadeModule from "replicad-opencascadejs";
 import * as replicad from "replicad";
+import * as replicadShapeFns from "replicad/shape-functions";
 import { createEvaluator } from "replicad-evaluator";
 import packageJson from "../package.json" with { type: "json" };
 import { saveBuildOutput } from "./saveOutput";
@@ -106,6 +107,7 @@ async function createCliEvaluator() {
 
   return createEvaluator({
     replicad,
+    shapeFns: replicadShapeFns,
     oc,
     manifold,
   });
