@@ -11,33 +11,33 @@ import { SketchInterface } from "../sketches/lib";
 import Sketches from "../sketches/Sketches";
 
 const groupByBoundingBoxOverlap = (blueprints: Blueprint[]): Blueprint[][] => {
-  const overlaps = blueprints.map((blueprint, i) => {
-    return blueprints
-      .slice(i + 1)
-      .map((v, j): [number, Blueprint] => [j + i + 1, v])
-      .filter(([, other]) => !blueprint.boundingBox.isOut(other.boundingBox))
-      .map(([index]) => index);
-  });
-  const groups: Blueprint[][] = [];
-  const groupsInOverlaps = Array(overlaps.length);
-
-  overlaps.forEach((indices, i) => {
-    let myGroup = groupsInOverlaps[i];
-    if (!myGroup) {
-      myGroup = [];
-      groups.push(myGroup);
+  const parents = blueprints.map((_, index) => index);
+  const root = (index: number): number => {
+    while (parents[index] !== index) {
+      parents[index] = parents[parents[index]];
+      index = parents[index];
     }
+    return index;
+  };
 
-    myGroup.push(blueprints[i]);
-
-    if (indices.length) {
-      indices.forEach((index) => {
-        groupsInOverlaps[index] = myGroup;
-      });
+  // A later contour can connect multiple previously separate groups.
+  for (let i = 0; i < blueprints.length; i++) {
+    for (let j = i + 1; j < blueprints.length; j++) {
+      if (!blueprints[i].boundingBox.isOut(blueprints[j].boundingBox)) {
+        parents[root(j)] = root(i);
+      }
     }
-  });
+  }
 
-  return groups;
+  // Preserve input order within groups and first-seen order between groups.
+  const groups = new Map<number, Blueprint[]>();
+  blueprints.forEach((blueprint, index) => {
+    const key = root(index);
+    const group = groups.get(key);
+    if (group) group.push(blueprint);
+    else groups.set(key, [blueprint]);
+  });
+  return Array.from(groups.values());
 };
 
 interface ContainedBlueprint {
