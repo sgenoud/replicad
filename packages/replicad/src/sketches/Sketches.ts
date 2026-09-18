@@ -1,4 +1,4 @@
-import { Point } from "../geom.js";
+import { Point, AxisName } from "../geom.js";
 import { compoundShapes } from "../shapeHelpers.js";
 import { ExtrusionProfile } from "../addThickness.js";
 import { AnyShape } from "../shapes.js";
@@ -55,7 +55,10 @@ export default class Sketches {
    * Revolves the drawing on an axis (defined by its direction and an origin
    * (defaults to the sketch origin)
    */
-  revolve(revolutionAxis?: Point, config?: { origin?: Point; angle?: number }): AnyShape {
+  revolve(
+    revolutionAxis?: Point | AxisName,
+    config?: { origin?: Point; angle?: number }
+  ): AnyShape {
     return compoundShapes(
       this.sketches.map((s) => s.revolve(revolutionAxis, config))
     );

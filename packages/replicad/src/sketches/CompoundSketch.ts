@@ -6,7 +6,7 @@ import {
 } from "../shapeHelpers";
 import Sketch from "./Sketch";
 
-import { Point, Vector } from "../geom.js";
+import { Point, AxisName, Vector } from "../geom.js";
 import {
   basicFaceExtrusion,
   complexExtrude,
@@ -202,7 +202,7 @@ export default class CompoundSketch implements SketchInterface {
    * (defaults to the sketch origin)
    */
   revolve(
-    revolutionAxis?: Point,
+    revolutionAxis?: Point | AxisName,
     { origin, angle }: { origin?: Point; angle?: number } = {}
   ): Shape3D {
     const solid = revolution(

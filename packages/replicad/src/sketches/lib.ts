@@ -1,5 +1,5 @@
 import { Face, Shape3D } from "../shapes";
-import { Point } from "../geom";
+import { Point, AxisName } from "../geom";
 
 import { ExtrusionProfile, LoftConfig } from "../addThickness.js";
 
@@ -13,7 +13,10 @@ export interface SketchInterface {
    * Revolves the drawing on an axis (defined by its direction and an origin
    * (defaults to the sketch origin)
    */
-  revolve(revolutionAxis?: Point, config?: { origin?: Point; angle?: number }): Shape3D;
+  revolve(
+    revolutionAxis?: Point | AxisName,
+    config?: { origin?: Point; angle?: number }
+  ): Shape3D;
 
   /**
    * Extrudes the sketch to a certain distance.(along the default direction

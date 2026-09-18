@@ -1,4 +1,4 @@
-import { Vector, Plane, Point } from "../geom.js";
+import { Vector, Plane, Point, AxisName } from "../geom.js";
 import { localGC } from "../register.js";
 import { makeFace, makeNewFaceWithinFace } from "../shapeHelpers.js";
 import {
@@ -119,7 +119,7 @@ export default class Sketch implements SketchInterface {
    * (defaults to the sketch origin)
    */
   revolve(
-    revolutionAxis?: Point,
+    revolutionAxis?: Point | AxisName,
     { origin, angle }: { origin?: Point; angle?: number } = {}
   ): Shape3D {
     const face = makeFace(this.wire);
