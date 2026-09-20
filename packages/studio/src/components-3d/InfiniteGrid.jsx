@@ -103,6 +103,7 @@ const infiniteGridMaterial = function InfiniteGridMaterial({
 
 export default () => {
   const material = useRef(infiniteGridMaterial());
+  const mesh = useRef(null);
   const isDarkMode = useDarkMode();
   const { invalidate } = useThree();
 
@@ -110,7 +111,11 @@ export default () => {
     material.current.uniforms.uColor.value = new THREE.Color(
       isDarkMode ? "#aaa" : "grey"
     );
+    if (mesh.current) {
+      // Prevent grid from disappearing when origin is offscreen:
+      mesh.current.frustumCulled = false;
+    }
     invalidate();
   }, [isDarkMode, invalidate]);
-  return <Plane material={material.current} />;
+  return <Plane ref={mesh} material={material.current} />;
 };
