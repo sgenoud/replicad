@@ -43,6 +43,7 @@
   "scripts": {
     "build": "vite build",
     "start": "vite build --watch",
+    "test": "vitest",
     "build-doc": "typedoc --exclude \"../replicad-opencascadejs/*\" --out docs --theme minimal src",
     "build-docss": "typedoc --help"
   },
@@ -54,6 +55,7 @@
     "prettier": "^2.4.1",
     "typescript": "^5.9.3",
     "vite": "^8.2.1",
-    "vite-plugin-dts": "^5.0.3"
+    "vite-plugin-dts": "^5.0.3",
+    "vitest": "^4.1.10"
   }
 }

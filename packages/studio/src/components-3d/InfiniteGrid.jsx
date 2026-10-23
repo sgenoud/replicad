@@ -112,5 +112,5 @@ export default () => {
     );
     invalidate();
   }, [isDarkMode, invalidate]);
-  return <Plane material={material.current} />;
+  return <Plane frustumCulled={false} material={material.current} />;
 };
