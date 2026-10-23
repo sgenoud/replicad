@@ -647,6 +647,9 @@ export class _3DShape<Type extends TopoDS_Shape>
   /**
    * Builds a new shape out of the two, fused, shapes
    *
+   * Same-domain faces and edges are merged by default. Set
+   * `options.simplify` to `false` to skip this topology cleanup.
+   *
    * @category Shape Modifications
    */
   fuse(other: Shape3D, options: BooleanOperationOptions = {}): Shape3D {
@@ -656,7 +659,10 @@ export class _3DShape<Type extends TopoDS_Shape>
   }
 
   /**
-   * Builds a new shape by removing the tool tape from this shape
+   * Builds a new shape by removing the tool shape from this shape
+   *
+   * Same-domain faces and edges are merged by default. Set
+   * `options.simplify` to `false` to skip this topology cleanup.
    *
    * @category Shape Modifications
    */
@@ -669,10 +675,16 @@ export class _3DShape<Type extends TopoDS_Shape>
   /**
    * Builds a new shape by intersecting this shape and another
    *
+   * Same-domain faces and edges are merged by default. Set
+   * `options.simplify` to `false` to skip this topology cleanup.
+   *
    * @category Shape Modifications
    */
-  intersect(tool: AnyShape): Shape3D {
-    const newShape = cast(intersectShapes(this.wrapped, tool.wrapped));
+  intersect(
+    tool: AnyShape,
+    options?: Pick<BooleanOperationOptions, "simplify">
+  ): Shape3D {
+    const newShape = cast(intersectShapes(this.wrapped, tool.wrapped, options));
     if (!isShape3D(newShape))
       throw new Error("Could not intersect as a 3d shape");
     return newShape;

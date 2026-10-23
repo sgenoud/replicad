@@ -22,6 +22,14 @@ import { iterTopo } from "./topology.js";
 
 export interface BooleanOperationOptions {
   optimisation?: "none" | "commonFace" | "sameFace";
+  /**
+   * Merge same-domain faces and edges after the Boolean operation.
+   * This cleans up topology; it does not simplify a mesh. Set to `false` to
+   * skip this cleanup, which can change downstream face and edge selection.
+   *
+   * @default true
+   */
+  simplify?: boolean;
 }
 
 export interface ShellOptions {
@@ -64,7 +72,7 @@ const configureGlue = (
 export function fuseShapes(
   leftInput: ShapeInput,
   rightInput: ShapeInput,
-  { optimisation = "none" }: BooleanOperationOptions = {}
+  { optimisation = "none", simplify = true }: BooleanOperationOptions = {}
 ): TopoDS_Shape {
   const oc = getOC();
   const r = GCWithScope();
@@ -74,7 +82,7 @@ export function fuseShapes(
 
   configureGlue(builder, optimisation);
   builder.Build();
-  builder.SimplifyResult(true, true, 1e-3);
+  if (simplify) builder.SimplifyResult(true, true, 1e-3);
   return builder.Shape();
 }
 
@@ -82,7 +90,7 @@ export function fuseShapes(
 export function cutShape(
   shapeInput: ShapeInput,
   toolInput: ShapeInput,
-  { optimisation = "none" }: BooleanOperationOptions = {}
+  { optimisation = "none", simplify = true }: BooleanOperationOptions = {}
 ): TopoDS_Shape {
   const oc = getOC();
   const r = GCWithScope();
@@ -92,14 +100,15 @@ export function cutShape(
 
   configureGlue(builder, optimisation);
   builder.Build();
-  builder.SimplifyResult(true, true, 1e-3);
+  if (simplify) builder.SimplifyResult(true, true, 1e-3);
   return builder.Shape();
 }
 
 /** Builds a raw shape containing the intersection of two shapes. */
 export function intersectShapes(
   leftInput: ShapeInput,
-  rightInput: ShapeInput
+  rightInput: ShapeInput,
+  { simplify = true }: Pick<BooleanOperationOptions, "simplify"> = {}
 ): TopoDS_Shape {
   const oc = getOC();
   const r = GCWithScope();
@@ -108,7 +117,7 @@ export function intersectShapes(
   );
 
   builder.Build();
-  builder.SimplifyResult(true, true, 1e-3);
+  if (simplify) builder.SimplifyResult(true, true, 1e-3);
   return builder.Shape();
 }
 
