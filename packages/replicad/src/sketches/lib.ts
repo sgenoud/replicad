@@ -3,6 +3,11 @@ import { Point, AxisName } from "../geom";
 
 import { ExtrusionProfile, LoftConfig } from "../addThickness.js";
 
+export interface ExtrudeUntilOptions {
+  /** Defaults to the sketch's direction; its reverse is tried if needed. */
+  extrusionDirection?: Point;
+}
+
 export interface SketchInterface {
   /**
    * Transforms the lines into a face. The lines should be closed.
@@ -16,6 +21,17 @@ export interface SketchInterface {
   revolve(
     revolutionAxis?: Point | AxisName,
     config?: { origin?: Point; angle?: number }
+  ): Shape3D;
+
+  /**
+   * Extrudes the sketch up to a limiting face, returning only the extrusion.
+   * The face is not consumed. The sketch uses its default extrusion direction
+   * unless overridden and is consumed on success. The finite limiting face
+   * must fully cap the extrusion once without crossing the profile.
+   */
+  extrudeUntil(
+    limitingFace: Face,
+    extrusionConfig?: ExtrudeUntilOptions
   ): Shape3D;
 
   /**

@@ -6,3 +6,6 @@ import Sketches from "./Sketches";
 export * from "./cannedSketches";
 export { Sketch, CompoundSketch, Sketches };
 export type { SketchInterface };
+
+export type { ExtrudeUntilOptions } from "./lib";
+export { extrudeFaceUntil } from "./extrudeUntil";

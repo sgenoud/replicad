@@ -1,7 +1,9 @@
+import { localGC } from "../register";
+import { ExtrudeUntilOptions } from "./lib";
 import { Point, AxisName } from "../geom.js";
 import { compoundShapes } from "../shapeHelpers.js";
 import { ExtrusionProfile } from "../addThickness.js";
-import { AnyShape } from "../shapes.js";
+import { AnyShape, Face, Shape3D } from "../shapes.js";
 
 import CompoundSketch from "./CompoundSketch";
 import Sketch from "./Sketch";
@@ -23,6 +25,26 @@ export default class Sketches {
   faces(): AnyShape {
     const faces = this.sketches.map((s) => s.face());
     return compoundShapes(faces);
+  }
+
+  /**
+   * Extrudes each sketch up to the same limiting face, returning only the
+   * extrusions. The face is not consumed. Each sketch uses its default
+   * direction unless overridden and is consumed when its extrusion succeeds.
+   */
+  extrudeUntil(
+    limitingFace: Face,
+    extrusionConfig: ExtrudeUntilOptions = {}
+  ): Shape3D {
+    const [r, gc] = localGC();
+    try {
+      const solids = this.sketches.map((sketch) =>
+        r(sketch.extrudeUntil(limitingFace, extrusionConfig))
+      );
+      return compoundShapes(solids).asShape3D();
+    } finally {
+      gc();
+    }
   }
 
   /** Extrudes the sketch to a certain distance.(along the default direction
