@@ -4,9 +4,17 @@ import { Plane, PlaneName, Point } from "./geom";
 import { Sketches } from "./sketches";
 
 import { Point2D } from "./lib2d";
-import opentype from "opentype.js";
+import * as opentype from "opentype.js";
+import { prepareFontForText } from "./utils/opentype";
 
 const FONT_REGISTER: Record<string, opentype.Font> = {};
+
+// @types/opentype.js still describes v1 and omits these v2 render options.
+// CAD consumes outlines, not the SVG images or color layers enabled by default.
+const OUTLINE_RENDER_OPTIONS: opentype.RenderOptions & {
+  drawLayers: boolean;
+  drawSVG: boolean;
+} = { drawLayers: false, drawSVG: false };
 
 /**
  * Import a font in the text system. If the font family is not defined it will
@@ -33,6 +41,7 @@ export async function loadFont(
   }
 
   const font: opentype.Font = opentype.parse(fontData);
+  prepareFontForText(font, fontFamily);
   FONT_REGISTER[fontFamily] = font;
   if (!FONT_REGISTER.default) FONT_REGISTER.default = font;
 
@@ -57,8 +66,9 @@ const sketchFontCommands = function* (commands: opentype.PathCommand[]) {
     const p: Point2D = [-command.x, command.y];
 
     if (command.type === "M") {
+      // opentype.js v2 omits Z for filled glyphs, so a new M also ends a contour.
       if (sk) {
-        yield sk.done();
+        yield sk.close();
       }
       sk = new BlueprintSketcher();
       sk.movePointerTo(p);
@@ -92,6 +102,9 @@ const sketchFontCommands = function* (commands: opentype.PathCommand[]) {
 
     lastPoint = p;
   }
+
+  // The final contour has neither a following M nor necessarily an explicit Z.
+  if (sk) yield sk.close();
 };
 
 /**
@@ -109,7 +122,13 @@ export function textBlueprints(
     );
     font = getFont();
   }
-  const writtenText = font.getPath(text, -startX, -startY, fontSize);
+  const writtenText = font.getPath(
+    text,
+    -startX,
+    -startY,
+    fontSize,
+    OUTLINE_RENDER_OPTIONS
+  );
   const blueprints = Array.from(sketchFontCommands(writtenText.commands));
   return organiseBlueprints(blueprints).mirror([0, 0]);
 }
