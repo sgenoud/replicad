@@ -299,6 +299,16 @@ export const cut2D = (
     return first.clone();
   }
 
+  if (second instanceof Blueprints) {
+    // Subtract the union of the cutters by cutting the remaining shape in turn.
+    // Collecting separate cuts of the original shape would duplicate material.
+    let out: Shape2D = first.clone();
+    for (const blueprint of second.blueprints) {
+      out = cut2D(out, blueprint);
+    }
+    return out;
+  }
+
   if (first instanceof Blueprints) {
     return mergeNonIntersecting(
       first.blueprints.map((bp) => cut2D(bp, second))
@@ -308,7 +318,9 @@ export const cut2D = (
   if (first instanceof CompoundBlueprint) {
     const wrapper = first.blueprints[0];
     if (second instanceof Blueprint && !second.intersects(wrapper)) {
-      if (!wrapper.isInside(second.firstPoint)) return null;
+      if (!wrapper.isInside(second.firstPoint)) {
+        return second.isInside(wrapper.firstPoint) ? null : first.clone();
+      }
       const cuts = fuse2D(second, new Blueprints(first.blueprints.slice(1)));
       return organiseBlueprints([wrapper, ...allBlueprints(cuts)]);
     } else {
@@ -321,12 +333,6 @@ export const cut2D = (
   }
 
   // From here the first is a simple blueprint
-  if (second instanceof Blueprints) {
-    return mergeNonIntersecting(
-      second.blueprints.map((bp) => cut2D(first, bp))
-    );
-  }
-
   if (second instanceof CompoundBlueprint) {
     let out: Shape2D = cutBlueprints(first, second.blueprints[0]);
     second.blueprints.slice(1).forEach((bp) => {
