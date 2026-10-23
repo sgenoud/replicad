@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@devbookhq/splitter": "^1.4.2",
-    "@monaco-editor/react": "^4.6.0",
+    "@monaco-editor/react": "^4.7.0",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
     "browser-fs-access": "^0.20.5",
