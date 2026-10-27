@@ -10,7 +10,7 @@
  * - a reference memorizes the counter value of the To Document when the reference is created. The From Document is considered to be up to date relative to the To Document when the reference counter value is equal to the To Document counter value.
  * - retrieval of a document having references does not imply the retrieving of the referenced documents.
  */
-export declare class CDM_Document extends Standard_Transient {
+declare class CDM_Document extends Standard_Transient {
   /**
    * This method Update will be called to signal the end of the modified references list. The document should be recomputed and UpdateFromDocuments should be called. Update should returns True in case of success, false otherwise. In case of Failure, additional information can be given in ErrorString.
    * @param ErrorString Mutated in place; read the updated value from this argument after the call.
@@ -258,7 +258,7 @@ export declare class CDM_Document extends Standard_Transient {
  *
  * An AttributeDelta is the difference between to attribute values states. These methods must be implemented by end use inheriting classes, to profit from the delta services.
  */
-export declare class TDF_Attribute extends Standard_Transient {
+declare class TDF_Attribute extends Standard_Transient {
   /**
    * Returns the ID of the attribute.
    */
@@ -388,7 +388,7 @@ export declare class TDF_Attribute extends Standard_Transient {
    */
   DeltaOnResume(): unknown;
   /**
-   * Makes a DeltaOnModification between <me> and <anOldAttribute.
+   * Makes a DeltaOnModification between <me> and.
    */
   DeltaOnModification(anOldAttribute: TDF_Attribute): unknown;
   /**
@@ -448,7 +448,7 @@ export declare class TDF_Attribute extends Standard_Transient {
  *
  * It is possible to get an attribute in accordance to an ID, or the yougest previous version of a current attribute.
  */
-export declare class TDF_Label {
+declare class TDF_Label {
   /**
    * Constructs an empty label object.
    */
@@ -608,7 +608,7 @@ export declare class TDF_Label {
 /**
  * An ancestor attribute for all attributes which have no fields. If an attribute inherits this one it should not have drivers for persistence.
  */
-export declare class TDataStd_GenericEmpty extends TDF_Attribute {
+declare class TDataStd_GenericEmpty extends TDF_Attribute {
   /**
    * Restores the backuped contents from <anAttribute> into this one. It is used when aborting a transaction.
    */
@@ -632,7 +632,7 @@ export declare class TDataStd_GenericEmpty extends TDF_Attribute {
 /**
  * An ancestor attribute for all attributes which have {@link TCollection_ExtendedString | `TCollection_ExtendedString`} field. If an attribute inherits this one it should not have drivers for persistence. Also this attribute provides functionality to have on the same label same attributes with different IDs.
  */
-export declare class TDataStd_GenericExtString extends TDF_Attribute {
+declare class TDataStd_GenericExtString extends TDF_Attribute {
   /**
    * Sets as name. Raises if is not a valid name.
    */
@@ -676,7 +676,7 @@ export declare class TDataStd_GenericExtString extends TDF_Attribute {
 /**
  * Used to define a name attribute containing a string which specifies the name.
  */
-export declare class TDataStd_Name extends TDataStd_GenericExtString {
+declare class TDataStd_Name extends TDataStd_GenericExtString {
   constructor();
   /**
    * **class methods working on the name itself**
@@ -724,14 +724,14 @@ export declare class TDataStd_Name extends TDataStd_GenericExtString {
 }
 
 /**
- * The contents of a {@link TDocStd_Application | `TDocStd_Application`}, a document is a container for a data framework composed of labels and attributes. As such, {@link TDocStd_Document | `TDocStd_Document`} is the entry point into the data framework. To gain access to the data, you create a document as follows: `occ::handle<TDocStd_Document>` MyDF = new {@link TDocStd_Document | `TDocStd_Document`} The document also allows you to manage:
+ * The contents of a {@link TDocStd_Application | `TDocStd_Application`}, a document is a container for a data framework composed of labels and attributes. As such, {@link TDocStd_Document | `TDocStd_Document`} is the entry point into the data framework. To gain access to the data, you create a document as follows: occ::handle<TDocStd_Document> MyDF = new {@link TDocStd_Document | `TDocStd_Document`} The document also allows you to manage:
  *
  * - modifications, providing Undo and Redo functions.
  * - command transactions. Warning: The only data saved is the framework ({@link TDF_Data | `TDF_Data`})
  */
-export declare class TDocStd_Document extends CDM_Document {
+declare class TDocStd_Document extends CDM_Document {
   /**
-   * Constructs a document object defined by the string astorageformat. If a document is created outside of an application using this constructor, it must be managed by a Handle. Otherwise memory problems could appear: call of `TDocStd_Owner::GetDocument` creates a `occ::handle<TDocStd_Document>`, so, releasing it will produce a crash.
+   * Constructs a document object defined by the string astorageformat. If a document is created outside of an application using this constructor, it must be managed by a Handle. Otherwise memory problems could appear: call of `TDocStd_Owner::GetDocument` creates a occ::handle<TDocStd_Document>, so, releasing it will produce a crash.
    */
   constructor(astorageformat: TCollection_ExtendedString);
   /**
@@ -927,7 +927,7 @@ export declare class TDocStd_Document extends CDM_Document {
  *
  * Also supports multifile writing
  */
-export declare class STEPCAFControl_Writer {
+declare class STEPCAFControl_Writer {
   /**
    * Creates a writer with an empty STEP model and sets ColorMode, LayerMode, NameMode and PropsMode to true.
    */
@@ -1055,7 +1055,7 @@ export declare class STEPCAFControl_Writer {
    */
   SetShapeFixParameters(theParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
   /**
-   * Returns parameters for shape processing that was set by `SetParameters()` method.
+   * Returns parameters for shape processing that was set by SetParameters() method.
    * @returns the parameters for shape processing. Empty map if no parameters were set.
    */
   GetShapeFixParameters(): NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString;
@@ -1076,10 +1076,10 @@ export declare class STEPCAFControl_Writer {
 
 /**
  * Reads STEP files, checks them and translates their contents into Open CASCADE models. The STEP data can be that of a whole model or that of a specific list of entities in the model. As in {@link XSControl_Reader | `XSControl_Reader`}, you specify the list using a selection.
- * For the translation of iges files it is possible to use next sequence: To change translation parameters class {@link Interface_Static | `Interface_Static`} should be used before beginning of translation (see STEP Parameters and General Parameters) Creation of reader - {@link STEPControl_Reader | `STEPControl_Reader`} reader; To load s file in a model use method reader.ReadFile("filename.stp") To print load results reader.PrintCheckLoad(failsonly,mode) where mode is equal to the value of enumeration IFSelect_PrintCount For definition number of candidates : int nbroots = reader. `NbRootsForTransfer()`; To transfer entities from a model the following methods can be used: for the whole model - reader.TransferRoots(); to transfer a list of entities: reader.TransferList(list); to transfer one entity `occ::handle<Standard_Transient>` ent = reader.RootForTransfer(num); reader.TransferEntity(ent), or reader.TransferOneRoot(num), or reader.TransferOne(num), or reader.TransferRoot(num) To obtain
- * the result the following method can be used: reader.NbShapes() and reader.Shape(num); or reader.OneShape(); To print the results of transfer use method: reader.PrintCheckTransfer(failwarn,mode); where printfail is equal to the value of enumeration IFSelect_PrintFail, mode see above; or reader.PrintStatsTransfer(); Gets correspondence between a STEP entity and a result shape obtained from it. `occ::handle<XSControl_WorkSession>` WS = reader.WS(); if ( WS->TransferReader()->HasResult(ent) ) {@link TopoDS_Shape | `TopoDS_Shape`} shape = WS->TransferReader()->ShapeResult(ent);.
+ * For the translation of iges files it is possible to use next sequence: To change translation parameters class {@link Interface_Static | `Interface_Static`} should be used before beginning of translation (see STEP Parameters and General Parameters) Creation of reader - {@link STEPControl_Reader | `STEPControl_Reader`} reader; To load s file in a model use method reader.ReadFile("filename.stp") To print load results reader.PrintCheckLoad(failsonly,mode) where mode is equal to the value of enumeration IFSelect_PrintCount For definition number of candidates : int nbroots = reader. `NbRootsForTransfer()`; To transfer entities from a model the following methods can be used: for the whole model - reader.TransferRoots(); to transfer a list of entities: reader.TransferList(list); to transfer one entity occ::handle<Standard_Transient> ent = reader.RootForTransfer(num); reader.TransferEntity(ent), or reader.TransferOneRoot(num), or reader.TransferOne(num), or reader.TransferRoot(num) To obtain
+ * the result the following method can be used: reader.NbShapes() and reader.Shape(num); or reader.OneShape(); To print the results of transfer use method: reader.PrintCheckTransfer(failwarn,mode); where printfail is equal to the value of enumeration IFSelect_PrintFail, mode see above; or reader.PrintStatsTransfer(); Gets correspondence between a STEP entity and a result shape obtained from it. occ::handle<XSControl_WorkSession> WS = reader.WS(); if ( WS->TransferReader()->HasResult(ent) ) {@link TopoDS_Shape | `TopoDS_Shape`} shape = WS->TransferReader()->ShapeResult(ent);.
  */
-export declare class STEPControl_Reader extends XSControl_Reader {
+declare class STEPControl_Reader extends XSControl_Reader {
   /**
    * Creates a reader object with an empty STEP model.
    */
@@ -1126,7 +1126,7 @@ export declare class STEPControl_Reader extends XSControl_Reader {
   [Symbol.dispose](): void;
 }
 
-export type STEPControl_StepModelType = typeof STEPControl_StepModelType[keyof typeof STEPControl_StepModelType];
+type STEPControl_StepModelType = typeof STEPControl_StepModelType[keyof typeof STEPControl_StepModelType];
 /**
  * Gives you the choice of translation mode for an Open CASCADE shape that is being translated to STEP.
  *
@@ -1136,7 +1136,7 @@ export type STEPControl_StepModelType = typeof STEPControl_StepModelType[keyof t
  * - STEPControl_ShellBasedSurfaceModel translates an Open CASCADE shape into a STEP shell_based_surface_model entity.
  * - STEPControl_GeometricCurveSet translates an Open CASCADE shape into a STEP geometric_curve_set entity.
  */
-export declare const STEPControl_StepModelType: {
+declare const STEPControl_StepModelType: {
   readonly STEPControl_AsIs: 'STEPControl_AsIs';
   readonly STEPControl_ManifoldSolidBrep: 'STEPControl_ManifoldSolidBrep';
   readonly STEPControl_BrepWithVoids: 'STEPControl_BrepWithVoids';
@@ -1150,7 +1150,7 @@ export declare const STEPControl_StepModelType: {
 /**
  * This class creates and writes STEP files from Open CASCADE models. A STEP file can be written to an existing STEP file or to a new one. Translation can be performed in one or several operations. Each translation operation outputs a distinct root entity in the STEP file.
  */
-export declare class STEPControl_Writer {
+declare class STEPControl_Writer {
   /**
    * Creates a Writer from scratch.
    */
@@ -1221,7 +1221,7 @@ export declare class STEPControl_Writer {
    */
   SetShapeFixParameters(theParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
   /**
-   * Returns parameters for shape processing that was set by `SetParameters()` method.
+   * Returns parameters for shape processing that was set by SetParameters() method.
    * @returns the parameters for shape processing. Empty map if no parameters were set.
    */
   GetShapeFixParameters(): NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString;
@@ -1246,7 +1246,7 @@ export declare class STEPControl_Writer {
  * - entities in a STEP file,
  * - the STEP file header.
  */
-export declare class StepData_StepModel extends Interface_InterfaceModel {
+declare class StepData_StepModel extends Interface_InterfaceModel {
   /**
    * Creates an empty STEP model with an empty header.
    */
@@ -1342,7 +1342,7 @@ export declare class StepData_StepModel extends Interface_InterfaceModel {
 /**
  * Offers the API for STL data manipulation.
  */
-export declare class StlAPI {
+declare class StlAPI {
   constructor();
   /**
    * Convert and write shape to STL format. File is written in binary if aAsciiMode is False otherwise it is written in Ascii (by default).
@@ -1362,7 +1362,7 @@ export declare class StlAPI {
 /**
  * Reading from stereolithography format. Reads STL file and creates a shape composed of triangular faces, one per facet. IMPORTANT: This approach is very inefficient, especially for large files. IMPORTANT: Consider reading STL file to {@link Poly_Triangulation | `Poly_Triangulation`} object instead (see class {@link RWStl | `RWStl`}).
  */
-export declare class StlAPI_Reader {
+declare class StlAPI_Reader {
   constructor();
   /**
    * Reads STL data from stream to the {@link TopoDS_Shape | `TopoDS_Shape`} (each triangle is converted to the face).
@@ -1378,7 +1378,7 @@ export declare class StlAPI_Reader {
 /**
  * This class creates and writes STL files from Open CASCADE shapes. An STL file can be written to an existing STL file or to a new one.
  */
-export declare class StlAPI_Writer {
+declare class StlAPI_Writer {
   /**
    * Creates a writer object with default parameters: ASCIIMode.
    */
@@ -1400,7 +1400,7 @@ export declare class StlAPI_Writer {
 /**
  * Provides tools to store and retrieve attributes (colors) of {@link TopoDS_Shape | `TopoDS_Shape`} in and from {@link TDocStd_Document | `TDocStd_Document`} A Document is intended to hold different attributes of ONE shape and it's sub-shapes Provide tools for management of Colors section of document.
  */
-export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
+declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   constructor();
   /**
    * Returns current auto-naming mode; TRUE by default. If TRUE then for added colors the {@link TDataStd_Name | `TDataStd_Name`} attribute will be automatically added. This setting is global.
@@ -1597,11 +1597,11 @@ export declare class XCAFDoc_ColorTool extends TDataStd_GenericEmpty {
   [Symbol.dispose](): void;
 }
 
-export type XCAFDoc_ColorType = typeof XCAFDoc_ColorType[keyof typeof XCAFDoc_ColorType];
+type XCAFDoc_ColorType = typeof XCAFDoc_ColorType[keyof typeof XCAFDoc_ColorType];
 /**
  * Defines types of color assignments Color of shape is defined following way in dependance with type of color. If type of color is XCAFDoc_ColorGen - then this color defines default color for surfaces and curves. If for shape color with types XCAFDoc_ColorSurf or XCAFDoc_ColorCurv is specified then such color overrides generic color. simple color color of surfaces color of curves.
  */
-export declare const XCAFDoc_ColorType: {
+declare const XCAFDoc_ColorType: {
   readonly XCAFDoc_ColorGen: 'XCAFDoc_ColorGen';
   readonly XCAFDoc_ColorSurf: 'XCAFDoc_ColorSurf';
   readonly XCAFDoc_ColorCurv: 'XCAFDoc_ColorCurv';
@@ -1610,7 +1610,7 @@ export declare const XCAFDoc_ColorType: {
 /**
  * Defines sections structure of an XDE document. attribute marking CAF document as being DECAF document. Creates the sections structure of the document.
  */
-export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
+declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
   constructor();
   static GetID(): unknown;
   /**
@@ -1777,7 +1777,7 @@ export declare class XCAFDoc_DocumentTool extends TDataStd_GenericEmpty {
 /**
  * Used to define a Length Unit attribute containing a length unit info.
  */
-export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
+declare class XCAFDoc_LengthUnit extends TDF_Attribute {
   constructor();
   /**
    * Returns the GUID of the attribute.
@@ -1845,11 +1845,11 @@ export declare class XCAFDoc_LengthUnit extends TDF_Attribute {
  * The label for assembly also has sub-labels, each of which represents the instance of another shape in that assembly (component).
  * Such sub-label stores reference to the label of the original shape in the form of {@link TDataStd_TreeNode | `TDataStd_TreeNode`} with GUID `XCAFDoc::ShapeRefGUID()`, and its location encapsulated into the NamedShape. For correct work with an XDE document, it is necessary to use methods for analysis and methods for working with shapes.
  * For example: if ( STool->IsAssembly(aLabel) ) { bool subchilds = false; (default) int nbc = STool->NbComponents (aLabel[,subchilds]); } If subchilds is True, commands also consider sub-levels. By default, only level one is checked. In this example, number of children from the first level of assembly will be returned.
- * Methods for creation and initialization: Constructor: `XCAFDoc_ShapeTool::XCAFDoc_ShapeTool()` Getting a guid: {@link Standard_GUID | `Standard_GUID`} GetID (); Creation (if does not exist) of ShapeTool on label L: `occ::handle<XCAFDoc_ShapeTool>` `XCAFDoc_ShapeTool::Set(const TDF_Label& L)` Analyze whether shape is a simple shape or an instance or a component of an assembly or it is an assembly ( methods of analysis).
+ * Methods for creation and initialization: Constructor: `XCAFDoc_ShapeTool::XCAFDoc_ShapeTool()` Getting a guid: {@link Standard_GUID | `Standard_GUID`} GetID (); Creation (if does not exist) of ShapeTool on label L: occ::handle<XCAFDoc_ShapeTool> `XCAFDoc_ShapeTool::Set(const TDF_Label& L)` Analyze whether shape is a simple shape or an instance or a component of an assembly or it is an assembly ( methods of analysis).
  * For example: STool->IsShape(aLabel) ; Analyze that the label represents a shape (simple shape, assembly or reference) or STool->IsTopLevel(aLabel); Analyze that the label is a label of a top-level shape. Work with simple shapes, assemblies and instances ( methods for work with shapes).
  * For example: Add shape: bool makeAssembly; // True to interpret a Compound as an Assembly, False to take it as a whole aLabel = STool->AddShape(aShape, makeAssembly); Get shape: {@link TDF_Label | `TDF_Label`} aLabel... // A label must be present if (aLabel.IsNull()) { ... no such label : abandon .. } {@link TopoDS_Shape | `TopoDS_Shape`} aShape; aShape = STool->GetShape(aLabel); if (aShape.IsNull()) { ... this label is not for a Shape ... } To get a label from shape. bool findInstance = false; (this is default value) aLabel = STool->FindShape(aShape [,findInstance]); if (aLabel.IsNull()) { ... no label found for this shape ... }.
  */
-export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
+declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   /**
    * Creates an empty tool Creates a tool to work with a document <Doc> Attaches to label XCAFDoc::LabelShapes()
    */
@@ -2169,11 +2169,11 @@ export declare class XCAFDoc_ShapeTool extends TDataStd_GenericEmpty {
   [Symbol.dispose](): void;
 }
 
-export type IFSelect_ReturnStatus = typeof IFSelect_ReturnStatus[keyof typeof IFSelect_ReturnStatus];
+type IFSelect_ReturnStatus = typeof IFSelect_ReturnStatus[keyof typeof IFSelect_ReturnStatus];
 /**
  * Qualifies an execution status : RetVoid : normal execution which created nothing, or no data to process RetDone : normal execution with a result RetError : error in command or input data, no execution RetFail : execution was run and has failed RetStop : indicates end or stop (such as Raise)
  */
-export declare const IFSelect_ReturnStatus: {
+declare const IFSelect_ReturnStatus: {
   readonly IFSelect_RetVoid: 'IFSelect_RetVoid';
   readonly IFSelect_RetDone: 'IFSelect_RetDone';
   readonly IFSelect_RetError: 'IFSelect_RetError';
@@ -2184,7 +2184,7 @@ export declare const IFSelect_ReturnStatus: {
 /**
  * This class can be used to simply manage a process such as splitting a file, extracting a set of Entities ... It allows to manage different types of Variables : Integer or Text Parameters, Selections, Dispatches, in addition to a ShareOut. To each of these variables, a unique Integer Identifier is attached. A Name can be attached too as desired.
  */
-export declare class IFSelect_WorkSession extends Standard_Transient {
+declare class IFSelect_WorkSession extends Standard_Transient {
   /**
    * Creates a Work Session It provides default, empty ShareOut and ModelCopier, which can be replaced (if required, should be done just after creation).
    */
@@ -2838,7 +2838,7 @@ export declare class IFSelect_WorkSession extends Standard_Transient {
  *
  * See also Graph, ShareTool, CheckTool for more
  */
-export declare class Interface_InterfaceModel extends Standard_Transient {
+declare class Interface_InterfaceModel extends Standard_Transient {
   /**
    * Clears the list of entities (service WhenDelete)
    */
@@ -3063,7 +3063,7 @@ export declare class Interface_InterfaceModel extends Standard_Transient {
 /**
  * This class gives a way to manage meaningful static variables, used as "global" parameters in various procedures.
  *
- * A Static brings a specification (its type, constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, and queried as such. Its string content, which is a `occ::handle<HAsciiString>` can be shared by other data structures, hence gives a direct on line access to its value.
+ * A Static brings a specification (its type, constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, and queried as such. Its string content, which is a occ::handle<HAsciiString> can be shared by other data structures, hence gives a direct on line access to its value.
  *
  * All this description is inherited from TypedValue
  *
@@ -3071,7 +3071,7 @@ export declare class Interface_InterfaceModel extends Standard_Transient {
  *
  * Statics are named and recorded then accessed in an alphabetic dictionary
  */
-export declare class Interface_Static extends Interface_TypedValue {
+declare class Interface_Static extends Interface_TypedValue {
   /**
    * Creates a new Static with same definition as another one (value is copied, except for Entity : it remains null)
    */
@@ -3196,9 +3196,9 @@ export declare class Interface_Static extends Interface_TypedValue {
  *
  * This class allows to dynamically manage .. typed values, i.e. values which have an alphanumeric expression, but with controls. Such as "must be an Integer" or "Enumerative Text" etc
  *
- * Hence, a TypedValue brings a specification (type + constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, then queried as such. Its string content, which is a `occ::handle<HAsciiString>` can be shared by other data structures, hence gives a direct on line access to its value.
+ * Hence, a TypedValue brings a specification (type + constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, then queried as such. Its string content, which is a occ::handle<HAsciiString> can be shared by other data structures, hence gives a direct on line access to its value.
  */
-export declare class Interface_TypedValue extends MoniTool_TypedValue {
+declare class Interface_TypedValue extends MoniTool_TypedValue {
   /**
    * Creates a TypedValue, with a name.
    *
@@ -3230,9 +3230,9 @@ export declare class Interface_TypedValue extends MoniTool_TypedValue {
 /**
  * This class allows to dynamically manage .. typed values, i.e. values which have an alphanumeric expression, but with controls. Such as "must be an Integer" or "Enumerative Text" etc.
  *
- * Hence, a TypedValue brings a specification (type + constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, then queried as such. Its string content, which is a `occ::handle<HAsciiString>` can be shared by other data structures, hence gives a direct on line access to its value.
+ * Hence, a TypedValue brings a specification (type + constraints if any) and a value. Its basic form is a string, it can be specified as integer or real or enumerative string, then queried as such. Its string content, which is a occ::handle<HAsciiString> can be shared by other data structures, hence gives a direct on line access to its value.
  */
-export declare class MoniTool_TypedValue extends Standard_Transient {
+declare class MoniTool_TypedValue extends Standard_Transient {
   /**
    * Creates a TypedValue from another one, by duplication.
    */
@@ -3473,7 +3473,7 @@ export declare class MoniTool_TypedValue extends Standard_Transient {
  * - ClearShapes which allows you to handle a new batch
  * - TransferRoots which restarts the list of shapes from scratch.
  */
-export declare class XSControl_Reader {
+declare class XSControl_Reader {
   /**
    * Creates a Reader from scratch (creates an empty WorkSession) A WorkSession or a Controller must be provided before running.
    */
@@ -3617,7 +3617,7 @@ export declare class XSControl_Reader {
    */
   SetShapeFixParameters(theParameters: NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString): void;
   /**
-   * Returns parameters for shape processing that was set by `SetParameters()` method.
+   * Returns parameters for shape processing that was set by SetParameters() method.
    * @returns the parameters for shape processing. Empty map if no parameters were set.
    */
   GetShapeFixParameters(): NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString;
@@ -3642,7 +3642,7 @@ export declare class XSControl_Reader {
  * - use of Controller, with norm selection...
  * - management of transfers (both ways) with auxiliary classes TransferReader and TransferWriter -> these transfers may work with a Context List : its items are given by the user, according to the transfer to be i.e. it is interpreted by the Actors Each item is accessed by a Name
  */
-export declare class XSControl_WorkSession extends IFSelect_WorkSession {
+declare class XSControl_WorkSession extends IFSelect_WorkSession {
   constructor();
   /**
    * In addition to basic ClearData, clears Transfer and Management for interactive use, for mode = 0,1,2 and over 4 Plus : mode = 5 to clear Transfers (both ways) only mode = 6 to clear enforced results mode = 7 to clear transfers, results.
@@ -3758,7 +3758,7 @@ export declare class XSControl_WorkSession extends IFSelect_WorkSession {
  * - eight flags (OpenXmin, OpenXmax, OpenYmin, OpenYmax, OpenZmin, OpenZmax, WholeSpace and Void) which describe the bounding box if it is infinite or empty, and
  * - a gap, which is included on both sides in any direction when consulting the finite bounds of the box.
  */
-export declare class Bnd_Box {
+declare class Bnd_Box {
   /**
    * Creates an empty Box. The constructed box is qualified Void. Its gap is null.
    */
@@ -3999,7 +3999,7 @@ export declare class Bnd_Box {
   [Symbol.dispose](): void;
 }
 
-export interface Bnd_Box_Limits {
+interface Bnd_Box_Limits {
   Xmin: number;
   Xmax: number;
   Ymin: number;
@@ -4021,7 +4021,7 @@ export interface Bnd_Box_Limits {
  * - Void if it is empty. In this case, there is no point included in the box. A bounding box is defined by four bounds (Xmin, Xmax, Ymin and Ymax) which limit the bounding box if it is finite, six flags (OpenXmin, OpenXmax, OpenYmin, OpenYmax, WholeSpace and Void) which describe the bounding box if it is infinite or empty, and
  * - a gap, which is included on both sides in any direction when consulting the finite bounds of the box.
  */
-export declare class Bnd_Box2d {
+declare class Bnd_Box2d {
   constructor();
   /**
    * Sets this bounding box so that it covers the whole 2D space, i.e. it is infinite in all directions.
@@ -4188,7 +4188,7 @@ export declare class Bnd_Box2d {
   [Symbol.dispose](): void;
 }
 
-export interface Bnd_Box2d_Limits {
+interface Bnd_Box2d_Limits {
   Xmin: number;
   Xmax: number;
   Ymin: number;
@@ -4198,7 +4198,7 @@ export interface Bnd_Box2d_Limits {
 /**
  * The class describes the Oriented Bounding Box (OBB), much tighter enclosing volume for the shape than the Axis Aligned Bounding Box (AABB). The OBB is defined by a center of the box, the axes and the halves of its three dimensions. The OBB can be used more effectively than AABB as a rejection mechanism for non-interfering objects.
  */
-export declare class Bnd_OBB {
+declare class Bnd_OBB {
   /**
    * Empty constructor.
    */
@@ -4336,13 +4336,13 @@ export declare class Bnd_OBB {
   [Symbol.dispose](): void;
 }
 
-export interface Bnd_OBB_HalfSizes {
+interface Bnd_OBB_HalfSizes {
   X: number;
   Y: number;
   Z: number;
 }
 
-export type Convert_ParameterisationType = typeof Convert_ParameterisationType[keyof typeof Convert_ParameterisationType];
+type Convert_ParameterisationType = typeof Convert_ParameterisationType[keyof typeof Convert_ParameterisationType];
 /**
  * Identifies a type of parameterization of a circle or ellipse represented as a BSpline curve. For a circle with a center C and a radius R (for example a {@link Geom2d_Circle | `Geom2d_Circle`} or a {@link Geom_Circle | `Geom_Circle`}), the natural parameterization is angular. It uses the angle Theta made by the vector CM with the 'X Axis' of the circle's local coordinate system as parameter for the current point M.
  * The coordinates of the point M are as follows: X = R *cos ( Theta ) y = R * sin ( Theta ) Similarly, for an ellipse with a center C, a major radius R and a minor radius r, the circle Circ with center C and radius R (and located in the same plane as the ellipse) lends its natural angular parameterization to the ellipse. This is achieved by an affine transformation in the plane of the ellipse, in the ratio r / R, about the 'X Axis' of its local coordinate system.
@@ -4361,7 +4361,7 @@ export type Convert_ParameterisationType = typeof Convert_ParameterisationType[k
  * Polynomial The Convert_Polynomial method is used to produce polynomial (i.e. non-rational) parameterization of the resulting BSpline curve with 8 poles (i.e. a polynomial degree equal to 7).
  * However, the result is an approximation of the circle or ellipse (i.e. computing the point of parameter t on the BSpline curve does not give an exact point on the circle or the ellipse).
  */
-export declare const Convert_ParameterisationType: {
+declare const Convert_ParameterisationType: {
   readonly Convert_TgtThetaOver2: 'Convert_TgtThetaOver2';
   readonly Convert_TgtThetaOver2_1: 'Convert_TgtThetaOver2_1';
   readonly Convert_TgtThetaOver2_2: 'Convert_TgtThetaOver2_2';
@@ -4372,11 +4372,11 @@ export declare const Convert_ParameterisationType: {
   readonly Convert_Polynomial: 'Convert_Polynomial';
 };
 
-export type GeomAbs_CurveType = typeof GeomAbs_CurveType[keyof typeof GeomAbs_CurveType];
+type GeomAbs_CurveType = typeof GeomAbs_CurveType[keyof typeof GeomAbs_CurveType];
 /**
  * Identifies the type of a curve.
  */
-export declare const GeomAbs_CurveType: {
+declare const GeomAbs_CurveType: {
   readonly GeomAbs_Line: 'GeomAbs_Line';
   readonly GeomAbs_Circle: 'GeomAbs_Circle';
   readonly GeomAbs_Ellipse: 'GeomAbs_Ellipse';
@@ -4388,17 +4388,17 @@ export declare const GeomAbs_CurveType: {
   readonly GeomAbs_OtherCurve: 'GeomAbs_OtherCurve';
 };
 
-export type GeomAbs_JoinType = typeof GeomAbs_JoinType[keyof typeof GeomAbs_JoinType];
+type GeomAbs_JoinType = typeof GeomAbs_JoinType[keyof typeof GeomAbs_JoinType];
 /**
  * Characterizes the type of a join, built by an algorithm for constructing parallel curves, between two consecutive arcs of a contour parallel to a given contour.
  */
-export declare const GeomAbs_JoinType: {
+declare const GeomAbs_JoinType: {
   readonly GeomAbs_Arc: 'GeomAbs_Arc';
   readonly GeomAbs_Tangent: 'GeomAbs_Tangent';
   readonly GeomAbs_Intersection: 'GeomAbs_Intersection';
 };
 
-export type GeomAbs_Shape = typeof GeomAbs_Shape[keyof typeof GeomAbs_Shape];
+type GeomAbs_Shape = typeof GeomAbs_Shape[keyof typeof GeomAbs_Shape];
 /**
  * Provides information about the continuity of a curve:
  *
@@ -4416,7 +4416,7 @@ export type GeomAbs_Shape = typeof GeomAbs_Shape[keyof typeof GeomAbs_Shape];
  * - C3: continuity of the third derivative.
  * - CN: continuity of any N-th derivative, whatever is the value given for N (infinite order of continuity). We may also say that a surface is "Ci" in u, and "Cj" in v to indicate the continuity of its derivatives up to the order i in the u parametric direction, and j in the v parametric direction.
  */
-export declare const GeomAbs_Shape: {
+declare const GeomAbs_Shape: {
   readonly GeomAbs_C0: 'GeomAbs_C0';
   readonly GeomAbs_G1: 'GeomAbs_G1';
   readonly GeomAbs_C1: 'GeomAbs_C1';
@@ -4426,8 +4426,8 @@ export declare const GeomAbs_Shape: {
   readonly GeomAbs_CN: 'GeomAbs_CN';
 };
 
-export type GeomAbs_SurfaceType = typeof GeomAbs_SurfaceType[keyof typeof GeomAbs_SurfaceType];
-export declare const GeomAbs_SurfaceType: {
+type GeomAbs_SurfaceType = typeof GeomAbs_SurfaceType[keyof typeof GeomAbs_SurfaceType];
+declare const GeomAbs_SurfaceType: {
   readonly GeomAbs_Plane: 'GeomAbs_Plane';
   readonly GeomAbs_Cylinder: 'GeomAbs_Cylinder';
   readonly GeomAbs_Cone: 'GeomAbs_Cone';
@@ -4455,7 +4455,7 @@ export declare const GeomAbs_SurfaceType: {
  * - From a given node you can look for one triangle that passes through the node, then look for the triangles adjacent to this triangle, then the adjacent nodes. You can thus explore the triangulation step by step (functions Triangle, Triangles and Nodes).
  * - From a given node you can look for all the triangles that pass through the node (iteration method, using the functions Initialize, More, Next and Value). A Connect object can be seen as a tool which analyzes a triangulation and translates it into a series of triangles. By doing this, it provides an interface with other tools and applications working on basic triangles, and which do not work directly with a {@link Poly_Triangulation | `Poly_Triangulation`}.
  */
-export declare class Poly_Connect {
+declare class Poly_Connect {
   /**
    * Constructs an uninitialized algorithm.
    */
@@ -4521,7 +4521,7 @@ export declare class Poly_Connect {
  * This class provides a polygon in 3D space, based on the triangulation of a surface. It may be the approximate representation of a curve on the surface, or more generally the shape. A PolygonOnTriangulation is defined by a table of nodes. Each node is an index in the table of nodes specific to a triangulation, and represents a point on the surface. If the polygon is closed, the index of the point of closure is repeated at the end of the table of nodes.
  * If the polygon is an approximate representation of a curve on a surface, you can associate with each of its nodes the value of the parameter of the corresponding point on the curve.represents a 3d Polygon.
  */
-export declare class Poly_PolygonOnTriangulation extends Standard_Transient {
+declare class Poly_PolygonOnTriangulation extends Standard_Transient {
   /**
    * Constructs a 3D polygon on the triangulation of a shape, defined by the table of nodes, <Nodes>.
    */
@@ -4613,7 +4613,7 @@ export declare class Poly_PolygonOnTriangulation extends Standard_Transient {
 /**
  * Describes a component triangle of a triangulation ({@link Poly_Triangulation | `Poly_Triangulation`} object). A Triangle is defined by a triplet of nodes within [1, `Poly_Triangulation::NbNodes()`] range. Each node is an index in the table of nodes specific to an existing triangulation of a shape, and represents a point on the surface.
  */
-export declare class Poly_Triangle {
+declare class Poly_Triangle {
   /**
    * Constructs a triangle and sets all indices to zero.
    */
@@ -4666,7 +4666,7 @@ export declare class Poly_Triangle {
  *
  * In many cases, algorithms do not need to work with the exact representation of a surface. A triangular representation induces simpler and more robust adjusting, faster performances, and the results are as good.
  */
-export declare class Poly_Triangulation extends Standard_Transient {
+declare class Poly_Triangulation extends Standard_Transient {
   /**
    * Constructs an empty triangulation.
    */
@@ -4818,8 +4818,11 @@ export declare class Poly_Triangulation extends Standard_Transient {
    *
    * - input transformation theTrsf has no rotation part;
    * - theIsAccurate is set to FALSE;
-   * - no triangulation data available (e.g. it is deferred and not loaded).
+   * - no triangulation data available (e.g. it is deferred and not loaded). out] theBox bounding box to extend by this triangulation
+   * @param theTrsf optional transformation
+   * @param theIsAccurate when FALSE, allows using a cached min - max range of this triangulation even for non-identity transformation.
    * @param theBox Mutated in place; read the updated value from this argument after the call.
+   * @returns FALSE if there is no any data to extend the passed box (no both triangulation and cached min - max range).
    */
   MinMax(theBox: Bnd_Box, theTrsf: gp_Trsf, theIsAccurate: boolean): boolean;
   /**
@@ -4922,7 +4925,7 @@ export declare class Poly_Triangulation extends Standard_Transient {
 /**
  * A Location is a composite transition. It comprises a series of elementary reference coordinates, i.e. objects of type {@link TopLoc_Datum3D | `TopLoc_Datum3D`}, and the powers to which these objects are raised.
  */
-export declare class TopLoc_Location {
+declare class TopLoc_Location {
   /**
    * Constructs an empty local coordinate system object. Note: A Location constructed from a default datum is said to be "empty".
    */
@@ -5018,7 +5021,7 @@ export declare class TopLoc_Location {
  * - to describe 3D geometric entities (for example, the axis of a revolution entity). It serves the same purpose as the STEP function "axis placement one axis", or
  * - to define geometric transformations (axis of symmetry, axis of rotation, and so on). For example, this entity can be used to locate a geometric entity or to define a symmetry axis.
  */
-export declare class gp_Ax1 {
+declare class gp_Ax1 {
   /**
    * Creates an axis object representing Z axis of the reference coordinate system.
    */
@@ -5167,7 +5170,7 @@ export declare class gp_Ax1 {
  * - the origin of the coordinate system as their origin, and
  * - the unit vectors "X Direction", "Y Direction" and "main Direction", respectively, as their unit vectors. The "Z Axis" is also the "main Axis".
  */
-export declare class gp_Ax2 {
+declare class gp_Ax2 {
   /**
    * Creates an object corresponding to the reference coordinate system (OXYZ).
    */
@@ -5344,7 +5347,7 @@ export declare class gp_Ax2 {
  * - the origin of the coordinate system as their origin, and
  * - the unit vectors "X Direction" and "Y Direction", respectively, as their unit vectors.
  */
-export declare class gp_Ax22d {
+declare class gp_Ax22d {
   /**
    * Creates an object representing the reference coordinate system (OXY).
    */
@@ -5471,7 +5474,7 @@ export declare class gp_Ax22d {
  * - to describe 2D geometric entities (for example, the axis which defines angular coordinates on a circle). It serves for the same purpose as the STEP function "axis placement one axis", or
  * - to define geometric transformations (axis of symmetry, axis of rotation, and so on). Note: to define a left-handed 2D coordinate system, use {@link gp_Ax22d | `gp_Ax22d`}.
  */
-export declare class gp_Ax2d {
+declare class gp_Ax2d {
   /**
    * Creates an axis object representing X axis of the reference coordinate system.
    */
@@ -5586,7 +5589,7 @@ export declare class gp_Ax2d {
  * - The "Z Axis" is also the "main Axis".
  * - {@link gp_Ax2 | `gp_Ax2`} is used to define a coordinate system that must be always right-handed.
  */
-export declare class gp_Ax3 {
+declare class gp_Ax3 {
   /**
    * Creates an object corresponding to the reference coordinate system (OXYZ).
    */
@@ -5747,7 +5750,7 @@ export declare class gp_Ax3 {
  * - this orientation corresponds to the direction in which parameter values increase,
  * - the starting point for parameterization is that of the "X Axis" of the local coordinate system (i.e. the "X Axis" of the circle). See Also {@link gce_MakeCirc | `gce_MakeCirc`} which provides functions for more complex circle constructions {@link Geom_Circle | `Geom_Circle`} which provides additional functions for constructing circles and works, in particular, with the parametric equations of circles
  */
-export declare class gp_Circ {
+declare class gp_Circ {
   /**
    * Creates an indefinite circle.
    */
@@ -5869,7 +5872,7 @@ export declare class gp_Circ {
  * - the implicit orientation corresponds to the direction in which parameter values increase,
  * - the starting point for parameterization is that of the "X Axis" of the local coordinate system (i.e. the "X Axis" of the circle). See Also GccAna and {@link Geom2dGcc | `Geom2dGcc`} packages which provide functions for constructing circles defined by geometric constraints {@link gce_MakeCirc2d | `gce_MakeCirc2d`} which provides functions for more complex circle constructions {@link Geom2d_Circle | `Geom2d_Circle`} which provides additional functions for constructing circles and works, with the parametric equations of circles in particular {@link gp_Ax22d | `gp_Ax22d`}
  */
-export declare class gp_Circ2d {
+declare class gp_Circ2d {
   /**
    * creates an indefinite circle.
    */
@@ -6015,7 +6018,7 @@ export declare class gp_Circ2d {
  * - its origin, "X Direction", "Y Direction" and "main Direction" are used directly to define the parametric directions on the cylinder and the origin of the parameters,
  * - its implicit orientation (right-handed or left-handed) gives an orientation (direct or indirect) to the {@link Geom_CylindricalSurface | `Geom_CylindricalSurface`} cylinder. See Also {@link gce_MakeCylinder | `gce_MakeCylinder`} which provides functions for more complex cylinder constructions {@link Geom_CylindricalSurface | `Geom_CylindricalSurface`} which provides additional functions for constructing cylinders and works, in particular, with the parametric equations of cylinders {@link gp_Ax3 | `gp_Ax3`}
  */
-export declare class gp_Cylinder {
+declare class gp_Cylinder {
   /**
    * Creates a indefinite cylinder.
    */
@@ -6139,7 +6142,7 @@ export declare class gp_Cylinder {
 /**
  * Describes a unit vector in 3D space. This unit vector is also called "Direction". See Also {@link gce_MakeDir | `gce_MakeDir`} which provides functions for more complex unit vector constructions {@link Geom_Direction | `Geom_Direction`} which provides additional functions for constructing unit vectors and works, in particular, with the parametric equations of unit vectors.
  */
-export declare class gp_Dir {
+declare class gp_Dir {
   /**
    * Creates a direction corresponding to X axis.
    */
@@ -6318,11 +6321,11 @@ export declare class gp_Dir {
   [Symbol.dispose](): void;
 }
 
-export type gp_Dir_D = typeof gp_Dir_D[keyof typeof gp_Dir_D];
+type gp_Dir_D = typeof gp_Dir_D[keyof typeof gp_Dir_D];
 /**
  * {@link Standard | `Standard`} directions in 3D space for optimized constexpr construction.
  */
-export declare const gp_Dir_D: {
+declare const gp_Dir_D: {
   /**
    * Direction along positive X axis (1, 0, 0)
    */
@@ -6352,7 +6355,7 @@ export declare const gp_Dir_D: {
 /**
  * Describes a unit vector in the plane (2D space). This unit vector is also called "Direction". See Also {@link gce_MakeDir2d | `gce_MakeDir2d`} which provides functions for more complex unit vector constructions {@link Geom2d_Direction | `Geom2d_Direction`} which provides additional functions for constructing unit vectors and works, in particular, with the parametric equations of unit vectors.
  */
-export declare class gp_Dir2d {
+declare class gp_Dir2d {
   /**
    * Creates a direction corresponding to X axis.
    */
@@ -6501,11 +6504,11 @@ export declare class gp_Dir2d {
   [Symbol.dispose](): void;
 }
 
-export type gp_Dir2d_D = typeof gp_Dir2d_D[keyof typeof gp_Dir2d_D];
+type gp_Dir2d_D = typeof gp_Dir2d_D[keyof typeof gp_Dir2d_D];
 /**
  * {@link Standard | `Standard`} directions in 2D space for optimized constexpr construction.
  */
-export declare const gp_Dir2d_D: {
+declare const gp_Dir2d_D: {
   /**
    * Direction along positive X axis (1, 0)
    */
@@ -6530,10 +6533,10 @@ export declare const gp_Dir2d_D: {
  * - the origin of the coordinate system is the center of the ellipse,
  * - its "X Direction" defines the major axis of the ellipse, and
  * - its "Y Direction" defines the minor axis of the ellipse. Together, the origin, "X Direction" and "Y Direction" of this coordinate system define the plane of the ellipse. This coordinate system is the "local coordinate system" of the ellipse.
- * In this coordinate system, the equation of the ellipse is: X*X/(MajorRadius**2)+Y*Y/(MinorRadius**2)=1.0 The "main Direction" of the local coordinate system gives the normal vector to the plane of the ellipse. This vector gives an implicit orientation to the ellipse (definition of the trigonometric sense). We refer to the "main Axis" of the local coordinate system as the "Axis" of the ellipse.
+ * In this coordinate system, the equation of the ellipse is: X*X/(`MajorRadius`**2)+Y*Y/(`MinorRadius`**2)=1.0 The "main Direction" of the local coordinate system gives the normal vector to the plane of the ellipse. This vector gives an implicit orientation to the ellipse (definition of the trigonometric sense). We refer to the "main Axis" of the local coordinate system as the "Axis" of the ellipse.
  * See Also {@link gce_MakeElips | `gce_MakeElips`} which provides functions for more complex ellipse constructions {@link Geom_Ellipse | `Geom_Ellipse`} which provides additional functions for constructing ellipses and works, in particular, with the parametric equations of ellipses
  */
-export declare class gp_Elips {
+declare class gp_Elips {
   /**
    * Creates an indefinite ellipse.
    */
@@ -6677,9 +6680,9 @@ export declare class gp_Elips {
  * - the origin of the coordinate system is the center of the ellipse,
  * - its "X Direction" defines the major axis of the ellipse, and
  * - its "Y Direction" defines the minor axis of the ellipse. This coordinate system is the "local coordinate system" of the ellipse. Its orientation (direct or indirect) gives an implicit orientation to the ellipse.
- * In this coordinate system, the equation of the ellipse is: X*X/(MajorRadius**2)+Y*Y/(MinorRadius**2)=1.0 See Also {@link gce_MakeElips2d | `gce_MakeElips2d`} which provides functions for more complex ellipse constructions {@link Geom2d_Ellipse | `Geom2d_Ellipse`} which provides additional functions for constructing ellipses and works, in particular, with the parametric equations of ellipses
+ * In this coordinate system, the equation of the ellipse is: X*X/(`MajorRadius`**2)+Y*Y/(`MinorRadius`**2)=1.0 See Also {@link gce_MakeElips2d | `gce_MakeElips2d`} which provides functions for more complex ellipse constructions {@link Geom2d_Ellipse | `Geom2d_Ellipse`} which provides additional functions for constructing ellipses and works, in particular, with the parametric equations of ellipses
  */
-export declare class gp_Elips2d {
+declare class gp_Elips2d {
   /**
    * Creates an indefinite ellipse.
    */
@@ -6850,7 +6853,7 @@ export declare class gp_Elips2d {
  * Be careful if you apply such a transformation to all points of a geometric object, as this can change the nature of the object and thus render it incoherent! Typically, a circle is transformed into an ellipse by an affinity transformation.
  * To avoid modifying the nature of an object, use a {@link gp_Trsf | `gp_Trsf`} transformation instead, as objects of this class respect the nature of geometric objects.
  */
-export declare class gp_GTrsf {
+declare class gp_GTrsf {
   /**
    * Returns the Identity transformation.
    */
@@ -6977,7 +6980,7 @@ export declare class gp_GTrsf {
  * where {V1, V2} defines the vectorial part of the transformation and T defines the translation part of the transformation. Warning A {@link gp_GTrsf2d | `gp_GTrsf2d`} transformation is only applicable on coordinates.
  * Be careful if you apply such a transformation to all the points of a geometric object, as this can change the nature of the object and thus render it incoherent! Typically, a circle is transformed into an ellipse by an affinity transformation. To avoid modifying the nature of an object, use a {@link gp_Trsf2d | `gp_Trsf2d`} transformation instead, as objects of this class respect the nature of geometric objects.
  */
-export declare class gp_GTrsf2d {
+declare class gp_GTrsf2d {
   /**
    * returns identity transformation.
    */
@@ -7094,7 +7097,7 @@ export declare class gp_GTrsf2d {
  * - its origin defines the origin of the two parameters of the planar surface,
  * - its implicit orientation is also that of the {@link Geom_Plane | `Geom_Plane`}. See Also {@link gce_MakePln | `gce_MakePln`} which provides functions for more complex plane constructions {@link Geom_Plane | `Geom_Plane`} which provides additional functions for constructing planes and works, in particular, with the parametric equations of planes
  */
-export declare class gp_Pln {
+declare class gp_Pln {
   /**
    * Creates a plane coincident with OXY plane of the reference coordinate system.
    */
@@ -7286,7 +7289,7 @@ export declare class gp_Pln {
 /**
  * Defines a 3D cartesian point.
  */
-export declare class gp_Pnt {
+declare class gp_Pnt {
   /**
    * Creates a point with zero coordinates.
    */
@@ -7423,7 +7426,7 @@ export declare class gp_Pnt {
 /**
  * Defines a non-persistent 2D cartesian point.
  */
-export declare class gp_Pnt2d {
+declare class gp_Pnt2d {
   /**
    * Creates a point with zero coordinates.
    */
@@ -7545,7 +7548,7 @@ export declare class gp_Pnt2d {
  * - its origin, "X Direction", "Y Direction" and "main Direction" are used directly to define the parametric directions on the sphere and the origin of the parameters,
  * - its implicit orientation (right-handed or left-handed) gives the orientation (direct, indirect) to the {@link Geom_SphericalSurface | `Geom_SphericalSurface`} sphere. See Also gce_MakeSphere which provides functions for more complex sphere constructions {@link Geom_SphericalSurface | `Geom_SphericalSurface`} which provides additional functions for constructing spheres and works, in particular, with the parametric equations of spheres.
  */
-export declare class gp_Sphere {
+declare class gp_Sphere {
   /**
    * Creates an indefinite sphere.
    */
@@ -7679,7 +7682,7 @@ export declare class gp_Sphere {
  *
  * where {V1, V2, V3} defines the vectorial part of the transformation and T defines the translation part of the transformation. This transformation never change the nature of the objects.
  */
-export declare class gp_Trsf {
+declare class gp_Trsf {
   /**
    * Returns the identity transformation.
    */
@@ -7855,9 +7858,9 @@ export declare class gp_Trsf {
  * Defines a non-persistent transformation in 2D space. The following transformations are implemented :
  *
  * - Translation, Rotation, Scale
- * - Symmetry with respect to a point and a line. Complex transformations can be obtained by combining the previous elementary transformations using the method Multiply. The transformations can be represented as follow : V1V2TXYXY |a11a12a13||x||x'| |a21a22a23||y||y'| |001||1||1| where {V1, V2} defines the vectorial part of the transformation and T defines the translation part of the transformation. This transformation never change the nature of the objects.
+ * - Symmetry with respect to a point and a line. Complex transformations can be obtained by combining the previous elementary transformations using the method Multiply. The transformations can be represented as follow : V1V2TXYXY |a11a12a13||`x`||`x`'| |a21a22a23||y||y'| |001||1||1| where {V1, V2} defines the vectorial part of the transformation and T defines the translation part of the transformation. This transformation never change the nature of the objects.
  */
-export declare class gp_Trsf2d {
+declare class gp_Trsf2d {
   /**
    * Returns identity transformation.
    */
@@ -7983,7 +7986,7 @@ export declare class gp_Trsf2d {
 /**
  * Defines a non-persistent vector in 3D space.
  */
-export declare class gp_Vec {
+declare class gp_Vec {
   /**
    * Creates a zero vector.
    */
@@ -8240,7 +8243,7 @@ export declare class gp_Vec {
 /**
  * Defines a non-persistent vector in 2D space.
  */
-export declare class gp_Vec2d {
+declare class gp_Vec2d {
   /**
    * Creates a zero vector.
    */
@@ -8437,7 +8440,7 @@ export declare class gp_Vec2d {
 /**
  * This class describes a cartesian coordinate entity in 2D space {X,Y}. This class is non persistent. This entity used for algebraic calculation. An XY can be transformed with a Trsf2d or a GTrsf2d from package gp. It is used in vectorial computations or for holding this type of information in data structures.
  */
-export declare class gp_XY {
+declare class gp_XY {
   /**
    * Creates XY object with zero coordinates (0,0).
    */
@@ -8648,7 +8651,7 @@ export declare class gp_XY {
 /**
  * This class describes a cartesian coordinate entity in 3D space {X,Y,Z}. This entity is used for algebraic calculation. This entity can be transformed with a "Trsf" or a "GTrsf" from package "gp". It is used in vectorial computations or for holding this type of information in data structures.
  */
-export declare class gp_XYZ {
+declare class gp_XYZ {
   /**
    * Creates an XYZ object with zero coordinates (0,0,0)
    */
@@ -8909,7 +8912,7 @@ export declare class gp_XYZ {
  * A range object can be copied, the responsibility for progress advancement is then taken by the copy. The same range object may be used (either copied or used to create scope) only once. Any consequent attempts to use range will give no result on the progress; in debug mode, an assert message will be generated.
  * @see {@link Message_ProgressScope | `Message_ProgressScope`}
  */
-export declare class Message_ProgressRange {
+declare class Message_ProgressRange {
   /**
    * Constructor of the empty range.
    */
@@ -8939,7 +8942,7 @@ export declare class Message_ProgressRange {
   [Symbol.dispose](): void;
 }
 
-export declare class NCollection_BaseList {
+declare class NCollection_BaseList {
   // dropped: PFirst return resolves to excluded type NCollection_ListNode
   // dropped: PLast return resolves to excluded type NCollection_ListNode
   // dropped: PAppend param 0 resolves to excluded type NCollection_ListNode
@@ -8974,7 +8977,7 @@ export declare class NCollection_BaseList {
  * - {@link Launcher | `OSD_ThreadPool::Launcher`} locks thread one-by-one from thread pool in a thread-safe way.
  * - Each working thread catches exceptions occurred during job execution, and {@link Launcher | `Launcher`} will throw {@link Standard_Failure | `Standard_Failure`} in a caller thread on completed execution.
  */
-export declare class OSD_ThreadPool extends Standard_Transient {
+declare class OSD_ThreadPool extends Standard_Transient {
   /**
    * Main constructor. Application may consider specifying more threads than actually available (`OSD_Parallel::NbLogicalProcessors()`) and set up `NbDefaultThreadsToLaunch()` to a smaller value so that concurrent threads will be able using single Thread Pool instance more efficiently.
    * @param theNbThreads threads number to be created by pool (if -1 is specified then `OSD_Parallel::NbLogicalProcessors()` will be used)
@@ -9046,7 +9049,7 @@ export declare class OSD_ThreadPool extends Standard_Transient {
  * - or to work in parametric space,
  * - or to work in a combined real and parametric space. They must next decide which precision factor will give the best answer to the current problem. Within an application environment, it is crucial to master precision even though this process may take a great deal of time.
  */
-export declare class Precision {
+declare class Precision {
   constructor();
   /**
    * Returns the recommended precision value when checking the equality of two angles (given in radians). double Angle1 = ... , Angle2 = ... ; If ( std::abs( Angle2 - Angle1 ) < `Precision::Angular()` ) ...
@@ -9201,7 +9204,7 @@ export declare class Precision {
  *
  * Although {@link Quantity_Color | `Quantity_Color`} can be technically used for pass-through storage of RGB triplet in any color space, other OCCT interfaces taking/returning {@link Quantity_Color | `Quantity_Color`} would expect them in linear space. Therefore, take a look into methods converting to and from non-linear sRGB color space, if needed; for instance, application usually providing color picking within 0..255 range in sRGB color space.
  */
-export declare class Quantity_Color {
+declare class Quantity_Color {
   /**
    * Creates Quantity_NOC_YELLOW color (for historical reasons).
    */
@@ -9317,7 +9320,7 @@ export declare class Quantity_Color {
 /**
  * The pair of {@link Quantity_Color | `Quantity_Color`} and Alpha component (1.0 opaque, 0.0 transparent).
  */
-export declare class Quantity_ColorRGBA {
+declare class Quantity_ColorRGBA {
   /**
    * Creates a color with the default value.
    */
@@ -9393,7 +9396,7 @@ export declare class Quantity_ColorRGBA {
 /**
  * Forms the root of the entire exception hierarchy. Inherits from std::exception and implements `what()` interface.
  */
-export declare class Standard_Failure {
+declare class Standard_Failure {
   /**
    * Creates a status object of type "Failure".
    */
@@ -9446,7 +9449,7 @@ export declare class Standard_Failure {
 /**
  * Abstract class which forms the root of the entire Transient class hierarchy.
  */
-export declare class Standard_Transient {
+declare class Standard_Transient {
   /** Returns true if the underlying handle is null. */
   isNull(): boolean;
   /** Releases the handle, setting it to null. */
@@ -9481,10 +9484,10 @@ export declare class Standard_Transient {
  *
  * Beware that class can transparently store UTF-16 string with surrogate pairs (Unicode symbol represented by two 16-bit code units). However, surrogate pairs are not considered by the following methods:
  *
- * - Method ::Length() return the number of 16-bit code units, not the number of Unicode symbols.
- * - Methods taking/returning symbol index work with 16-bit code units, not true Unicode symbols, including ::Remove(), ::SetValue(), ::Value(), ::Search(), ::Trunc() and others. If application needs to process surrogate pairs, NCollection_UtfIterator<char16_t> class can be used for iterating through Unicode string (UTF-32 code unit will be returned for each position).
+ * - Method `Length()` return the number of 16-bit code units, not the number of Unicode symbols.
+ * - Methods taking/returning symbol index work with 16-bit code units, not true Unicode symbols, including `Remove()`, `SetValue()`, `Value()`, `Search()`, `Trunc()` and others. If application needs to process surrogate pairs, NCollection_UtfIterator<char16_t> class can be used for iterating through Unicode string (UTF-32 code unit will be returned for each position).
  */
-export declare class TCollection_ExtendedString {
+declare class TCollection_ExtendedString {
   /**
    * Initializes an ExtendedString to an empty ExtendedString.
    */
@@ -10063,7 +10066,7 @@ export declare class TCollection_ExtendedString {
   [Symbol.dispose](): void;
 }
 
-export type BOPAlgo_GlueEnum = typeof BOPAlgo_GlueEnum[keyof typeof BOPAlgo_GlueEnum];
+type BOPAlgo_GlueEnum = typeof BOPAlgo_GlueEnum[keyof typeof BOPAlgo_GlueEnum];
 /**
  * The Enumeration describes an additional option for the algorithms in the Boolean Component such as General Fuse, Boolean operations, Section, Maker Volume, Splitter and Cells Builder algorithms.
  *
@@ -10087,7 +10090,7 @@ export type BOPAlgo_GlueEnum = typeof BOPAlgo_GlueEnum[keyof typeof BOPAlgo_Glue
  *
  * There are following items in the enumeration: **BOPAlgo_GlueOff** - default value for the algorithms, Gluing is switched off; **BOPAlgo_GlueShift** - Glue option for shapes with partial coincidence; **BOPAlgo_GlueFull** - Glue option for shapes with full coincidence.
  */
-export declare const BOPAlgo_GlueEnum: {
+declare const BOPAlgo_GlueEnum: {
   readonly BOPAlgo_GlueOff: 'BOPAlgo_GlueOff';
   readonly BOPAlgo_GlueShift: 'BOPAlgo_GlueShift';
   readonly BOPAlgo_GlueFull: 'BOPAlgo_GlueFull';
@@ -10102,7 +10105,7 @@ export declare const BOPAlgo_GlueEnum: {
  * - *Fuzzy tolerance* - additional tolerance for the operation to detect touching or coinciding cases;
  * - *Using the Oriented Bounding Boxes* - Allows using the Oriented Bounding Boxes of the shapes for filtering the intersections.
  */
-export declare class BOPAlgo_Options {
+declare class BOPAlgo_Options {
   /**
    * Empty constructor.
    */
@@ -10143,7 +10146,7 @@ export declare class BOPAlgo_Options {
 /**
  * Provides the root interface for the API algorithms.
  */
-export declare class BRepAlgoAPI_Algo extends BRepBuilderAPI_MakeShape {
+declare class BRepAlgoAPI_Algo extends BRepBuilderAPI_MakeShape {
   /**
    * Returns a shape built by the shape construction algorithm. Does not check if the shape is built.
    */
@@ -10189,7 +10192,7 @@ export declare class BRepAlgoAPI_Algo extends BRepBuilderAPI_MakeShape {
  *
  * - *BOPAlgo_AlertBOPNotSet* - in case the type of Boolean Operation is not set.
  */
-export declare class BRepAlgoAPI_BooleanOperation extends BRepAlgoAPI_BuilderAlgo {
+declare class BRepAlgoAPI_BooleanOperation extends BRepAlgoAPI_BuilderAlgo {
   constructor();
   // dropped: BRepAlgoAPI_BooleanOperation param 0 resolves to excluded type BOPAlgo_PaveFiller
   // dropped: BRepAlgoAPI_BooleanOperation param 2 resolves to excluded type BOPAlgo_PaveFiller
@@ -10226,7 +10229,7 @@ export declare class BRepAlgoAPI_BooleanOperation extends BRepAlgoAPI_BuilderAlg
  *
  * The class provides possibility to simplify the resulting shape by unification of the tangential edges and faces. It is performed by the method *SimplifyResult*. See description of this method for more details.
  */
-export declare class BRepAlgoAPI_BuilderAlgo extends BRepAlgoAPI_Algo {
+declare class BRepAlgoAPI_BuilderAlgo extends BRepAlgoAPI_Algo {
   constructor();
   // dropped: BRepAlgoAPI_BuilderAlgo param 0 resolves to excluded type BOPAlgo_PaveFiller
   // dropped: DSFiller return resolves to excluded type BOPAlgo_PaveFiller
@@ -10259,7 +10262,7 @@ export declare class BRepAlgoAPI_BuilderAlgo extends BRepAlgoAPI_Algo {
 /**
  * The class provides Boolean common operation between arguments and tools (Boolean Intersection).
  */
-export declare class BRepAlgoAPI_Common extends BRepAlgoAPI_BooleanOperation {
+declare class BRepAlgoAPI_Common extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor.
    */
@@ -10278,7 +10281,7 @@ export declare class BRepAlgoAPI_Common extends BRepAlgoAPI_BooleanOperation {
 /**
  * The class Cut provides Boolean cut operation between arguments and tools (Boolean Subtraction).
  */
-export declare class BRepAlgoAPI_Cut extends BRepAlgoAPI_BooleanOperation {
+declare class BRepAlgoAPI_Cut extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor.
    */
@@ -10297,7 +10300,7 @@ export declare class BRepAlgoAPI_Cut extends BRepAlgoAPI_BooleanOperation {
 /**
  * The class provides Boolean fusion operation between arguments and tools (Boolean Union).
  */
-export declare class BRepAlgoAPI_Fuse extends BRepAlgoAPI_BooleanOperation {
+declare class BRepAlgoAPI_Fuse extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor.
    */
@@ -10321,7 +10324,7 @@ export declare class BRepAlgoAPI_Fuse extends BRepAlgoAPI_BooleanOperation {
  * 3. new edges that are subjects of F/F interferences
  * 4. edges that are Common Blocks
  */
-export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
+declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
   /**
    * Empty constructor.
    */
@@ -10417,7 +10420,7 @@ export declare class BRepAlgoAPI_Section extends BRepAlgoAPI_BooleanOperation {
  * - *BOPAlgo_AlertIntersectionFailed* - in case the Intersection of the arguments has failed;
  * - *BOPAlgo_AlertBuilderFailed* - in case the Building of the result has failed.
  */
-export declare class BRepAlgoAPI_Splitter extends BRepAlgoAPI_BuilderAlgo {
+declare class BRepAlgoAPI_Splitter extends BRepAlgoAPI_BuilderAlgo {
   constructor();
   // dropped: BRepAlgoAPI_Splitter param 0 resolves to excluded type BOPAlgo_PaveFiller
   SetTools(theLS: NCollection_List_TopoDS_Shape): void;
@@ -10428,11 +10431,11 @@ export declare class BRepAlgoAPI_Splitter extends BRepAlgoAPI_BuilderAlgo {
   [Symbol.dispose](): void;
 }
 
-export type BRepFill_TypeOfContact = typeof BRepFill_TypeOfContact[keyof typeof BRepFill_TypeOfContact];
+type BRepFill_TypeOfContact = typeof BRepFill_TypeOfContact[keyof typeof BRepFill_TypeOfContact];
 /**
  * A pair of bound shapes with the result.
  */
-export declare const BRepFill_TypeOfContact: {
+declare const BRepFill_TypeOfContact: {
   readonly BRepFill_NoContact: 'BRepFill_NoContact';
   readonly BRepFill_Contact: 'BRepFill_Contact';
   readonly BRepFill_ContactOnBorder: 'BRepFill_ContactOnBorder';
@@ -10456,7 +10459,7 @@ export declare const BRepFill_TypeOfContact: {
  * In case of the concerned area of a face, you could, for example, cut it out and move it to a different height which will define the limiting face of a protrusion or depression.
  * Topological definition with local operations of this sort makes calculations simpler and faster than a global operation. The latter would entail a second phase of removing unwanted matter to get the same result.
  */
-export declare class BRepFeat_Form extends BRepBuilderAPI_MakeShape {
+declare class BRepFeat_Form extends BRepBuilderAPI_MakeShape {
   /**
    * returns the list of generated Faces.
    */
@@ -10528,7 +10531,7 @@ export declare class BRepFeat_Form extends BRepBuilderAPI_MakeShape {
  * - up to a limiting face
  * - from a limiting face to a height. The shape defining construction of the draft prism feature can be either the supporting edge or the concerned area of a face. In case of the supporting edge, this contour can be attached to a face of the basis shape by binding. When the contour is bound to this face, the information that the contour will slide on the face becomes available to the relevant class methods. In case of the concerned area of a face, you could, for example, cut it out and move it to a different height which will define the limiting face of a protrusion or depression.
  */
-export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
+declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
   constructor();
   /**
    * A face Pbase is selected in the shape Sbase to serve as the basis for the draft prism. The draft will be defined by the angle Angle and Fuse offers a choice between:
@@ -10596,7 +10599,7 @@ export declare class BRepFeat_MakeDPrism extends BRepFeat_Form {
 /**
  * Construction of fillets on the edges of a Shell.
  */
-export declare class BRepFilletAPI_LocalOperation extends BRepBuilderAPI_MakeShape {
+declare class BRepFilletAPI_LocalOperation extends BRepBuilderAPI_MakeShape {
   /**
    * Adds a contour in the builder (builds a contour of tangent edges).
    */
@@ -10673,7 +10676,7 @@ export declare class BRepFilletAPI_LocalOperation extends BRepBuilderAPI_MakeSha
  * - building the chamfers and constructing the resulting shape, and
  * - consulting the result.
  */
-export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperation {
+declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperation {
   /**
    * Initializes an algorithm for computing chamfers on the shape S. The edges on which chamfers are built are defined using the Add function.
    */
@@ -10843,7 +10846,7 @@ export declare class BRepFilletAPI_MakeChamfer extends BRepFilletAPI_LocalOperat
  * - building the fillets and constructing the resulting shape, and
  * - consulting the result.
  */
-export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperation {
+declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperation {
   /**
    * Initializes the computation of the fillets. <FShape> sets the type of fillet surface. The default value is ChFi3d_Rational (classical nurbs representation of circles). ChFi3d_QuasiAngular corresponds to a nurbs representation of circles which parameterisation matches the circle one. ChFi3d_Polynomial corresponds to a polynomial representation of circles.
    */
@@ -11085,7 +11088,7 @@ export declare class BRepFilletAPI_MakeFillet extends BRepFilletAPI_LocalOperati
   [Symbol.dispose](): void;
 }
 
-export type ChFi3d_FilletShape = typeof ChFi3d_FilletShape[keyof typeof ChFi3d_FilletShape];
+type ChFi3d_FilletShape = typeof ChFi3d_FilletShape[keyof typeof ChFi3d_FilletShape];
 /**
  * Lists the types of fillet shapes. These include the following:
  *
@@ -11093,17 +11096,17 @@ export type ChFi3d_FilletShape = typeof ChFi3d_FilletShape[keyof typeof ChFi3d_F
  * - ChFi3d_QuasiAngular, which is a NURBS representation of circles where the parameters match those of the circle,
  * - ChFi3d_Polynomial, which corresponds to a polynomial approximation of circles. This type facilitates the implementation of the construction algorithm.
  */
-export declare const ChFi3d_FilletShape: {
+declare const ChFi3d_FilletShape: {
   readonly ChFi3d_Rational: 'ChFi3d_Rational';
   readonly ChFi3d_QuasiAngular: 'ChFi3d_QuasiAngular';
   readonly ChFi3d_Polynomial: 'ChFi3d_Polynomial';
 };
 
-export type ChFiDS_ChamfMode = typeof ChFiDS_ChamfMode[keyof typeof ChFiDS_ChamfMode];
+type ChFiDS_ChamfMode = typeof ChFiDS_ChamfMode[keyof typeof ChFiDS_ChamfMode];
 /**
  * this enumeration defines several modes of chamfer
  */
-export declare const ChFiDS_ChamfMode: {
+declare const ChFiDS_ChamfMode: {
   /**
    * chamfer with constant distance from spine to one of the two surfaces
    */
@@ -11129,7 +11132,7 @@ export declare const ChFiDS_ChamfMode: {
  * - a limit point of the other curve; or
  * - an intersection point between the two curves.
  */
-export declare class Geom2dAPI_ExtremaCurveCurve {
+declare class Geom2dAPI_ExtremaCurveCurve {
   /**
    * Computes the extrema between.
    *
@@ -11190,7 +11193,7 @@ export declare class Geom2dAPI_ExtremaCurveCurve {
  * - intersection segments in the case of tangential intersections,
  * - nothing in the case of no intersections.
  */
-export declare class Geom2dAPI_InterCurveCurve {
+declare class Geom2dAPI_InterCurveCurve {
   /**
    * Create an empty intersector. Use the function Init for further initialization of the intersection algorithm by curves or curve.
    */
@@ -11249,7 +11252,7 @@ export declare class Geom2dAPI_InterCurveCurve {
  * - implementing the approximation algorithm, and
  * - consulting the results
  */
-export declare class Geom2dAPI_PointsToBSpline {
+declare class Geom2dAPI_PointsToBSpline {
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
@@ -11327,7 +11330,7 @@ export declare class Geom2dAPI_PointsToBSpline {
 /**
  * This class implements methods for computing all the orthogonal projections of a 2D point onto a 2D curve.
  */
-export declare class Geom2dAPI_ProjectPointOnCurve {
+declare class Geom2dAPI_ProjectPointOnCurve {
   /**
    * Constructs an empty projector algorithm. Use an Init function to define the point and the curve on which it is going to work.
    */
@@ -11406,7 +11409,7 @@ export declare class Geom2dAPI_ProjectPointOnCurve {
  * - implementing the interpolation algorithm, and
  * - consulting the results.
  */
-export declare class GeomAPI_Interpolate {
+declare class GeomAPI_Interpolate {
   /**
    * Initializes an algorithm for constructing a constrained BSpline curve passing through the points of the table Points. Tangential vectors can then be assigned, using the function Load. If PeriodicFlag is true, the constrained BSpline curve will be periodic and closed. In this case, the junction point is the first point of the table Points. The tolerance value Tolerance is used to check that:
    *
@@ -11466,7 +11469,7 @@ export declare class GeomAPI_Interpolate {
  * - defining the data of the BSpline curve to be built,
  * - implementing the approximation algorithm, and consulting the results.
  */
-export declare class GeomAPI_PointsToBSpline {
+declare class GeomAPI_PointsToBSpline {
   /**
    * Constructs an empty approximation algorithm. Use an Init function to define and build the BSpline curve.
    */
@@ -11526,7 +11529,7 @@ export declare class GeomAPI_PointsToBSpline {
  *
  * Approximation and interpolation algorithms can build periodical surface along U direction, which corresponds columns of array Points(i, j), if corresponding parameter (thePeriodic, see comments below) of called methods is set to True. Algorithm uses first row Points(1, *) as periodic boundary, so to avoid getting wrong surface it is necessary to keep distance between corresponding points of first and last rows of Points: Points(1, *) != Points(Upper, *).
  */
-export declare class GeomAPI_PointsToBSplineSurface {
+declare class GeomAPI_PointsToBSplineSurface {
   /**
    * Constructs an empty algorithm for approximation or interpolation of a surface. Use:
    *
@@ -11603,7 +11606,7 @@ export declare class GeomAPI_PointsToBSplineSurface {
 /**
  * This class implements methods for computing all the orthogonal projections of a point onto a surface.
  */
-export declare class GeomAPI_ProjectPointOnSurf {
+declare class GeomAPI_ProjectPointOnSurf {
   /**
    * Creates an empty object. Use the Init function for further initialization.
    */
@@ -11698,7 +11701,7 @@ export declare class GeomAPI_ProjectPointOnSurf {
 /**
  * {@link Law | `Law`} Function based on a BSpline curve 1d. Package methods and classes are implemented in package {@link Law | `Law`} to construct the basis curve with several constraints.
  */
-export declare class Law_BSpFunc extends Law_Function {
+declare class Law_BSpFunc extends Law_Function {
   constructor();
   constructor(C: unknown, First: number, Last: number);
   Continuity(): GeomAbs_Shape;
@@ -11754,7 +11757,7 @@ export declare class Law_BSpFunc extends Law_Function {
 /**
  * Loi composite constituee d une liste de lois de ranges consecutifs. Cette implementation un peu lourde permet de reunir en une seule loi des portions de loi construites de facon independantes (par exemple en interactif) et de lancer le walking d un coup a l echelle d une ElSpine. CET OBJET REPOND DONC A UN PROBLEME D IMPLEMENTATION SPECIFIQUE AUX CONGES!!!
  */
-export declare class Law_Composite extends Law_Function {
+declare class Law_Composite extends Law_Function {
   /**
    * Construct an empty {@link Law | `Law`}.
    */
@@ -11821,7 +11824,7 @@ export declare class Law_Composite extends Law_Function {
 /**
  * Root class for evolution laws.
  */
-export declare class Law_Function extends Standard_Transient {
+declare class Law_Function extends Standard_Transient {
   Continuity(): GeomAbs_Shape;
   /**
    * Returns the number of intervals for continuity . May be one if Continuity(me) >=
@@ -11873,7 +11876,7 @@ export declare class Law_Function extends Standard_Transient {
 /**
  * Provides an evolution law that interpolates a set of parameter and value pairs (wi, radi)
  */
-export declare class Law_Interpol extends Law_BSpFunc {
+declare class Law_Interpol extends Law_BSpFunc {
   /**
    * Constructs an empty interpolative evolution law. The function Set is used to define the law.
    */
@@ -11905,7 +11908,7 @@ export declare class Law_Interpol extends Law_BSpFunc {
 /**
  * Describes an linear evolution law.
  */
-export declare class Law_Linear extends Law_Function {
+declare class Law_Linear extends Law_Function {
   /**
    * Constructs an empty linear evolution law.
    */
@@ -11971,7 +11974,7 @@ export declare class Law_Linear extends Law_Function {
 /**
  * Describes an "S" evolution law.
  */
-export declare class Law_S extends Law_BSpFunc {
+declare class Law_S extends Law_BSpFunc {
   /**
    * Constructs an empty "S" evolution law.
    */
@@ -12005,7 +12008,7 @@ export declare class Law_S extends Law_BSpFunc {
  * - `HLRBRep_Algo::Projector`, or
  * - `HLRBRep_PolyAlgo::Projector` The choice depends on the algorithm, which you are using. The parameters of the view are defined at the time of construction of a Prs3d_Projector object.
  */
-export declare class HLRAlgo_Projector {
+declare class HLRAlgo_Projector {
   constructor();
   /**
    * Creates an axonometric projector. <CS> is the viewing coordinate system.
@@ -12096,7 +12099,7 @@ export declare class HLRAlgo_Projector {
  * - Points are not treated.
  * - Note that this is not the sort of algorithm used in generating shading, which calculates the visible and hidden parts of each face in a shape to be visualized by comparing each face in the shape with every other face in the same shape.
  */
-export declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
+declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
   /**
    * Constructs an empty framework for the calculation of visible and hidden lines of a shape in a projection. Use the function:
    *
@@ -12149,7 +12152,7 @@ export declare class HLRBRep_Algo extends HLRBRep_InternalAlgo {
  * - visible isoparameters and
  * - hidden isoparameters. Sharp edges present a C0 continuity (non G1). Smooth edges present a G1 continuity (non G2). Sewn edges present a C2 continuity. The result is composed of 2D edges in the projection plane of the view which the algorithm has worked with. These 2D edges are not included in the data structure of the visualized shape. In order to obtain a complete image, you must combine the shapes given by each of the chosen filters. The construction of the shape does not call a new computation of the algorithm, but only reads its internal results. The methods of this shape are almost identic to those of the HLRBrep_PolyHLRToShape class.
  */
-export declare class HLRBRep_HLRToShape {
+declare class HLRBRep_HLRToShape {
   /**
    * Constructs a framework for filtering the results of the {@link HLRBRep_Algo | `HLRBRep_Algo`} algorithm, A. Use the extraction filters to obtain the results you want for A.
    */
@@ -12252,7 +12255,7 @@ export declare class HLRBRep_HLRToShape {
   [Symbol.dispose](): void;
 }
 
-export declare class HLRBRep_InternalAlgo extends Standard_Transient {
+declare class HLRBRep_InternalAlgo extends Standard_Transient {
   constructor();
   constructor(A: HLRBRep_InternalAlgo);
   // dropped: DataStructure return resolves to excluded type HLRBRep_Data
@@ -12356,7 +12359,7 @@ export declare class HLRBRep_InternalAlgo extends Standard_Transient {
 /**
  * This is a common interface for meshing algorithms instantiated by Mesh Factory and implemented by plugins.
  */
-export declare class BRepMesh_DiscretRoot extends Standard_Transient {
+declare class BRepMesh_DiscretRoot extends Standard_Transient {
   /**
    * Set the shape to triangulate.
    */
@@ -12381,7 +12384,7 @@ export declare class BRepMesh_DiscretRoot extends Standard_Transient {
 /**
  * Builds the mesh of a shape with respect of their correctly triangulated parts.
  */
-export declare class BRepMesh_IncrementalMesh extends BRepMesh_DiscretRoot {
+declare class BRepMesh_IncrementalMesh extends BRepMesh_DiscretRoot {
   constructor();
   constructor(theShape: TopoDS_Shape, theParameters: unknown, theRange?: Message_ProgressRange);
   constructor(theShape: TopoDS_Shape, theLinDeflection: number, isRelative?: boolean, theAngDeflection?: number, isInParallel?: boolean);
@@ -12401,7 +12404,7 @@ export declare class BRepMesh_IncrementalMesh extends BRepMesh_DiscretRoot {
   [Symbol.dispose](): void;
 }
 
-export type BRepOffset_Mode = typeof BRepOffset_Mode[keyof typeof BRepOffset_Mode];
+type BRepOffset_Mode = typeof BRepOffset_Mode[keyof typeof BRepOffset_Mode];
 /**
  * Lists the offset modes. These are the following:
  *
@@ -12409,7 +12412,7 @@ export type BRepOffset_Mode = typeof BRepOffset_Mode[keyof typeof BRepOffset_Mod
  * - BRepOffset_Pipe which describes the offset of a curve, used to obtain a pre-surface,
  * - BRepOffset_RectoVerso which describes the offset of a given surface shell along both sides of the surface.
  */
-export declare const BRepOffset_Mode: {
+declare const BRepOffset_Mode: {
   readonly BRepOffset_Skin: 'BRepOffset_Skin';
   readonly BRepOffset_Pipe: 'BRepOffset_Pipe';
   readonly BRepOffset_RectoVerso: 'BRepOffset_RectoVerso';
@@ -12426,7 +12429,7 @@ export declare const BRepOffset_Mode: {
  * - Do not use shapes, which with a draft angle added to a face would modify the topology. This would, for example, involve creation of new vertices, edges or faces, or suppression of existing vertices, edges or faces.
  * - Any face, which is continuous in tangency with the face to be tapered, will also be tapered. These connected faces must also respect the above criteria.
  */
-export declare class BRepOffsetAPI_DraftAngle extends BRepBuilderAPI_ModifyShape {
+declare class BRepOffsetAPI_DraftAngle extends BRepBuilderAPI_ModifyShape {
   /**
    * Constructs an empty algorithm to perform taper-adding transformations on faces of a shape. Use the Init function to define the shape to be tapered.
    */
@@ -12528,7 +12531,7 @@ export declare class BRepOffsetAPI_DraftAngle extends BRepBuilderAPI_ModifyShape
  * - Deformation of a face to satisfy internal constraints
  * - Deformation of a face to improve Gi continuity with connected faces
  */
-export declare class BRepOffsetAPI_MakeFilling extends BRepBuilderAPI_MakeShape {
+declare class BRepOffsetAPI_MakeFilling extends BRepBuilderAPI_MakeShape {
   /**
    * Constructs a wire filling object defined by.
    *
@@ -12633,7 +12636,7 @@ export declare class BRepOffsetAPI_MakeFilling extends BRepBuilderAPI_MakeShape 
  * - implementing the construction algorithm, and
  * - consulting the result.
  */
-export declare class BRepOffsetAPI_MakeOffset extends BRepBuilderAPI_MakeShape {
+declare class BRepOffsetAPI_MakeOffset extends BRepBuilderAPI_MakeShape {
   /**
    * Constructs an algorithm for creating an empty offset.
    */
@@ -12687,7 +12690,7 @@ export declare class BRepOffsetAPI_MakeOffset extends BRepBuilderAPI_MakeShape {
  * - implementing the construction algorithm
  * - consulting the result.
  */
-export declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeShape {
+declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeShape {
   /**
    * Constructor does nothing.
    */
@@ -12753,7 +12756,7 @@ export declare class BRepOffsetAPI_MakeOffsetShape extends BRepBuilderAPI_MakeSh
  * - implementing the construction algorithm, and
  * - consulting the result. Warning The MakePipe class implements pipe constructions with G1 continuous spines only.
  */
-export declare class BRepOffsetAPI_MakePipe extends BRepPrimAPI_MakeSweep {
+declare class BRepOffsetAPI_MakePipe extends BRepPrimAPI_MakeSweep {
   /**
    * Constructs a pipe by sweeping the shape Profile along the wire Spine.The angle made by the spine with the profile is maintained along the length of the pipe. Warning Spine must be G1 continuous; that is, on the connection vertex of two edges of the wire, the tangent vectors on the left and on the right must have the same direction, though not necessarily the same magnitude. Exceptions Standard_DomainError if the profile is a solid or a composite solid.
    */
@@ -12799,7 +12802,7 @@ export declare class BRepOffsetAPI_MakePipe extends BRepPrimAPI_MakeSweep {
  * - normal defined by a surface support
  * - normal defined by a guiding contour. The two global approaches can also be combined. You can also close the surface later in order to form a solid. Warning: some limitations exist - Mode with auxiliary spine is incompatible with hometetic laws - Mode with auxiliary spine and keep contact produce only CO surface.
  */
-export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
+declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
   /**
    * Constructs the shell-generating framework defined by the wire Spine. Sets an sweep's mode If no mode are set, the mode use in MakePipe is used.
    */
@@ -12948,7 +12951,7 @@ export declare class BRepOffsetAPI_MakePipeShell extends BRepPrimAPI_MakeSweep {
  * - implementing the construction algorithm, and
  * - consulting the result.
  */
-export declare class BRepOffsetAPI_MakeThickSolid extends BRepOffsetAPI_MakeOffsetShape {
+declare class BRepOffsetAPI_MakeThickSolid extends BRepOffsetAPI_MakeOffsetShape {
   /**
    * Constructor does nothing.
    */
@@ -12986,7 +12989,7 @@ export declare class BRepOffsetAPI_MakeThickSolid extends BRepOffsetAPI_MakeOffs
 /**
  * Describes functions to build a loft. This is a shell or a solid passing through a set of sections in a given sequence. Usually sections are wires, but the first and the last sections may be vertices (punctual sections).
  */
-export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape {
+declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape {
   /**
    * Initializes an algorithm for building a shell or a solid passing through a set of sections, where:
    *
@@ -13115,7 +13118,7 @@ export declare class BRepOffsetAPI_ThruSections extends BRepBuilderAPI_MakeShape
  * - with corners at points P1 and P2. Exceptions Standard_DomainError if: dx, dy, dz are less than or equal to `Precision::Confusion()`, or
  * - the vector joining the points P1 and P2 has a component projected onto the global coordinate system less than or equal to `Precision::Confusion()`. In these cases, the box would be flat.
  */
-export declare class BRepPrimAPI_MakeBox extends BRepBuilderAPI_MakeShape {
+declare class BRepPrimAPI_MakeBox extends BRepBuilderAPI_MakeShape {
   /**
    * Default constructor.
    */
@@ -13204,7 +13207,7 @@ export declare class BRepPrimAPI_MakeBox extends BRepBuilderAPI_MakeShape {
  * - implementing the construction algorithm, and
  * - consulting the result.
  */
-export declare class BRepPrimAPI_MakeCylinder extends BRepPrimAPI_MakeOneAxis {
+declare class BRepPrimAPI_MakeCylinder extends BRepPrimAPI_MakeOneAxis {
   /**
    * Make a cylinder.
    * @param R cylinder radius
@@ -13256,7 +13259,7 @@ export declare class BRepPrimAPI_MakeCylinder extends BRepPrimAPI_MakeOneAxis {
  * - defining and implementing the construction of a half-space, and
  * - consulting the result.
  */
-export declare class BRepPrimAPI_MakeHalfSpace extends BRepBuilderAPI_MakeShape {
+declare class BRepPrimAPI_MakeHalfSpace extends BRepBuilderAPI_MakeShape {
   /**
    * Make a HalfSpace defined with a Face and a Point.
    */
@@ -13277,7 +13280,7 @@ export declare class BRepPrimAPI_MakeHalfSpace extends BRepBuilderAPI_MakeShape 
 /**
  * The abstract class MakeOneAxis is the root class of algorithms used to construct rotational primitives.
  */
-export declare class BRepPrimAPI_MakeOneAxis extends BRepBuilderAPI_MakeShape {
+declare class BRepPrimAPI_MakeOneAxis extends BRepBuilderAPI_MakeShape {
   /**
    * Stores the solid in myShape.
    */
@@ -13315,7 +13318,7 @@ export declare class BRepPrimAPI_MakeOneAxis extends BRepBuilderAPI_MakeShape {
  * - implementing the construction algorithm, and
  * - consulting the result.
  */
-export declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
+declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
   /**
    * Builds the prism of base S and vector V. If C is true, S is copied. If Canonize is true then generated surfaces are attempted to be canonized in simple types.
    */
@@ -13387,7 +13390,7 @@ export declare class BRepPrimAPI_MakePrism extends BRepPrimAPI_MakeSweep {
  *
  * Sweeping a Compound sweeps the elements of the compound and creates a compound with the results.
  */
-export declare class BRepPrimAPI_MakeRevol extends BRepPrimAPI_MakeSweep {
+declare class BRepPrimAPI_MakeRevol extends BRepPrimAPI_MakeSweep {
   /**
    * Builds the Revol of base S, axis A and angle 2*Pi. If C is true, S is copied.
    */
@@ -13448,7 +13451,7 @@ export declare class BRepPrimAPI_MakeRevol extends BRepPrimAPI_MakeSweep {
  * - implementing the construction algorithm, and
  * - consulting the result.
  */
-export declare class BRepPrimAPI_MakeRevolution extends BRepPrimAPI_MakeOneAxis {
+declare class BRepPrimAPI_MakeRevolution extends BRepPrimAPI_MakeOneAxis {
   /**
    * Make a revolution body by rotating a curve around Z.
    */
@@ -13501,7 +13504,7 @@ export declare class BRepPrimAPI_MakeRevolution extends BRepPrimAPI_MakeOneAxis 
  * - implementing the construction algorithm, and
  * - consulting the result.
  */
-export declare class BRepPrimAPI_MakeSphere extends BRepPrimAPI_MakeOneAxis {
+declare class BRepPrimAPI_MakeSphere extends BRepPrimAPI_MakeOneAxis {
   /**
    * Make a sphere.
    * @param R sphere radius
@@ -13607,7 +13610,7 @@ export declare class BRepPrimAPI_MakeSphere extends BRepPrimAPI_MakeOneAxis {
  * - The linear sweep called a Prism
  * - The rotational sweep called a Revol Swept constructions along complex profiles such as BSpline curves are also available in the BRepOffsetAPI package..
  */
-export declare class BRepPrimAPI_MakeSweep extends BRepBuilderAPI_MakeShape {
+declare class BRepPrimAPI_MakeSweep extends BRepBuilderAPI_MakeShape {
   /**
    * Returns the `TopoDS` Shape of the bottom of the sweep.
    */
@@ -13628,7 +13631,7 @@ export declare class BRepPrimAPI_MakeSweep extends BRepBuilderAPI_MakeShape {
  * - implementing the construction algorithm, and
  * - consulting the result.
  */
-export declare class BRepPrimAPI_MakeTorus extends BRepPrimAPI_MakeOneAxis {
+declare class BRepPrimAPI_MakeTorus extends BRepPrimAPI_MakeOneAxis {
   /**
    * Make a torus.
    * @param R1 distance from the center of the pipe to the center of the torus
@@ -13704,7 +13707,7 @@ export declare class BRepPrimAPI_MakeTorus extends BRepPrimAPI_MakeOneAxis {
 /**
  * Rebuilds edges to connect with new vertices, was moved from {@link ShapeBuild | `ShapeBuild`}. Makes vertices to be shared to connect edges, updates positions and tolerances for shared vertices. Accepts edges bounded by two vertices each.
  */
-export declare class ShapeFix_EdgeConnect {
+declare class ShapeFix_EdgeConnect {
   constructor();
   /**
    * Adds information on connectivity between start vertex of second edge and end vertex of first edge, taking edges orientation into account.
@@ -13730,7 +13733,7 @@ export declare class ShapeFix_EdgeConnect {
 /**
  * This operator allows to perform various fixes on face and its wires: fixes provided by {@link ShapeFix_Wire | `ShapeFix_Wire`}, fixing orientation of wires, addition of natural bounds, fixing of missing seam edge, and detection and removal of null-area wires.
  */
-export declare class ShapeFix_Face extends ShapeFix_Root {
+declare class ShapeFix_Face extends ShapeFix_Root {
   /**
    * Creates an empty tool.
    */
@@ -13895,7 +13898,7 @@ export declare class ShapeFix_Face extends ShapeFix_Root {
 /**
  * Root class for fixing operations Provides context for recording changes (optional), basic precision value and limit (minimal and maximal) values for tolerances, and message registrator.
  */
-export declare class ShapeFix_Root extends Standard_Transient {
+declare class ShapeFix_Root extends Standard_Transient {
   /**
    * Empty Constructor (no context is created)
    */
@@ -13983,7 +13986,7 @@ export declare class ShapeFix_Root extends Standard_Transient {
 /**
  * Provides method to build a solid from a shells and orients them in order to have a valid solid with finite volume.
  */
-export declare class ShapeFix_Solid extends ShapeFix_Root {
+declare class ShapeFix_Solid extends ShapeFix_Root {
   /**
    * Empty constructor;.
    */
@@ -14079,7 +14082,7 @@ export declare class ShapeFix_Solid extends ShapeFix_Root {
  *
  * {@link ShapeFix_Wire | `ShapeFix_Wire`} should be initialized prior to any fix by the following data: a) Wire (ether {@link TopoDS_Wire | `TopoDS_Wire`} or ShapeExtend_Wire) b) Face or surface c) {@link Precision | `Precision`} d) Maximal tail angle and width This can be done either by calling corresponding methods (LoadWire, SetFace or SetSurface, SetPrecision, SetMaxTailAngle and SetMaxTailWidth), or by loading already filled ShapeAnalisis_Wire with method Load
  */
-export declare class ShapeFix_Wire extends ShapeFix_Root {
+declare class ShapeFix_Wire extends ShapeFix_Root {
   /**
    * Empty Constructor, creates clear object with default flags.
    */
@@ -14173,7 +14176,7 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
    */
   WireData(): unknown;
   /**
-   * returns working face (`Analyzer.Face()`)
+   * returns working face (Analyzer.Face())
    */
   Face(): TopoDS_Face;
   /**
@@ -14367,7 +14370,7 @@ export declare class ShapeFix_Wire extends ShapeFix_Root {
  * - set a place holder for the history of modifications of sub-shapes of the initial shape;
  * - get the collected history. The algorithm provides a place holder for the history and collects the history by default. To avoid collecting of the history the place holder should be set to null handle.
  */
-export declare class ShapeUpgrade_UnifySameDomain extends Standard_Transient {
+declare class ShapeUpgrade_UnifySameDomain extends Standard_Transient {
   /**
    * Empty constructor.
    */
@@ -14427,7 +14430,7 @@ export declare class ShapeUpgrade_UnifySameDomain extends Standard_Transient {
 /**
  * This package provides the bounding boxes for curves and surfaces from BRepAdaptor. Functions to add a topological shape to a bounding box.
  */
-export declare class BRepBndLib {
+declare class BRepBndLib {
   constructor();
   /**
    * Adds the shape S to the bounding box B. More precisely are successively added to B:
@@ -14470,7 +14473,7 @@ export declare class BRepBndLib {
  * - Catching of exceptions (not implemented).
  * - Logging (not implemented).
  */
-export declare class BRepBuilderAPI_Command {
+declare class BRepBuilderAPI_Command {
   IsDone(): boolean;
   /**
    * Raises NotDone if done is false.
@@ -14502,7 +14505,7 @@ export declare class BRepBuilderAPI_Command {
  *
  * Make an edge on the curve between the vertices V1 and V2. Same as the previous but no vertices are created. If a vertex is Null the curve will be open in this direction.
  */
-export declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
+declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
   constructor();
   constructor(L: unknown);
   constructor(L: gp_Circ);
@@ -14626,7 +14629,7 @@ export declare class BRepBuilderAPI_MakeEdge extends BRepBuilderAPI_MakeShape {
  * - From a face and a wire.
  * - The new wire is a perforation.
  */
-export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
+declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
   /**
    * Not done.
    */
@@ -14771,7 +14774,7 @@ export declare class BRepBuilderAPI_MakeFace extends BRepBuilderAPI_MakeShape {
  *
  * It provides deferred methods to trace the history of sub-shapes.
  */
-export declare class BRepBuilderAPI_MakeShape extends BRepBuilderAPI_Command {
+declare class BRepBuilderAPI_MakeShape extends BRepBuilderAPI_Command {
   /**
    * This is called by `Shape()`. It does nothing but may be redefined.
    */
@@ -14805,7 +14808,7 @@ export declare class BRepBuilderAPI_MakeShape extends BRepBuilderAPI_Command {
  * - implementing the construction algorithm, and
  * - consulting the result. Warning The connected C2 faces in the shell resulting from a decomposition of the surface are not sewn. For a sewn result, you need to use BRepOffsetAPI_Sewing. For a shell with thickness, you need to use {@link BRepOffsetAPI_MakeOffsetShape | `BRepOffsetAPI_MakeOffsetShape`}.
  */
-export declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
+declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
   /**
    * Constructs an empty shell framework. The Init function is used to define the construction arguments. Warning The function Error will return BRepBuilderAPI_EmptyShell if it is called before the function Init.
    */
@@ -14850,7 +14853,7 @@ export declare class BRepBuilderAPI_MakeShell extends BRepBuilderAPI_MakeShape {
  * - defining and implementing the construction of a solid, and
  * - consulting the result.
  */
-export declare class BRepBuilderAPI_MakeSolid extends BRepBuilderAPI_MakeShape {
+declare class BRepBuilderAPI_MakeSolid extends BRepBuilderAPI_MakeShape {
   /**
    * Initializes the construction of a solid. An empty solid is considered to cover the whole space. The Add function is used to define shells to bound it.
    */
@@ -14916,7 +14919,7 @@ export declare class BRepBuilderAPI_MakeSolid extends BRepBuilderAPI_MakeShape {
  * - defining and implementing the construction of a vertex, and
  * - consulting the result.
  */
-export declare class BRepBuilderAPI_MakeVertex extends BRepBuilderAPI_MakeShape {
+declare class BRepBuilderAPI_MakeVertex extends BRepBuilderAPI_MakeShape {
   /**
    * Constructs a vertex from point P. Example create a vertex from a 3D point. {@link gp_Pnt | `gp_Pnt`} P(0,0,10); {@link TopoDS_Vertex | `TopoDS_Vertex`} V = `BRepBuilderAPI_MakeVertex(P)`;.
    */
@@ -14944,7 +14947,7 @@ export declare class BRepBuilderAPI_MakeVertex extends BRepBuilderAPI_MakeShape 
  * - adding edges to the wire under construction, and
  * - consulting the result.
  */
-export declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
+declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
   /**
    * Constructs an empty wire framework, to which edges are added using the Add function. As soon as the wire contains one edge, it can return with the use of the function Wire. Warning The function Error will return BRepBuilderAPI_EmptyWire if it is called before at least one edge is added to the wire under construction.
    */
@@ -15037,7 +15040,7 @@ export declare class BRepBuilderAPI_MakeWire extends BRepBuilderAPI_MakeShape {
  * - {@link BRepBuilderAPI_NurbsConvert | `BRepBuilderAPI_NurbsConvert`} to convert the whole geometry of a shape into NURBS geometry,
  * - {@link BRepOffsetAPI_DraftAngle | `BRepOffsetAPI_DraftAngle`} to build a tapered shape.
  */
-export declare class BRepBuilderAPI_ModifyShape extends BRepBuilderAPI_MakeShape {
+declare class BRepBuilderAPI_ModifyShape extends BRepBuilderAPI_MakeShape {
   /**
    * Returns the list of shapes modified from the shape .
    */
@@ -15072,7 +15075,7 @@ export declare class BRepBuilderAPI_ModifyShape extends BRepBuilderAPI_MakeShape
  * - output multiple edges if necessary
  * - output the problems if any
  */
-export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
+declare class BRepBuilderAPI_Sewing extends Standard_Transient {
   /**
    * Creates an object with tolerance of connexity option for sewing (if false only control) option for analysis of degenerated shapes option for cutting of free edges. option for non manifold processing.
    */
@@ -15268,7 +15271,7 @@ export declare class BRepBuilderAPI_Sewing extends Standard_Transient {
  * - implementing the transformation algorithm, and
  * - consulting the results.
  */
-export declare class BRepBuilderAPI_Transform extends BRepBuilderAPI_ModifyShape {
+declare class BRepBuilderAPI_Transform extends BRepBuilderAPI_ModifyShape {
   /**
    * Constructs a framework for applying the geometric transformation T to a shape. Use the function Perform to define the shape to transform.
    */
@@ -15298,17 +15301,17 @@ export declare class BRepBuilderAPI_Transform extends BRepBuilderAPI_ModifyShape
   [Symbol.dispose](): void;
 }
 
-export type BRepBuilderAPI_TransitionMode = typeof BRepBuilderAPI_TransitionMode[keyof typeof BRepBuilderAPI_TransitionMode];
+type BRepBuilderAPI_TransitionMode = typeof BRepBuilderAPI_TransitionMode[keyof typeof BRepBuilderAPI_TransitionMode];
 /**
  * Option to manage discontinuities in Sweep.
  */
-export declare const BRepBuilderAPI_TransitionMode: {
+declare const BRepBuilderAPI_TransitionMode: {
   readonly BRepBuilderAPI_Transformed: 'BRepBuilderAPI_Transformed';
   readonly BRepBuilderAPI_RightCorner: 'BRepBuilderAPI_RightCorner';
   readonly BRepBuilderAPI_RoundCorner: 'BRepBuilderAPI_RoundCorner';
 };
 
-export type BRepBuilderAPI_WireError = typeof BRepBuilderAPI_WireError[keyof typeof BRepBuilderAPI_WireError];
+type BRepBuilderAPI_WireError = typeof BRepBuilderAPI_WireError[keyof typeof BRepBuilderAPI_WireError];
 /**
  * Indicates the outcome of wire construction, i.e. whether it is successful or not, as explained below:
  *
@@ -15317,7 +15320,7 @@ export type BRepBuilderAPI_WireError = typeof BRepBuilderAPI_WireError[keyof typ
  * - BRepBuilderAPI_DisconnectedWire The last edge which you attempted to add was not connected to the wire.
  * - BRepBuilderAPI_NonManifoldWire The wire with some singularity.
  */
-export declare const BRepBuilderAPI_WireError: {
+declare const BRepBuilderAPI_WireError: {
   readonly BRepBuilderAPI_WireDone: 'BRepBuilderAPI_WireDone';
   readonly BRepBuilderAPI_EmptyWire: 'BRepBuilderAPI_EmptyWire';
   readonly BRepBuilderAPI_DisconnectedWire: 'BRepBuilderAPI_DisconnectedWire';
@@ -15327,7 +15330,7 @@ export declare const BRepBuilderAPI_WireError: {
 /**
  * A framework to check the overall validity of a shape. For a shape to be valid in Open CASCADE, it - or its component subshapes - must respect certain criteria. These criteria are checked by the function IsValid. Once you have determined whether a shape is valid or not, you can diagnose its specific anomalies and correct them using the services of the {@link ShapeAnalysis | `ShapeAnalysis`}, {@link ShapeUpgrade | `ShapeUpgrade`}, and {@link ShapeFix | `ShapeFix`} packages.
  */
-export declare class BRepCheck_Analyzer {
+declare class BRepCheck_Analyzer {
   /**
    * Constructs a shape validation object defined by the shape S. is the shape to control. <GeomControls> If False only topological informaions are checked. The geometricals controls are For a Vertex: BRepCheck_InvalidToleranceValue NYI For an Edge: BRepCheck_InvalidCurveOnClosedSurface, BRepCheck_InvalidCurveOnSurface, BRepCheck_InvalidSameParameterFlag, BRepCheck_InvalidToleranceValue NYI For a face: BRepCheck_UnorientableShape, BRepCheck_IntersectingWires, BRepCheck_InvalidToleranceValue NYI For a wire: BRepCheck_SelfIntersectingWire.
    */
@@ -15383,7 +15386,7 @@ export declare class BRepCheck_Analyzer {
 /**
  * This class provides tools to compute minimum distance between two Shapes (Compound,CompSolid, Solid, Shell, Face, Wire, Edge, Vertex).
  */
-export declare class BRepExtrema_DistShapeShape {
+declare class BRepExtrema_DistShapeShape {
   /**
    * create empty tool
    */
@@ -15520,7 +15523,7 @@ export declare class BRepExtrema_DistShapeShape {
  * - its radius of gyration about an axis,
  * - and its principal properties of inertia such as principal axis, principal moments, principal radius of gyration.
  */
-export declare class BRepGProp {
+declare class BRepGProp {
   constructor();
   /**
    * Computes the linear global properties of the shape S, i.e. the global properties induced by each edge of the shape S, and brings them together with the global properties still retained by the framework LProps. If the current system of LProps was empty, its global properties become equal to the linear global properties of S. For this computation no linear density is attached to the edges. So, for example, the added mass corresponds to the sum of the lengths of the edges of S.
@@ -15575,7 +15578,7 @@ export declare class BRepGProp {
   [Symbol.dispose](): void;
 }
 
-export declare class BRepGProp_Face {
+declare class BRepGProp_Face {
   /**
    * Constructor. Initializes the object with a flag IsUseSpan that says if it is necessary to define spans on a face. This option has an effect only for BSpline faces. Spans are returned by the methods GetUKnots and GetTKnots.
    */
@@ -15659,40 +15662,12 @@ export declare class BRepGProp_Face {
    */
   GetUKnots(theUMin: number, theUMax: number): NCollection_HArray1_double;
   /**
-   * Returns an array of U knots of the face. The first and last elements of the array will be theUMin and theUMax. The middle elements will be the U Knots of the face greater then theUMin and lower then theUMax in increasing order. If the face is not a BSpline, the array initialized with theUMin and theUMax only.
-   * @param theUMin lower U bound
-   * @param theUMax upper U bound
-   * @returns array of U knot values
-   */
-  GetUKnots_1(theUMin: number, theUMax: number): NCollection_HArray1_double;
-  /**
-   * @returns A result object with fields:
-   * - `theUKnots`: owned by the returned envelope.
-   * Dispose the returned envelope to release owned Handle fields.
-   * @deprecated
-   */
-  GetUKnots_2(theUMin: number, theUMax: number): { theUKnots: NCollection_HArray1_double; [Symbol.dispose](): void };
-  /**
    * Returns an array of combination of T knots of the arc and V knots of the face. The first and last elements of the array will be theTMin and theTMax. The middle elements will be the Knots of the arc and the values of parameters of arc on which the value points have V coordinates close to V knots of face. All the parameter will be greater then theTMin and lower then theTMax in increasing order. If the face is not a BSpline, the array initialized with theTMin and theTMax only.
    * @param theTMin lower T bound
    * @param theTMax upper T bound
    * @returns array of T knot values
    */
   GetTKnots(theTMin: number, theTMax: number): NCollection_HArray1_double;
-  /**
-   * Returns an array of combination of T knots of the arc and V knots of the face. The first and last elements of the array will be theTMin and theTMax. The middle elements will be the Knots of the arc and the values of parameters of arc on which the value points have V coordinates close to V knots of face. All the parameter will be greater then theTMin and lower then theTMax in increasing order. If the face is not a BSpline, the array initialized with theTMin and theTMax only.
-   * @param theTMin lower T bound
-   * @param theTMax upper T bound
-   * @returns array of T knot values
-   */
-  GetTKnots_1(theTMin: number, theTMax: number): NCollection_HArray1_double;
-  /**
-   * @returns A result object with fields:
-   * - `theTKnots`: owned by the returned envelope.
-   * Dispose the returned envelope to release owned Handle fields.
-   * @deprecated
-   */
-  GetTKnots_2(theTMin: number, theTMax: number): { theTKnots: NCollection_HArray1_double; [Symbol.dispose](): void };
   /** Releases the C++ object. The caller must ensure no further access. */
   delete(): void;
   [Symbol.dispose](): void;
@@ -15704,7 +15679,7 @@ export declare class BRepGProp_Face {
  * - FindSurface : Class to compute a surface through a set of edges.
  * - Compute missing 3d curve on an edge.
  */
-export declare class BRepLib {
+declare class BRepLib {
   constructor();
   /**
    * Computes the max distance between edge and its 2d representation on the face. Sets the default precision. The current {@link Precision | `Precision`} is returned.
@@ -15880,7 +15855,7 @@ export declare class BRepLib {
 /**
  * Provides methods for calculating normals to {@link Poly_Triangulation | `Poly_Triangulation`} of {@link TopoDS_Face | `TopoDS_Face`}.
  */
-export declare class BRepLib_ToolTriangulatedShape {
+declare class BRepLib_ToolTriangulatedShape {
   constructor();
   /**
    * Computes nodal normals for {@link Poly_Triangulation | `Poly_Triangulation`} structure using UV coordinates and surface. Does nothing if triangulation already defines normals.
@@ -15903,7 +15878,7 @@ export declare class BRepLib_ToolTriangulatedShape {
 /**
  * Provides class methods to access to the geometry of BRep shapes.
  */
-export declare class BRep_Tool {
+declare class BRep_Tool {
   constructor();
   /**
    * If S is Shell, returns True if it has no free boundaries (edges). If S is Wire, returns True if it has no free ends (vertices). (Internal and External sub-shepes are ignored in these checks) If S is Edge, returns True if its vertices are the same. For other shape types returns S.Closed().
@@ -16217,7 +16192,7 @@ export declare class BRep_Tool {
  *
  * {@link BRepAdaptor_CompCurve | `BRepAdaptor_CompCurve`} can only work on valid wires where all edges are connected to each other to make a chain.
  */
-export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
+declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
   /**
    * Creates an undefined Curve with no Wire loaded.
    */
@@ -16325,7 +16300,7 @@ export declare class BRepAdaptor_CompCurve extends Adaptor3d_Curve {
  *
  * It is created or Initialized with an Edge. It takes into account local coordinate systems. If the Edge has a 3D curve it is use with priority. If the edge has no 3D curve one of the curves on surface is used. It is possible to enforce using a curve on surface by creating or initialising with an Edge and a Face.
  */
-export declare class BRepAdaptor_Curve extends GeomAdaptor_TransformedCurve {
+declare class BRepAdaptor_Curve extends GeomAdaptor_TransformedCurve {
   /**
    * Creates an undefined Curve with no Edge loaded.
    */
@@ -16381,7 +16356,7 @@ export declare class BRepAdaptor_Curve extends GeomAdaptor_TransformedCurve {
  *
  * It is created or initialized with a Face and an Edge. The methods are inherited from Curve from {@link Geom2dAdaptor | `Geom2dAdaptor`}.
  */
-export declare class BRepAdaptor_Curve2d extends Geom2dAdaptor_Curve {
+declare class BRepAdaptor_Curve2d extends Geom2dAdaptor_Curve {
   /**
    * Creates an uninitialized curve2d.
    */
@@ -16423,7 +16398,7 @@ export declare class BRepAdaptor_Curve2d extends Geom2dAdaptor_Curve {
  *
  * The u,v parameter range is the minmax value for the restriction, unless the flag restriction is set to false.
  */
-export declare class BRepAdaptor_Surface extends GeomAdaptor_TransformedSurface {
+declare class BRepAdaptor_Surface extends GeomAdaptor_TransformedSurface {
   /**
    * Creates an undefined surface with no face loaded.
    */
@@ -16470,7 +16445,7 @@ export declare class BRepAdaptor_Surface extends GeomAdaptor_TransformedSurface 
  * - Map3DEdges: Method to map all the 3D Edges of a Shape.
  * - Dump: Method to dump a BRep object.
  */
-export declare class BRepTools {
+declare class BRepTools {
   constructor();
   // dropped: LoadTriangulation param 3 resolves to excluded type OSD_FileSystem
   // dropped: LoadAllTriangulations param 1 resolves to excluded type OSD_FileSystem
@@ -16675,7 +16650,7 @@ export declare class BRepTools {
 /**
  * Tool to keep shapes in binary format.
  */
-export declare class BinTools {
+declare class BinTools {
   constructor();
   /**
    * Writes the shape to the file in binary format BinTools_FormatVersion_CURRENT.
@@ -16737,7 +16712,7 @@ export declare class BinTools {
  *
  * For example searching edges not in a vertex does not make a difference.
  */
-export declare class TopExp_Explorer {
+declare class TopExp_Explorer {
   /**
    * Creates an empty explorer, becomes useful after Init.
    */
@@ -16821,7 +16796,7 @@ export declare class TopExp_Explorer {
  * - Only VERTEX can be added in an EDGE.
  * - Nothing can be added in a VERTEX.
  */
-export declare class TopoDS_Builder {
+declare class TopoDS_Builder {
   constructor();
   /**
    * Make an empty Wire.
@@ -16873,7 +16848,7 @@ export declare class TopoDS_Builder {
  * - has a location for the underlying composite solid, giving its placement in the local coordinate system
  * - has an orientation for the underlying composite solid, in terms of its geometry (as opposed to orientation in relation to other shapes). Casts shape S to the more specialized return type, CompSolid.
  */
-export declare class TopoDS_CompSolid extends TopoDS_Shape {
+declare class TopoDS_CompSolid extends TopoDS_Shape {
   /**
    * Constructs an Undefined CompSolid.
    */
@@ -16890,7 +16865,7 @@ export declare class TopoDS_CompSolid extends TopoDS_Shape {
  * - has a location for the underlying compound, giving its placement in the local coordinate system
  * - has an orientation for the underlying compound, in terms of its geometry (as opposed to orientation in relation to other shapes). Casts shape S to the more specialized return type, Compound.
  */
-export declare class TopoDS_Compound extends TopoDS_Shape {
+declare class TopoDS_Compound extends TopoDS_Shape {
   /**
    * Constructs an Undefined Compound.
    */
@@ -16907,7 +16882,7 @@ export declare class TopoDS_Compound extends TopoDS_Shape {
  * - has a location for the underlying edge, giving its placement in the local coordinate system
  * - has an orientation for the underlying edge, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
-export declare class TopoDS_Edge extends TopoDS_Shape {
+declare class TopoDS_Edge extends TopoDS_Shape {
   /**
    * Undefined Edge.
    */
@@ -16924,7 +16899,7 @@ export declare class TopoDS_Edge extends TopoDS_Shape {
  * - has a location for the underlying face, giving its placement in the local coordinate system
  * - has an orientation for the underlying face, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
-export declare class TopoDS_Face extends TopoDS_Shape {
+declare class TopoDS_Face extends TopoDS_Shape {
   /**
    * Undefined Face.
    */
@@ -16941,7 +16916,7 @@ export declare class TopoDS_Face extends TopoDS_Shape {
  * - has a location for the underlying shape, giving its placement in the local coordinate system
  * - has an orientation for the underlying shape, in terms of its geometry (as opposed to orientation in relation to other shapes). Note: A Shape is empty if it references an underlying shape which has an empty list of shapes.
  */
-export declare class TopoDS_Shape {
+declare class TopoDS_Shape {
   /**
    * Creates a NULL Shape referring to nothing.
    */
@@ -17134,7 +17109,7 @@ export declare class TopoDS_Shape {
  * - has a location for the underlying shell, giving its placement in the local coordinate system
  * - has an orientation for the underlying shell, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
-export declare class TopoDS_Shell extends TopoDS_Shape {
+declare class TopoDS_Shell extends TopoDS_Shape {
   /**
    * Constructs an Undefined Shell.
    */
@@ -17151,7 +17126,7 @@ export declare class TopoDS_Shell extends TopoDS_Shape {
  * - has a location for the underlying shape, giving its placement in the local coordinate system
  * - has an orientation for the underlying shape, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
-export declare class TopoDS_Solid extends TopoDS_Shape {
+declare class TopoDS_Solid extends TopoDS_Shape {
   /**
    * Constructs an Undefined Solid.
    */
@@ -17168,7 +17143,7 @@ export declare class TopoDS_Solid extends TopoDS_Shape {
  * - has a location for the underlying vertex, giving its placement in the local coordinate system
  * - has an orientation for the underlying vertex, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
-export declare class TopoDS_Vertex extends TopoDS_Shape {
+declare class TopoDS_Vertex extends TopoDS_Shape {
   /**
    * Undefined Vertex.
    */
@@ -17185,7 +17160,7 @@ export declare class TopoDS_Vertex extends TopoDS_Shape {
  * - has a location for the underlying wire, giving its placement in the local coordinate system
  * - has an orientation for the underlying wire, in terms of its geometry (as opposed to orientation in relation to other shapes).
  */
-export declare class TopoDS_Wire extends TopoDS_Shape {
+declare class TopoDS_Wire extends TopoDS_Shape {
   /**
    * Undefined Wire.
    */
@@ -17200,7 +17175,7 @@ export declare class TopoDS_Wire extends TopoDS_Shape {
  *
  * Polynomial coefficients of BSpline curves used for their evaluation are cached for better performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
  */
-export declare class Adaptor2d_Curve2d extends Standard_Transient {
+declare class Adaptor2d_Curve2d extends Standard_Transient {
   constructor();
   static get_type_name(): string;
   static get_type_descriptor(): unknown;
@@ -17331,7 +17306,7 @@ export declare class Adaptor2d_Curve2d extends Standard_Transient {
  *
  * References : . A survey of curve and surface methods in CADG Wolfgang BOHM CAGD 1 (1984) . On de Boor-like algorithms and blossoming Wolfgang BOEHM cagd 5 (1988) . Blossoming and knot insertion algorithms for B-spline curves Ronald N. GOLDMAN . Modelisation des surfaces en CAO, Henri GIAUME Peugeot SA . Curves and Surfaces for Computer Aided Geometric Design, a practical guide Gerald Farin
  */
-export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
+declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
   /**
    * Copy constructor for optimized copying without validation.
    */
@@ -17815,7 +17790,7 @@ export declare class Geom2d_BSplineCurve extends Geom2d_BoundedCurve {
  * - When considering the continuity of a closed Bezier curve at the junction point, remember that a curve of this type is never periodic. This means that the derivatives for the parameter u = 0 have no reason to be the same as the derivatives for the parameter u = 1 even if the curve is closed.
  * - The length of a Bezier curve can be null.
  */
-export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
+declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
   /**
    * Creates a non rational Bezier curve with a set of poles : CurvePoles. The weights are defaulted to all being 1. Raises ConstructionError if the number of poles is greater than MaxDegree + 1 or lower than 2.
    */
@@ -18043,7 +18018,7 @@ export declare class Geom2d_BezierCurve extends Geom2d_BoundedCurve {
  * - {@link Geom2d_BSplineCurve | `Geom2d_BSplineCurve`}, and
  * - {@link Geom2d_TrimmedCurve | `Geom2d_TrimmedCurve`} to trim a curve, i.e. to only take part of the curve limited by two values of the parameter of the basis curve.
  */
-export declare class Geom2d_BoundedCurve extends Geom2d_Curve {
+declare class Geom2d_BoundedCurve extends Geom2d_Curve {
   /**
    * Returns the end point of the curve. The end point is the value of the curve for the "LastParameter" of the curve.
    */
@@ -18070,7 +18045,7 @@ export declare class Geom2d_BoundedCurve extends Geom2d_Curve {
  * - O, XDir and YDir are respectively the origin, "X Direction" and "Y Direction" of its local coordinate system,
  * - R is the radius of the circle. The "X Axis" of the local coordinate system therefore defines the origin of the parameter of the circle. The parameter is the angle with this "X Direction". A circle is a closed and periodic curve. The period is 2.*Pi and the parameter range is [ 0,2.*Pi [. See Also GCE2d_MakeCircle which provides functions for more complex circle constructions {@link gp_Ax22d | `gp_Ax22d`} and {@link gp_Circ2d | `gp_Circ2d`} for an equivalent, non-parameterized data structure.
  */
-export declare class Geom2d_Circle extends Geom2d_Conic {
+declare class Geom2d_Circle extends Geom2d_Conic {
   /**
    * Constructs a circle by conversion of the {@link gp_Circ2d | `gp_Circ2d`} circle C.
    */
@@ -18164,7 +18139,7 @@ export declare class Geom2d_Circle extends Geom2d_Conic {
  * The Geom2d package provides four specific classes of conics: {@link Geom2d_Circle | `Geom2d_Circle`}, {@link Geom2d_Ellipse | `Geom2d_Ellipse`}, {@link Geom2d_Hyperbola | `Geom2d_Hyperbola`} and {@link Geom2d_Parabola | `Geom2d_Parabola`}.
  * A conic is positioned in the plane with a coordinate system ({@link gp_Ax22d | `gp_Ax22d`} object), where the origin is the center of the conic (or the apex in case of a parabola). This coordinate system is the local coordinate system of the conic. It gives the conic an explicit orientation, determining the direction in which the parameter increases along the conic. The "X Axis" of the local coordinate system also defines the origin of the parameter of the conic.
  */
-export declare class Geom2d_Conic extends Geom2d_Curve {
+declare class Geom2d_Conic extends Geom2d_Curve {
   /**
    * Modifies this conic, redefining its local coordinate system partially, by assigning theA as its axis.
    */
@@ -18232,7 +18207,7 @@ export declare class Geom2d_Conic extends Geom2d_Curve {
  * - how to obtain general information about the curve (for example, level of continuity, closed characteristics, periodicity, bounds of the parameter field);
  * - how the parameter changes when a geometric transformation is applied to the curve or when the orientation of the curve is inverted. All curves must have a geometric continuity: a curve is at least "C0". Generally, this property is checked at the time of construction or when the curve is edited. Where this is not the case, the documentation explicitly states so. Warning The Geom2d package does not prevent the construction of curves with null length or curves which self-intersect.
  */
-export declare class Geom2d_Curve extends Geom2d_Geometry {
+declare class Geom2d_Curve extends Geom2d_Geometry {
   /**
    * Changes the direction of parametrization of <me>. The "FirstParameter" and the "LastParameter" are not changed but the orientation of the curve is modified. If the curve is bounded the StartPoint of the initial curve becomes the EndPoint of the reversed curve and the EndPoint of the initial curve becomes the StartPoint of the reversed curve.
    */
@@ -18348,18 +18323,18 @@ export declare class Geom2d_Curve extends Geom2d_Geometry {
   [Symbol.dispose](): void;
 }
 
-export interface Geom2d_Curve_ResD1 {
+interface Geom2d_Curve_ResD1 {
   Point: gp_Pnt2d;
   D1: gp_Vec2d;
 }
 
-export interface Geom2d_Curve_ResD2 {
+interface Geom2d_Curve_ResD2 {
   Point: gp_Pnt2d;
   D1: gp_Vec2d;
   D2: gp_Vec2d;
 }
 
-export interface Geom2d_Curve_ResD3 {
+interface Geom2d_Curve_ResD3 {
   Point: gp_Pnt2d;
   D1: gp_Vec2d;
   D2: gp_Vec2d;
@@ -18376,7 +18351,7 @@ export interface Geom2d_Curve_ResD3 {
  * - O, XDir and YDir are respectively the origin, "X Direction" and "Y Direction" of its local coordinate system,
  * - MajorRad and MinorRad are the major and minor radii of the ellipse. The "X Axis" of the local coordinate system therefore defines the origin of the parameter of the ellipse. An ellipse is a closed and periodic curve. The period is 2.*Pi and the parameter range is [ 0,2.*Pi [. See Also GCE2d_MakeEllipse which provides functions for more complex ellipse constructions {@link gp_Ax22d | `gp_Ax22d`} {@link gp_Elips2d | `gp_Elips2d`} for an equivalent, non-parameterized data structure
  */
-export declare class Geom2d_Ellipse extends Geom2d_Conic {
+declare class Geom2d_Ellipse extends Geom2d_Conic {
   /**
    * Creates an ellipse by conversion of the {@link gp_Elips2d | `gp_Elips2d`} ellipse E.
    */
@@ -18519,7 +18494,7 @@ export declare class Geom2d_Ellipse extends Geom2d_Conic {
  * All the objects derived from this class can be move with a geometric transformation. Only the transformations which doesn't modify the nature of the geometry are available in this package. The method Transform which defines a general transformation is deferred. The other specifics transformations used the method Transform. All the following transformations modify the object itself.
  * Warning Only transformations which do not modify the nature of the geometry can be applied to Geom2d objects: this is the case with translations, rotations, symmetries and scales; this is also the case with {@link gp_Trsf2d | `gp_Trsf2d`} composite transformations which are used to define the geometric transformations applied using the Transform or Transformed functions. Note: Geometry defines the "prototype" of the abstract method Transform which is defined for each concrete type of derived object. All other transformations are implemented using the Transform method.
  */
-export declare class Geom2d_Geometry extends Standard_Transient {
+declare class Geom2d_Geometry extends Standard_Transient {
   /**
    * Performs the symmetrical transformation of a Geometry with respect to the point P which is the center of the symmetry and assigns the result to this geometric object.
    */
@@ -18570,7 +18545,7 @@ export declare class Geom2d_Geometry extends Standard_Transient {
  * - P is the point of parameter U,
  * - O is the origin and Dir the unit vector of its positioning axis. The parameter range is ] -infinite, +infinite [. The orientation of the line is given by the unit vector of its positioning axis. See Also GCE2d_MakeLine which provides functions for more complex line constructions {@link gp_Ax2d | `gp_Ax2d`} {@link gp_Lin2d | `gp_Lin2d`} for an equivalent, non-parameterized data structure.
  */
-export declare class Geom2d_Line extends Geom2d_Curve {
+declare class Geom2d_Line extends Geom2d_Curve {
   /**
    * Creates a line located in 2D space with the axis placement A. The Location of A is the origin of the line.
    */
@@ -18701,7 +18676,7 @@ export declare class Geom2d_Line extends Geom2d_Curve {
  *
  * So to evaluate the curve it is better to check that the offset curve is well defined at any point because an exception could be raised. The check is not done in this package at the creation of the offset curve because the control needs the use of an algorithm which cannot be implemented in this package. The OffsetCurve is closed if the first point and the last point are the same (The distance between these two points is lower or equal to the Resolution sea package gp) . The OffsetCurve can be closed even if the basis curve is not closed.
  */
-export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
+declare class Geom2d_OffsetCurve extends Geom2d_Curve {
   /**
    * Copy constructor for optimized copying without validation.
    */
@@ -18858,7 +18833,7 @@ export declare class Geom2d_OffsetCurve extends Geom2d_Curve {
  * - the basis curve, and
  * - the two parameter values which limit it. The trimmed curve can either have the same orientation as the basis curve or the opposite orientation.
  */
-export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
+declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
   /**
    * Creates a trimmed curve from the basis curve C limited between U1 and U2.
    *
@@ -18995,7 +18970,7 @@ export declare class Geom2d_TrimmedCurve extends Geom2d_BoundedCurve {
  *
  * Polynomial coefficients of BSpline curves used for their evaluation are cached for better performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
  */
-export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
+declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
   constructor();
   constructor(C: Geom2d_Curve);
   /**
@@ -19123,19 +19098,19 @@ export declare class Geom2dAdaptor_Curve extends Adaptor2d_Curve2d {
   [Symbol.dispose](): void;
 }
 
-export interface Geom2dAdaptor_Curve_OffsetData {
+interface Geom2dAdaptor_Curve_OffsetData {
   BasisAdaptor: Geom2dAdaptor_Curve;
   Offset: number;
   EvalRep: unknown;
 }
 
-export interface Geom2dAdaptor_Curve_BezierData {
+interface Geom2dAdaptor_Curve_BezierData {
   Curve: Geom2d_BezierCurve;
   Cache: unknown;
   EvalRep: unknown;
 }
 
-export interface Geom2dAdaptor_Curve_BSplineData {
+interface Geom2dAdaptor_Curve_BSplineData {
   Curve: Geom2d_BSplineCurve;
   Cache: unknown;
   EvalRep: unknown;
@@ -19149,7 +19124,7 @@ export interface Geom2dAdaptor_Curve_BSplineData {
  *
  * Polynomial coefficients of BSpline curves used for their evaluation are cached for better performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
  */
-export declare class Adaptor3d_Curve extends Standard_Transient {
+declare class Adaptor3d_Curve extends Standard_Transient {
   constructor();
   static get_type_name(): string;
   static get_type_descriptor(): unknown;
@@ -19265,7 +19240,7 @@ export declare class Adaptor3d_Curve extends Standard_Transient {
  *
  * Polynomial coefficients of BSpline surfaces used for their evaluation are cached for better performance. Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
  */
-export declare class Adaptor3d_Surface extends Standard_Transient {
+declare class Adaptor3d_Surface extends Standard_Transient {
   constructor();
   static get_type_name(): string;
   static get_type_descriptor(): unknown;
@@ -19435,7 +19410,7 @@ export declare class Adaptor3d_Surface extends Standard_Transient {
  *
  * References : . A survey of curve and surface methods in CADG Wolfgang BOHM CAGD 1 (1984) . On de Boor-like algorithms and blossoming Wolfgang BOEHM cagd 5 (1988) . Blossoming and knot insertion algorithms for B-spline curves Ronald N. GOLDMAN . Modelisation des surfaces en CAO, Henri GIAUME Peugeot SA . Curves and Surfaces for Computer Aided Geometric Design, a practical guide Gerald Farin
  */
-export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
+declare class Geom_BSplineCurve extends Geom_BoundedCurve {
   /**
    * Copy constructor for optimized copying without validation.
    * @param theOther the BSpline curve to copy from
@@ -19912,7 +19887,7 @@ export declare class Geom_BSplineCurve extends Geom_BoundedCurve {
  * - the period is such that: period = Knot(k+1) - Knot(1), and
  * - the poles and knots tables in that parametric direction can be considered as infinite tables, such that: Knot(i+k) = Knot(i) + period, and Pole(i+p) = Pole(i) Note: The data structure tables for a periodic BSpline surface are more complex than those of a non-periodic one. References : . A survey of curve and surface methods in CADG Wolfgang BOHM CAGD 1 (1984) . On de Boor-like algorithms and blossoming Wolfgang BOEHM cagd 5 (1988) . Blossoming and knot insertion algorithms for B-spline curves Ronald N. GOLDMAN . Modelisation des surfaces en CAO, Henri GIAUME Peugeot SA . Curves and Surfaces for Computer Aided Geometric Design, a practical guide Gerald Farin
  */
-export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
+declare class Geom_BSplineSurface extends Geom_BoundedSurface {
   /**
    * Copy constructor for optimized copying without validation.
    * @param theOther the BSpline surface to copy from
@@ -20635,7 +20610,7 @@ export declare class Geom_BSplineSurface extends Geom_BoundedSurface {
  * - When considering the continuity of a closed Bezier curve at the junction point, remember that a curve of this type is never periodic. This means that the derivatives for the parameter u = 0 have no reason to be the same as the derivatives for the parameter u = 1 even if the curve is closed.
  * - The length of a Bezier curve can be null.
  */
-export declare class Geom_BezierCurve extends Geom_BoundedCurve {
+declare class Geom_BezierCurve extends Geom_BoundedCurve {
   /**
    * Creates a non rational Bezier curve with a set of poles CurvePoles. The weights are defaulted to all being 1. Raises ConstructionError if the number of poles is greater than MaxDegree + 1 or lower than 2.
    */
@@ -20876,7 +20851,7 @@ export declare class Geom_BezierCurve extends Geom_BoundedCurve {
  * - {@link Geom_BSplineCurve | `Geom_BSplineCurve`}, and
  * - {@link Geom_TrimmedCurve | `Geom_TrimmedCurve`} to trim a curve, i.e. to only take part of the curve limited by two values of the parameter of the basis curve.
  */
-export declare class Geom_BoundedCurve extends Geom_Curve {
+declare class Geom_BoundedCurve extends Geom_Curve {
   /**
    * Returns the end point of the curve.
    */
@@ -20904,7 +20879,7 @@ export declare class Geom_BoundedCurve extends Geom_Curve {
  * - {@link Geom_BSplineSurface | `Geom_BSplineSurface`}, and
  * - {@link Geom_RectangularTrimmedSurface | `Geom_RectangularTrimmedSurface`}. The first two of these implement well known mathematical definitions of complex surfaces, the third trims a surface using four isoparametric curves, i.e. it limits the variation of its parameters to a rectangle in 2D parametric space.
  */
-export declare class Geom_BoundedSurface extends Geom_Surface {
+declare class Geom_BoundedSurface extends Geom_Surface {
   static get_type_name(): string;
   static get_type_descriptor(): unknown;
   DynamicType(): unknown;
@@ -20922,12 +20897,12 @@ export declare class Geom_BoundedSurface extends Geom_Surface {
  * - Rotation around its "main Axis", in the trigonometric sense given by the "X Direction" and the "Y Direction", defines the u parametric direction.
  * - Its "X Axis" gives the origin for the u parameter.
  * - Its "main Direction" is the v parametric direction of the cone.
- * - Its origin is the origin of the v parameter. The parametric range of the two parameters is: -[0,2.*Pi]foru,and -]-infinity,+infinity[forv The parametric equation of the cone is: P(u,v)=O+(R+v*sin(Ang))*(cos(u)*XDir+sin(u)*YDir)+v*cos(Ang)*ZDir where:
+ * - Its origin is the origin of the v parameter. The parametric range of the two parameters is: -[0,2.*Pi]foru,and -]-infinity,+infinity[for`v` The parametric equation of the cone is: P(u,v)=O+(R+`v`*sin(Ang))*(cos(u)*XDir+sin(u)*YDir)+v*cos(Ang)*ZDir where:
  * - O, XDir, YDir and ZDir are respectively the origin, the "X Direction", the "Y Direction" and the "Z Direction" of the cone's local coordinate system,
  * - Ang is the half-angle at the apex of the cone, and
  * - R is the reference radius.
  */
-export declare class Geom_ConicalSurface extends Geom_ElementarySurface {
+declare class Geom_ConicalSurface extends Geom_ElementarySurface {
   /**
    * Creates a ConicalSurface from a non transient {@link gp_Cone | `gp_Cone`}.
    */
@@ -21134,7 +21109,7 @@ export declare class Geom_ConicalSurface extends Geom_ElementarySurface {
  * - how to obtain general information about the curve (for example, level of continuity, closed characteristics, periodicity, bounds of the parameter field);
  * - how the parameter changes when a geometric transformation is applied to the curve or when the orientation of the curve is inverted. All curves must have a geometric continuity: a curve is at least "C0". Generally, this property is checked at the time of construction or when the curve is edited. Where this is not the case, the documentation states so explicitly. Warning The Geom package does not prevent the construction of curves with null length or curves which self-intersect.
  */
-export declare class Geom_Curve extends Geom_Geometry {
+declare class Geom_Curve extends Geom_Geometry {
   /**
    * Changes the direction of parametrization of <me>. The "FirstParameter" and the "LastParameter" are not changed but the orientation of the curve is modified. If the curve is bounded the StartPoint of the initial curve becomes the EndPoint of the reversed curve and the EndPoint of the initial curve becomes the StartPoint of the reversed curve.
    */
@@ -21272,18 +21247,18 @@ export declare class Geom_Curve extends Geom_Geometry {
   [Symbol.dispose](): void;
 }
 
-export interface Geom_Curve_ResD1 {
+interface Geom_Curve_ResD1 {
   Point: gp_Pnt;
   D1: gp_Vec;
 }
 
-export interface Geom_Curve_ResD2 {
+interface Geom_Curve_ResD2 {
   Point: gp_Pnt;
   D1: gp_Vec;
   D2: gp_Vec;
 }
 
-export interface Geom_Curve_ResD3 {
+interface Geom_Curve_ResD3 {
   Point: gp_Pnt;
   D1: gp_Vec;
   D2: gp_Vec;
@@ -21317,7 +21292,7 @@ export interface Geom_Curve_ResD3 {
  *
  * The methods UReverse VReverse change the orientation of the surface.
  */
-export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
+declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
   /**
    * Creates a CylindricalSurface from a non transient {@link gp_Cylinder | `gp_Cylinder`}.
    */
@@ -21497,7 +21472,7 @@ export declare class Geom_CylindricalSurface extends Geom_ElementarySurface {
  * - if it is direct, the trigonometric sense defined by its "main Direction" is the same as the trigonometric sense defined by its two vectors "X Direction" and "Y Direction": "main Direction" = "X Direction" ^ "Y Direction"
  * - if it is indirect, the two definitions of trigonometric sense are opposite: "main Direction" = - "X Direction" ^ "Y Direction"
  */
-export declare class Geom_ElementarySurface extends Geom_Surface {
+declare class Geom_ElementarySurface extends Geom_Surface {
   /**
    * Changes the main axis (ZAxis) of the elementary surface.
    *
@@ -21572,7 +21547,7 @@ export declare class Geom_ElementarySurface extends Geom_Surface {
  * Warning Only transformations which do not modify the nature of the geometry can be applied to Geom objects: this is the case with translations, rotations, symmetries and scales; this is also the case with {@link gp_Trsf | `gp_Trsf`} composite transformations which are used to define the geometric transformations applied using the Transform or Transformed functions.
  * Note: Geometry defines the "prototype" of the abstract method Transform which is defined for each concrete type of derived object. All other transformations are implemented using the Transform method.
  */
-export declare class Geom_Geometry extends Standard_Transient {
+declare class Geom_Geometry extends Standard_Transient {
   /**
    * Performs the symmetrical transformation of a Geometry with respect to the point P which is the center of the symmetry.
    */
@@ -21640,7 +21615,7 @@ export declare class Geom_Geometry extends Standard_Transient {
  * - [ 0, 2.*Pi ] for u, and
  * - [ - Pi/2., + Pi/2. ] for v.
  */
-export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
+declare class Geom_SphericalSurface extends Geom_ElementarySurface {
   /**
    * Creates a SphericalSurface from a non persistent Sphere from package gp.
    */
@@ -21776,7 +21751,7 @@ export declare class Geom_SphericalSurface extends Geom_ElementarySurface {
  *
  * Warning The Geom package does not prevent the construction of surfaces with null areas, or surfaces which self-intersect.
  */
-export declare class Geom_Surface extends Geom_Geometry {
+declare class Geom_Surface extends Geom_Geometry {
   /**
    * Reverses the U direction of parametrization of <me>. The bounds of the surface are not modified.
    */
@@ -22017,13 +21992,13 @@ export declare class Geom_Surface extends Geom_Geometry {
   [Symbol.dispose](): void;
 }
 
-export interface Geom_Surface_ResD1 {
+interface Geom_Surface_ResD1 {
   Point: gp_Pnt;
   D1U: gp_Vec;
   D1V: gp_Vec;
 }
 
-export interface Geom_Surface_ResD2 {
+interface Geom_Surface_ResD2 {
   Point: gp_Pnt;
   D1U: gp_Vec;
   D1V: gp_Vec;
@@ -22032,7 +22007,7 @@ export interface Geom_Surface_ResD2 {
   D2UV: gp_Vec;
 }
 
-export interface Geom_Surface_ResD3 {
+interface Geom_Surface_ResD3 {
   Point: gp_Pnt;
   D1U: gp_Vec;
   D1V: gp_Vec;
@@ -22051,7 +22026,7 @@ export interface Geom_Surface_ResD3 {
  * - the basis curve, and
  * - the two parameter values which limit it. The trimmed curve can either have the same orientation as the basis curve or the opposite orientation.
  */
-export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
+declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
   /**
    * Constructs a trimmed curve from the basis curve C which is limited between parameter values U1 and U2. Note: - U1 can be greater or less than U2; in both cases, the returned curve is oriented from U1 to U2.
    *
@@ -22196,7 +22171,7 @@ export declare class Geom_TrimmedCurve extends Geom_BoundedCurve {
  *
  * The evaluation methods (Value, D0, D1, D2, D3, DN) are marked final to enable optimizations in grid evaluation.
  */
-export declare class GeomAdaptor_TransformedCurve extends Adaptor3d_Curve {
+declare class GeomAdaptor_TransformedCurve extends Adaptor3d_Curve {
   /**
    * Creates an undefined curve with identity transformation.
    */
@@ -22338,7 +22313,7 @@ export declare class GeomAdaptor_TransformedCurve extends Adaptor3d_Curve {
   [Symbol.dispose](): void;
 }
 
-export type GeomEval_RepCurveDesc_Base = unknown;
+type GeomEval_RepCurveDesc_Base = unknown;
 
 /**
  * An adaptor for surfaces with an applied transformation.
@@ -22347,7 +22322,7 @@ export type GeomEval_RepCurveDesc_Base = unknown;
  *
  * The evaluation methods (Value, D0, D1, D2, D3, DN) are marked final to enable optimizations in grid evaluation.
  */
-export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
+declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
   /**
    * Creates an undefined surface with identity transformation.
    */
@@ -22534,23 +22509,23 @@ export declare class GeomAdaptor_TransformedSurface extends Adaptor3d_Surface {
   [Symbol.dispose](): void;
 }
 
-export type GeomEval_RepSurfaceDesc_Base = unknown;
+type GeomEval_RepSurfaceDesc_Base = unknown;
 
-export type TopAbs_Orientation = typeof TopAbs_Orientation[keyof typeof TopAbs_Orientation];
+type TopAbs_Orientation = typeof TopAbs_Orientation[keyof typeof TopAbs_Orientation];
 /**
  * Identifies the orientation of a topological shape. Orientation can represent a relation between two entities, or it can apply to a shape in its own right.
  * When used to describe a relation between two shapes, orientation allows you to use the underlying entity in either direction.
  * For example on a curve which is oriented FORWARD (say from left to right) you can have both a FORWARD and a REVERSED edge. The FORWARD edge will be oriented from left to right, and the REVERSED edge from right to left. In this way, you share the underlying entity. In other words, two faces of a cube can share an edge, and can also be used to build compound shapes.
  * For each case in which an element is used as the boundary of a geometric domain of a higher dimension, this element defines two local regions of which one is arbitrarily considered as the default region. A change in orientation implies a switch of default region. This allows you to apply changes of orientation to the shape as a whole.
  */
-export declare const TopAbs_Orientation: {
+declare const TopAbs_Orientation: {
   readonly TopAbs_FORWARD: 'TopAbs_FORWARD';
   readonly TopAbs_REVERSED: 'TopAbs_REVERSED';
   readonly TopAbs_INTERNAL: 'TopAbs_INTERNAL';
   readonly TopAbs_EXTERNAL: 'TopAbs_EXTERNAL';
 };
 
-export type TopAbs_ShapeEnum = typeof TopAbs_ShapeEnum[keyof typeof TopAbs_ShapeEnum];
+type TopAbs_ShapeEnum = typeof TopAbs_ShapeEnum[keyof typeof TopAbs_ShapeEnum];
 /**
  * Identifies various topological shapes. This enumeration allows you to use dynamic typing of shapes. The values are listed in order of complexity, from the most complex to the most simple i.e. COMPOUND > COMPSOLID > SOLID > .... > VERTEX > SHAPE. Any shape can contain simpler shapes in its definition. Abstract topological data structure describes a basic entity, the shape (present in this enumeration as the SHAPE value), which can be divided into the following component topologies:
  *
@@ -22563,7 +22538,7 @@ export type TopAbs_ShapeEnum = typeof TopAbs_ShapeEnum[keyof typeof TopAbs_Shape
  * - EDGE: A single dimensional shape corresponding to a curve, and bound by a vertex at each extremity.
  * - VERTEX: A zero-dimensional shape corresponding to a point in geometry.
  */
-export declare const TopAbs_ShapeEnum: {
+declare const TopAbs_ShapeEnum: {
   readonly TopAbs_COMPOUND: 'TopAbs_COMPOUND';
   readonly TopAbs_COMPSOLID: 'TopAbs_COMPSOLID';
   readonly TopAbs_SOLID: 'TopAbs_SOLID';
@@ -22578,7 +22553,7 @@ export declare const TopAbs_ShapeEnum: {
 /**
  * Computes the bounding box for a curve in 2d . Functions to add a 2D curve to a bounding box. The 2D curve is defined from a Geom2d curve.
  */
-export declare class BndLib_Add2dCurve {
+declare class BndLib_Add2dCurve {
   constructor();
   /**
    * Adds to the bounding box B the curve C B is then enlarged by the tolerance value Tol. Note: depending on the type of curve, one of the following representations of the curve C is used to include it in the bounding box B:
@@ -22587,7 +22562,7 @@ export declare class BndLib_Add2dCurve {
    * - the poles of the curve if C is built from a Bezier curve or a BSpline curve,
    * - if not, the points of an approximation of the curve C. Warning C is an adapted curve, that is, an object which is an interface between:
    * - the services provided by a 2D curve from the package Geom2d
-   * - and those required of the curve by the computation algorithm. The adapted curve is created in the following way: `occ::handle<Geom2d_Curve>` mycurve = ... ; {@link Geom2dAdaptor_Curve | `Geom2dAdaptor_Curve`} C(mycurve); The bounding box B is then enlarged by adding it: {@link Bnd_Box2d | `Bnd_Box2d`} B; // ... double Tol = ... ; Add2dCurve::Add ( C, Tol, B ); Exceptions {@link Standard_Failure | `Standard_Failure`} if the curve is built from:
+   * - and those required of the curve by the computation algorithm. The adapted curve is created in the following way: occ::handle<Geom2d_Curve> mycurve = ... ; {@link Geom2dAdaptor_Curve | `Geom2dAdaptor_Curve`} C(mycurve); The bounding box B is then enlarged by adding it: {@link Bnd_Box2d | `Bnd_Box2d`} B; // ... double Tol = ... ; Add2dCurve::Add ( C, Tol, B ); Exceptions {@link Standard_Failure | `Standard_Failure`} if the curve is built from:
    * - a {@link Geom_Line | `Geom_Line`}, or
    * - a {@link Geom_Parabola | `Geom_Parabola`}, or
    * - a {@link Geom_Hyperbola | `Geom_Hyperbola`}, and P1 and P2 are either two negative infinite real numbers, or two positive infinite real numbers.
@@ -22610,7 +22585,7 @@ export declare class BndLib_Add2dCurve {
    * - the poles of the curve if C is built from a Bezier curve or a BSpline curve,
    * - if not, the points of an approximation of the curve C. Warning C is an adapted curve, that is, an object which is an interface between:
    * - the services provided by a 2D curve from the package Geom2d
-   * - and those required of the curve by the computation algorithm. The adapted curve is created in the following way: `occ::handle<Geom2d_Curve>` mycurve = ... ; {@link Geom2dAdaptor_Curve | `Geom2dAdaptor_Curve`} C(mycurve); The bounding box B is then enlarged by adding it: {@link Bnd_Box2d | `Bnd_Box2d`} B; // ... double Tol = ... ; Add2dCurve::Add ( C, Tol, B ); Exceptions {@link Standard_Failure | `Standard_Failure`} if the curve is built from:
+   * - and those required of the curve by the computation algorithm. The adapted curve is created in the following way: occ::handle<Geom2d_Curve> mycurve = ... ; {@link Geom2dAdaptor_Curve | `Geom2dAdaptor_Curve`} C(mycurve); The bounding box B is then enlarged by adding it: {@link Bnd_Box2d | `Bnd_Box2d`} B; // ... double Tol = ... ; Add2dCurve::Add ( C, Tol, B ); Exceptions {@link Standard_Failure | `Standard_Failure`} if the curve is built from:
    * - a {@link Geom_Line | `Geom_Line`}, or
    * - a {@link Geom_Parabola | `Geom_Parabola`}, or
    * - a {@link Geom_Hyperbola | `Geom_Hyperbola`}, and P1 and P2 are either two negative infinite real numbers, or two positive infinite real numbers.
@@ -22639,8 +22614,8 @@ export declare class BndLib_Add2dCurve {
   [Symbol.dispose](): void;
 }
 
-export type Extrema_ExtAlgo = typeof Extrema_ExtAlgo[keyof typeof Extrema_ExtAlgo];
-export declare const Extrema_ExtAlgo: {
+type Extrema_ExtAlgo = typeof Extrema_ExtAlgo[keyof typeof Extrema_ExtAlgo];
+declare const Extrema_ExtAlgo: {
   readonly Extrema_ExtAlgo_Grad: 'Extrema_ExtAlgo_Grad';
   readonly Extrema_ExtAlgo_Tree: 'Extrema_ExtAlgo_Tree';
 };
@@ -22652,7 +22627,7 @@ export declare const Extrema_ExtAlgo: {
  * - implementing the construction algorithm, and
  * - consulting the results. In particular, the Value function returns the constructed arc of circle.
  */
-export declare class GC_MakeArcOfCircle extends GC_Root {
+declare class GC_MakeArcOfCircle extends GC_Root {
   /**
    * Creates an arc of circle passing through three points.
    * @param theP1 first point
@@ -22713,7 +22688,7 @@ export declare class GC_MakeArcOfCircle extends GC_Root {
  * - querying the construction status and the resulting arc via `Value()`.
  * @remarks **Note:** Angular parameters are expressed in radians.
  */
-export declare class GC_MakeArcOfCircle2d extends GC_Root {
+declare class GC_MakeArcOfCircle2d extends GC_Root {
   /**
    * Constructs an arc passing through three points.
    * @param theP1 first point
@@ -22769,7 +22744,7 @@ export declare class GC_MakeArcOfCircle2d extends GC_Root {
  * - implementing the construction algorithm, and
  * - consulting the results. In particular, the Value function returns the constructed arc of ellipse.
  */
-export declare class GC_MakeArcOfEllipse extends GC_Root {
+declare class GC_MakeArcOfEllipse extends GC_Root {
   /**
    * Constructs an arc from angular bounds on an ellipse.
    * @param theElips source ellipse
@@ -22815,7 +22790,7 @@ export declare class GC_MakeArcOfEllipse extends GC_Root {
  * - querying the construction status and the resulting arc via `Value()`.
  * @remarks **Note:** Angular parameters are expressed in radians.
  */
-export declare class GC_MakeArcOfEllipse2d extends GC_Root {
+declare class GC_MakeArcOfEllipse2d extends GC_Root {
   /**
    * Constructs an arc from angular bounds on an ellipse.
    * @param theEllipse source ellipse
@@ -22860,7 +22835,7 @@ export declare class GC_MakeArcOfEllipse2d extends GC_Root {
  * - querying the construction status and the resulting circle via `Value()`.
  * @remarks **Note:** A circle is parameterized in the range [0, 2*PI], and the X axis of its local coordinate system defines the parameter origin.
  */
-export declare class GC_MakeCircle2d extends GC_Root {
+declare class GC_MakeCircle2d extends GC_Root {
   /**
    * Creates a circle from a non-persistent one from package gp.
    * @param theCircle source circle
@@ -22940,7 +22915,7 @@ export declare class GC_MakeCircle2d extends GC_Root {
  * @remarks **Note:** Ellipse parameterization range is [0, 2*PI].
  * @remarks **Note:** The X axis of the local coordinate system is the major axis, and the Y axis is the minor axis.
  */
-export declare class GC_MakeEllipse2d extends GC_Root {
+declare class GC_MakeEllipse2d extends GC_Root {
   /**
    * Creates an ellipse from a non-persistent one from package gp.
    * @param theEllipse source ellipse
@@ -22988,7 +22963,7 @@ export declare class GC_MakeEllipse2d extends GC_Root {
  * - running the construction algorithm;
  * - querying the construction status and the resulting segment via `Value()`.
  */
-export declare class GC_MakeSegment2d extends GC_Root {
+declare class GC_MakeSegment2d extends GC_Root {
   /**
    * Creates a segment between two points.
    * @param theP1 first point
@@ -23038,7 +23013,7 @@ export declare class GC_MakeSegment2d extends GC_Root {
 /**
  * Provides common status services for GC builders reporting construction errors.
  */
-export declare class GC_Root {
+declare class GC_Root {
   constructor();
   /**
    * Returns true if the construction is successful.
@@ -23079,7 +23054,7 @@ export declare class GC_Root {
  * occ::handle<Geom_BezierCurve>aCurve=newGeom_BezierCurve(thePoles); GeomAdaptor_CurveaCurveAdaptor(aCurve); doubleaCDeflect=0.01;//Curvaturedeflection doubleanADeflect=0.09;//Angulardeflection GCPnts_TangentialDeflectionaPointsOnCurve; aPointsOnCurve.Initialize(aCurveAdaptor,anADeflect,aCDeflect); for(inti=1;i<=aPointsOnCurve.NbPoints();++i) { doubleaU=aPointsOnCurve.Parameter(i); gp_PntaPnt=aPointsOnCurve.Value(i); }
  * ```
  */
-export declare class GCPnts_TangentialDeflection {
+declare class GCPnts_TangentialDeflection {
   /**
    * Empty constructor.
    * @see `Initialize()`
@@ -23221,7 +23196,7 @@ export declare class GCPnts_TangentialDeflection {
  * Your_SGPropsaComponent2(theSurface1,...); Your_SGPropsaComponent3(theSurface2,...); //Composestheglobalpropertiesofcomponents1,2,3.Adensity //canbeassociatedwiththecomponents;itdefaultsto1.0. constdoubleaDensity1=2.0; constdoubleaDensity2=3.0; aSystem.Add(aComponent1,aDensity1); aSystem.Add(aComponent2,aDensity2); aSystem.Add(aComponent3); //Returnsthecentreofmassofthesystemintheabsolute //Cartesiancoordinatesystem. constgp_PntaG=aSystem.CentreOfMass(); //Computestheprincipalpropertiesofinertiaofthesystem. constGProp_PrincipalPropsaPp=aSystem.PrincipalProperties(); //Returnstheprincipalmomentsandradiiofgyration. doubleaIxx,aIyy,aIzz,aRxx,aRyy,aRzz; aPp.Moments(aIxx,aIyy,aIzz); aPp.RadiusOfGyration(aRxx,aRyy,aRzz);
  * ```
  */
-export declare class GProp_GProps {
+declare class GProp_GProps {
   /**
    * The origin (0, 0, 0) of the absolute Cartesian coordinate system is used to compute the global properties.
    */
@@ -23316,7 +23291,7 @@ export declare class GProp_GProps {
  * It gives the possibility : . to obtain the B-spline representation of bounded curves. . to split a B-spline curve into several B-spline curves with some constraints of continuity, . to convert a B-spline curve into several Bezier curves or surfaces. All the geometric entities used in this package are bounded. References : . Generating the Bezier Points of B-spline curves and surfaces (Wolfgang Bohm) CAGD volume 13 number 6 november 1981 . On NURBS: A Survey (Leslie Piegl) IEEE Computer Graphics and Application January 1991 .
  * Curve and surface construction using rational B-splines (Leslie Piegl and Wayne Tiller) CAD Volume 19 number 9 november 1987 . A survey of curve and surface methods in CAGD (Wolfgang BOHM) CAGD 1 1984.
  */
-export declare class Geom2dConvert {
+declare class Geom2dConvert {
   constructor();
   /**
    * Convert a curve to BSpline by Approximation.
@@ -23409,7 +23384,7 @@ export declare class Geom2dConvert {
 /**
  * A framework to convert a 2D curve to a BSpline. This is done by approximation within a given tolerance.
  */
-export declare class Geom2dConvert_ApproxCurve {
+declare class Geom2dConvert_ApproxCurve {
   /**
    * Constructs an approximation framework defined by.
    *
@@ -23458,7 +23433,7 @@ export declare class Geom2dConvert_ApproxCurve {
  * - implementing the construction algorithm, and
  * - consulting the results. References : Generating the Bezier points of B-spline curves and surfaces (Wolfgang Bohm) CAD volume 13 number 6 november 1981
  */
-export declare class Geom2dConvert_BSplineCurveToBezierCurve {
+declare class Geom2dConvert_BSplineCurveToBezierCurve {
   /**
    * Computes all the data needed to convert.
    *
@@ -23506,7 +23481,7 @@ export declare class Geom2dConvert_BSplineCurveToBezierCurve {
  *
  * References : . Generating the Bezier Points of B-spline curves and surfaces (Wolfgang Bohm) CAGD volume 13 number 6 november 1981 . On NURBS: A Survey (Leslie Piegl) IEEE Computer Graphics and Application January 1991 . Curve and surface construction using rational B-splines (Leslie Piegl and Wayne Tiller) CAD Volume 19 number 9 november 1987 . A survey of curve and surface methods in CAGD (Wolfgang BOHM) CAGD 1 1984
  */
-export declare class GeomConvert {
+declare class GeomConvert {
   constructor();
   /**
    * Convert a curve from Geom by an approximation method.
@@ -23629,7 +23604,7 @@ export declare class GeomConvert {
 /**
  * Geom Library. This package provides an implementation of functions for basic computation on geometric entity from packages Geom and Geom2d.
  */
-export declare class GeomLib {
+declare class GeomLib {
   constructor();
   /**
    * Computes the curve 3d from package Geom corresponding to curve 2d from package Geom2d, on the plan defined with the local coordinate system Position.
@@ -23801,7 +23776,7 @@ export declare class GeomLib {
  * - SurfaceSet, CurveSet, Curve2dSet : Tools used for dumping, writing and reading.
  * - Methods to dump, write, read curves and surfaces.
  */
-export declare class GeomTools {
+declare class GeomTools {
   constructor();
   // dropped: SetUndefinedTypeHandler param 0 resolves to excluded type GeomTools_UndefinedTypeHandler
   // dropped: GetUndefinedTypeHandler return resolves to excluded type GeomTools_UndefinedTypeHandler
@@ -23815,7 +23790,7 @@ export declare class GeomTools {
  *
  * This template class provides comprehensive extremum search functionality, handling different curve types (lines, circles, ellipses, parabolas, hyperbolas, Bezier, BSpline, and general curves) with optimized algorithms.
  */
-export declare class Extrema_GGExtPC_Adaptor2d_Curve2d_Extrema_Curve2dTool_Extrema_ExtPElC2d_gp_Pnt2d_gp_Vec2d_Extrema_POnCurv2d_NCollection_Sequence_Extrema_POnCurv2d_Extrema_GGenExtPC_Adaptor2d_Curve2d_255e67ef2564152f {
+declare class Extrema_GGExtPC_Adaptor2d_Curve2d_Extrema_Curve2dTool_Extrema_ExtPElC2d_gp_Pnt2d_gp_Vec2d_Extrema_POnCurv2d_NCollection_Sequence_Extrema_POnCurv2d_Extrema_GGenExtPC_Adaptor2d_Curve2d_255e67ef2564152f {
   /**
    * Default constructor.
    */
@@ -23919,7 +23894,7 @@ export declare class Extrema_GGExtPC_Adaptor2d_Curve2d_Extrema_Curve2dTool_Extre
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_ChFiDS_CircSection {
+declare class NCollection_Array1_ChFiDS_CircSection {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -24067,7 +24042,7 @@ export declare class NCollection_Array1_ChFiDS_CircSection {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_NCollection_Vec3_float {
+declare class NCollection_Array1_NCollection_Vec3_float {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -24215,7 +24190,7 @@ export declare class NCollection_Array1_NCollection_Vec3_float {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_Poly_Triangle {
+declare class NCollection_Array1_Poly_Triangle {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -24363,7 +24338,7 @@ export declare class NCollection_Array1_Poly_Triangle {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_bool {
+declare class NCollection_Array1_bool {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -24511,7 +24486,7 @@ export declare class NCollection_Array1_bool {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_double {
+declare class NCollection_Array1_double {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -24659,7 +24634,7 @@ export declare class NCollection_Array1_double {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_float {
+declare class NCollection_Array1_float {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -24807,7 +24782,7 @@ export declare class NCollection_Array1_float {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_gp_Dir {
+declare class NCollection_Array1_gp_Dir {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -24955,7 +24930,7 @@ export declare class NCollection_Array1_gp_Dir {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_gp_Pnt {
+declare class NCollection_Array1_gp_Pnt {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -25103,7 +25078,7 @@ export declare class NCollection_Array1_gp_Pnt {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_gp_Pnt2d {
+declare class NCollection_Array1_gp_Pnt2d {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -25251,7 +25226,7 @@ export declare class NCollection_Array1_gp_Pnt2d {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_gp_Vec {
+declare class NCollection_Array1_gp_Vec {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -25399,7 +25374,7 @@ export declare class NCollection_Array1_gp_Vec {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_handle_Geom2d_BSplineCurve {
+declare class NCollection_Array1_handle_Geom2d_BSplineCurve {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -25547,7 +25522,7 @@ export declare class NCollection_Array1_handle_Geom2d_BSplineCurve {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_handle_Geom2d_BezierCurve {
+declare class NCollection_Array1_handle_Geom2d_BezierCurve {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -25695,7 +25670,7 @@ export declare class NCollection_Array1_handle_Geom2d_BezierCurve {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_handle_Geom_BSplineCurve {
+declare class NCollection_Array1_handle_Geom_BSplineCurve {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -25843,7 +25818,7 @@ export declare class NCollection_Array1_handle_Geom_BSplineCurve {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_int {
+declare class NCollection_Array1_int {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -25991,7 +25966,7 @@ export declare class NCollection_Array1_int {
  * intaBuffer[100]; NCollection_Array1<int>aZero(100);//allocates,lower=0 NCollection_Array1<int>aWrap(aBuffer,100);//wrapsaBuffer,lower=0,notowner for(size_ti=0;i<aWrap.Size();++i) aWrap.At(i)=static_cast<int>(i);
  * ```
  */
-export declare class NCollection_Array1_unsignedchar {
+declare class NCollection_Array1_unsignedchar {
   constructor();
   /**
    * Zero-based constructor: allocates theSize elements with lower bound 0. Use `At()`/ChangeAt() or STL iterators for optimal access (no offset subtraction).
@@ -26123,7 +26098,7 @@ export declare class NCollection_Array1_unsignedchar {
  *
  * Zero-based (size_t) construction mode: `NCollection_Array2(size_t theNbRows, size_t theNbCols)` creates a zero-based array (`LowerRow()`==0, `LowerCol()`==0). In this mode `At()`/ChangeAt() and STL iterators are the preferred access path - they address elements directly without any offset subtraction. Buffer-reuse variant `NCollection_Array2(pointer, size_t, size_t)` wraps an existing flat row-major buffer and does NOT own the memory.
  */
-export declare class NCollection_Array2_double {
+declare class NCollection_Array2_double {
   /**
    * Empty constructor; should be used with caution.
    * @see `Resize()`
@@ -26296,7 +26271,7 @@ export declare class NCollection_Array2_double {
  *
  * Zero-based (size_t) construction mode: `NCollection_Array2(size_t theNbRows, size_t theNbCols)` creates a zero-based array (`LowerRow()`==0, `LowerCol()`==0). In this mode `At()`/ChangeAt() and STL iterators are the preferred access path - they address elements directly without any offset subtraction. Buffer-reuse variant `NCollection_Array2(pointer, size_t, size_t)` wraps an existing flat row-major buffer and does NOT own the memory.
  */
-export declare class NCollection_Array2_gp_Pnt {
+declare class NCollection_Array2_gp_Pnt {
   /**
    * Empty constructor; should be used with caution.
    * @see `Resize()`
@@ -26467,7 +26442,7 @@ export declare class NCollection_Array2_gp_Pnt {
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString {
+declare class NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString {
   /**
    * Empty Constructor.
    */
@@ -26574,7 +26549,7 @@ export declare class NCollection_DataMap_TCollection_AsciiString_TCollection_Asc
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_AsciiString_handle_STEPCAFControl_ExternFile {
+declare class NCollection_DataMap_TCollection_AsciiString_handle_STEPCAFControl_ExternFile {
   /**
    * Empty Constructor.
    */
@@ -26681,7 +26656,7 @@ export declare class NCollection_DataMap_TCollection_AsciiString_handle_STEPCAFC
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_AsciiString_handle_Standard_Transient {
+declare class NCollection_DataMap_TCollection_AsciiString_handle_Standard_Transient {
   /**
    * Empty Constructor.
    */
@@ -26788,7 +26763,7 @@ export declare class NCollection_DataMap_TCollection_AsciiString_handle_Standard
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_AsciiString_int {
+declare class NCollection_DataMap_TCollection_AsciiString_int {
   /**
    * Empty Constructor.
    */
@@ -26895,7 +26870,7 @@ export declare class NCollection_DataMap_TCollection_AsciiString_int {
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_ExtendedString_TCollection_ExtendedString {
+declare class NCollection_DataMap_TCollection_ExtendedString_TCollection_ExtendedString {
   /**
    * Empty Constructor.
    */
@@ -27002,7 +26977,7 @@ export declare class NCollection_DataMap_TCollection_ExtendedString_TCollection_
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_ExtendedString_double {
+declare class NCollection_DataMap_TCollection_ExtendedString_double {
   /**
    * Empty Constructor.
    */
@@ -27109,7 +27084,7 @@ export declare class NCollection_DataMap_TCollection_ExtendedString_double {
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_ExtendedString_handle_CDM_MetaData {
+declare class NCollection_DataMap_TCollection_ExtendedString_handle_CDM_MetaData {
   /**
    * Empty Constructor.
    */
@@ -27216,7 +27191,7 @@ export declare class NCollection_DataMap_TCollection_ExtendedString_handle_CDM_M
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_ExtendedString_handle_NCollection_HArray1_double {
+declare class NCollection_DataMap_TCollection_ExtendedString_handle_NCollection_HArray1_double {
   /**
    * Empty Constructor.
    */
@@ -27323,7 +27298,7 @@ export declare class NCollection_DataMap_TCollection_ExtendedString_handle_NColl
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_ExtendedString_handle_NCollection_HArray1_int {
+declare class NCollection_DataMap_TCollection_ExtendedString_handle_NCollection_HArray1_int {
   /**
    * Empty Constructor.
    */
@@ -27430,7 +27405,7 @@ export declare class NCollection_DataMap_TCollection_ExtendedString_handle_NColl
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_ExtendedString_int {
+declare class NCollection_DataMap_TCollection_ExtendedString_int {
   /**
    * Empty Constructor.
    */
@@ -27537,7 +27512,7 @@ export declare class NCollection_DataMap_TCollection_ExtendedString_int {
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TCollection_ExtendedString_uint8_t {
+declare class NCollection_DataMap_TCollection_ExtendedString_uint8_t {
   /**
    * Empty Constructor.
    */
@@ -27644,7 +27619,7 @@ export declare class NCollection_DataMap_TCollection_ExtendedString_uint8_t {
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TDF_Label_TDF_Label {
+declare class NCollection_DataMap_TDF_Label_TDF_Label {
   /**
    * Empty Constructor.
    */
@@ -27751,7 +27726,7 @@ export declare class NCollection_DataMap_TDF_Label_TDF_Label {
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher {
+declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -27858,7 +27833,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopToo
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher {
+declare class NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -27965,7 +27940,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Sh
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher {
+declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty Constructor.
    */
@@ -28072,7 +28047,7 @@ export declare class NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_Shap
  *
  * This analogy has its limit. aMap(aKey) = anItem can be done only if aKey was previously bound to an item in the map.
  */
-export declare class NCollection_DataMap_handle_TDF_Attribute_handle_TDF_Attribute {
+declare class NCollection_DataMap_handle_TDF_Attribute_handle_TDF_Attribute {
   /**
    * Empty Constructor.
    */
@@ -28184,7 +28159,7 @@ export declare class NCollection_DataMap_handle_TDF_Attribute_handle_TDF_Attribu
  *
  * The vector iterator remembers the length of the vector at the moment of the creation or initialisation of the iterator. Therefore the iteration begins at index 0 and stops at the index equal to (remembered_length-1). It is OK to enlarge the vector during the iteration.
  */
-export declare class NCollection_DynamicArray_handle_Standard_Transient {
+declare class NCollection_DynamicArray_handle_Standard_Transient {
   constructor(theIncrement?: number);
   constructor(theOther: NCollection_DynamicArray_handle_Standard_Transient);
   constructor(theIncrement: number, theAllocator: unknown);
@@ -28227,7 +28202,7 @@ export declare class NCollection_DynamicArray_handle_Standard_Transient {
  *
  * The vector iterator remembers the length of the vector at the moment of the creation or initialisation of the iterator. Therefore the iteration begins at index 0 and stops at the index equal to (remembered_length-1). It is OK to enlarge the vector during the iteration.
  */
-export declare class NCollection_DynamicArray_int {
+declare class NCollection_DynamicArray_int {
   constructor(theIncrement?: number);
   constructor(theOther: NCollection_DynamicArray_int);
   constructor(theIncrement: number, theAllocator: unknown);
@@ -28259,7 +28234,7 @@ export declare class NCollection_DynamicArray_int {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_ChFiDS_CircSection {
+declare class NCollection_HArray1_ChFiDS_CircSection {
   /**
    * Default constructor.
    */
@@ -28309,7 +28284,7 @@ export declare class NCollection_HArray1_ChFiDS_CircSection {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_Poly_Triangle {
+declare class NCollection_HArray1_Poly_Triangle {
   /**
    * Default constructor.
    */
@@ -28359,7 +28334,7 @@ export declare class NCollection_HArray1_Poly_Triangle {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_bool {
+declare class NCollection_HArray1_bool {
   /**
    * Default constructor.
    */
@@ -28409,7 +28384,7 @@ export declare class NCollection_HArray1_bool {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_double {
+declare class NCollection_HArray1_double {
   /**
    * Default constructor.
    */
@@ -28459,7 +28434,7 @@ export declare class NCollection_HArray1_double {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_float {
+declare class NCollection_HArray1_float {
   /**
    * Default constructor.
    */
@@ -28509,7 +28484,7 @@ export declare class NCollection_HArray1_float {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_gp_Pnt {
+declare class NCollection_HArray1_gp_Pnt {
   /**
    * Default constructor.
    */
@@ -28559,7 +28534,7 @@ export declare class NCollection_HArray1_gp_Pnt {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_gp_Pnt2d {
+declare class NCollection_HArray1_gp_Pnt2d {
   /**
    * Default constructor.
    */
@@ -28609,7 +28584,7 @@ export declare class NCollection_HArray1_gp_Pnt2d {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_handle_Geom2d_BSplineCurve {
+declare class NCollection_HArray1_handle_Geom2d_BSplineCurve {
   /**
    * Default constructor.
    */
@@ -28659,7 +28634,7 @@ export declare class NCollection_HArray1_handle_Geom2d_BSplineCurve {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_handle_Geom_BSplineCurve {
+declare class NCollection_HArray1_handle_Geom_BSplineCurve {
   /**
    * Default constructor.
    */
@@ -28709,7 +28684,7 @@ export declare class NCollection_HArray1_handle_Geom_BSplineCurve {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_int {
+declare class NCollection_HArray1_int {
   /**
    * Default constructor.
    */
@@ -28759,7 +28734,7 @@ export declare class NCollection_HArray1_int {
 /**
  * Template class for Handle-managed 1D arrays. Inherits from both NCollection_Array1<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted array functionality.
  */
-export declare class NCollection_HArray1_unsignedchar {
+declare class NCollection_HArray1_unsignedchar {
   /**
    * Default constructor.
    */
@@ -28809,7 +28784,7 @@ export declare class NCollection_HArray1_unsignedchar {
 /**
  * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
-export declare class NCollection_HSequence_TCollection_AsciiString {
+declare class NCollection_HSequence_TCollection_AsciiString {
   /**
    * Default constructor.
    */
@@ -28853,7 +28828,7 @@ export declare class NCollection_HSequence_TCollection_AsciiString {
 /**
  * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
-export declare class NCollection_HSequence_TCollection_ExtendedString {
+declare class NCollection_HSequence_TCollection_ExtendedString {
   /**
    * Default constructor.
    */
@@ -28897,7 +28872,7 @@ export declare class NCollection_HSequence_TCollection_ExtendedString {
 /**
  * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
-export declare class NCollection_HSequence_TopoDS_Shape {
+declare class NCollection_HSequence_TopoDS_Shape {
   /**
    * Default constructor.
    */
@@ -28941,7 +28916,7 @@ export declare class NCollection_HSequence_TopoDS_Shape {
 /**
  * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
-export declare class NCollection_HSequence_handle_Standard_Transient {
+declare class NCollection_HSequence_handle_Standard_Transient {
   /**
    * Default constructor.
    */
@@ -28985,7 +28960,7 @@ export declare class NCollection_HSequence_handle_Standard_Transient {
 /**
  * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
-export declare class NCollection_HSequence_handle_TCollection_HAsciiString {
+declare class NCollection_HSequence_handle_TCollection_HAsciiString {
   /**
    * Default constructor.
    */
@@ -29029,7 +29004,7 @@ export declare class NCollection_HSequence_handle_TCollection_HAsciiString {
 /**
  * Template class for Handle-managed sequences. Inherits from both NCollection_Sequence<TheItemType> and {@link Standard_Transient | `Standard_Transient`}, providing reference-counted sequence functionality.
  */
-export declare class NCollection_HSequence_int {
+declare class NCollection_HSequence_int {
   /**
    * Default constructor.
    */
@@ -29077,7 +29052,7 @@ export declare class NCollection_HSequence_int {
  *
  * See the class Map from NCollection for a discussion about the number of buckets.
  */
-export declare class NCollection_IndexedDataMap_TDF_Label_TopoDS_Shape {
+declare class NCollection_IndexedDataMap_TDF_Label_TopoDS_Shape {
   /**
    * Empty constructor.
    */
@@ -29221,7 +29196,7 @@ export declare class NCollection_IndexedDataMap_TDF_Label_TopoDS_Shape {
  *
  * See the class Map from NCollection for a discussion about the number of buckets.
  */
-export declare class NCollection_IndexedDataMap_handle_Standard_Transient_handle_Standard_Transient {
+declare class NCollection_IndexedDataMap_handle_Standard_Transient_handle_Standard_Transient {
   /**
    * Empty constructor.
    */
@@ -29361,7 +29336,7 @@ export declare class NCollection_IndexedDataMap_handle_Standard_Transient_handle
 /**
  * Purpose: An indexed map is used to store keys and to bind an index to them. Each new key stored in the map gets an index. Index are incremented as keys are stored in the map. A key can be found by the index and an index by the key. No key but the last can be removed so the indices are in the range 1..Extent. See the class Map from NCollection for a discussion about the number of buckets.
  */
-export declare class NCollection_IndexedMap_Message_MetricType {
+declare class NCollection_IndexedMap_Message_MetricType {
   /**
    * Empty constructor.
    */
@@ -29458,7 +29433,7 @@ export declare class NCollection_IndexedMap_Message_MetricType {
 /**
  * Purpose: An indexed map is used to store keys and to bind an index to them. Each new key stored in the map gets an index. Index are incremented as keys are stored in the map. A key can be found by the index and an index by the key. No key but the last can be removed so the indices are in the range 1..Extent. See the class Map from NCollection for a discussion about the number of buckets.
  */
-export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher {
+declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
    */
@@ -29555,7 +29530,7 @@ export declare class NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher
 /**
  * Purpose: An indexed map is used to store keys and to bind an index to them. Each new key stored in the map gets an index. Index are incremented as keys are stored in the map. A key can be found by the index and an index by the key. No key but the last can be removed so the indices are in the range 1..Extent. See the class Map from NCollection for a discussion about the number of buckets.
  */
-export declare class NCollection_IndexedMap_handle_TDF_Attribute {
+declare class NCollection_IndexedMap_handle_TDF_Attribute {
   /**
    * Empty constructor.
    */
@@ -29652,7 +29627,7 @@ export declare class NCollection_IndexedMap_handle_TDF_Attribute {
 /**
  * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
  */
-export declare class NCollection_List_BRepCheck_Status extends NCollection_BaseList {
+declare class NCollection_List_BRepCheck_Status extends NCollection_BaseList {
   /**
    * Empty constructor.
    */
@@ -29727,7 +29702,7 @@ export declare class NCollection_List_BRepCheck_Status extends NCollection_BaseL
 /**
  * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
  */
-export declare class NCollection_List_TDF_Label extends NCollection_BaseList {
+declare class NCollection_List_TDF_Label extends NCollection_BaseList {
   /**
    * Empty constructor.
    */
@@ -29802,7 +29777,7 @@ export declare class NCollection_List_TDF_Label extends NCollection_BaseList {
 /**
  * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
  */
-export declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList {
+declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList {
   /**
    * Empty constructor.
    */
@@ -29877,7 +29852,7 @@ export declare class NCollection_List_TopoDS_Shape extends NCollection_BaseList 
 /**
  * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
  */
-export declare class NCollection_List_handle_Law_Function extends NCollection_BaseList {
+declare class NCollection_List_handle_Law_Function extends NCollection_BaseList {
   /**
    * Empty constructor.
    */
@@ -29952,7 +29927,7 @@ export declare class NCollection_List_handle_Law_Function extends NCollection_Ba
 /**
  * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
  */
-export declare class NCollection_List_handle_Message_Alert extends NCollection_BaseList {
+declare class NCollection_List_handle_Message_Alert extends NCollection_BaseList {
   /**
    * Empty constructor.
    */
@@ -30027,7 +30002,7 @@ export declare class NCollection_List_handle_Message_Alert extends NCollection_B
 /**
  * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
  */
-export declare class NCollection_List_handle_Poly_Triangulation extends NCollection_BaseList {
+declare class NCollection_List_handle_Poly_Triangulation extends NCollection_BaseList {
   /**
    * Empty constructor.
    */
@@ -30102,7 +30077,7 @@ export declare class NCollection_List_handle_Poly_Triangulation extends NCollect
 /**
  * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
  */
-export declare class NCollection_List_handle_TDF_AttributeDelta extends NCollection_BaseList {
+declare class NCollection_List_handle_TDF_AttributeDelta extends NCollection_BaseList {
   /**
    * Empty constructor.
    */
@@ -30177,7 +30152,7 @@ export declare class NCollection_List_handle_TDF_AttributeDelta extends NCollect
 /**
  * Purpose: Simple list to link items together keeping the first and the last one. Inherits BaseList, adding the data item to each node.
  */
-export declare class NCollection_List_handle_TDF_Delta extends NCollection_BaseList {
+declare class NCollection_List_handle_TDF_Delta extends NCollection_BaseList {
   /**
    * Empty constructor.
    */
@@ -30254,7 +30229,7 @@ export declare class NCollection_List_handle_TDF_Delta extends NCollection_BaseL
  *
  * The ::Iterator class can be used to explore the content of the map. It is not wise to iterate and modify a map in parallel.
  *
- * To compute the hashcode of the key the function ::HashCode must be defined in the global namespace
+ * To compute the hashcode of the key the function `HashCode` must be defined in the global namespace
  *
  * To compare two keys the function `IsEqual` must be defined in the global namespace.
  *
@@ -30262,7 +30237,7 @@ export declare class NCollection_List_handle_TDF_Delta extends NCollection_BaseL
  *
  * If you have a fair idea of the number of objects you can save on automatic resizing by giving a number of buckets at creation or using the ReSize method. This should be consider only for crucial optimisation issues.
  */
-export declare class NCollection_Map_TDF_Label {
+declare class NCollection_Map_TDF_Label {
   /**
    * Empty constructor.
    */
@@ -30388,7 +30363,7 @@ export declare class NCollection_Map_TDF_Label {
  *
  * The ::Iterator class can be used to explore the content of the map. It is not wise to iterate and modify a map in parallel.
  *
- * To compute the hashcode of the key the function ::HashCode must be defined in the global namespace
+ * To compute the hashcode of the key the function `HashCode` must be defined in the global namespace
  *
  * To compare two keys the function `IsEqual` must be defined in the global namespace.
  *
@@ -30396,7 +30371,7 @@ export declare class NCollection_Map_TDF_Label {
  *
  * If you have a fair idea of the number of objects you can save on automatic resizing by giving a number of buckets at creation or using the ReSize method. This should be consider only for crucial optimisation issues.
  */
-export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
+declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
   /**
    * Empty constructor.
    */
@@ -30522,7 +30497,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
  *
  * The ::Iterator class can be used to explore the content of the map. It is not wise to iterate and modify a map in parallel.
  *
- * To compute the hashcode of the key the function ::HashCode must be defined in the global namespace
+ * To compute the hashcode of the key the function `HashCode` must be defined in the global namespace
  *
  * To compare two keys the function `IsEqual` must be defined in the global namespace.
  *
@@ -30530,7 +30505,7 @@ export declare class NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher {
  *
  * If you have a fair idea of the number of objects you can save on automatic resizing by giving a number of buckets at creation or using the ReSize method. This should be consider only for crucial optimisation issues.
  */
-export declare class NCollection_Map_handle_TDF_Attribute {
+declare class NCollection_Map_handle_TDF_Attribute {
   /**
    * Empty constructor.
    */
@@ -30654,7 +30629,7 @@ export declare class NCollection_Map_handle_TDF_Attribute {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_Extrema_POnCurv2d {
+declare class NCollection_Sequence_Extrema_POnCurv2d {
   /**
    * Empty constructor.
    */
@@ -30789,7 +30764,7 @@ export declare class NCollection_Sequence_Extrema_POnCurv2d {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_HLRBRep_ShapeBounds {
+declare class NCollection_Sequence_HLRBRep_ShapeBounds {
   /**
    * Empty constructor.
    */
@@ -30924,7 +30899,7 @@ export declare class NCollection_Sequence_HLRBRep_ShapeBounds {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_IntRes2d_IntersectionPoint {
+declare class NCollection_Sequence_IntRes2d_IntersectionPoint {
   /**
    * Empty constructor.
    */
@@ -31059,7 +31034,7 @@ export declare class NCollection_Sequence_IntRes2d_IntersectionPoint {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_TCollection_AsciiString {
+declare class NCollection_Sequence_TCollection_AsciiString {
   /**
    * Empty constructor.
    */
@@ -31194,7 +31169,7 @@ export declare class NCollection_Sequence_TCollection_AsciiString {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_TCollection_ExtendedString {
+declare class NCollection_Sequence_TCollection_ExtendedString {
   /**
    * Empty constructor.
    */
@@ -31329,7 +31304,7 @@ export declare class NCollection_Sequence_TCollection_ExtendedString {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_TDF_Label {
+declare class NCollection_Sequence_TDF_Label {
   /**
    * Empty constructor.
    */
@@ -31464,7 +31439,7 @@ export declare class NCollection_Sequence_TDF_Label {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_TopoDS_Shape {
+declare class NCollection_Sequence_TopoDS_Shape {
   /**
    * Empty constructor.
    */
@@ -31599,7 +31574,7 @@ export declare class NCollection_Sequence_TopoDS_Shape {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_double {
+declare class NCollection_Sequence_double {
   /**
    * Empty constructor.
    */
@@ -31734,7 +31709,7 @@ export declare class NCollection_Sequence_double {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_gp_Pnt {
+declare class NCollection_Sequence_gp_Pnt {
   /**
    * Empty constructor.
    */
@@ -31869,7 +31844,7 @@ export declare class NCollection_Sequence_gp_Pnt {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_gp_Pnt2d {
+declare class NCollection_Sequence_gp_Pnt2d {
   /**
    * Empty constructor.
    */
@@ -32004,7 +31979,7 @@ export declare class NCollection_Sequence_gp_Pnt2d {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_handle_Geom_Curve {
+declare class NCollection_Sequence_handle_Geom_Curve {
   /**
    * Empty constructor.
    */
@@ -32139,7 +32114,7 @@ export declare class NCollection_Sequence_handle_Geom_Curve {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_handle_Standard_Transient {
+declare class NCollection_Sequence_handle_Standard_Transient {
   /**
    * Empty constructor.
    */
@@ -32274,7 +32249,7 @@ export declare class NCollection_Sequence_handle_Standard_Transient {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_handle_TCollection_HAsciiString {
+declare class NCollection_Sequence_handle_TCollection_HAsciiString {
   /**
    * Empty constructor.
    */
@@ -32409,7 +32384,7 @@ export declare class NCollection_Sequence_handle_TCollection_HAsciiString {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_handle_TDF_Attribute {
+declare class NCollection_Sequence_handle_TDF_Attribute {
   /**
    * Empty constructor.
    */
@@ -32544,7 +32519,7 @@ export declare class NCollection_Sequence_handle_TDF_Attribute {
 /**
  * Purpose: Definition of a sequence of elements indexed by an Integer in range of 1..n
  */
-export declare class NCollection_Sequence_int {
+declare class NCollection_Sequence_int {
   /**
    * Empty constructor.
    */
@@ -32676,7 +32651,7 @@ export declare class NCollection_Sequence_int {
   [Symbol.dispose](): void;
 }
 
-export declare class BRepToolsWrapper {
+declare class BRepToolsWrapper {
   constructor();
   static Write(shape: TopoDS_Shape): string;
   static Read(data: string): TopoDS_Shape;
@@ -32685,7 +32660,7 @@ export declare class BRepToolsWrapper {
   [Symbol.dispose](): void;
 }
 
-export declare class GeomToolsWrapper {
+declare class GeomToolsWrapper {
   constructor();
   static Write(geometry: Geom2d_Curve): string;
   static Read(data: string): Geom2d_Curve;
@@ -32694,7 +32669,7 @@ export declare class GeomToolsWrapper {
   [Symbol.dispose](): void;
 }
 
-export declare class ReplicadEdgeMeshData {
+declare class ReplicadEdgeMeshData {
   constructor();
   constructor(other: ReplicadEdgeMeshData);
   getLinesPtr(): number;
@@ -32706,7 +32681,7 @@ export declare class ReplicadEdgeMeshData {
   [Symbol.dispose](): void;
 }
 
-export declare class ReplicadEdgeMeshExtractor {
+declare class ReplicadEdgeMeshExtractor {
   constructor();
   static extract(shape: TopoDS_Shape, tolerance: number, angularTolerance: number): ReplicadEdgeMeshData;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -32714,7 +32689,7 @@ export declare class ReplicadEdgeMeshExtractor {
   [Symbol.dispose](): void;
 }
 
-export declare class ReplicadMeshData {
+declare class ReplicadMeshData {
   constructor();
   constructor(other: ReplicadMeshData);
   getVerticesPtr(): number;
@@ -32730,7 +32705,7 @@ export declare class ReplicadMeshData {
   [Symbol.dispose](): void;
 }
 
-export declare class ReplicadMeshExtractor {
+declare class ReplicadMeshExtractor {
   constructor();
   static mesh(shape: TopoDS_Shape, tolerance: number, angularTolerance: number): void;
   static extract(shape: TopoDS_Shape, tolerance: number, angularTolerance: number, skipNormals: boolean): ReplicadMeshData;
@@ -32739,7 +32714,7 @@ export declare class ReplicadMeshExtractor {
   [Symbol.dispose](): void;
 }
 
-export declare class ReplicadShapeCaster {
+declare class ReplicadShapeCaster {
   constructor();
   static CompSolid(shape: TopoDS_Shape): TopoDS_CompSolid;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -32747,7 +32722,7 @@ export declare class ReplicadShapeCaster {
   [Symbol.dispose](): void;
 }
 
-export declare class ReplicadShapeHasher {
+declare class ReplicadShapeHasher {
   constructor();
   static HashCode(shape: TopoDS_Shape, upperBound: number): number;
   /** Releases the C++ object. The caller must ensure no further access. */
@@ -32761,7 +32736,7 @@ export declare class ReplicadShapeHasher {
  * Used for metadata exchange in data export operations
  * (e.g. GLTF writer metadata passed to `RWGltf_CafWriter.Perform`).
  */
-export declare class TColStd_IndexedDataMapOfStringString {
+declare class TColStd_IndexedDataMapOfStringString {
   constructor();
   /** Release the underlying C++ object to prevent memory leaks. */
   delete(): void;
@@ -32775,7 +32750,7 @@ export declare class TColStd_IndexedDataMapOfStringString {
  * but algorithms like `BRepFilletAPI_MakeFillet` require `TopoDS_Edge` or `TopoDS_Face`.
  * Use these static casts after verifying the shape type via `TopExp_Explorer`.
  */
-export declare class TopoDS {
+declare class TopoDS {
   /**
    * Downcast a generic shape to an edge.
    *
@@ -32828,12 +32803,12 @@ export declare class TopoDS {
 }
 
 /**
- * OpenCascade.js runtime helpers for exception introspection.
+ * libcascade runtime helpers for exception introspection.
  *
  * Provides access to OCCT exception data when exception handling is enabled
  * (`-fexceptions` / `-sDISABLE_EXCEPTION_CATCHING=0`).
  */
-export declare class OCJS {
+declare class OCJS {
   /**
    * Extract the `Standard_Failure` data from a caught Emscripten exception pointer.
    *
@@ -32879,7 +32854,7 @@ type Standard_Size = number;
  *
  * @see {@link https://emscripten.org/docs/api_reference/Filesystem-API.html | Emscripten FS API}
  */
-export declare namespace FS {
+declare namespace FS {
   /** Result of a path lookup containing the resolved node. */
   interface Lookup {
       path: string;
@@ -33405,12 +33380,8 @@ export declare namespace FS {
 declare global {
   namespace WebAssembly {
     /**
-     * A native WebAssembly exception caught from a build using
-     * `-fwasm-exceptions`.
-     *
-     * TypeScript's standard libraries do not yet declare this runtime type in
-     * every supported compiler/lib combination. Keep the declaration
-     * structural so it merges with newer standard-library definitions.
+     * Native exception object thrown by a build using `-fwasm-exceptions`.
+     * Its structural declaration merges with standard-library definitions.
      */
     interface Exception {
       readonly [Symbol.toStringTag]: 'WebAssembly.Exception';
@@ -33430,7 +33401,7 @@ export {};
  * @returns A `[type, message]` tuple where `type` is the C++ exception class name
  *   (e.g. `'Standard_DomainError'`) and `message` is the exception text.
  */
-export declare function getExceptionMessage(ex: WebAssembly.Exception): [string, string];
+declare function getExceptionMessage(ex: WebAssembly.Exception): [type: string, message: string];
 /**
  * Increment the reference count of a `WebAssembly.Exception` to prevent premature disposal.
  *
@@ -33438,92 +33409,507 @@ export declare function getExceptionMessage(ex: WebAssembly.Exception): [string,
  *
  * @param ex - The exception whose refcount to increment.
  */
-export declare function incrementExceptionRefcount(ex: WebAssembly.Exception): void;
+declare function incrementExceptionRefcount(ex: WebAssembly.Exception): void;
 /**
  * Decrement the reference count of a `WebAssembly.Exception`, freeing it when count reaches zero.
  *
  * @param ex - The exception whose refcount to decrement.
  */
-export declare function decrementExceptionRefcount(ex: WebAssembly.Exception): void;
+declare function decrementExceptionRefcount(ex: WebAssembly.Exception): void;
 
-export type BRepCheck_ListOfStatus = NCollection_List_BRepCheck_Status;
-export type BRepTopAdaptor_MapOfShapeTool = NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher;
-export type ChFiDS_SecArray1 = NCollection_Array1_ChFiDS_CircSection;
-export type ChFiDS_SecHArray1 = NCollection_HArray1_ChFiDS_CircSection;
-export type Extrema_GGExtPC_classclassclassclassclassclassclassclassAdaptor2d_Curve2d_Extrema_Curve2dTool_Extrema_ExtPElC2d_gp_Pnt2d_gp_Vec2d_Extrema_POnCurv2d_NCollection_Sequence_Extrema_POnCur_8b7a66bf2ea31743 = Extrema_GGExtPC_Adaptor2d_Curve2d_Extrema_Curve2dTool_Extrema_ExtPElC2d_gp_Pnt2d_gp_Vec2d_Extrema_POnCurv2d_NCollection_Sequence_Extrema_POnCurv2d_Extrema_GGenExtPC_Adaptor2d_Curve2d_255e67ef2564152f;
-export type Extrema_SequenceOfPOnCurv2d = NCollection_Sequence_Extrema_POnCurv2d;
-export type HLRBRep_SeqOfShapeBounds = NCollection_Sequence_HLRBRep_ShapeBounds;
-export type IntRes2d_SequenceOfIntersectionPoint = NCollection_Sequence_IntRes2d_IntersectionPoint;
-export type Law_Laws = NCollection_List_handle_Law_Function;
-export type Message_ListOfAlert = NCollection_List_handle_Message_Alert;
-export type NCollection_Array1_TFunction_DataMapOfGUIDDriver = NCollection_Array1_int;
-export type NCollection_Array1_TopOpeBRepDS_DataMapOfIntegerListOfInterference = NCollection_Array1_int;
-export type NCollection_Array1_uint8_t = NCollection_Array1_unsignedchar;
-export type NCollection_DataMap_TCollection_ExtendedString_unsignedchar = NCollection_DataMap_TCollection_ExtendedString_uint8_t;
-export type NCollection_DataMap_TopoDS_Shape_TopTools_ListOfShape_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher;
-export type NCollection_HArray1_TFunction_DataMapOfGUIDDriver = NCollection_HArray1_int;
-export type NCollection_HArray1_TopOpeBRepDS_DataMapOfIntegerListOfInterference = NCollection_HArray1_int;
-export type NCollection_HArray1_uint8_t = NCollection_HArray1_unsignedchar;
-export type Poly_Array1OfTriangle = NCollection_Array1_Poly_Triangle;
-export type Poly_HArray1OfTriangle = NCollection_HArray1_Poly_Triangle;
-export type Poly_ListOfTriangulation = NCollection_List_handle_Poly_Triangulation;
-export type TColGeom2d_Array1OfBSplineCurve = NCollection_Array1_handle_Geom2d_BSplineCurve;
-export type TColGeom2d_Array1OfBezierCurve = NCollection_Array1_handle_Geom2d_BezierCurve;
-export type TColGeom2d_HArray1OfBSplineCurve = NCollection_HArray1_handle_Geom2d_BSplineCurve;
-export type TColGeom_Array1OfBSplineCurve = NCollection_Array1_handle_Geom_BSplineCurve;
-export type TColGeom_HArray1OfBSplineCurve = NCollection_HArray1_handle_Geom_BSplineCurve;
-export type TColGeom_SequenceOfCurve = NCollection_Sequence_handle_Geom_Curve;
-export type TColStd_Array1OfBoolean = NCollection_Array1_bool;
-export type TColStd_Array1OfByte = NCollection_Array1_unsignedchar;
-export type TColStd_Array1OfInteger = NCollection_Array1_int;
-export type TColStd_Array1OfReal = NCollection_Array1_double;
-export type TColStd_Array2OfReal = NCollection_Array2_double;
-export type TColStd_HArray1OfBoolean = NCollection_HArray1_bool;
-export type TColStd_HArray1OfByte = NCollection_HArray1_unsignedchar;
-export type TColStd_HArray1OfInteger = NCollection_HArray1_int;
-export type TColStd_HArray1OfReal = NCollection_HArray1_double;
-export type TColStd_HSequenceOfAsciiString = NCollection_HSequence_TCollection_AsciiString;
-export type TColStd_HSequenceOfExtendedString = NCollection_HSequence_TCollection_ExtendedString;
-export type TColStd_HSequenceOfHAsciiString = NCollection_HSequence_handle_TCollection_HAsciiString;
-export type TColStd_HSequenceOfInteger = NCollection_HSequence_int;
-export type TColStd_HSequenceOfTransient = NCollection_HSequence_handle_Standard_Transient;
-export type TColStd_SequenceOfAsciiString = NCollection_Sequence_TCollection_AsciiString;
-export type TColStd_SequenceOfExtendedString = NCollection_Sequence_TCollection_ExtendedString;
-export type TColStd_SequenceOfHAsciiString = NCollection_Sequence_handle_TCollection_HAsciiString;
-export type TColStd_SequenceOfInteger = NCollection_Sequence_int;
-export type TColStd_SequenceOfReal = NCollection_Sequence_double;
-export type TColStd_SequenceOfTransient = NCollection_Sequence_handle_Standard_Transient;
-export type TColgp_Array1OfDir = NCollection_Array1_gp_Dir;
-export type TColgp_Array1OfPnt = NCollection_Array1_gp_Pnt;
-export type TColgp_Array1OfPnt2d = NCollection_Array1_gp_Pnt2d;
-export type TColgp_Array1OfVec = NCollection_Array1_gp_Vec;
-export type TColgp_Array2OfPnt = NCollection_Array2_gp_Pnt;
-export type TColgp_HArray1OfPnt = NCollection_HArray1_gp_Pnt;
-export type TColgp_HArray1OfPnt2d = NCollection_HArray1_gp_Pnt2d;
-export type TColgp_SequenceOfPnt = NCollection_Sequence_gp_Pnt;
-export type TColgp_SequenceOfPnt2d = NCollection_Sequence_gp_Pnt2d;
-export type TDF_AttributeDeltaList = NCollection_List_handle_TDF_AttributeDelta;
-export type TDF_AttributeSequence = NCollection_Sequence_handle_TDF_Attribute;
-export type TDF_DeltaList = NCollection_List_handle_TDF_Delta;
-export type TDF_LabelList = NCollection_List_TDF_Label;
-export type TDF_LabelSequence = NCollection_Sequence_TDF_Label;
-export type TFunction_Array1OfDataMapOfGUIDDriver = NCollection_Array1_int;
-export type TFunction_HArray1OfDataMapOfGUIDDriver = NCollection_HArray1_int;
-export type TShort_Array1OfShortReal = NCollection_Array1_float;
-export type TShort_HArray1OfShortReal = NCollection_HArray1_float;
-export type TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference = NCollection_Array1_int;
-export type TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference = NCollection_HArray1_int;
-export type TopTools_DataMapOfShapeListOfShape = NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher;
-export type TopTools_DataMapOfShapeShape = NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher;
-export type TopTools_HSequenceOfShape = NCollection_HSequence_TopoDS_Shape;
-export type TopTools_IndexedMapOfShape = NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher;
-export type TopTools_ListOfShape = NCollection_List_TopoDS_Shape;
-export type TopTools_MapOfShape = NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher;
-export type TopTools_SequenceOfShape = NCollection_Sequence_TopoDS_Shape;
-export type XSControl_WorkSessionMap = NCollection_DataMap_TCollection_AsciiString_handle_Standard_Transient;
+type BRepCheck_ListOfStatus = NCollection_List_BRepCheck_Status;
+type BRepTopAdaptor_MapOfShapeTool = NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher;
+type ChFiDS_SecArray1 = NCollection_Array1_ChFiDS_CircSection;
+type ChFiDS_SecHArray1 = NCollection_HArray1_ChFiDS_CircSection;
+type Extrema_GGExtPC_classclassclassclassclassclassclassclassAdaptor2d_Curve2d_Extrema_Curve2dTool_Extrema_ExtPElC2d_gp_Pnt2d_gp_Vec2d_Extrema_POnCurv2d_NCollection_Sequence_Extrema_POnCur_8b7a66bf2ea31743 = Extrema_GGExtPC_Adaptor2d_Curve2d_Extrema_Curve2dTool_Extrema_ExtPElC2d_gp_Pnt2d_gp_Vec2d_Extrema_POnCurv2d_NCollection_Sequence_Extrema_POnCurv2d_Extrema_GGenExtPC_Adaptor2d_Curve2d_255e67ef2564152f;
+type Extrema_SequenceOfPOnCurv2d = NCollection_Sequence_Extrema_POnCurv2d;
+type HLRBRep_SeqOfShapeBounds = NCollection_Sequence_HLRBRep_ShapeBounds;
+type IntRes2d_SequenceOfIntersectionPoint = NCollection_Sequence_IntRes2d_IntersectionPoint;
+type Law_Laws = NCollection_List_handle_Law_Function;
+type Message_ListOfAlert = NCollection_List_handle_Message_Alert;
+type NCollection_Array1_TFunction_DataMapOfGUIDDriver = NCollection_Array1_int;
+type NCollection_Array1_TopOpeBRepDS_DataMapOfIntegerListOfInterference = NCollection_Array1_int;
+type NCollection_Array1_uint8_t = NCollection_Array1_unsignedchar;
+type NCollection_DataMap_TCollection_ExtendedString_unsignedchar = NCollection_DataMap_TCollection_ExtendedString_uint8_t;
+type NCollection_DataMap_TopoDS_Shape_TopTools_ListOfShape_TopTools_ShapeMapHasher = NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher;
+type NCollection_HArray1_TFunction_DataMapOfGUIDDriver = NCollection_HArray1_int;
+type NCollection_HArray1_TopOpeBRepDS_DataMapOfIntegerListOfInterference = NCollection_HArray1_int;
+type NCollection_HArray1_uint8_t = NCollection_HArray1_unsignedchar;
+type Poly_Array1OfTriangle = NCollection_Array1_Poly_Triangle;
+type Poly_HArray1OfTriangle = NCollection_HArray1_Poly_Triangle;
+type Poly_ListOfTriangulation = NCollection_List_handle_Poly_Triangulation;
+type TColGeom2d_Array1OfBSplineCurve = NCollection_Array1_handle_Geom2d_BSplineCurve;
+type TColGeom2d_Array1OfBezierCurve = NCollection_Array1_handle_Geom2d_BezierCurve;
+type TColGeom2d_HArray1OfBSplineCurve = NCollection_HArray1_handle_Geom2d_BSplineCurve;
+type TColGeom_Array1OfBSplineCurve = NCollection_Array1_handle_Geom_BSplineCurve;
+type TColGeom_HArray1OfBSplineCurve = NCollection_HArray1_handle_Geom_BSplineCurve;
+type TColGeom_SequenceOfCurve = NCollection_Sequence_handle_Geom_Curve;
+type TColStd_Array1OfBoolean = NCollection_Array1_bool;
+type TColStd_Array1OfByte = NCollection_Array1_unsignedchar;
+type TColStd_Array1OfInteger = NCollection_Array1_int;
+type TColStd_Array1OfReal = NCollection_Array1_double;
+type TColStd_Array2OfReal = NCollection_Array2_double;
+type TColStd_HArray1OfBoolean = NCollection_HArray1_bool;
+type TColStd_HArray1OfByte = NCollection_HArray1_unsignedchar;
+type TColStd_HArray1OfInteger = NCollection_HArray1_int;
+type TColStd_HArray1OfReal = NCollection_HArray1_double;
+type TColStd_HSequenceOfAsciiString = NCollection_HSequence_TCollection_AsciiString;
+type TColStd_HSequenceOfExtendedString = NCollection_HSequence_TCollection_ExtendedString;
+type TColStd_HSequenceOfHAsciiString = NCollection_HSequence_handle_TCollection_HAsciiString;
+type TColStd_HSequenceOfInteger = NCollection_HSequence_int;
+type TColStd_HSequenceOfTransient = NCollection_HSequence_handle_Standard_Transient;
+type TColStd_SequenceOfAsciiString = NCollection_Sequence_TCollection_AsciiString;
+type TColStd_SequenceOfExtendedString = NCollection_Sequence_TCollection_ExtendedString;
+type TColStd_SequenceOfHAsciiString = NCollection_Sequence_handle_TCollection_HAsciiString;
+type TColStd_SequenceOfInteger = NCollection_Sequence_int;
+type TColStd_SequenceOfReal = NCollection_Sequence_double;
+type TColStd_SequenceOfTransient = NCollection_Sequence_handle_Standard_Transient;
+type TColgp_Array1OfDir = NCollection_Array1_gp_Dir;
+type TColgp_Array1OfPnt = NCollection_Array1_gp_Pnt;
+type TColgp_Array1OfPnt2d = NCollection_Array1_gp_Pnt2d;
+type TColgp_Array1OfVec = NCollection_Array1_gp_Vec;
+type TColgp_Array2OfPnt = NCollection_Array2_gp_Pnt;
+type TColgp_HArray1OfPnt = NCollection_HArray1_gp_Pnt;
+type TColgp_HArray1OfPnt2d = NCollection_HArray1_gp_Pnt2d;
+type TColgp_SequenceOfPnt = NCollection_Sequence_gp_Pnt;
+type TColgp_SequenceOfPnt2d = NCollection_Sequence_gp_Pnt2d;
+type TDF_AttributeDeltaList = NCollection_List_handle_TDF_AttributeDelta;
+type TDF_AttributeSequence = NCollection_Sequence_handle_TDF_Attribute;
+type TDF_DeltaList = NCollection_List_handle_TDF_Delta;
+type TDF_LabelList = NCollection_List_TDF_Label;
+type TDF_LabelSequence = NCollection_Sequence_TDF_Label;
+type TFunction_Array1OfDataMapOfGUIDDriver = NCollection_Array1_int;
+type TFunction_HArray1OfDataMapOfGUIDDriver = NCollection_HArray1_int;
+type TShort_Array1OfShortReal = NCollection_Array1_float;
+type TShort_HArray1OfShortReal = NCollection_HArray1_float;
+type TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference = NCollection_Array1_int;
+type TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference = NCollection_HArray1_int;
+type TopTools_DataMapOfShapeListOfShape = NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher;
+type TopTools_DataMapOfShapeShape = NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher;
+type TopTools_HSequenceOfShape = NCollection_HSequence_TopoDS_Shape;
+type TopTools_IndexedMapOfShape = NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher;
+type TopTools_ListOfShape = NCollection_List_TopoDS_Shape;
+type TopTools_MapOfShape = NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher;
+type TopTools_SequenceOfShape = NCollection_Sequence_TopoDS_Shape;
+type XSControl_WorkSessionMap = NCollection_DataMap_TCollection_AsciiString_handle_Standard_Transient;
+
+export type { Adaptor2d_Curve2d };
+export type { Adaptor3d_Curve };
+export type { Adaptor3d_Surface };
+export type { BOPAlgo_GlueEnum };
+export type { BOPAlgo_Options };
+export type { BRepAdaptor_CompCurve };
+export type { BRepAdaptor_Curve };
+export type { BRepAdaptor_Curve2d };
+export type { BRepAdaptor_Surface };
+export type { BRepAlgoAPI_Algo };
+export type { BRepAlgoAPI_BooleanOperation };
+export type { BRepAlgoAPI_BuilderAlgo };
+export type { BRepAlgoAPI_Common };
+export type { BRepAlgoAPI_Cut };
+export type { BRepAlgoAPI_Fuse };
+export type { BRepAlgoAPI_Section };
+export type { BRepAlgoAPI_Splitter };
+export type { BRepBndLib };
+export type { BRepBuilderAPI_Command };
+export type { BRepBuilderAPI_MakeEdge };
+export type { BRepBuilderAPI_MakeFace };
+export type { BRepBuilderAPI_MakeShape };
+export type { BRepBuilderAPI_MakeShell };
+export type { BRepBuilderAPI_MakeSolid };
+export type { BRepBuilderAPI_MakeVertex };
+export type { BRepBuilderAPI_MakeWire };
+export type { BRepBuilderAPI_ModifyShape };
+export type { BRepBuilderAPI_Sewing };
+export type { BRepBuilderAPI_Transform };
+export type { BRepBuilderAPI_TransitionMode };
+export type { BRepBuilderAPI_WireError };
+export type { BRepCheck_Analyzer };
+export type { BRepCheck_ListOfStatus };
+export type { BRepExtrema_DistShapeShape };
+export type { BRepFeat_Form };
+export type { BRepFeat_MakeDPrism };
+export type { BRepFill_TypeOfContact };
+export type { BRepFilletAPI_LocalOperation };
+export type { BRepFilletAPI_MakeChamfer };
+export type { BRepFilletAPI_MakeFillet };
+export type { BRepGProp };
+export type { BRepGProp_Face };
+export type { BRepLib };
+export type { BRepLib_ToolTriangulatedShape };
+export type { BRepMesh_DiscretRoot };
+export type { BRepMesh_IncrementalMesh };
+export type { BRepOffsetAPI_DraftAngle };
+export type { BRepOffsetAPI_MakeFilling };
+export type { BRepOffsetAPI_MakeOffset };
+export type { BRepOffsetAPI_MakeOffsetShape };
+export type { BRepOffsetAPI_MakePipe };
+export type { BRepOffsetAPI_MakePipeShell };
+export type { BRepOffsetAPI_MakeThickSolid };
+export type { BRepOffsetAPI_ThruSections };
+export type { BRepOffset_Mode };
+export type { BRepPrimAPI_MakeBox };
+export type { BRepPrimAPI_MakeCylinder };
+export type { BRepPrimAPI_MakeHalfSpace };
+export type { BRepPrimAPI_MakeOneAxis };
+export type { BRepPrimAPI_MakePrism };
+export type { BRepPrimAPI_MakeRevol };
+export type { BRepPrimAPI_MakeRevolution };
+export type { BRepPrimAPI_MakeSphere };
+export type { BRepPrimAPI_MakeSweep };
+export type { BRepPrimAPI_MakeTorus };
+export type { BRepTools };
+export type { BRepToolsWrapper };
+export type { BRepTopAdaptor_MapOfShapeTool };
+export type { BRep_Tool };
+export type { BinTools };
+export type { BndLib_Add2dCurve };
+export type { Bnd_Box };
+export type { Bnd_Box2d };
+export type { Bnd_Box2d_Limits };
+export type { Bnd_Box_Limits };
+export type { Bnd_OBB };
+export type { Bnd_OBB_HalfSizes };
+export type { CDM_Document };
+export type { ChFi3d_FilletShape };
+export type { ChFiDS_ChamfMode };
+export type { ChFiDS_SecArray1 };
+export type { ChFiDS_SecHArray1 };
+export type { Convert_ParameterisationType };
+export type { Extrema_ExtAlgo };
+export type { Extrema_GGExtPC_Adaptor2d_Curve2d_Extrema_Curve2dTool_Extrema_ExtPElC2d_gp_Pnt2d_gp_Vec2d_Extrema_POnCurv2d_NCollection_Sequence_Extrema_POnCurv2d_Extrema_GGenExtPC_Adaptor2d_Curve2d_255e67ef2564152f };
+export type { Extrema_GGExtPC_classclassclassclassclassclassclassclassAdaptor2d_Curve2d_Extrema_Curve2dTool_Extrema_ExtPElC2d_gp_Pnt2d_gp_Vec2d_Extrema_POnCurv2d_NCollection_Sequence_Extrema_POnCur_8b7a66bf2ea31743 };
+export type { Extrema_SequenceOfPOnCurv2d };
+export type { GCPnts_TangentialDeflection };
+export type { GC_MakeArcOfCircle };
+export type { GC_MakeArcOfCircle2d };
+export type { GC_MakeArcOfEllipse };
+export type { GC_MakeArcOfEllipse2d };
+export type { GC_MakeCircle2d };
+export type { GC_MakeEllipse2d };
+export type { GC_MakeSegment2d };
+export type { GC_Root };
+export type { GProp_GProps };
+export type { Geom2dAPI_ExtremaCurveCurve };
+export type { Geom2dAPI_InterCurveCurve };
+export type { Geom2dAPI_PointsToBSpline };
+export type { Geom2dAPI_ProjectPointOnCurve };
+export type { Geom2dAdaptor_Curve };
+export type { Geom2dAdaptor_Curve_BSplineData };
+export type { Geom2dAdaptor_Curve_BezierData };
+export type { Geom2dAdaptor_Curve_OffsetData };
+export type { Geom2dConvert };
+export type { Geom2dConvert_ApproxCurve };
+export type { Geom2dConvert_BSplineCurveToBezierCurve };
+export type { Geom2d_BSplineCurve };
+export type { Geom2d_BezierCurve };
+export type { Geom2d_BoundedCurve };
+export type { Geom2d_Circle };
+export type { Geom2d_Conic };
+export type { Geom2d_Curve };
+export type { Geom2d_Curve_ResD1 };
+export type { Geom2d_Curve_ResD2 };
+export type { Geom2d_Curve_ResD3 };
+export type { Geom2d_Ellipse };
+export type { Geom2d_Geometry };
+export type { Geom2d_Line };
+export type { Geom2d_OffsetCurve };
+export type { Geom2d_TrimmedCurve };
+export type { GeomAPI_Interpolate };
+export type { GeomAPI_PointsToBSpline };
+export type { GeomAPI_PointsToBSplineSurface };
+export type { GeomAPI_ProjectPointOnSurf };
+export type { GeomAbs_CurveType };
+export type { GeomAbs_JoinType };
+export type { GeomAbs_Shape };
+export type { GeomAbs_SurfaceType };
+export type { GeomAdaptor_TransformedCurve };
+export type { GeomAdaptor_TransformedSurface };
+export type { GeomConvert };
+export type { GeomEval_RepCurveDesc_Base };
+export type { GeomEval_RepSurfaceDesc_Base };
+export type { GeomLib };
+export type { GeomTools };
+export type { GeomToolsWrapper };
+export type { Geom_BSplineCurve };
+export type { Geom_BSplineSurface };
+export type { Geom_BezierCurve };
+export type { Geom_BoundedCurve };
+export type { Geom_BoundedSurface };
+export type { Geom_ConicalSurface };
+export type { Geom_Curve };
+export type { Geom_Curve_ResD1 };
+export type { Geom_Curve_ResD2 };
+export type { Geom_Curve_ResD3 };
+export type { Geom_CylindricalSurface };
+export type { Geom_ElementarySurface };
+export type { Geom_Geometry };
+export type { Geom_SphericalSurface };
+export type { Geom_Surface };
+export type { Geom_Surface_ResD1 };
+export type { Geom_Surface_ResD2 };
+export type { Geom_Surface_ResD3 };
+export type { Geom_TrimmedCurve };
+export type { HLRAlgo_Projector };
+export type { HLRBRep_Algo };
+export type { HLRBRep_HLRToShape };
+export type { HLRBRep_InternalAlgo };
+export type { HLRBRep_SeqOfShapeBounds };
+export type { IFSelect_ReturnStatus };
+export type { IFSelect_WorkSession };
+export type { IntRes2d_SequenceOfIntersectionPoint };
+export type { Interface_InterfaceModel };
+export type { Interface_Static };
+export type { Interface_TypedValue };
+export type { Law_BSpFunc };
+export type { Law_Composite };
+export type { Law_Function };
+export type { Law_Interpol };
+export type { Law_Laws };
+export type { Law_Linear };
+export type { Law_S };
+export type { Message_ListOfAlert };
+export type { Message_ProgressRange };
+export type { MoniTool_TypedValue };
+export type { NCollection_Array1_ChFiDS_CircSection };
+export type { NCollection_Array1_NCollection_Vec3_float };
+export type { NCollection_Array1_Poly_Triangle };
+export type { NCollection_Array1_TFunction_DataMapOfGUIDDriver };
+export type { NCollection_Array1_TopOpeBRepDS_DataMapOfIntegerListOfInterference };
+export type { NCollection_Array1_bool };
+export type { NCollection_Array1_double };
+export type { NCollection_Array1_float };
+export type { NCollection_Array1_gp_Dir };
+export type { NCollection_Array1_gp_Pnt };
+export type { NCollection_Array1_gp_Pnt2d };
+export type { NCollection_Array1_gp_Vec };
+export type { NCollection_Array1_handle_Geom2d_BSplineCurve };
+export type { NCollection_Array1_handle_Geom2d_BezierCurve };
+export type { NCollection_Array1_handle_Geom_BSplineCurve };
+export type { NCollection_Array1_int };
+export type { NCollection_Array1_uint8_t };
+export type { NCollection_Array1_unsignedchar };
+export type { NCollection_Array2_double };
+export type { NCollection_Array2_gp_Pnt };
+export type { NCollection_BaseList };
+export type { NCollection_DataMap_TCollection_AsciiString_TCollection_AsciiString };
+export type { NCollection_DataMap_TCollection_AsciiString_handle_STEPCAFControl_ExternFile };
+export type { NCollection_DataMap_TCollection_AsciiString_handle_Standard_Transient };
+export type { NCollection_DataMap_TCollection_AsciiString_int };
+export type { NCollection_DataMap_TCollection_ExtendedString_TCollection_ExtendedString };
+export type { NCollection_DataMap_TCollection_ExtendedString_double };
+export type { NCollection_DataMap_TCollection_ExtendedString_handle_CDM_MetaData };
+export type { NCollection_DataMap_TCollection_ExtendedString_handle_NCollection_HArray1_double };
+export type { NCollection_DataMap_TCollection_ExtendedString_handle_NCollection_HArray1_int };
+export type { NCollection_DataMap_TCollection_ExtendedString_int };
+export type { NCollection_DataMap_TCollection_ExtendedString_uint8_t };
+export type { NCollection_DataMap_TCollection_ExtendedString_unsignedchar };
+export type { NCollection_DataMap_TDF_Label_TDF_Label };
+export type { NCollection_DataMap_TopoDS_Shape_BRepTopAdaptor_Tool_TopTools_ShapeMapHasher };
+export type { NCollection_DataMap_TopoDS_Shape_NCollection_List_TopoDS_Shape_TopTools_ShapeMapHasher };
+export type { NCollection_DataMap_TopoDS_Shape_TopTools_ListOfShape_TopTools_ShapeMapHasher };
+export type { NCollection_DataMap_TopoDS_Shape_TopoDS_Shape_TopTools_ShapeMapHasher };
+export type { NCollection_DataMap_handle_TDF_Attribute_handle_TDF_Attribute };
+export type { NCollection_DynamicArray_handle_Standard_Transient };
+export type { NCollection_DynamicArray_int };
+export type { NCollection_HArray1_ChFiDS_CircSection };
+export type { NCollection_HArray1_Poly_Triangle };
+export type { NCollection_HArray1_TFunction_DataMapOfGUIDDriver };
+export type { NCollection_HArray1_TopOpeBRepDS_DataMapOfIntegerListOfInterference };
+export type { NCollection_HArray1_bool };
+export type { NCollection_HArray1_double };
+export type { NCollection_HArray1_float };
+export type { NCollection_HArray1_gp_Pnt };
+export type { NCollection_HArray1_gp_Pnt2d };
+export type { NCollection_HArray1_handle_Geom2d_BSplineCurve };
+export type { NCollection_HArray1_handle_Geom_BSplineCurve };
+export type { NCollection_HArray1_int };
+export type { NCollection_HArray1_uint8_t };
+export type { NCollection_HArray1_unsignedchar };
+export type { NCollection_HSequence_TCollection_AsciiString };
+export type { NCollection_HSequence_TCollection_ExtendedString };
+export type { NCollection_HSequence_TopoDS_Shape };
+export type { NCollection_HSequence_handle_Standard_Transient };
+export type { NCollection_HSequence_handle_TCollection_HAsciiString };
+export type { NCollection_HSequence_int };
+export type { NCollection_IndexedDataMap_TDF_Label_TopoDS_Shape };
+export type { NCollection_IndexedDataMap_handle_Standard_Transient_handle_Standard_Transient };
+export type { NCollection_IndexedMap_Message_MetricType };
+export type { NCollection_IndexedMap_TopoDS_Shape_TopTools_ShapeMapHasher };
+export type { NCollection_IndexedMap_handle_TDF_Attribute };
+export type { NCollection_List_BRepCheck_Status };
+export type { NCollection_List_TDF_Label };
+export type { NCollection_List_TopoDS_Shape };
+export type { NCollection_List_handle_Law_Function };
+export type { NCollection_List_handle_Message_Alert };
+export type { NCollection_List_handle_Poly_Triangulation };
+export type { NCollection_List_handle_TDF_AttributeDelta };
+export type { NCollection_List_handle_TDF_Delta };
+export type { NCollection_Map_TDF_Label };
+export type { NCollection_Map_TopoDS_Shape_TopTools_ShapeMapHasher };
+export type { NCollection_Map_handle_TDF_Attribute };
+export type { NCollection_Sequence_Extrema_POnCurv2d };
+export type { NCollection_Sequence_HLRBRep_ShapeBounds };
+export type { NCollection_Sequence_IntRes2d_IntersectionPoint };
+export type { NCollection_Sequence_TCollection_AsciiString };
+export type { NCollection_Sequence_TCollection_ExtendedString };
+export type { NCollection_Sequence_TDF_Label };
+export type { NCollection_Sequence_TopoDS_Shape };
+export type { NCollection_Sequence_double };
+export type { NCollection_Sequence_gp_Pnt };
+export type { NCollection_Sequence_gp_Pnt2d };
+export type { NCollection_Sequence_handle_Geom_Curve };
+export type { NCollection_Sequence_handle_Standard_Transient };
+export type { NCollection_Sequence_handle_TCollection_HAsciiString };
+export type { NCollection_Sequence_handle_TDF_Attribute };
+export type { NCollection_Sequence_int };
+export type { OCJS };
+export type { OSD_ThreadPool };
+export type { Poly_Array1OfTriangle };
+export type { Poly_Connect };
+export type { Poly_HArray1OfTriangle };
+export type { Poly_ListOfTriangulation };
+export type { Poly_PolygonOnTriangulation };
+export type { Poly_Triangle };
+export type { Poly_Triangulation };
+export type { Precision };
+export type { Quantity_Color };
+export type { Quantity_ColorRGBA };
+export type { ReplicadEdgeMeshData };
+export type { ReplicadEdgeMeshExtractor };
+export type { ReplicadMeshData };
+export type { ReplicadMeshExtractor };
+export type { ReplicadShapeCaster };
+export type { ReplicadShapeHasher };
+export type { STEPCAFControl_Writer };
+export type { STEPControl_Reader };
+export type { STEPControl_StepModelType };
+export type { STEPControl_Writer };
+export type { ShapeFix_EdgeConnect };
+export type { ShapeFix_Face };
+export type { ShapeFix_Root };
+export type { ShapeFix_Solid };
+export type { ShapeFix_Wire };
+export type { ShapeUpgrade_UnifySameDomain };
+export type { Standard_Failure };
+export type { Standard_Transient };
+export type { StepData_StepModel };
+export type { StlAPI };
+export type { StlAPI_Reader };
+export type { StlAPI_Writer };
+export type { TColGeom2d_Array1OfBSplineCurve };
+export type { TColGeom2d_Array1OfBezierCurve };
+export type { TColGeom2d_HArray1OfBSplineCurve };
+export type { TColGeom_Array1OfBSplineCurve };
+export type { TColGeom_HArray1OfBSplineCurve };
+export type { TColGeom_SequenceOfCurve };
+export type { TColStd_Array1OfBoolean };
+export type { TColStd_Array1OfByte };
+export type { TColStd_Array1OfInteger };
+export type { TColStd_Array1OfReal };
+export type { TColStd_Array2OfReal };
+export type { TColStd_HArray1OfBoolean };
+export type { TColStd_HArray1OfByte };
+export type { TColStd_HArray1OfInteger };
+export type { TColStd_HArray1OfReal };
+export type { TColStd_HSequenceOfAsciiString };
+export type { TColStd_HSequenceOfExtendedString };
+export type { TColStd_HSequenceOfHAsciiString };
+export type { TColStd_HSequenceOfInteger };
+export type { TColStd_HSequenceOfTransient };
+export type { TColStd_IndexedDataMapOfStringString };
+export type { TColStd_SequenceOfAsciiString };
+export type { TColStd_SequenceOfExtendedString };
+export type { TColStd_SequenceOfHAsciiString };
+export type { TColStd_SequenceOfInteger };
+export type { TColStd_SequenceOfReal };
+export type { TColStd_SequenceOfTransient };
+export type { TColgp_Array1OfDir };
+export type { TColgp_Array1OfPnt };
+export type { TColgp_Array1OfPnt2d };
+export type { TColgp_Array1OfVec };
+export type { TColgp_Array2OfPnt };
+export type { TColgp_HArray1OfPnt };
+export type { TColgp_HArray1OfPnt2d };
+export type { TColgp_SequenceOfPnt };
+export type { TColgp_SequenceOfPnt2d };
+export type { TCollection_ExtendedString };
+export type { TDF_Attribute };
+export type { TDF_AttributeDeltaList };
+export type { TDF_AttributeSequence };
+export type { TDF_DeltaList };
+export type { TDF_Label };
+export type { TDF_LabelList };
+export type { TDF_LabelSequence };
+export type { TDataStd_GenericEmpty };
+export type { TDataStd_GenericExtString };
+export type { TDataStd_Name };
+export type { TDocStd_Document };
+export type { TFunction_Array1OfDataMapOfGUIDDriver };
+export type { TFunction_HArray1OfDataMapOfGUIDDriver };
+export type { TShort_Array1OfShortReal };
+export type { TShort_HArray1OfShortReal };
+export type { TopAbs_Orientation };
+export type { TopAbs_ShapeEnum };
+export type { TopExp_Explorer };
+export type { TopLoc_Location };
+export type { TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference };
+export type { TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference };
+export type { TopTools_DataMapOfShapeListOfShape };
+export type { TopTools_DataMapOfShapeShape };
+export type { TopTools_HSequenceOfShape };
+export type { TopTools_IndexedMapOfShape };
+export type { TopTools_ListOfShape };
+export type { TopTools_MapOfShape };
+export type { TopTools_SequenceOfShape };
+export type { TopoDS };
+export type { TopoDS_Builder };
+export type { TopoDS_CompSolid };
+export type { TopoDS_Compound };
+export type { TopoDS_Edge };
+export type { TopoDS_Face };
+export type { TopoDS_Shape };
+export type { TopoDS_Shell };
+export type { TopoDS_Solid };
+export type { TopoDS_Vertex };
+export type { TopoDS_Wire };
+export type { XCAFDoc_ColorTool };
+export type { XCAFDoc_ColorType };
+export type { XCAFDoc_DocumentTool };
+export type { XCAFDoc_LengthUnit };
+export type { XCAFDoc_ShapeTool };
+export type { XSControl_Reader };
+export type { XSControl_WorkSession };
+export type { XSControl_WorkSessionMap };
+export type { gp_Ax1 };
+export type { gp_Ax2 };
+export type { gp_Ax22d };
+export type { gp_Ax2d };
+export type { gp_Ax3 };
+export type { gp_Circ };
+export type { gp_Circ2d };
+export type { gp_Cylinder };
+export type { gp_Dir };
+export type { gp_Dir2d };
+export type { gp_Dir2d_D };
+export type { gp_Dir_D };
+export type { gp_Elips };
+export type { gp_Elips2d };
+export type { gp_GTrsf };
+export type { gp_GTrsf2d };
+export type { gp_Pln };
+export type { gp_Pnt };
+export type { gp_Pnt2d };
+export type { gp_Sphere };
+export type { gp_Trsf };
+export type { gp_Trsf2d };
+export type { gp_Vec };
+export type { gp_Vec2d };
+export type { gp_XY };
+export type { gp_XYZ };
 
 /**
- * Union of the Emscripten runtime exports and all bound OCCT classes, enums, and functions.
+ * Intersection of the Emscripten runtime exports and all bound OCCT classes, enums, and functions.
  *
  * Returned by {@link init | `init`} after the WASM module is fully loaded. Access any
  * OCCT binding as a property (e.g. `oc.BRepPrimAPI_MakeBox`) and use
@@ -33537,8 +33923,8 @@ export type OpenCascadeInstance = {
    *
    * Use `wasmMemory.buffer` to obtain the current `ArrayBuffer` after any
    * call that may have grown memory (e.g. allocations during `extract()`).
-   * Cached `HEAP*` views may be detached after growth — taking fresh views
-   * off `wasmMemory.buffer` is the safe pattern.
+   * Existing typed-array views may be detached after growth; create fresh
+   * views from `wasmMemory.buffer` after calls that may allocate.
    */
   wasmMemory: WebAssembly.Memory;
 } & {
@@ -33869,6 +34255,15 @@ export type OpenCascadeInstance = {
   decrementExceptionRefcount: typeof decrementExceptionRefcount;
 };
 
+/** Options accepted by the generated Emscripten module factory. */
+export type InitOpenCascadeOptions = {
+  locateFile?: (path: string, scriptDirectory: string) => string;
+  wasmBinary?: ArrayBuffer | Uint8Array;
+  wasmMemory?: WebAssembly.Memory;
+  print?: (text: string) => void;
+  printErr?: (text: string) => void;
+};
+
 /**
  * Initialize the OpenCASCADE WASM module and return the fully populated instance.
  *
@@ -33876,7 +34271,7 @@ export type OpenCascadeInstance = {
  * `OpenCascadeInstance` provides access to all bound OCCT classes and the
  * Emscripten virtual filesystem.
  *
- * @param options - Emscripten module overrides (e.g. `locateFile`, `print`, `instantiateWasm`).
+ * @param options - Supported Emscripten module-factory overrides.
  * @returns The initialized instance with all OCCT bindings and the `FS` namespace.
  */
-export default function init(options?: Record<string, unknown>): Promise<OpenCascadeInstance>;
+export default function init(options?: InitOpenCascadeOptions): Promise<OpenCascadeInstance>;

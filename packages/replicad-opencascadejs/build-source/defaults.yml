@@ -288,7 +288,7 @@
     - -sALLOW_MEMORY_GROWTH=1
     - -sINITIAL_MEMORY=100MB
     - -sMAXIMUM_MEMORY=4GB
-    - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory"]
+    - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory","getExceptionMessage","incrementExceptionRefcount","decrementExceptionRefcount"]
     - -sENVIRONMENT=web,worker,node
     - --no-entry
     #! OCCT's OSD_MemInfo references mallinfo, which Emscripten does not provide.

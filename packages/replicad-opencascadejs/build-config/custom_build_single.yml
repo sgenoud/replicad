@@ -257,7 +257,7 @@ mainBuild:
   - -sALLOW_MEMORY_GROWTH=1
   - -sINITIAL_MEMORY=100MB
   - -sMAXIMUM_MEMORY=4GB
-  - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory"]
+  - -sEXPORTED_RUNTIME_METHODS=["FS","wasmMemory","getExceptionMessage","incrementExceptionRefcount","decrementExceptionRefcount"]
   - -sENVIRONMENT=web,worker,node
   - --no-entry
   - -sERROR_ON_UNDEFINED_SYMBOLS=0
