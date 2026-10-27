@@ -75,15 +75,21 @@ export function fuseShapes(
   { optimisation = "none", simplify = true }: BooleanOperationOptions = {}
 ): TopoDS_Shape {
   const oc = getOC();
-  const r = GCWithScope();
-  const builder = r(
-    new oc.BRepAlgoAPI_Fuse(unwrapShape(leftInput), unwrapShape(rightInput))
+  const builder = new oc.BRepAlgoAPI_Fuse(
+    unwrapShape(leftInput),
+    unwrapShape(rightInput)
   );
-
-  configureGlue(builder, optimisation);
-  builder.Build();
-  if (simplify) builder.SimplifyResult(true, true, 1e-3);
-  return builder.Shape();
+  try {
+    configureGlue(builder, optimisation);
+    builder.Build();
+    if (simplify) builder.SimplifyResult(true, true, 1e-3);
+    return builder.Shape();
+  } finally {
+    // The builder holds all of the operation's intermediate data. Garbage
+    // collection doesn't see the WebAssembly heap filling up, so the builder is
+    // freed as soon as its result is taken.
+    builder.delete();
+  }
 }
 
 /** Builds a raw shape by cutting a tool shape from another shape. */
@@ -93,15 +99,18 @@ export function cutShape(
   { optimisation = "none", simplify = true }: BooleanOperationOptions = {}
 ): TopoDS_Shape {
   const oc = getOC();
-  const r = GCWithScope();
-  const builder = r(
-    new oc.BRepAlgoAPI_Cut(unwrapShape(shapeInput), unwrapShape(toolInput))
+  const builder = new oc.BRepAlgoAPI_Cut(
+    unwrapShape(shapeInput),
+    unwrapShape(toolInput)
   );
-
-  configureGlue(builder, optimisation);
-  builder.Build();
-  if (simplify) builder.SimplifyResult(true, true, 1e-3);
-  return builder.Shape();
+  try {
+    configureGlue(builder, optimisation);
+    builder.Build();
+    if (simplify) builder.SimplifyResult(true, true, 1e-3);
+    return builder.Shape();
+  } finally {
+    builder.delete();
+  }
 }
 
 /** Builds a raw shape containing the intersection of two shapes. */
@@ -111,14 +120,17 @@ export function intersectShapes(
   { simplify = true }: Pick<BooleanOperationOptions, "simplify"> = {}
 ): TopoDS_Shape {
   const oc = getOC();
-  const r = GCWithScope();
-  const builder = r(
-    new oc.BRepAlgoAPI_Common(unwrapShape(leftInput), unwrapShape(rightInput))
+  const builder = new oc.BRepAlgoAPI_Common(
+    unwrapShape(leftInput),
+    unwrapShape(rightInput)
   );
-
-  builder.Build();
-  if (simplify) builder.SimplifyResult(true, true, 1e-3);
-  return builder.Shape();
+  try {
+    builder.Build();
+    if (simplify) builder.SimplifyResult(true, true, 1e-3);
+    return builder.Shape();
+  } finally {
+    builder.delete();
+  }
 }
 
 const signedDistanceToPlane = (point: SimplePoint, plane: Plane): number =>

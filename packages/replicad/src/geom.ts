@@ -391,7 +391,12 @@ export class Transformation extends WrappingObj<gp_Trsf> {
       true,
       false
     );
-    return transformer.ModifiedShape(shape);
+    try {
+      return transformer.ModifiedShape(shape);
+    } finally {
+      // The transformer keeps its own copy of the whole moved shape.
+      transformer.delete();
+    }
   }
 }
 
